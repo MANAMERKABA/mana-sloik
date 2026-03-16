@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Słoik MANA</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+  :root {
+    --bg:#f7f4ef;--surface:#fff;--border:#e8e2d9;--text:#2c2416;--muted:#9a8f82;
+    --accent:#7c6a52;--zadanie:#d4a853;--sen:#7ba3c0;--odczucie:#b07a9e;
+    --success:#6a9e7a;--danger:#c0392b;--radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px 16px;}
+  .container{max-width:640px;margin:0 auto;}
+  header{text-align:center;margin-bottom:32px;}
+  header h1{font-family:'Lora',serif;font-size:2rem;font-weight:600;letter-spacing:-.02em;}
+  header p{color:var(--muted);font-size:.9rem;margin-top:4px;font-style:italic;}
+  .jar-icon{font-size:2.5rem;margin-bottom:8px;display:block;}
+  #login-screen{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center;}
+  #login-screen h2{font-family:'Lora',serif;font-size:1.2rem;margin-bottom:8px;}
+  #login-screen p{color:var(--muted);font-size:.85rem;margin-bottom:20px;}
+  input[type="text"],input[type="datetime-local"],textarea{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-family:'Inter',sans-serif;font-size:.9rem;background:var(--bg);color:var(--text);transition:border-color .2s;outline:none;}
+  input:focus,textarea:focus{border-color:var(--accent);}
+  textarea{resize:vertical;min-height:80px;}
+  button{cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem;border:none;border-radius:8px;padding:12px 24px;transition:all .15s;}
+  .btn-primary{background:var(--accent);color:white;font-weight:500;width:100%;margin-top:12px;}
+  .btn-primary:hover{background:#6a5a44;}
+  .btn-small{padding:6px 14px;font-size:.8rem;background:var(--bg);border:1px solid var(--border);color:var(--muted);}
+  .btn-small:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-done{background:#eef7f1;border:1px solid #c5deca;color:var(--success);}
+  .btn-done:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-danger{background:#fdf0ee;border:1px solid #f0c4be;color:var(--danger);}
+  .btn-edit{background:#eef4f9;border:1px solid #c5d8e8;color:var(--sen);}
+  #app-screen{display:none;}
+  .user-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);}
+  .user-bar span{font-size:.85rem;color:var(--muted);}
+  .add-stone{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px;}
+  .add-stone h3{font-family:'Lora',serif;font-size:1rem;margin-bottom:14px;color:var(--accent);}
+  .type-select{display:flex;gap:8px;margin-bottom:12px;}
+  .type-btn{flex:1;padding:8px;border-radius:8px;font-size:.8rem;border:2px solid transparent;background:var(--bg);color:var(--muted);text-align:center;}
+  .type-btn.active-zadanie{border-color:var(--zadanie);color:var(--zadanie);background:#fdf8ed;}
+  .type-btn.active-sen{border-color:var(--sen);color:var(--sen);background:#eef4f9;}
+  .type-btn.active-odczucie{border-color:var(--odczucie);color:var(--odczucie);background:#f9f0f6;}
+  .due-date-row{margin-top:10px;display:none;}
+  .due-date-row label{font-size:.8rem;color:var(--muted);margin-bottom:4px;display:block;}
+  .tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:4px;}
+  .tab{flex:1;padding:8px;border-radius:8px;font-size:.85rem;background:transparent;color:var(--muted);text-align:center;}
+  .tab.active{background:var(--accent);color:white;}
+  .stones-list{display:flex;flex-direction:column;gap:10px;}
+  .stone{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--border);border-radius:var(--radius);padding:14px 16px;transition:opacity .2s;}
+  .stone.typ-zadanie{border-left-color:var(--zadanie);}
+  .stone.typ-sen{border-left-color:var(--sen);}
+  .stone.typ-odczucie{border-left-color:var(--odczucie);}
+  .stone.wykonany{opacity:.5;}
+  .stone-header{display:flex;align-items:flex-start;gap:12px;}
+  .stone-content{flex:1;}
+  .stone-tresc{font-size:.9rem;line-height:1.5;margin-bottom:6px;}
+  .stone-meta{font-size:.75rem;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .typ-badge{font-size:.7rem;padding:2px 8px;border-radius:20px;font-weight:500;}
+  .badge-zadanie{background:#fdf8ed;color:var(--zadanie);}
+  .badge-sen{background:#eef4f9;color:var(--sen);}
+  .badge-odczucie{background:#f9f0f6;color:var(--odczucie);}
+  .due-badge{font-size:.75rem;color:var(--accent);}
+  .due-badge.overdue{color:var(--danger);}
+  .stone-actions{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+  .empty-state{text-align:center;padding:48px 24px;color:var(--muted);}
+  .empty-state .icon{font-size:2rem;margin-bottom:8px;}
+  .empty-state p{font-size:.85rem;font-style:italic;}
+  .status-msg{font-size:.8rem;text-align:center;margin-top:8px;min-height:20px;color:var(--success);}
+  .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--surface);border-radius:var(--radius);padding:24px;width:90%;max-width:480px;}
+  .modal h3{font-family:'Lora',serif;margin-bottom:16px;color:var(--accent);}
+  .modal-actions{display:flex;gap:8px;margin-top:12px;}
+  .modal-actions button{flex:1;}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <span class="jar-icon">🫙</span>
+    <h1>Słoik MANA</h1>
+    <p>Twoje kamienie. Twoja historia w czasie.</p>
+  </header>
+
+  <div id="login-screen">
+    <h2>Wejdź do swojego Słoika</h2>
+    <p>Wpisz swój traveler_id — ten sam co w Sercu MANA</p>
+    <input type="text" id="traveler-input" placeholder="wpisz swój klucz" />
+    <button class="btn-primary" onclick="login()">Wejdź</button>
+    <div class="status-msg" id="login-status"></div>
+  </div>
+
+  <div id="app-screen">
+    <div class="user-bar">
+      <span>Witaj, <strong id="user-name"></strong></span>
+      <button class="btn-small" onclick="logout()">Zmień</button>
+    </div>
+
+    <div class="add-stone">
+      <h3>+ Nowy kamień</h3>
+      <div class="type-select">
+        <button class="type-btn active-zadanie" id="btn-zadanie" onclick="setTyp('zadanie')">✅ zadanie</button>
+        <button class="type-btn" id="btn-sen" onclick="setTyp('sen')">💤 sen</button>
+        <button class="type-btn" id="btn-odczucie" onclick="setTyp('odczucie')">💙 odczucie</button>
+      </div>
+      <textarea id="stone-input" placeholder="Co wrzucasz do Słoika?"></textarea>
+      <div class="due-date-row" id="due-date-row">
+        <label>📅 Kiedy? (bez daty kamień trafia tylko do historii)</label>
+        <input type="datetime-local" id="due-date-input" />
+      </div>
+      <button class="btn-primary" onclick="addStone()">Wrzuć do Słoika</button>
+      <div class="status-msg" id="add-status"></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-wszystkie" onclick="switchTab('wszystkie')">Wszystkie</button>
+      <button class="tab" id="tab-zadania" onclick="switchTab('zadania')">Zadania</button>
+      <button class="tab" id="tab-historia" onclick="switchTab('historia')">Historia</button>
+    </div>
+
+    <div class="stones-list" id="stones-list"></div>
+  </div>
+
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal">
+      <h3>Edytuj kamień</h3>
+      <textarea id="edit-tresc" rows="4"></textarea>
+      <div class="due-date-row" id="edit-due-row" style="display:block;margin-top:10px;">
+        <label>📅 Kiedy?</label>
+        <input type="datetime-local" id="edit-due-date" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn-small" onclick="closeModal()">Anuluj</button>
+        <button class="btn-primary" style="margin-top:0;" onclick="saveEdit()">Zapisz</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL='https://kkxhqtfxvgxdqpnzaufu.supabase.co';
+  const ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtreGhxdGZ4dmd4ZHFwbnphdWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MjE0NTYsImV4cCI6MjA4ODM5NzQ1Nn0.s8Ju-ww3G4_yyH6RedK2gwLveVJKD3hY2IHh62-qjfo';
+  let currentTraveler=localStorage.getItem('mana_traveler')||'';
+  let currentTyp='zadanie',currentTab='wszystkie',allStones=[],editingId=null;
+
+  window.onload=()=>{
+    if(currentTraveler){showApp(currentTraveler);loadStones();}
+    setTyp('zadanie');
+  };
+
+  function h(){return{'apikey':ANON_KEY,'Authorization':'Bearer '+ANON_KEY,'Content-Type':'application/json'};}
+
+  async function login(){
+    const raw=document.getElementById('traveler-input').value.trim();
+    if(!raw)return;
+    setStatus('login-status','Szukam...','loading');
+    try{
+      const r=await fetch(`${SUPABASE_URL}/rest/v1/travels?traveler_id=ilike.${encodeURIComponent(raw)}&select=nick,traveler_id`,{headers:h()});
+      const d=await r.json();
+      if(!d||d.length===0){setStatus('login-status','Nie znaleziono podróżnika.','error');return;}
+      currentTraveler=d[0].traveler_id;
+      localStorage.setItem('mana_traveler',currentTraveler);
+      showApp(d[0].nick||d[0].traveler_id);loadStones();
+    }catch(e){setStatus('login-status','Błąd połączenia.','error');}
+  }
+
+  function showApp(name){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app-screen').style.display='block';
+    document.getElementById('user-name').textContent=name;
+  }
+
+  function logout(){
+    currentTraveler='';localStorage.removeItem('mana_traveler');
+    document.getElementById('login-screen').style.display='block';
+    document.getElementById('app-screen').style.display='none';
+    document.getElementById('traveler-input').value='';
+  }
+
+  function setTyp(typ){
+    currentTyp=typ;
+    ['zadanie','sen','odczucie'].forEach(t=>{
+      document.getElementById('btn-'+t).className='type-btn'+(t===typ?' active-'+t:'');
+    });
+    document.getElementById('due-date-row').style.display=typ==='zadanie'?'block':'none';
+  }
+
+  async function addStone(){
+    const tresc=document.getElementById('stone-input').value.trim();
+    if(!tresc)return;
+    const dueRaw=document.getElementById('due-date-input').value;
+    const due_date=dueRaw?new Date(dueRaw).toISOString():null;
+    setStatus('add-status','Wrzucam...','loading');
+    try{
+      const body={traveler_id:currentTraveler,tresc,typ:currentTyp,status:'aktywny',serce_dostep:false};
+      if(due_date)body.due_date=due_date;
+      const r=await fetch(`${SUPABASE_URL}/rest/v1/stones`,{
+        method:'POST',headers:{...h(),'Prefer':'return=representation'},body:JSON.stringify(body)
+      });
+      if(r.ok){
+        document.getElementById('stone-input').value='';
+        document.getElementById('due-date-input').value='';
+        setStatus('add-status','Kamień wrzucony ✓','ok');
+        loadStones();setTimeout(()=>setStatus('add-status','',''),2000);
+      }else{setStatus('add-status','Błąd zapisu.','error');}
+    }catch(e){setStatus('add-status','Błąd połączenia.','error');}
+  }
+
+  async function loadStones(){
+    try{
+      const r=await fetch(`${SUPABASE_URL}/rest/v1/stones?traveler_id=eq.${encodeURIComponent(currentTraveler)}&order=created_at.desc`,{headers:h()});
+      allStones=await r.json();renderStones();
+    }catch(e){}
+  }
+
+  function canMarkDone(s){
+    if(!s.due_date)return true;
+    return new Date()>=new Date(s.due_date);
+  }
+
+  function renderStones(){
+    const list=document.getElementById('stones-list');
+    let stones=[...allStones];
+    if(currentTab==='zadania')stones=stones.filter(s=>s.typ==='zadanie'&&s.status==='aktywny'&&s.due_date);
+    else if(currentTab==='historia')stones=stones.filter(s=>s.status==='wykonany');
+    else stones=stones.filter(s=>s.status==='aktywny');
+
+    if(stones.length===0){
+      list.innerHTML=`<div class="empty-state"><div class="icon">🫙</div><p>${currentTab==='historia'?'Brak wykonanych kamieni':'Słoik pusty — wrzuć pierwszy kamień'}</p></div>`;
+      return;
+    }
+
+    list.innerHTML=stones.map(s=>{
+      const isOverdue=s.due_date&&new Date()>new Date(s.due_date)&&s.status==='aktywny';
+      const dueLine=s.due_date?`<span class="due-badge ${isOverdue?'overdue':''}">📅 ${formatDate(s.due_date)}</span>`:'';
+      const canDone=canMarkDone(s);
+      const doneBtn=s.typ==='zadanie'&&s.status==='aktywny'
+        ?`<button class="btn-small btn-done" onclick="markDone(${s.id})" ${!canDone?'disabled title="Zbyt wcześnie"':''}>✓</button>`:'';
+      return `<div class="stone typ-${s.typ} ${s.status==='wykonany'?'wykonany':''}">
+        <div class="stone-header">
+          <div class="stone-content">
+            <div class="stone-tresc">${escHtml(s.tresc)}</div>
+            <div class="stone-meta">
+              <span class="typ-badge badge-${s.typ}">${s.typ}</span>
+              <span>${formatDate(s.created_at)}</span>${dueLine}
+            </div>
+          </div>
+          <div class="stone-actions">
+            ${doneBtn}
+            <button class="btn-small btn-edit" onclick="openEdit(${s.id})">✏️</button>
+            <button class="btn-small btn-danger" onclick="deleteStone(${s.id})">🗑</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  async function markDone(id){
+    try{
+      await fetch(`${SUPABASE_URL}/rest/v1/stones?id=eq.${id}`,{method:'PATCH',headers:h(),body:JSON.stringify({status:'wykonany'})});
+      loadStones();
+    }catch(e){}
+  }
+
+  async function deleteStone(id){
+    if(!confirm('Usunąć ten kamień?'))return;
+    try{
+      await fetch(`${SUPABASE_URL}/rest/v1/stones?id=eq.${id}`,{method:'DELETE',headers:h()});
+      loadStones();
+    }catch(e){}
+  }
+
+  function openEdit(id){
+    const s=allStones.find(x=>x.id===id);if(!s)return;
+    editingId=id;
+    document.getElementById('edit-tresc').value=s.tresc;
+    document.getElementById('edit-due-date').value=s.due_date?toLocalInput(s.due_date):'';
+    document.getElementById('edit-due-row').style.display=s.typ==='zadanie'?'block':'none';
+    document.getElementById('edit-modal').classList.add('open');
+  }
+
+  function closeModal(){document.getElementById('edit-modal').classList.remove('open');editingId=null;}
+
+  async function saveEdit(){
+    const tresc=document.getElementById('edit-tresc').value.trim();if(!tresc)return;
+    const dueRaw=document.getElementById('edit-due-date').value;
+    const body={tresc};
+    if(dueRaw)body.due_date=new Date(dueRaw).toISOString();
+    try{
+      await fetch(`${SUPABASE_URL}/rest/v1/stones?id=eq.${editingId}`,{method:'PATCH',headers:h(),body:JSON.stringify(body)});
+      closeModal();loadStones();
+    }catch(e){}
+  }
+
+  function switchTab(tab){
+    currentTab=tab;
+    ['wszystkie','zadania','historia'].forEach(t=>{
+      document.getElementById('tab-'+t).className='tab'+(t===tab?' active':'');
+    });
+    renderStones();
+  }
+
+  function setStatus(id,msg,type){
+    const el=document.getElementById(id);el.textContent=msg;
+    el.style.color=type==='error'?'#c0392b':type==='loading'?'#9a8f82':'#6a9e7a';
+  }
+
+  function formatDate(iso){
+    const d=new Date(iso);
+    return d.toLocaleDateString('pl-PL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  }
+
+  function toLocalInput(iso){
+    const d=new Date(iso),pad=n=>String(n).padStart(2,'0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function escHtml(str){return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>
