@@ -850,7 +850,8 @@ function showScreen(name) {
 function showMain() { showScreen('main'); }
 
 function openGaweda() {
-  document.getElementById('typebot-frame').src = TYPEBOT_URL + '?nick=' + encodeURIComponent(currentNick);
+  // Przekazujemy nick_raw przez URL — Typebot automatycznie wczytuje zmienną o tej samej nazwie
+  document.getElementById('typebot-frame').src = TYPEBOT_URL + '?nick_raw=' + encodeURIComponent(currentNick);
   showScreen('gaweda');
 }
 
@@ -969,13 +970,13 @@ function renderKalLista(filter) {
   var items = stonesData.filter(function(s) {
     if (!s.due_date) return false;
     var d = new Date(s.due_date);
-    if (d < now) return false; // tylko przyszłe
+    if (d < now) return false;
     if (filter === 'mies') {
       var cutoff = new Date(now);
       cutoff.setMonth(cutoff.getMonth() + prefMies);
       return d <= cutoff;
     }
-    return true; // wszystkie
+    return true;
   }).sort(function(a, b) { return new Date(a.due_date) - new Date(b.due_date); });
 
   if (!items.length) {
@@ -1005,7 +1006,6 @@ function renderTasks() {
   });
 
   if (!tasks.length) {
-    // Pokaż też zadania z due_date jako zadania
     var allTasks = stonesData.filter(function(s) {
       return s.typ === 'zadanie' && s.status === 'aktywny';
     });
