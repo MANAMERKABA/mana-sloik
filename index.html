@@ -491,6 +491,16 @@
   <div class="sub-bar">
     <div class="back-btn" onclick="showMain()">← MANA</div>
     <div class="sub-title">Gawęda · Serce MANA</div>
+    <div class="sub-bar-right">
+      <button class="voice-btn" id="voice-btn-gaweda" onclick="toggleGawedaVoice()">
+        <span class="voice-dot" id="gaweda-voice-dot"></span> <span id="gaweda-voice-label">Głos</span>
+      </button>
+    </div>
+  </div>
+  <!-- POLE DYKTOWANIA — pojawia się gdy aktywny głos -->
+  <div id="gaweda-dictate-bar" style="display:none; padding:10px 16px; background:var(--sand-dark); border-bottom:1px solid var(--border); gap:8px; align-items:flex-end; flex-wrap:wrap;">
+    <textarea id="gaweda-dictate-text" style="flex:1;min-width:200px;padding:8px 12px;border:1.5px solid var(--border-strong);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--white);color:var(--text);outline:none;resize:none;min-height:44px;line-height:1.5;" placeholder="Powiedz coś… tekst pojawi się tutaj, potem wyślij do Serca" rows="2"></textarea>
+    <button onclick="clearGawedaDictate()" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-light);font-size:12px;cursor:pointer;white-space:nowrap;">Wyczyść</button>
   </div>
   <iframe id="typebot-frame" class="typebot-frame" src="" allow="microphone"></iframe>
 </div>
@@ -956,6 +966,65 @@ document.getElementById('cisza-textarea').addEventListener('keydown', function(e
   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) ciszaSave();
   if (e.key === 'Escape') ciszaCancelInput();
 });
+
+// ==================== GŁOS GAWĘDA (dyktowanie do Serca) ====================
+var gawedaRecognition = null;
+var gawedaRecording = false;
+
+function toggleGawedaVoice() {
+  var bar = document.getElementById('gaweda-dictate-bar');
+  if (!gawedaRecording) {
+    // Pokaż pasek i zacznij nagrywać
+    bar.style.display = 'flex';
+    startGawedaRecording();
+  } else {
+    stopGawedaRecording();
+  }
+}
+
+function startGawedaRecording() {
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) { showToast('Przeglądarka nie obsługuje głosu'); return; }
+  gawedaRecognition = new SpeechRecognition();
+  gawedaRecognition.lang = 'pl-PL';
+  gawedaRecognition.continuous = false;
+  gawedaRecognition.interimResults = true;
+  gawedaRecognition.onstart = function() {
+    gawedaRecording = true;
+    document.getElementById('voice-btn-gaweda').classList.add('recording');
+    document.getElementById('gaweda-voice-label').textContent = 'Słucham…';
+  };
+  gawedaRecognition.onend = function() {
+    gawedaRecording = false;
+    document.getElementById('voice-btn-gaweda').classList.remove('recording');
+    document.getElementById('gaweda-voice-label').textContent = 'Głos';
+  };
+  gawedaRecognition.onerror = function(e) {
+    gawedaRecording = false;
+    document.getElementById('voice-btn-gaweda').classList.remove('recording');
+    document.getElementById('gaweda-voice-label').textContent = 'Głos';
+    showToast('Błąd mikrofonu: ' + e.error);
+  };
+  gawedaRecognition.onresult = function(event) {
+    var ta = document.getElementById('gaweda-dictate-text');
+    var finalText = '';
+    for (var i = event.resultIndex; i < event.results.length; i++) {
+      if (event.results[i].isFinal) finalText += event.results[i][0].transcript;
+    }
+    if (finalText) {
+      ta.value = ta.value ? ta.value + ' ' + finalText.trim() : finalText.trim();
+    }
+  };
+  try { gawedaRecognition.start(); } catch(e) { showToast('Błąd startu mikrofonu'); }
+}
+
+function stopGawedaRecording() {
+  if (gawedaRecognition) gawedaRecognition.stop();
+}
+
+function clearGawedaDictate() {
+  document.getElementById('gaweda-dictate-text').value = '';
+}
 
 // ==================== GŁOS ====================
 function initSpeechRecognition() {
