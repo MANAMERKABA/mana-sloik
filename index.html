@@ -894,17 +894,19 @@ function ciszaResetInput() {
 
 async function ciszaSave() {
   var tresc = document.getElementById('cisza-textarea').value.trim();
-  if (!tresc || !ciszaActiveType) return;
+  if (!tresc || !ciszaActiveType) { showToast('Wybierz typ i wpisz treść'); return; }
+  if (!currentNick) { showToast('Nie jesteś zalogowany'); return; }
   try {
-    await fetch(SUPABASE_URL + '/rest/v1/stones', {
+    var r = await fetch(SUPABASE_URL + '/rest/v1/stones', {
       method: 'POST',
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ traveler_id: currentNick, tresc: tresc, typ: ciszaActiveType, sekcja: 'cisza', status: 'aktywny', due_date: null })
+      body: JSON.stringify({ traveler_id: currentNick, tresc: tresc, typ: ciszaActiveType, status: 'aktywny', due_date: null })
     });
+    if (!r.ok) { var err = await r.text(); showToast('Błąd: ' + err.substring(0,80)); return; }
     showToast('Zapisano ✓');
     ciszaResetInput();
     await loadCiszaData();
-  } catch(e) { console.error(e); }
+  } catch(e) { console.error(e); showToast('Błąd połączenia'); }
 }
 
 async function deleteCiszaEntry(id) {
