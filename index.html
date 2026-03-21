@@ -952,6 +952,20 @@ function updateCiszaTitle() {
     renderCiszaList();
   }
 }
+function ciszaToggleSearch() {
+  ciszaShowSearch = !ciszaShowSearch;
+  var wrap = document.getElementById('cisza-search-wrap');
+  var toggle = document.getElementById('cisza-search-toggle');
+  if (ciszaShowSearch) {
+    wrap.style.display = 'flex'; toggle.style.display = 'none';
+    document.getElementById('cisza-search-input').focus();
+  } else {
+    wrap.style.display = 'none'; toggle.style.display = 'flex';
+    ciszaSearchQuery = '';
+    document.getElementById('cisza-search-input').value = '';
+    renderCiszaList();
+  }
+}
 function ciszaSearch(val) { ciszaSearchQuery = val.toLowerCase(); renderCiszaList(); }
 
 document.getElementById('cisza-textarea').addEventListener('keydown', function(e) {
