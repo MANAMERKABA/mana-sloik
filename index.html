@@ -520,7 +520,9 @@ const SLOIK_SECTIONS = [
   { id: 'horyzont', name: 'Horyzont', nameEn: 'Horizon', color: '#6B8F71', desc: 'Kalendarz i zadania — co przed Tobą', action: 'openHoryzont' },
   { id: 'cisza',    name: 'Cisza',    nameEn: 'Silence', color: '#9B7EBD', desc: 'Sny, odczucia i przemyślenia',         action: 'placeholder' },
   { id: 'puls',     name: 'Puls',     nameEn: 'Pulse',   color: '#C0392B', desc: 'Rytm ciała — historia zdrowotna',     action: 'placeholder' },
-  { id: 'trzos',    name: 'Trzos',    nameEn: 'Wallet',  color: '#A0845C', desc: 'Finanse, paragony i organizacja czasu', action: 'placeholder' },
+  { id: 'trzos',    name: 'Trzos',    nameEn: 'Wallet',    color: '#A0845C', desc: 'Finanse, paragony i organizacja czasu', action: 'placeholder' },
+  { id: 'rod',      name: 'Ród',      nameEn: 'Genealogy', color: '#5C4A35', desc: 'Drzewo rodzinne — skąd pochodzisz',         action: 'placeholder' },
+  { id: 'pamietnik',name: 'Pamiętnik',nameEn: 'Journal',   color: '#7B8FA0', desc: 'Kronika życia — Twoja historia',             action: 'placeholder' },
 ];
 
 // ==================== LOCALSTORAGE ====================
@@ -532,11 +534,18 @@ function setPinned(arr) { localStorage.setItem('mana_pinned', JSON.stringify(arr
 function getSloikOrder() {
   try {
     var saved = JSON.parse(localStorage.getItem('mana_sloik_order') || '[]');
-    if (saved.length === SLOIK_SECTIONS.length) return saved;
+    var allIds = SLOIK_SECTIONS.map(function(s) { return s.id; });
+    allIds.forEach(function(id) { if (saved.indexOf(id) === -1) saved.push(id); });
+    if (saved.length >= SLOIK_SECTIONS.length) return saved;
   } catch(e) {}
   return SLOIK_SECTIONS.map(function(s) { return s.id; });
 }
 function setSloikOrder(arr) { localStorage.setItem('mana_sloik_order', JSON.stringify(arr)); }
+
+// ==================== HELPERS NICK ====================
+function getNickDisplay(nick) {
+  return nick.replace(/\d+$/, '');
+}
 
 // ==================== NAWIGACJA ====================
 function showScreen(name) {
@@ -588,7 +597,7 @@ async function loadData() {
   var now = new Date();
   var hour = now.getHours();
   var greet = hour < 12 ? 'Dzień dobry' : hour < 18 ? 'Cześć' : 'Dobry wieczór';
-  document.getElementById('greeting-text').textContent = greet + ', ' + currentNick;
+  document.getElementById('greeting-text').textContent = greet + ', ' + getNickDisplay(currentNick);
   document.getElementById('top-nick-display').textContent = currentNick;
   var days = ['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
   var months = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
