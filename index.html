@@ -460,6 +460,21 @@
         <div class="tile-help-en">MANA Help</div>
       </div>
     </div>
+    <!-- MIKROFON -->
+    <div style="display:flex;justify-content:center;margin-bottom:12px;">
+      <button id="main-mic-btn" onclick="toggleMainMic()" style="display:flex;align-items:center;gap:8px;padding:8px 20px;border-radius:20px;border:1.5px solid var(--border-strong);background:var(--white);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;">
+        <span id="main-mic-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-light);transition:background 0.2s;"></span>
+        <span id="main-mic-label">🎙 Notatka</span>
+      </button>
+    </div>
+    <div id="main-mic-bar" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:12px;flex-direction:column;gap:8px;">
+      <div style="font-size:10px;color:var(--text-light);" id="main-mic-status">Naciśnij mikrofon i mów, lub wpisz ręcznie</div>
+      <textarea id="main-mic-text" rows="2" style="width:100%;padding:8px 12px;border:1.5px solid var(--border-strong);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--sand);color:var(--text);outline:none;resize:none;line-height:1.5;" placeholder="Tekst pojawi się tutaj…"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button onclick="cancelMainMic()" style="padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-light);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">Anuluj</button>
+        <button onclick="saveMainMic()" style="padding:7px 18px;border-radius:8px;border:none;background:var(--brown);color:var(--white);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;">Zapisz</button>
+      </div>
+    </div>
     <div class="tile-sloik-btn" onclick="openSloik()">
       <div class="tile-sloik-left">
         <div class="tile-sloik-name">Słoik</div>
@@ -499,8 +514,12 @@
   </div>
   <!-- POLE DYKTOWANIA — pojawia się gdy aktywny głos -->
   <div id="gaweda-dictate-bar" style="display:none; padding:10px 16px; background:var(--sand-dark); border-bottom:1px solid var(--border); gap:8px; align-items:flex-end; flex-wrap:wrap;">
-    <textarea id="gaweda-dictate-text" style="flex:1;min-width:200px;padding:8px 12px;border:1.5px solid var(--border-strong);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--white);color:var(--text);outline:none;resize:none;min-height:44px;line-height:1.5;" placeholder="Powiedz coś… tekst pojawi się tutaj, potem wyślij do Serca" rows="2"></textarea>
-    <button onclick="clearGawedaDictate()" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-light);font-size:12px;cursor:pointer;white-space:nowrap;">Wyczyść</button>
+    <div style="flex:1;min-width:200px;">
+      <div style="font-size:10px;color:var(--text-light);margin-bottom:4px;">Podyktuj → Kopiuj → wklej do Serca poniżej</div>
+      <textarea id="gaweda-dictate-text" style="width:100%;padding:8px 12px;border:1.5px solid var(--border-strong);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--white);color:var(--text);outline:none;resize:none;min-height:44px;line-height:1.5;" placeholder="Mów — tekst pojawi się tutaj" rows="2"></textarea>
+    </div>
+    <button onclick="copyGawedaDictate()" style="padding:8px 14px;border-radius:8px;border:none;background:var(--brown);color:var(--white);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;">Kopiuj</button>
+    <button onclick="clearGawedaDictate()" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-light);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;white-space:nowrap;">Wyczyść</button>
   </div>
   <iframe id="typebot-frame" class="typebot-frame" src="" allow="microphone"></iframe>
 </div>
@@ -670,6 +689,7 @@ const SLOIK_SECTIONS = [
   { id: 'trzos',     name: 'Trzos',     nameEn: 'Wallet',    color: '#A0845C', desc: 'Finanse, paragony i organizacja czasu',           action: 'placeholder' },
   { id: 'rod',       name: 'Ród',       nameEn: 'Genealogy', color: '#5C4A35', desc: 'Drzewo rodzinne — skąd pochodzisz',               action: 'placeholder' },
   { id: 'pamietnik', name: 'Pamiętnik', nameEn: 'Journal',   color: '#7B8FA0', desc: 'Kronika życia — Twoja historia',                  action: 'placeholder' },
+  { id: 'notatnik',  name: 'Notatnik',  nameEn: 'Notepad',   color: '#B8A898', desc: 'Szybkie notatki do posortowania przez Serce',      action: 'openNotatnik' },
 ];
 
 // ==================== LOCALSTORAGE ====================
@@ -967,6 +987,93 @@ document.getElementById('cisza-textarea').addEventListener('keydown', function(e
   if (e.key === 'Escape') ciszaCancelInput();
 });
 
+// ==================== MIKROFON EKRAN GŁÓWNY ====================
+var mainMicRecognition = null;
+var mainMicRecording = false;
+
+function toggleMainMic() {
+  var bar = document.getElementById('main-mic-bar');
+  if (bar.style.display === 'none') {
+    bar.style.display = 'flex';
+    startMainMicRecording();
+  } else {
+    if (mainMicRecording) stopMainMicRecording();
+    else startMainMicRecording();
+  }
+}
+
+function startMainMicRecording() {
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('main-mic-status').textContent = 'Przeglądarka nie obsługuje głosu — wpisz ręcznie.';
+    return;
+  }
+  mainMicRecognition = new SpeechRecognition();
+  mainMicRecognition.lang = 'pl-PL';
+  mainMicRecognition.continuous = false;
+  mainMicRecognition.interimResults = true;
+  mainMicRecognition.onstart = function() {
+    mainMicRecording = true;
+    document.getElementById('main-mic-dot').style.background = 'var(--red)';
+    document.getElementById('main-mic-label').textContent = '⏹ Stop';
+    document.getElementById('main-mic-status').textContent = '● Słucham…';
+  };
+  mainMicRecognition.onend = function() {
+    mainMicRecording = false;
+    document.getElementById('main-mic-dot').style.background = 'var(--text-light)';
+    document.getElementById('main-mic-label').textContent = '🎙 Nagraj więcej';
+    document.getElementById('main-mic-status').textContent = 'Gotowe — sprawdź i zapisz.';
+  };
+  mainMicRecognition.onerror = function(e) {
+    mainMicRecording = false;
+    document.getElementById('main-mic-dot').style.background = 'var(--text-light)';
+    document.getElementById('main-mic-label').textContent = '🎙 Notatka';
+    document.getElementById('main-mic-status').textContent = 'Błąd: ' + e.error + '. Wpisz ręcznie.';
+  };
+  mainMicRecognition.onresult = function(event) {
+    var finalText = '';
+    for (var i = event.resultIndex; i < event.results.length; i++) {
+      if (event.results[i].isFinal) finalText += event.results[i][0].transcript;
+    }
+    if (finalText) {
+      var ta = document.getElementById('main-mic-text');
+      ta.value = ta.value ? ta.value + ' ' + finalText.trim() : finalText.trim();
+    }
+  };
+  try { mainMicRecognition.start(); } catch(e) { showToast('Błąd mikrofonu'); }
+}
+
+function stopMainMicRecording() {
+  if (mainMicRecognition) mainMicRecognition.stop();
+}
+
+function cancelMainMic() {
+  stopMainMicRecording();
+  document.getElementById('main-mic-bar').style.display = 'none';
+  document.getElementById('main-mic-text').value = '';
+  document.getElementById('main-mic-label').textContent = '🎙 Notatka';
+  document.getElementById('main-mic-dot').style.background = 'var(--text-light)';
+}
+
+async function saveMainMic() {
+  var tresc = document.getElementById('main-mic-text').value.trim();
+  if (!tresc) { showToast('Brak tekstu'); return; }
+  if (!currentNick) { showToast('Nie jesteś zalogowany'); return; }
+  stopMainMicRecording();
+  try {
+    var r = await fetch(SUPABASE_URL + '/rest/v1/stones', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ traveler_id: currentNick, tresc: tresc, typ: 'notatka', status: 'aktywny', due_date: null })
+    });
+    if (!r.ok) { var err = await r.text(); showToast('Błąd: ' + err.substring(0,60)); return; }
+    showToast('Zapisano do Notatnika ✓');
+    cancelMainMic();
+  } catch(e) { showToast('Błąd połączenia'); }
+}
+
+function openNotatnik() { openPlaceholder('Notatnik', 'Notepad', 'sloik'); }
+
 // ==================== GŁOS GAWĘDA (dyktowanie do Serca) ====================
 var gawedaRecognition = null;
 var gawedaRecording = false;
@@ -1024,6 +1131,17 @@ function stopGawedaRecording() {
 
 function clearGawedaDictate() {
   document.getElementById('gaweda-dictate-text').value = '';
+}
+
+function copyGawedaDictate() {
+  var ta = document.getElementById('gaweda-dictate-text');
+  if (!ta.value.trim()) { showToast('Brak tekstu do skopiowania'); return; }
+  navigator.clipboard.writeText(ta.value.trim()).then(function() {
+    showToast('Skopiowano — wklej do Serca poniżej');
+  }).catch(function() {
+    ta.select(); document.execCommand('copy');
+    showToast('Skopiowano — wklej do Serca poniżej');
+  });
 }
 
 // ==================== GŁOS ====================
