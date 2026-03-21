@@ -321,9 +321,13 @@
 
   /* Pasek filtrów */
   .cisza-filter-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .cisza-mies-chips { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
-  .cisza-mies-chip { font-size: 10px; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-light); cursor: pointer; background: var(--white); white-space: nowrap; transition: all 0.15s; }
-  .cisza-mies-chip.active { background: var(--sand-dark); border-color: var(--border-strong); color: var(--text); font-weight: 500; }
+  .cisza-mies-wrap { display: flex; align-items: center; gap: 5px; background: var(--white); border: 1px solid var(--border-strong); border-radius: 8px; padding: 4px 10px; }
+  .cisza-mies-input { width: 28px; border: none; background: transparent; font-size: 12px; font-weight: 500; color: var(--text); outline: none; text-align: center; font-family: 'DM Sans', sans-serif; -moz-appearance: textfield; }
+  .cisza-mies-input::-webkit-outer-spin-button, .cisza-mies-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .cisza-mies-label { font-size: 11px; color: var(--text-mid); font-weight: 500; }
+  .cisza-mies-all { font-size: 11px; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-light); cursor: pointer; background: var(--white); transition: all 0.15s; white-space: nowrap; }
+  .cisza-mies-all:hover { border-color: var(--border-strong); color: var(--text); }
+  .cisza-mies-all.active { background: var(--sand-dark); border-color: var(--border-strong); color: var(--text); font-weight: 500; }
   .cisza-search-wrap { display: flex; align-items: center; gap: 4px; }
   .cisza-search-input { width: 0; overflow: hidden; padding: 0; border: none; font-family: 'DM Sans', sans-serif; font-size: 12px; background: var(--sand); border-radius: 6px; outline: none; color: var(--text); transition: all 0.25s; }
   .cisza-search-input.open { width: 140px; padding: 4px 10px; border: 1px solid var(--border-strong); }
@@ -501,6 +505,9 @@
   <div class="sub-bar">
     <div class="back-btn" id="placeholder-back-btn" onclick="showMain()">← MANA</div>
     <div class="sub-title" id="placeholder-title">—</div>
+    <div class="sub-bar-right">
+      <button class="voice-btn" onclick="openVoiceOverlay()"><span class="voice-dot"></span> Głos</button>
+    </div>
   </div>
   <div class="placeholder-body">
     <div class="placeholder-icon" id="placeholder-icon">—</div>
@@ -513,6 +520,9 @@
   <div class="sub-bar">
     <div class="back-btn" onclick="openSloik()">← Słoik</div>
     <div class="sub-title">Horyzont</div>
+    <div class="sub-bar-right">
+      <button class="voice-btn" onclick="openVoiceOverlay()"><span class="voice-dot"></span> Głos</button>
+    </div>
   </div>
   <div class="horyzont-body">
     <div class="h-left">
@@ -565,7 +575,7 @@
 <div id="screen-cisza" style="display:none;flex-direction:column">
   <div class="sub-bar">
     <div class="back-btn" onclick="openSloik()">← Słoik</div>
-    <div class="sub-title">Cisza · Silence</div>
+    <div class="sub-title" id="cisza-title" onclick="ciszaResetFilter()" style="cursor:default">Cisza · Silence</div>
     <div class="sub-bar-right">
       <button class="voice-btn" onclick="openVoiceOverlay()">
         <span class="voice-dot"></span> Głos
@@ -599,7 +609,11 @@
 
     <!-- PASEK FILTRÓW -->
     <div class="cisza-filter-bar" id="cisza-filter-bar">
-      <div class="cisza-mies-chips" id="cisza-mies-chips"></div>
+      <div class="cisza-mies-wrap">
+        <input type="number" id="cisza-mies-input" class="cisza-mies-input" min="1" max="12" value="1" oninput="ciszaChangeMies(this.value)">
+        <span class="cisza-mies-label">mies.</span>
+      </div>
+      <div class="cisza-mies-all" id="cisza-mies-all" onclick="ciszaSetAll()">Wszystkie</div>
       <div class="cisza-search-wrap" id="cisza-search-wrap" style="display:none">
         <input class="cisza-search-input" id="cisza-search-input" type="text" placeholder="szukaj…" oninput="ciszaSearch(this.value)">
         <button class="cisza-search-btn" onclick="ciszaToggleSearch()">🔍</button>
@@ -776,17 +790,24 @@ function updateCiszaCounts() {
 }
 
 function buildCiszaMiesChips() {
-  var wrap = document.getElementById('cisza-mies-chips');
-  wrap.innerHTML = '';
-  var labels = ['1 mies.','2 mies.','3 mies.','6 mies.','12 mies.','Wszystkie'];
-  var values = [1, 2, 3, 6, 12, 0];
-  labels.forEach(function(label, i) {
-    var chip = document.createElement('div');
-    chip.className = 'cisza-mies-chip' + (values[i] === ciszaMonths ? ' active' : '');
-    chip.textContent = label;
-    chip.onclick = (function(v) { return function() { ciszaMonths = v; buildCiszaMiesChips(); renderCiszaList(); }; })(values[i]);
-    wrap.appendChild(chip);
-  });
+  // Replaced by input — nothing to build
+  var inp = document.getElementById('cisza-mies-input');
+  if (inp && ciszaMonths > 0) inp.value = ciszaMonths;
+  var allBtn = document.getElementById('cisza-mies-all');
+  if (allBtn) allBtn.classList.toggle('active', ciszaMonths === 0);
+}
+function ciszaChangeMies(val) {
+  var v = parseInt(val);
+  if (v >= 1 && v <= 12) {
+    ciszaMonths = v;
+    document.getElementById('cisza-mies-all').classList.remove('active');
+    renderCiszaList();
+  }
+}
+function ciszaSetAll() {
+  ciszaMonths = 0;
+  document.getElementById('cisza-mies-all').classList.add('active');
+  renderCiszaList();
 }
 
 function renderCiszaList() {
@@ -854,6 +875,7 @@ function ciszaToggleType(typ) {
     ta.placeholder = placeholders[typ];
     ta.focus();
   }
+  updateCiszaTitle();
   renderCiszaList();
 }
 
@@ -861,6 +883,7 @@ function ciszaCancelInput() {
   ciszaActiveType = null;
   ['sen','mysl','czucie'].forEach(function(t) { document.getElementById('ctype-' + t).classList.remove('filter-active'); });
   ciszaResetInput();
+  updateCiszaTitle();
   renderCiszaList();
 }
 
@@ -893,7 +916,29 @@ async function deleteCiszaEntry(id) {
   } catch(e) { console.error(e); }
 }
 
-function ciszaToggleSearch() {
+function ciszaResetFilter() {
+  if (!ciszaActiveType) return;
+  ciszaActiveType = null;
+  ['sen','mysl','czucie'].forEach(function(t) { document.getElementById('ctype-' + t).classList.remove('filter-active'); });
+  ciszaResetInput();
+  updateCiszaTitle();
+  renderCiszaList();
+}
+
+function updateCiszaTitle() {
+  var el = document.getElementById('cisza-title');
+  if (!el) return;
+  if (ciszaActiveType) {
+    var labels = { 'sen': 'Sen', 'mysl': 'Myśl', 'czucie': 'Czucie' };
+    el.textContent = '← Cisza · ' + labels[ciszaActiveType];
+    el.style.cursor = 'pointer';
+    el.style.color = 'var(--brown)';
+  } else {
+    el.textContent = 'Cisza · Silence';
+    el.style.cursor = 'default';
+    el.style.color = '';
+  }
+}
   ciszaShowSearch = !ciszaShowSearch;
   var wrap = document.getElementById('cisza-search-wrap');
   var toggle = document.getElementById('cisza-search-toggle');
@@ -917,14 +962,20 @@ document.getElementById('cisza-textarea').addEventListener('keydown', function(e
 // ==================== GŁOS ====================
 function initSpeechRecognition() {
   var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) { document.getElementById('voice-no-support').style.display = 'block'; return false; }
+  if (!SpeechRecognition) {
+    document.getElementById('voice-no-support').style.display = 'block';
+    return false;
+  }
+  // Zawsze tworzymy nową instancję — wymagane na mobile
   recognition = new SpeechRecognition();
   recognition.lang = 'pl-PL';
-  recognition.continuous = true;
+  recognition.continuous = false;      // false = działa na iOS i Android
   recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+
   recognition.onstart = function() {
     isRecording = true;
-    document.getElementById('voice-status').textContent = '● Nagrywam…';
+    document.getElementById('voice-status').textContent = '● Słucham…';
     document.getElementById('voice-status').classList.add('active');
     document.getElementById('voice-mic-big').classList.add('recording');
   };
@@ -936,26 +987,28 @@ function initSpeechRecognition() {
   };
   recognition.onerror = function(e) {
     isRecording = false;
-    document.getElementById('voice-status').textContent = 'Błąd: ' + e.error + '. Spróbuj ponownie.';
+    var msg = { 'no-speech': 'Nie wykryto mowy — spróbuj ponownie.', 'not-allowed': 'Brak dostępu do mikrofonu.', 'network': 'Błąd sieci.' };
+    document.getElementById('voice-status').textContent = msg[e.error] || ('Błąd: ' + e.error);
     document.getElementById('voice-status').classList.remove('active');
     document.getElementById('voice-mic-big').classList.remove('recording');
   };
   recognition.onresult = function(event) {
-    var final = '';
-    var interim = '';
+    var ta = document.getElementById('voice-transcript');
+    var finalText = '';
+    var interimText = '';
     for (var i = event.resultIndex; i < event.results.length; i++) {
       var t = event.results[i][0].transcript;
-      if (event.results[i].isFinal) final += t;
-      else interim += t;
+      if (event.results[i].isFinal) finalText += t;
+      else interimText += t;
     }
-    var ta = document.getElementById('voice-transcript');
-    var current = ta.value;
-    // Dopisujemy finalny tekst, interim pokazujemy jako podgląd w statusie
-    if (final) {
-      ta.value = (current + ' ' + final).trim();
+    if (finalText) {
+      var current = ta.value;
+      ta.value = current ? current + ' ' + finalText.trim() : finalText.trim();
+      document.getElementById('voice-status').textContent = 'Nagrano. Naciśnij mikrofon aby kontynuować.';
+      document.getElementById('voice-status').classList.remove('active');
     }
-    if (interim) {
-      document.getElementById('voice-status').textContent = '● ' + interim;
+    if (interimText) {
+      document.getElementById('voice-status').textContent = '● ' + interimText;
     }
   };
   return true;
@@ -978,9 +1031,14 @@ function closeVoiceOverlay() {
 }
 
 function toggleVoiceRecording() {
-  if (!recognition && !initSpeechRecognition()) return;
-  if (isRecording) { recognition.stop(); }
-  else { recognition.start(); }
+  if (isRecording) {
+    if (recognition) recognition.stop();
+    return;
+  }
+  // Zawsze nowa instancja — wymagane na mobile Chrome
+  recognition = null;
+  if (!initSpeechRecognition()) return;
+  try { recognition.start(); } catch(e) { console.error(e); }
 }
 
 function vSetType(typ) {
@@ -992,19 +1050,29 @@ function vSetType(typ) {
 async function voiceSave() {
   var tresc = document.getElementById('voice-transcript').value.trim();
   if (!tresc) { showToast('Brak tekstu do zapisania'); return; }
+  if (!currentNick) { showToast('Nie jesteś zalogowany'); return; }
   if (isRecording && recognition) recognition.stop();
+  var payload = { traveler_id: currentNick, tresc: tresc, typ: voiceType, status: 'aktywny', due_date: null };
+  // Próbuj z sekcja — jeśli kolumna nie istnieje, spróbuj bez niej
   try {
-    await fetch(SUPABASE_URL + '/rest/v1/stones', {
+    var r = await fetch(SUPABASE_URL + '/rest/v1/stones', {
       method: 'POST',
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ traveler_id: currentNick, tresc: tresc, typ: voiceType, sekcja: 'cisza', status: 'aktywny', due_date: null })
+      body: JSON.stringify(Object.assign({}, payload, { sekcja: 'cisza' }))
     });
+    if (!r.ok) {
+      // Fallback bez sekcja
+      var r2 = await fetch(SUPABASE_URL + '/rest/v1/stones', {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify(payload)
+      });
+      if (!r2.ok) { var err = await r2.text(); showToast('Błąd: ' + err.substring(0,60)); return; }
+    }
     showToast('Zapisano do Ciszy ✓');
     closeVoiceOverlay();
-    // Odśwież Ciszę jeśli jesteśmy na tym ekranie
     if (document.getElementById('screen-cisza').style.display !== 'none') await loadCiszaData();
-    else { ciszaData = []; } // zresetuj cache
-  } catch(e) { console.error(e); showToast('Błąd zapisu'); }
+  } catch(e) { console.error(e); showToast('Błąd zapisu — sprawdź połączenie'); }
 }
 
 // ==================== PINNED ====================
