@@ -538,8 +538,8 @@
   <div class="horyzont-body">
     <div class="h-left">
       <div class="h-tabs">
-        <div class="h-tab active" id="htab-kal" onclick="hSetTab('kal')">Kalendarz</div>
-        <div class="h-tab" id="htab-zad" onclick="hSetTab('zad')">Zadania</div>
+        <div class="h-tab" id="htab-kal" onclick="hSetTab('kal')">Kalendarz</div>
+        <div class="h-tab active" id="htab-zad" onclick="hSetTab('zad')">Zadania</div>
       </div>
       <div class="mini-cal">
         <div class="mini-cal-nav">
@@ -561,12 +561,12 @@
     </div>
     <div class="h-right">
       <div class="h-right-bar">
-        <div class="view-chips" id="view-chips-kal">
+        <div class="view-chips" id="view-chips-kal" style="display:none">
           <div class="view-chip active" id="vchip-miesiac" onclick="hSetView('miesiac')">Miesiąc</div>
           <div class="view-chip" id="vchip-tydzien" onclick="hSetView('tydzien')">Tydzień</div>
           <div class="view-chip" id="vchip-dzien" onclick="hSetView('dzien')">Dzień</div>
         </div>
-        <div class="task-tabs" id="view-chips-zad" style="display:none">
+        <div class="task-tabs" id="view-chips-zad">
           <div class="task-tab active" id="ztab-aktywne" onclick="zSetTab('aktywne')">Aktywne</div>
           <div class="task-tab" id="ztab-historia" onclick="zSetTab('historia')">Historia</div>
         </div>
@@ -654,7 +654,7 @@ let ciszaData = [];
 let notatnikData = [];
 let calYear = new Date().getFullYear();
 let calMonth = new Date().getMonth();
-let currentTab = 'kal';
+let currentTab = 'zad';
 let currentView = 'miesiac';
 let currentFilter = 'mies';
 let zadTab = 'aktywne';
@@ -1233,7 +1233,19 @@ function calNavMonth(dir) { calMonth += dir; if (calMonth > 11) { calMonth = 0; 
 function calClickDay(day) { var dateStr = calYear + '-' + String(calMonth + 1).padStart(2,'0') + '-' + String(day).padStart(2,'0'); openAddStone(dateStr); }
 
 // ==================== HORYZONT ====================
-function hSetTab(tab) { currentTab = tab; document.getElementById('htab-kal').classList.toggle('active', tab === 'kal'); document.getElementById('htab-zad').classList.toggle('active', tab === 'zad'); document.getElementById('h-filter-row').style.display = tab === 'kal' ? 'flex' : 'none'; document.getElementById('view-chips-kal').style.display = tab === 'kal' ? 'flex' : 'none'; document.getElementById('view-chips-zad').style.display = tab === 'zad' ? 'flex' : 'none'; document.getElementById('add-btn-kal').style.display = tab === 'kal' ? '' : 'none'; document.getElementById('add-btn-zad').style.display = tab === 'zad' ? '' : 'none'; renderAll(); }
+function hSetTab(tab) {
+  currentTab = tab;
+  document.getElementById('htab-kal').classList.toggle('active', tab === 'kal');
+  document.getElementById('htab-zad').classList.toggle('active', tab === 'zad');
+  // Lewa strona — filtr kalendarza zawsze widoczny
+  document.getElementById('h-filter-row').style.display = 'flex';
+  // Prawa strona — przełącz kontrolki
+  document.getElementById('view-chips-kal').style.display = tab === 'kal' ? 'flex' : 'none';
+  document.getElementById('view-chips-zad').style.display = tab === 'zad' ? 'flex' : 'none';
+  document.getElementById('add-btn-kal').style.display = tab === 'kal' ? '' : 'none';
+  document.getElementById('add-btn-zad').style.display = tab === 'zad' ? '' : 'none';
+  renderAll();
+}
 function hSetView(view) { currentView = view; ['miesiac','tydzien','dzien'].forEach(function(v) { document.getElementById('vchip-' + v).classList.toggle('active', v === view); }); renderRight(); }
 function hSetFilter(f) { currentFilter = f; ['mies','wszystkie','hist'].forEach(function(x) { var el = document.getElementById('fchip-' + x); if (el) el.classList.remove('active'); }); document.getElementById('fchip-' + f).classList.add('active'); renderAll(); }
 function zSetTab(tab) { zadTab = tab; document.getElementById('ztab-aktywne').classList.toggle('active', tab === 'aktywne'); document.getElementById('ztab-historia').classList.toggle('active', tab === 'historia'); renderRight(); }
