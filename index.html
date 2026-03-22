@@ -438,11 +438,15 @@
         <div class="tile-help-en">MANA Help</div>
       </div>
     </div>
-    <!-- MIKROFON -->
-    <div style="display:flex;justify-content:center;margin-bottom:12px;">
-      <button id="main-mic-btn" onclick="toggleMainMic()" style="display:flex;align-items:center;gap:8px;padding:8px 20px;border-radius:20px;border:1.5px solid var(--border-strong);background:var(--white);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;">
+    <!-- MIKROFON + NOTATNIK -->
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:12px;">
+      <button id="main-mic-btn" onclick="toggleMainMic()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;border:1.5px solid var(--border-strong);background:var(--white);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;">
         <span id="main-mic-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-light);transition:background 0.2s;"></span>
-        <span id="main-mic-label">🎙 Notatka</span>
+        <span id="main-mic-label">🎙 Mikrofon</span>
+      </button>
+      <button onclick="openNotatnik()" id="main-notatnik-btn" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;border:1.5px solid var(--border-strong);background:var(--white);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;">
+        <span id="notatnik-count-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-light);transition:background 0.2s;"></span>
+        <span>📓 Notatnik</span>
       </button>
     </div>
     <div id="main-mic-bar" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:12px;flex-direction:column;gap:8px;">
@@ -764,6 +768,9 @@ function updateStats() {
   if (tasks.length) parts.push(tasks.length + ' zadań');
   if (notatki.length) parts.push(notatki.length + ' notatek');
   document.getElementById('sloik-stats').textContent = parts.join(' · ');
+  // Kropka przy Notatniku — świeci gdy są nieprzejrzane
+  var dot = document.getElementById('notatnik-count-dot');
+  if (dot) dot.style.background = notatki.length ? 'var(--brown)' : 'var(--text-light)';
 }
 async function reloadStones() {
   try {
@@ -958,7 +965,7 @@ function startMainMicRecording() {
   mainMicRecognition.lang = 'pl-PL'; mainMicRecognition.continuous = false; mainMicRecognition.interimResults = true;
   mainMicRecognition.onstart = function() { mainMicRecording = true; document.getElementById('main-mic-dot').style.background = 'var(--red)'; document.getElementById('main-mic-label').textContent = '⏹ Stop'; document.getElementById('main-mic-status').textContent = '● Słucham…'; };
   mainMicRecognition.onend = function() { mainMicRecording = false; document.getElementById('main-mic-dot').style.background = 'var(--text-light)'; document.getElementById('main-mic-label').textContent = '🎙 Nagraj więcej'; document.getElementById('main-mic-status').textContent = 'Gotowe — sprawdź i zapisz.'; };
-  mainMicRecognition.onerror = function(e) { mainMicRecording = false; document.getElementById('main-mic-dot').style.background = 'var(--text-light)'; document.getElementById('main-mic-label').textContent = '🎙 Notatka'; document.getElementById('main-mic-status').textContent = 'Błąd: ' + e.error + '. Wpisz ręcznie.'; };
+  mainMicRecognition.onerror = function(e) { mainMicRecording = false; document.getElementById('main-mic-dot').style.background = 'var(--text-light)'; document.getElementById('main-mic-label').textContent = '🎙 Mikrofon'; document.getElementById('main-mic-status').textContent = 'Błąd: ' + e.error + '. Wpisz ręcznie.'; };
   mainMicRecognition.onresult = function(event) {
     var finalText = '';
     for (var i = event.resultIndex; i < event.results.length; i++) { if (event.results[i].isFinal) finalText += event.results[i][0].transcript; }
@@ -967,7 +974,7 @@ function startMainMicRecording() {
   try { mainMicRecognition.start(); } catch(e) { showToast('Błąd mikrofonu'); }
 }
 function stopMainMicRecording() { if (mainMicRecognition) mainMicRecognition.stop(); }
-function cancelMainMic() { stopMainMicRecording(); document.getElementById('main-mic-bar').style.display = 'none'; document.getElementById('main-mic-text').value = ''; document.getElementById('main-mic-label').textContent = '🎙 Notatka'; document.getElementById('main-mic-dot').style.background = 'var(--text-light)'; }
+function cancelMainMic() { stopMainMicRecording(); document.getElementById('main-mic-bar').style.display = 'none'; document.getElementById('main-mic-text').value = ''; document.getElementById('main-mic-label').textContent = '🎙 Mikrofon'; document.getElementById('main-mic-dot').style.background = 'var(--text-light)'; }
 
 async function saveMainMic() {
   var tresc = document.getElementById('main-mic-text').value.trim();
