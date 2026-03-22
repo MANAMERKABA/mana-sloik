@@ -1343,12 +1343,35 @@ function openAddStone(prefillDate) { editingStoneId = null; window._saveStoneFro
 function editStone(id) { var s = stonesData.find(function(x) { return x.id === id; }); if (!s) return; editingStoneId = id; document.getElementById('modal-stone-title').textContent = 'Edytuj wpis'; document.getElementById('modal-stone-tresc').value = s.tresc; document.getElementById('modal-stone-typ').value = s.typ || 'zadanie'; if (s.due_date) { var d = new Date(s.due_date); document.getElementById('modal-stone-date').value = d.toISOString().split('T')[0]; document.getElementById('modal-stone-time').value = (d.getHours() || d.getMinutes()) ? String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') : ''; } document.getElementById('modal-stone').classList.add('open'); }
 async function saveStone() {
   var tresc = document.getElementById('modal-stone-tresc').value.trim(); if (!tresc) return;
-  var typ = document.getElementById('modal-stone-typ').value; var dateVal = document.getElementById('modal-stone-date').value; var timeVal = document.getElementById('modal-stone-time').value;
+  var typ = document.getElementById('modal-stone-typ').value;
+  var dateVal = document.getElementById('modal-stone-date').value;
+  var timeVal = document.getElementById('modal-stone-time').value;
   var due_date = dateVal ? (timeVal ? dateVal + 'T' + timeVal + ':00' : dateVal + 'T09:00:00') : null;
+
+  // Gdy otwierany z Notatnika — użyj wybranej sekcji
+  if (window._saveStoneFromNotatnik) {
+    var sekcja = document.getElementById('modal-stone-sekcja').value;
+    // Cisza: due_date = null, typ zgodny z wyborem
+    // Horyzont: due_date musi być ustawiona
+    if (sekcja === 'cisza') {
+      due_date = null;
+      if (typ !== 'sen' && typ !== 'odczucie') typ = 'mysl';
+    } else {
+      // horyzont — jeśli brak daty ustaw dziś
+      if (!due_date) due_date = todayStr() + 'T09:00:00';
+      if (typ === 'sen' || typ === 'odczucie') typ = 'zadanie';
+    }
+  }
+
   var payload = { traveler_id: currentNick, tresc: tresc, typ: typ, status: 'aktywny', due_date: due_date };
   try {
-    if (editingStoneId) { await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + editingStoneId, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ tresc: tresc, typ: typ, due_date: due_date }) }); showToast('Zaktualizowano'); }
-    else { await fetch(SUPABASE_URL + '/rest/v1/stones', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify(payload) }); showToast('Dodano'); }
+    if (editingStoneId) {
+      await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + editingStoneId, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ tresc: tresc, typ: typ, due_date: due_date }) });
+      showToast('Zaktualizowano');
+    } else {
+      await fetch(SUPABASE_URL + '/rest/v1/stones', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify(payload) });
+      showToast('Dodano');
+    }
     closeModal('modal-stone');
     // Jeśli zmiana notatki — zapisz trening i zaktualizuj status
     if (window._saveStoneFromNotatnik) {
@@ -1356,6 +1379,7 @@ async function saveStone() {
       window._saveStoneFromNotatnik = null;
       var origItem = notatnikData.find(function(s) { return s.id === origId; });
       if (origItem) {
+        var sekcjaWybrana = document.getElementById('modal-stone-sekcja') ? document.getElementById('modal-stone-sekcja').value : 'horyzont';
         await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + origId, {
           method: 'PATCH',
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
@@ -1364,7 +1388,7 @@ async function saveStone() {
         await fetch(SUPABASE_URL + '/rest/v1/notatnik_trening', {
           method: 'POST',
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-          body: JSON.stringify({ traveler_id: currentNick, kamien_id: origId, sugestia_sekcja: origItem.sugestia_sekcja, sugestia_due_date: origItem.sugestia_due_date, decyzja: 'zmiana', zmiana_sekcja: typ, zmiana_due_date: due_date })
+          body: JSON.stringify({ traveler_id: currentNick, kamien_id: origId, sugestia_sekcja: origItem.sugestia_sekcja, sugestia_due_date: origItem.sugestia_due_date, decyzja: 'zmiana', zmiana_sekcja: sekcjaWybrana, zmiana_due_date: due_date })
         });
         await loadNotatnikData();
       }
