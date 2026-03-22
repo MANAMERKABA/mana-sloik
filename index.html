@@ -350,6 +350,12 @@
   <div class="modal">
     <div class="modal-title" id="modal-stone-title">Nowy wpis</div>
     <div class="modal-field"><div class="modal-label">Treść</div><input class="modal-input" id="modal-stone-tresc" type="text" placeholder="np. wizyta u lekarza"></div>
+    <div class="modal-field" id="modal-sekcja-row" style="display:none"><div class="modal-label">Sekcja</div>
+      <select class="modal-select" id="modal-stone-sekcja">
+        <option value="horyzont">📅 Horyzont (kalendarz / zadania)</option>
+        <option value="cisza">🌙 Cisza (sen / myśl / czucie)</option>
+      </select>
+    </div>
     <div class="modal-field"><div class="modal-label">Typ</div>
       <select class="modal-select" id="modal-stone-typ">
         <option value="zadanie">Zadanie</option>
@@ -899,14 +905,17 @@ function zmienNotatke(id) {
   zmienNotatkeId = id;
   var item = notatnikData.find(function(s) { return s.id === id; });
   if (!item) return;
-  // Otwórz modal stone z wypełnioną treścią
   editingStoneId = null;
   document.getElementById('modal-stone-title').textContent = 'Zmień gdzie trafi';
   document.getElementById('modal-stone-tresc').value = item.tresc;
+  // Pokaż wybór sekcji
+  document.getElementById('modal-sekcja-row').style.display = '';
+  document.getElementById('modal-stone-sekcja').value = item.sugestia_sekcja === 'cisza' ? 'cisza' : 'horyzont';
+  // Ustaw typ
   document.getElementById('modal-stone-typ').value = item.sugestia_sekcja === 'cisza' ? 'sen' : 'zadanie';
+  // Ustaw datę jeśli jest
   document.getElementById('modal-stone-date').value = item.sugestia_due_date ? new Date(item.sugestia_due_date).toISOString().split('T')[0] : todayStr();
   document.getElementById('modal-stone-time').value = item.sugestia_due_date ? String(new Date(item.sugestia_due_date).getHours()).padStart(2,'0') + ':' + String(new Date(item.sugestia_due_date).getMinutes()).padStart(2,'0') : '';
-  // Nadpisz akcję Zapisz żeby zapisał trening
   window._saveStoneFromNotatnik = id;
   document.getElementById('modal-stone').classList.add('open');
   document.getElementById('modal-stone-tresc').focus();
@@ -1330,7 +1339,7 @@ function setupDrag() {
 // ==================== AKCJE HORYZONT ====================
 async function markDone(id) { try { await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ status: 'wykonany' }) }); showToast('Wykonane ✓'); await reloadStones(); } catch(e) { console.error(e); } }
 async function deleteStone(id) { if (!confirm('Usunąć?')) return; try { await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }); showToast('Usunięto'); await reloadStones(); } catch(e) { console.error(e); } }
-function openAddStone(prefillDate) { editingStoneId = null; document.getElementById('modal-stone-title').textContent = 'Nowy wpis w kalendarzu'; document.getElementById('modal-stone-tresc').value = ''; document.getElementById('modal-stone-typ').value = 'zadanie'; document.getElementById('modal-stone-date').value = prefillDate || todayStr(); document.getElementById('modal-stone-time').value = ''; document.getElementById('modal-stone').classList.add('open'); document.getElementById('modal-stone-tresc').focus(); }
+function openAddStone(prefillDate) { editingStoneId = null; window._saveStoneFromNotatnik = null; document.getElementById('modal-sekcja-row').style.display = 'none'; document.getElementById('modal-stone-title').textContent = 'Nowy wpis w kalendarzu'; document.getElementById('modal-stone-tresc').value = ''; document.getElementById('modal-stone-typ').value = 'zadanie'; document.getElementById('modal-stone-date').value = prefillDate || todayStr(); document.getElementById('modal-stone-time').value = ''; document.getElementById('modal-stone').classList.add('open'); document.getElementById('modal-stone-tresc').focus(); }
 function editStone(id) { var s = stonesData.find(function(x) { return x.id === id; }); if (!s) return; editingStoneId = id; document.getElementById('modal-stone-title').textContent = 'Edytuj wpis'; document.getElementById('modal-stone-tresc').value = s.tresc; document.getElementById('modal-stone-typ').value = s.typ || 'zadanie'; if (s.due_date) { var d = new Date(s.due_date); document.getElementById('modal-stone-date').value = d.toISOString().split('T')[0]; document.getElementById('modal-stone-time').value = (d.getHours() || d.getMinutes()) ? String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') : ''; } document.getElementById('modal-stone').classList.add('open'); }
 async function saveStone() {
   var tresc = document.getElementById('modal-stone-tresc').value.trim(); if (!tresc) return;
