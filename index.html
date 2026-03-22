@@ -914,7 +914,7 @@ function zmienNotatke(id) {
   // Ustaw typ
   document.getElementById('modal-stone-typ').value = item.sugestia_sekcja === 'cisza' ? 'sen' : 'zadanie';
   // Ustaw datę jeśli jest
-  document.getElementById('modal-stone-date').value = item.sugestia_due_date ? new Date(item.sugestia_due_date).toISOString().split('T')[0] : todayStr();
+  document.getElementById('modal-stone-date').value = item.sugestia_due_date ? new Date(item.sugestia_due_date).toISOString().split('T')[0] : '';
   document.getElementById('modal-stone-time').value = item.sugestia_due_date ? String(new Date(item.sugestia_due_date).getHours()).padStart(2,'0') + ':' + String(new Date(item.sugestia_due_date).getMinutes()).padStart(2,'0') : '';
   window._saveStoneFromNotatnik = id;
   document.getElementById('modal-stone').classList.add('open');
@@ -1357,9 +1357,10 @@ async function saveStone() {
       due_date = null;
       if (typ !== 'sen' && typ !== 'odczucie') typ = 'mysl';
     } else {
-      // horyzont — jeśli brak daty ustaw dziś
-      if (!due_date) due_date = todayStr() + 'T09:00:00';
+      // horyzont — jeśli typ=zadanie i brak daty → Zadania (bez due_date)
+      // jeśli jest data → Kalendarz
       if (typ === 'sen' || typ === 'odczucie') typ = 'zadanie';
+      // due_date zostawiamy takie jakie jest (null = Zadania, wartość = Kalendarz)
     }
   }
 
