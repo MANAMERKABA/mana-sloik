@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MANA · Panel Terapeuty</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+<style>
+  :root {
+    --sand: #F5F0E8; --sand-dark: #EDE7D8;
+    --brown: #8B7355; --brown-light: #A0845C; --brown-deep: #5C4A35;
+    --text: #2C2418; --text-mid: #6B5C45; --text-light: #9B8C78;
+    --border: rgba(139,115,85,0.2); --border-strong: rgba(139,115,85,0.4);
+    --white: #FFFDF8; --red: #C0392B; --green: #6B8F71; --blue: #7B8FA0; --purple: #9B7EBD;
+    --terapia: #9B7EBD;
+    --fc-border-color: rgba(139,115,85,0.15);
+    --fc-today-bg-color: rgba(139,115,85,0.06);
+    --fc-event-bg-color: #8B7355;
+    --fc-event-border-color: #5C4A35;
+    --fc-page-bg-color: var(--sand);
+    --fc-neutral-bg-color: var(--white);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--sand); color: var(--text); min-height: 100vh; font-size: 14px; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--brown-deep); color: var(--white); padding: 10px 20px; border-radius: 20px; font-size: 12px; opacity: 0; transition: all 0.3s; z-index: 9999; white-space: nowrap; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(44,36,24,0.4); display: none; align-items: center; justify-content: center; z-index: 1000; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--white); border-radius: 16px; padding: 28px; width: 360px; box-shadow: 0 8px 40px rgba(44,36,24,0.15); }
+  .modal-title { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 300; color: var(--brown); margin-bottom: 16px; }
+  .modal-field { margin-bottom: 12px; }
+  .modal-label { font-size: 11px; color: var(--text-mid); margin-bottom: 4px; }
+  .modal-input { width: 100%; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; }
+  .modal-input:focus { border-color: var(--brown); }
+  .modal-textarea { width: 100%; min-height: 80px; resize: none; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; line-height: 1.6; }
+  .modal-textarea:focus { border-color: var(--brown); }
+  .modal-select { width: 100%; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; cursor: pointer; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .modal-btn { flex: 1; padding: 9px; border-radius: 8px; border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .modal-btn.primary { background: var(--brown); color: var(--white); }
+  .modal-btn.primary:hover { background: var(--brown-deep); }
+  .modal-btn.secondary { background: var(--sand-dark); color: var(--text-mid); }
+
+  /* LOGIN */
+  #screen-login { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  .login-card { background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 48px 40px; width: 340px; text-align: center; }
+  .mana-logo { font-family: 'Crimson Pro', serif; font-size: 42px; font-weight: 300; color: var(--brown); letter-spacing: 0.08em; margin-bottom: 4px; }
+  .mana-sub { font-size: 11px; color: var(--text-light); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+  .mana-role { font-size: 12px; color: var(--terapia); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 32px; font-weight: 500; }
+  .login-label { font-size: 12px; color: var(--text-mid); margin-bottom: 8px; text-align: left; }
+  .login-input { width: 100%; padding: 12px 16px; border: 1px solid var(--border-strong); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--sand); color: var(--text); outline: none; transition: border-color 0.2s; margin-bottom: 16px; }
+  .login-input:focus { border-color: var(--brown); }
+  .login-btn { width: 100%; padding: 12px; background: var(--brown); color: var(--white); border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+  .login-btn:hover { background: var(--brown-deep); }
+  .login-note { font-size: 11px; color: var(--text-light); margin-top: 16px; font-style: italic; }
+
+  /* TOP BAR */
+  .top-bar { padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--white); flex-shrink: 0; }
+  .top-logo { font-family: 'Crimson Pro', serif; font-size: 22px; font-weight: 300; color: var(--brown); letter-spacing: 0.06em; }
+  .top-role { font-size: 10px; color: var(--terapia); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; margin-left: 8px; }
+  .top-right { display: flex; align-items: center; gap: 10px; }
+  .top-nick { font-size: 12px; color: var(--text-light); }
+  .top-logout { font-size: 11px; color: var(--text-light); cursor: pointer; padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px; transition: all 0.15s; }
+  .top-logout:hover { color: var(--text); border-color: var(--border-strong); }
+
+  /* MAIN LAYOUT */
+  #screen-main { display: none; min-height: 100vh; flex-direction: column; }
+  .main-body { flex: 1; display: flex; overflow: hidden; height: calc(100vh - 53px); }
+
+  /* LEWY PANEL */
+  .left-panel { width: 260px; flex-shrink: 0; border-right: 1px solid var(--border); background: var(--white); display: flex; flex-direction: column; overflow-y: auto; }
+  .left-section { padding: 16px; border-bottom: 1px solid var(--border); }
+  .left-section-title { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); font-weight: 500; margin-bottom: 10px; }
+
+  /* STATYSTYKI */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-tile { background: var(--sand); border-radius: 10px; padding: 10px 12px; }
+  .stat-num { font-family: 'Crimson Pro', serif; font-size: 24px; font-weight: 300; color: var(--brown); line-height: 1; }
+  .stat-label { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+
+  /* PODOPIECZNI */
+  .client-list { display: flex; flex-direction: column; gap: 4px; }
+  .client-item { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--sand); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px; }
+  .client-item:hover { border-color: var(--border-strong); }
+  .client-item.active { border-color: var(--terapia); background: rgba(155,126,189,0.06); }
+  .client-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+  .client-dot.pending { background: var(--brown-light); }
+  .client-nick { font-size: 12px; color: var(--text); font-weight: 500; }
+  .client-last { font-size: 10px; color: var(--text-light); }
+  .client-empty { font-size: 11px; color: var(--text-light); font-style: italic; text-align: center; padding: 12px 0; }
+
+  /* DODAJ PODOPIECZNEGO */
+  .add-client-form { display: flex; gap: 6px; margin-top: 8px; }
+  .add-client-input { flex: 1; padding: 7px 10px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; background: var(--white); color: var(--text); outline: none; }
+  .add-client-input:focus { border-color: var(--brown); }
+  .add-client-btn { padding: 7px 12px; border-radius: 8px; border: none; background: var(--brown); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+
+  /* PRAWY PANEL — TABS */
+  .right-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .right-tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--white); padding: 0 20px; gap: 4px; flex-shrink: 0; }
+  .rtab { padding: 12px 16px; font-size: 12px; font-weight: 500; color: var(--text-light); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .rtab:hover { color: var(--text); }
+  .rtab.active { color: var(--brown); border-bottom-color: var(--brown); }
+  .right-body { flex: 1; overflow: hidden; }
+
+  /* TAB — KALENDARZ */
+  .kal-wrap { height: 100%; display: flex; flex-direction: column; }
+  .kal-bar { padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--white); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+  .view-chips { display: flex; gap: 4px; }
+  .view-chip { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-light); cursor: pointer; background: var(--white); transition: all 0.15s; }
+  .view-chip.active { background: var(--sand-dark); border-color: var(--border-strong); color: var(--text); font-weight: 500; }
+  .fc-nav { display: flex; align-items: center; gap: 6px; }
+  .fc-nav-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--white); color: var(--text-mid); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .fc-nav-btn:hover { border-color: var(--brown); color: var(--brown); }
+  .fc-nav-title { font-size: 12px; font-weight: 500; color: var(--text); min-width: 120px; text-align: center; }
+  .fc-today-btn { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--white); color: var(--text-mid); cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .fc-today-btn:hover { border-color: var(--brown); color: var(--brown); }
+  .add-btn { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--white); color: var(--brown); font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; margin-left: auto; }
+  .add-btn:hover { background: var(--brown); color: var(--white); border-color: var(--brown); }
+  .fc { font-family: 'DM Sans', sans-serif; font-size: 12px; }
+  .fc .fc-toolbar { display: none; }
+  .fc .fc-col-header-cell-cushion { color: var(--text-mid); font-size: 11px; font-weight: 500; padding: 6px 4px; text-decoration: none; }
+  .fc .fc-daygrid-day-number { color: var(--text-mid); font-size: 11px; text-decoration: none; padding: 4px 6px; }
+  .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number { background: var(--brown); color: var(--white); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+  .fc .fc-event { border-radius: 5px; font-size: 11px; border: none; padding: 1px 4px; cursor: pointer; }
+  .fc .fc-timegrid-slot { height: 32px; }
+  .fc .fc-timegrid-slot-label { font-size: 10px; color: var(--text-light); }
+  .fc .fc-scrollgrid { border-color: var(--border); }
+  .fc th { background: var(--white); }
+  .fc .fc-timegrid-now-indicator-line { border-color: var(--red); }
+  #fc-terapeuta { height: 100%; }
+  .fc-body-wrap { flex: 1; padding: 12px 14px; overflow: hidden; }
+
+  /* TAB — PODOPIECZNY DETAIL */
+  .detail-wrap { padding: 20px 24px; overflow-y: auto; height: 100%; }
+  .detail-empty { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 300; color: var(--text-light); text-align: center; padding: 60px 0; font-style: italic; }
+  .detail-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
+  .detail-nick { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 300; color: var(--text); }
+  .detail-since { font-size: 11px; color: var(--text-light); }
+  .detail-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .detail-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  .detail-card-title { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); margin-bottom: 8px; }
+  .detail-card-num { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 300; color: var(--brown); }
+  .detail-card-sub { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+  .visits-list { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+  .visits-title { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); margin-bottom: 10px; }
+  .visit-item { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .visit-item:last-child { border-bottom: none; }
+  .visit-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+  .visit-dot.future { background: var(--blue); }
+  .visit-date { font-size: 12px; color: var(--text); font-weight: 500; min-width: 80px; }
+  .visit-note { font-size: 11px; color: var(--text-light); flex: 1; }
+  .visits-empty { font-size: 11px; color: var(--text-light); font-style: italic; }
+
+  /* TAB — ZALECENIA */
+  .zal-wrap { padding: 20px 24px; overflow-y: auto; height: 100%; }
+  .zal-form { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .zal-form-title { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 300; color: var(--brown); margin-bottom: 12px; }
+  .zal-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .zal-input { flex: 1; min-width: 200px; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; }
+  .zal-input:focus { border-color: var(--brown); }
+  .zal-select { padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; cursor: pointer; }
+  .zal-date { padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; }
+  .zal-textarea { width: 100%; min-height: 60px; resize: none; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; line-height: 1.6; margin-bottom: 8px; }
+  .zal-textarea:focus { border-color: var(--brown); }
+  .zal-save-btn { padding: 9px 20px; border-radius: 8px; border: none; background: var(--brown); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .zal-save-btn:hover { background: var(--brown-deep); }
+  .zal-list-title { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); margin-bottom: 10px; }
+  .zal-item { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; display: flex; gap: 10px; align-items: flex-start; }
+  .zal-bar { width: 4px; border-radius: 2px; align-self: stretch; flex-shrink: 0; min-height: 20px; }
+  .zal-body { flex: 1; min-width: 0; }
+  .zal-tresc { font-size: 13px; color: var(--text); line-height: 1.5; margin-bottom: 4px; }
+  .zal-meta { font-size: 10px; color: var(--text-light); }
+  .zal-status { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+  .zal-status.oczekuje { background: rgba(139,115,85,0.1); color: var(--brown); }
+  .zal-status.zaakceptowane { background: rgba(107,143,113,0.15); color: var(--green); }
+  .zal-empty { font-size: 12px; color: var(--text-light); font-style: italic; text-align: center; padding: 20px 0; }
+
+  /* TAB — NOTATKI PO SESJI */
+  .notatki-wrap { padding: 20px 24px; overflow-y: auto; height: 100%; }
+  .notatka-form { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .notatka-form-title { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 300; color: var(--brown); margin-bottom: 12px; }
+  .notatka-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .notatka-select { padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; cursor: pointer; }
+  .notatka-textarea { width: 100%; min-height: 80px; resize: none; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; line-height: 1.6; margin-bottom: 8px; }
+  .notatka-textarea:focus { border-color: var(--brown); }
+  .notatka-save-btn { padding: 9px 20px; border-radius: 8px; border: none; background: var(--terapia); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .notatka-item { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+  .notatka-meta { font-size: 10px; color: var(--text-light); margin-bottom: 6px; }
+  .notatka-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .notatka-client { font-size: 11px; color: var(--terapia); font-weight: 500; margin-top: 4px; }
+
+  /* TAB — PODSUMOWANIE */
+  .podsum-wrap { padding: 20px 24px; overflow-y: auto; height: 100%; }
+  .podsum-select-row { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+  .podsum-label { font-size: 12px; color: var(--text-mid); }
+  .podsum-select { padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--white); color: var(--text); outline: none; cursor: pointer; }
+  .podsum-btn { padding: 8px 18px; border-radius: 8px; border: none; background: var(--brown); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .podsum-btn:hover { background: var(--brown-deep); }
+  .podsum-result { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 20px; white-space: pre-wrap; font-size: 13px; color: var(--text); line-height: 1.8; }
+  .podsum-empty { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 300; color: var(--text-light); font-style: italic; text-align: center; padding: 40px 0; }
+  .podsum-loading { font-size: 12px; color: var(--text-light); font-style: italic; padding: 20px 0; text-align: center; }
+  .consent-badge { font-size: 10px; padding: 3px 8px; border-radius: 4px; background: rgba(107,143,113,0.15); color: var(--green); font-weight: 500; }
+  .no-consent-badge { font-size: 10px; padding: 3px 8px; border-radius: 4px; background: rgba(192,57,43,0.1); color: var(--red); font-weight: 500; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn 0.3s ease both; }
+  .loading { font-size: 11px; color: var(--text-light); padding: 12px; text-align: center; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- MODAL WIZYTA -->
+<div class="modal-overlay" id="modal-wizyta">
+  <div class="modal">
+    <div class="modal-title">Nowa wizyta</div>
+    <div class="modal-field">
+      <div class="modal-label">Podopieczny</div>
+      <select class="modal-select" id="modal-w-client"></select>
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Data i godzina</div>
+      <input class="modal-input" type="datetime-local" id="modal-w-date">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Czas trwania (min)</div>
+      <input class="modal-input" type="number" id="modal-w-czas" value="60" min="15" step="15">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Notatka (opcjonalnie)</div>
+      <input class="modal-input" type="text" id="modal-w-notatka" placeholder="np. pierwsza wizyta">
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn secondary" onclick="closeModal('modal-wizyta')">Anuluj</button>
+      <button class="modal-btn primary" onclick="saveWizyta()">Zapisz wizytę</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="screen-login">
+  <div class="login-card">
+    <div class="mana-logo">MANA</div>
+    <div class="mana-sub">Ekosystem · Merkaba</div>
+    <div class="mana-role">Panel Terapeuty</div>
+    <div class="login-label">Twój nick terapeuty</div>
+    <input class="login-input" type="text" id="login-nick" placeholder="wpisz nick" autocomplete="off">
+    <button class="login-btn" onclick="doLogin()">Wejdź do panelu</button>
+    <div class="login-note">Ten sam nick co w MANA</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="screen-main">
+  <div class="top-bar">
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div class="top-logo">MANA</div>
+      <div class="top-role">Terapeuta</div>
+    </div>
+    <div class="top-right">
+      <div class="top-nick" id="top-nick"></div>
+      <div class="top-logout" onclick="doLogout()">wyloguj</div>
+    </div>
+  </div>
+
+  <div class="main-body">
+    <!-- LEWY PANEL -->
+    <div class="left-panel">
+      <div class="left-section">
+        <div class="left-section-title">Dzisiaj</div>
+        <div class="stats-grid">
+          <div class="stat-tile">
+            <div class="stat-num" id="stat-today">0</div>
+            <div class="stat-label">wizyt dziś</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-num" id="stat-week">0</div>
+            <div class="stat-label">w tym tygodniu</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-num" id="stat-clients">0</div>
+            <div class="stat-label">podopiecznych</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-num" id="stat-pending">0</div>
+            <div class="stat-label">oczekuje zgody</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-section" style="flex:1">
+        <div class="left-section-title">Podopieczni</div>
+        <div class="client-list" id="client-list"><div class="client-empty">Brak podopiecznych</div></div>
+        <div class="add-client-form">
+          <input class="add-client-input" type="text" id="add-client-input" placeholder="nick podróżnika…">
+          <button class="add-client-btn" onclick="addClient()">+ Dodaj</button>
+        </div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:6px;font-style:italic;">Podróżnik musi potwierdzić zgodę</div>
+      </div>
+    </div>
+
+    <!-- PRAWY PANEL -->
+    <div class="right-panel">
+      <div class="right-tabs">
+        <div class="rtab active" id="rtab-kal" onclick="setTab('kal')">Kalendarz</div>
+        <div class="rtab" id="rtab-podop" onclick="setTab('podop')">Podopieczny</div>
+        <div class="rtab" id="rtab-zal" onclick="setTab('zal')">Zalecenia</div>
+        <div class="rtab" id="rtab-notatki" onclick="setTab('notatki')">Notatki po sesji</div>
+        <div class="rtab" id="rtab-podsum" onclick="setTab('podsum')">Podsumowanie</div>
+      </div>
+
+      <div class="right-body" id="right-body">
+        <!-- Kalendarz -->
+        <div id="tab-kal" class="kal-wrap">
+          <div class="kal-bar">
+            <div class="view-chips">
+              <div class="view-chip active" id="vchip-miesiac" onclick="fcSetView('dayGridMonth')">Miesiąc</div>
+              <div class="view-chip" id="vchip-tydzien" onclick="fcSetView('timeGridWeek')">Tydzień</div>
+              <div class="view-chip" id="vchip-dzien" onclick="fcSetView('timeGridDay')">Dzień</div>
+            </div>
+            <div class="fc-nav">
+              <button class="fc-nav-btn" onclick="fcPrev()">◀</button>
+              <button class="fc-today-btn" onclick="fcToday()">dziś</button>
+              <button class="fc-nav-btn" onclick="fcNext()">▶</button>
+              <div class="fc-nav-title" id="fc-nav-title"></div>
+            </div>
+            <button class="add-btn" onclick="openModalWizyta()">+ wizyta</button>
+          </div>
+          <div class="fc-body-wrap">
+            <div id="fc-terapeuta"></div>
+          </div>
+        </div>
+
+        <!-- Podopieczny detail -->
+        <div id="tab-podop" style="display:none;height:100%;">
+          <div class="detail-wrap" id="detail-wrap">
+            <div class="detail-empty">Wybierz podopiecznego z listy →</div>
+          </div>
+        </div>
+
+        <!-- Zalecenia -->
+        <div id="tab-zal" style="display:none;height:100%;">
+          <div class="zal-wrap">
+            <div class="zal-form">
+              <div class="zal-form-title">Nowe zalecenie</div>
+              <div class="zal-row">
+                <select class="zal-select" id="zal-client"></select>
+                <select class="zal-select" id="zal-typ">
+                  <option value="cwiczenie">Ćwiczenie</option>
+                  <option value="technika">Technika</option>
+                  <option value="nawyk">Zmiana nawyku</option>
+                  <option value="materiał">Materiał do przeczytania</option>
+                  <option value="inne">Inne</option>
+                </select>
+                <input class="zal-date" type="date" id="zal-date" placeholder="termin (opcjonalnie)">
+              </div>
+              <textarea class="zal-textarea" id="zal-tresc" placeholder="Opisz zalecenie dla podopiecznego…"></textarea>
+              <button class="zal-save-btn" onclick="saveZalecenie()">Wyślij do Słoika podróżnika</button>
+            </div>
+            <div class="zal-list-title">Wysłane zalecenia</div>
+            <div id="zal-list"><div class="zal-empty">Brak zaleceń</div></div>
+          </div>
+        </div>
+
+        <!-- Notatki po sesji -->
+        <div id="tab-notatki" style="display:none;height:100%;">
+          <div class="notatki-wrap">
+            <div class="notatka-form">
+              <div class="notatka-form-title">Notatka po sesji</div>
+              <div class="notatka-row">
+                <select class="notatka-select" id="notatka-client"></select>
+              </div>
+              <textarea class="notatka-textarea" id="notatka-tresc" placeholder="Co było tematem sesji? Co zauważyłeś? Co warto pamiętać przed kolejną wizytą…"></textarea>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <button class="notatka-save-btn" onclick="saveNotatka()">Zapisz notatkę</button>
+                <div style="font-size:11px;color:var(--text-light);font-style:italic;">Notatka jest widoczna tylko dla Ciebie</div>
+              </div>
+            </div>
+            <div class="zal-list-title">Poprzednie notatki</div>
+            <div id="notatki-list"><div class="zal-empty">Brak notatek</div></div>
+          </div>
+        </div>
+
+        <!-- Podsumowanie przed wizytą -->
+        <div id="tab-podsum" style="display:none;height:100%;">
+          <div class="podsum-wrap">
+            <div style="font-family:'Crimson Pro',serif;font-size:22px;font-weight:300;color:var(--text);margin-bottom:6px;">Podsumowanie przed wizytą</div>
+            <div style="font-size:12px;color:var(--text-light);margin-bottom:16px;">Serce MANA przygotuje kontekst z ostatnich dni — tylko za zgodą podróżnika.</div>
+            <div class="podsum-select-row">
+              <div class="podsum-label">Podopieczny:</div>
+              <select class="podsum-select" id="podsum-client"></select>
+              <div class="podsum-label">Ostatnie:</div>
+              <select class="podsum-select" id="podsum-dni">
+                <option value="7">7 dni</option>
+                <option value="14">14 dni</option>
+                <option value="30">30 dni</option>
+              </select>
+              <button class="podsum-btn" onclick="generatePodsum()">Generuj podsumowanie</button>
+            </div>
+            <div id="podsum-consent-info"></div>
+            <div id="podsum-result"><div class="podsum-empty">Wybierz podopiecznego i kliknij Generuj</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://kkxhqtfxvgxdqpnzaufu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtreGhxdGZ4dmd4ZHFwbnphdWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MjE0NTYsImV4cCI6MjA4ODM5NzQ1Nn0.s8Ju-ww3G4_yyH6RedK2gwLveVJKD3hY2IHh62-qjfo';
+
+let currentNick = '';
+let clients = []; // { traveler_id, consent_level, added_at }
+let wizyty = []; // stones z typ=wizyta
+let zalecenia = [];
+let notatki = [];
+let selectedClient = null;
+let fcCal = null;
+let currentFCView = 'dayGridMonth';
+
+// ==================== AUTH ====================
+function doLogin() {
+  var nick = document.getElementById('login-nick').value.trim();
+  if (!nick) return;
+  currentNick = nick;
+  localStorage.setItem('mana_terapeuta_nick', nick);
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-main').style.display = 'flex';
+  document.getElementById('screen-main').style.flexDirection = 'column';
+  document.getElementById('top-nick').textContent = nick;
+  init();
+}
+function doLogout() {
+  localStorage.removeItem('mana_terapeuta_nick');
+  currentNick = '';
+  if (fcCal) { fcCal.destroy(); fcCal = null; }
+  document.getElementById('screen-main').style.display = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+}
+document.getElementById('login-nick').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+
+// ==================== INIT ====================
+async function init() {
+  await loadClients();
+  await loadWizyty();
+  await loadZalecenia();
+  await loadNotatki();
+  updateStats();
+  renderClientList();
+  populateClientSelects();
+  initFC();
+}
+
+// ==================== SUPABASE HELPERS ====================
+async function sbGet(table, query) {
+  var r = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + query, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  });
+  return await r.json();
+}
+async function sbPost(table, body) {
+  return await fetch(SUPABASE_URL + '/rest/v1/' + table, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+    body: JSON.stringify(body)
+  });
+}
+async function sbPatch(table, query, body) {
+  return await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + query, {
+    method: 'PATCH',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+    body: JSON.stringify(body)
+  });
+}
+
+// ==================== KLIENCI ====================
+async function loadClients() {
+  try {
+    var data = await sbGet('therapist_clients', 'therapist_id=eq.' + encodeURIComponent(currentNick) + '&order=created_at.desc');
+    clients = Array.isArray(data) ? data : [];
+  } catch(e) { clients = []; }
+}
+
+async function addClient() {
+  var nick = document.getElementById('add-client-input').value.trim();
+  if (!nick) return;
+  // Sprawdź czy podróżnik istnieje
+  try {
+    var check = await sbGet('travelers', 'nick=ilike.' + encodeURIComponent(nick) + '&limit=1');
+    if (!Array.isArray(check) || !check.length) {
+      showToast('Nie znaleziono podróżnika: ' + nick);
+      return;
+    }
+    // Dodaj relację
+    var r = await sbPost('therapist_clients', {
+      therapist_id: currentNick,
+      traveler_id: nick,
+      consent_level: 'oczekuje', // podróżnik musi potwierdzić
+      created_at: new Date().toISOString()
+    });
+    if (r.ok) {
+      showToast('Wysłano zaproszenie do ' + nick);
+      document.getElementById('add-client-input').value = '';
+      await loadClients();
+      renderClientList();
+      populateClientSelects();
+      updateStats();
+    } else {
+      var err = await r.text();
+      // Jeśli tabela nie istnieje — tworzymy lokalnie dla demo
+      clients.push({ therapist_id: currentNick, traveler_id: nick, consent_level: 'oczekuje', created_at: new Date().toISOString() });
+      showToast('Dodano ' + nick + ' (tryb demo)');
+      document.getElementById('add-client-input').value = '';
+      renderClientList();
+      populateClientSelects();
+      updateStats();
+    }
+  } catch(e) {
+    // Tryb demo — dodaj lokalnie
+    clients.push({ therapist_id: currentNick, traveler_id: nick, consent_level: 'oczekuje', created_at: new Date().toISOString() });
+    showToast('Dodano ' + nick);
+    document.getElementById('add-client-input').value = '';
+    renderClientList();
+    populateClientSelects();
+    updateStats();
+  }
+}
+
+function renderClientList() {
+  var list = document.getElementById('client-list');
+  if (!clients.length) { list.innerHTML = '<div class="client-empty">Brak podopiecznych</div>'; return; }
+  list.innerHTML = '';
+  clients.forEach(function(c) {
+    var div = document.createElement('div');
+    div.className = 'client-item' + (selectedClient === c.traveler_id ? ' active' : '');
+    var dotClass = c.consent_level === 'pelny' || c.consent_level === 'wizyty' ? '' : ' pending';
+    div.innerHTML = '<div class="client-dot' + dotClass + '"></div><div><div class="client-nick">' + escHtml(c.traveler_id) + '</div><div class="client-last">' + consentLabel(c.consent_level) + '</div></div>';
+    div.onclick = function() { selectClient(c.traveler_id); };
+    list.appendChild(div);
+  });
+}
+
+function consentLabel(level) {
+  var labels = { 'pelny': 'pełna zgoda', 'wizyty': 'tylko wizyty', 'oczekuje': 'oczekuje na zgodę', 'brak': 'brak zgody' };
+  return labels[level] || level;
+}
+
+function selectClient(nick) {
+  selectedClient = nick;
+  renderClientList();
+  setTab('podop');
+  renderClientDetail();
+}
+
+function populateClientSelects() {
+  var selects = ['modal-w-client', 'zal-client', 'notatka-client', 'podsum-client'];
+  selects.forEach(function(id) {
+    var sel = document.getElementById(id);
+    if (!sel) return;
+    sel.innerHTML = clients.length
+      ? clients.map(function(c) { return '<option value="' + escHtml(c.traveler_id) + '">' + escHtml(c.traveler_id) + '</option>'; }).join('')
+      : '<option value="">brak podopiecznych</option>';
+  });
+}
+
+// ==================== WIZYTY ====================
+async function loadWizyty() {
+  try {
+    var data = await sbGet('stones', 'traveler_id=in.(' + clients.map(function(c) { return encodeURIComponent(c.traveler_id); }).join(',') + ')&typ=eq.wizyta&order=due_date.asc');
+    wizyty = Array.isArray(data) ? data : [];
+  } catch(e) { wizyty = []; }
+}
+
+function openModalWizyta(prefillDate) {
+  if (!clients.length) { showToast('Najpierw dodaj podopiecznego'); return; }
+  var d = document.getElementById('modal-w-date');
+  if (prefillDate) d.value = prefillDate;
+  else { var now = new Date(); d.value = now.toISOString().slice(0,16); }
+  document.getElementById('modal-wizyta').classList.add('open');
+}
+
+async function saveWizyta() {
+  var clientNick = document.getElementById('modal-w-client').value;
+  var dateVal = document.getElementById('modal-w-date').value;
+  var czas = document.getElementById('modal-w-czas').value;
+  var notatka = document.getElementById('modal-w-notatka').value.trim();
+  if (!clientNick || !dateVal) { showToast('Wypełnij pola'); return; }
+  var tresc = 'Wizyta u terapeuty' + (notatka ? ' — ' + notatka : '') + ' (' + czas + ' min)';
+  try {
+    var r = await sbPost('stones', {
+      traveler_id: clientNick,
+      tresc: tresc,
+      typ: 'wizyta',
+      status: 'aktywny',
+      due_date: dateVal + ':00',
+      therapist_id: currentNick
+    });
+    showToast('Wizyta zapisana w Horyzoncie podróżnika ✓');
+    closeModal('modal-wizyta');
+    await loadWizyty();
+    updateFCEvents();
+    updateStats();
+  } catch(e) { showToast('Błąd zapisu'); }
+}
+
+// ==================== FULLCALENDAR ====================
+function getWizytyAsEvents() {
+  return wizyty.map(function(w) {
+    var clientObj = clients.find(function(c) { return c.traveler_id === w.traveler_id; });
+    return {
+      id: String(w.id),
+      title: w.traveler_id + ' — ' + w.tresc.replace('Wizyta u terapeuty', '').replace(' — ', '').trim(),
+      start: w.due_date,
+      backgroundColor: '#9B7EBD',
+      borderColor: '#7B5FA0',
+      textColor: '#FFFDF8',
+      extendedProps: { traveler_id: w.traveler_id }
+    };
+  });
+}
+
+function initFC() {
+  var el = document.getElementById('fc-terapeuta');
+  if (!el || fcCal) return;
+  fcCal = new FullCalendar.Calendar(el, {
+    initialView: currentFCView,
+    locale: 'pl',
+    firstDay: 1,
+    headerToolbar: false,
+    height: '100%',
+    events: getWizytyAsEvents(),
+    nowIndicator: true,
+    selectable: true,
+    dateClick: function(info) { openModalWizyta(info.dateStr.replace('T', 'T') + (info.dateStr.length === 10 ? 'T09:00' : '')); },
+    eventClick: function(info) { selectClient(info.event.extendedProps.traveler_id); },
+    datesSet: function() { updateFCTitle(); }
+  });
+  fcCal.render();
+  updateFCTitle();
+}
+
+function updateFCEvents() {
+  if (!fcCal) return;
+  fcCal.removeAllEvents();
+  getWizytyAsEvents().forEach(function(e) { fcCal.addEvent(e); });
+}
+
+function fcSetView(view) {
+  currentFCView = view;
+  ['miesiac','tydzien','dzien'].forEach(function(v) {
+    var map = { miesiac: 'dayGridMonth', tydzien: 'timeGridWeek', dzien: 'timeGridDay' };
+    document.getElementById('vchip-' + v).classList.toggle('active', map[v] === view);
+  });
+  if (fcCal) { fcCal.changeView(view); updateFCTitle(); }
+}
+function fcPrev() { if (fcCal) { fcCal.prev(); updateFCTitle(); } }
+function fcNext() { if (fcCal) { fcCal.next(); updateFCTitle(); } }
+function fcToday() { if (fcCal) { fcCal.today(); updateFCTitle(); } }
+function updateFCTitle() { if (fcCal) { var t = document.getElementById('fc-nav-title'); if (t) t.textContent = fcCal.view.title; } }
+
+// ==================== ZALECENIA ====================
+async function loadZalecenia() {
+  try {
+    var travelerIds = clients.map(function(c) { return c.traveler_id; });
+    if (!travelerIds.length) { zalecenia = []; return; }
+    var data = await sbGet('stones', 'therapist_id=eq.' + encodeURIComponent(currentNick) + '&typ=eq.zalecenie&order=created_at.desc');
+    zalecenia = Array.isArray(data) ? data : [];
+  } catch(e) { zalecenia = []; }
+}
+
+async function saveZalecenie() {
+  var clientNick = document.getElementById('zal-client').value;
+  var typ = document.getElementById('zal-typ').value;
+  var tresc = document.getElementById('zal-tresc').value.trim();
+  var dateVal = document.getElementById('zal-date').value;
+  if (!clientNick || !tresc) { showToast('Wybierz podopiecznego i wpisz zalecenie'); return; }
+  try {
+    var r = await sbPost('stones', {
+      traveler_id: clientNick,
+      tresc: tresc,
+      typ: 'zalecenie',
+      status: 'aktywny',
+      due_date: dateVal ? dateVal + 'T09:00:00' : null,
+      sekcja: 'terapia',
+      therapist_id: currentNick,
+      sugestia_status: 'oczekuje'
+    });
+    showToast('Zalecenie wysłane do Słoika ' + clientNick + ' ✓');
+    document.getElementById('zal-tresc').value = '';
+    document.getElementById('zal-date').value = '';
+    await loadZalecenia();
+    renderZalecenia();
+  } catch(e) { showToast('Błąd zapisu'); }
+}
+
+function renderZalecenia() {
+  var list = document.getElementById('zal-list');
+  if (!zalecenia.length) { list.innerHTML = '<div class="zal-empty">Brak wysłanych zaleceń</div>'; return; }
+  list.innerHTML = '';
+  zalecenia.forEach(function(z) {
+    var div = document.createElement('div'); div.className = 'zal-item fade-in';
+    var statusLabel = z.sugestia_status === 'zaakceptowana' ? '<span class="zal-status zaakceptowane">zaakceptowane</span>' : '<span class="zal-status oczekuje">oczekuje</span>';
+    div.innerHTML = '<div class="zal-bar" style="background:var(--terapia)"></div><div class="zal-body"><div class="zal-tresc">' + escHtml(z.tresc) + '</div><div class="zal-meta">→ ' + escHtml(z.traveler_id) + ' · ' + formatDate(new Date(z.created_at)) + (z.due_date ? ' · termin: ' + formatDate(new Date(z.due_date)) : '') + ' &nbsp;' + statusLabel + '</div></div>';
+    list.appendChild(div);
+  });
+}
+
+// ==================== NOTATKI PO SESJI ====================
+async function loadNotatki() {
+  try {
+    var data = await sbGet('therapist_notes', 'therapist_id=eq.' + encodeURIComponent(currentNick) + '&order=created_at.desc');
+    notatki = Array.isArray(data) ? data : [];
+  } catch(e) { notatki = []; }
+}
+
+async function saveNotatka() {
+  var clientNick = document.getElementById('notatka-client').value;
+  var tresc = document.getElementById('notatka-tresc').value.trim();
+  if (!clientNick || !tresc) { showToast('Wybierz podopiecznego i wpisz notatkę'); return; }
+  try {
+    var r = await sbPost('therapist_notes', {
+      therapist_id: currentNick,
+      traveler_id: clientNick,
+      tresc: tresc,
+      created_at: new Date().toISOString()
+    });
+    showToast('Notatka zapisana ✓');
+    document.getElementById('notatka-tresc').value = '';
+    await loadNotatki();
+    renderNotatki();
+  } catch(e) {
+    // Demo — zapisz lokalnie
+    notatki.unshift({ therapist_id: currentNick, traveler_id: clientNick, tresc: tresc, created_at: new Date().toISOString() });
+    showToast('Notatka zapisana ✓');
+    document.getElementById('notatka-tresc').value = '';
+    renderNotatki();
+  }
+}
+
+function renderNotatki() {
+  var list = document.getElementById('notatki-list');
+  var filtered = selectedClient ? notatki.filter(function(n) { return n.traveler_id === selectedClient; }) : notatki;
+  if (!filtered.length) { list.innerHTML = '<div class="zal-empty">Brak notatek</div>'; return; }
+  list.innerHTML = '';
+  filtered.forEach(function(n) {
+    var div = document.createElement('div'); div.className = 'notatka-item fade-in';
+    div.innerHTML = '<div class="notatka-meta">' + formatDateTime(new Date(n.created_at)) + '</div><div class="notatka-text">' + escHtml(n.tresc) + '</div><div class="notatka-client">→ ' + escHtml(n.traveler_id) + '</div>';
+    list.appendChild(div);
+  });
+}
+
+// ==================== PODSUMOWANIE ====================
+async function generatePodsum() {
+  var clientNick = document.getElementById('podsum-client').value;
+  var dni = parseInt(document.getElementById('podsum-dni').value);
+  if (!clientNick) { showToast('Wybierz podopiecznego'); return; }
+
+  var client = clients.find(function(c) { return c.traveler_id === clientNick; });
+  var consentInfo = document.getElementById('podsum-consent-info');
+  var result = document.getElementById('podsum-result');
+
+  if (!client || (client.consent_level !== 'pelny' && client.consent_level !== 'podsumowanie')) {
+    consentInfo.innerHTML = '<div style="margin-bottom:12px;padding:10px 14px;background:rgba(192,57,43,0.08);border-radius:8px;font-size:12px;color:var(--red);">⚠ Podróżnik ' + escHtml(clientNick) + ' nie wyraził zgody na podsumowanie. Poziom zgody: <strong>' + consentLabel(client ? client.consent_level : 'brak') + '</strong></div>';
+    result.innerHTML = '<div class="podsum-empty">Brak zgody podróżnika na wgląd w historię.</div>';
+    return;
+  }
+
+  consentInfo.innerHTML = '<div style="margin-bottom:12px;"><span class="consent-badge">✓ zgoda podróżnika</span></div>';
+  result.innerHTML = '<div class="podsum-loading">Serce MANA analizuje ostatnie ' + dni + ' dni…</div>';
+
+  try {
+    // Pobierz stones podróżnika
+    var cutoff = new Date(); cutoff.setDate(cutoff.getDate() - dni);
+    var stones = await sbGet('stones', 'traveler_id=eq.' + encodeURIComponent(clientNick) + '&created_at=gte.' + cutoff.toISOString() + '&order=created_at.desc');
+
+    if (!Array.isArray(stones) || !stones.length) {
+      result.innerHTML = '<div class="podsum-empty">Brak wpisów z ostatnich ' + dni + ' dni.</div>';
+      return;
+    }
+
+    // Wywołaj Claude przez Anthropic API
+    var prompt = 'Jesteś Sercem MANA — mądrym towarzyszem podróżnika. Terapeuta prosi o podsumowanie przed wizytą z podróżnikiem o nicku "' + clientNick + '".\n\nOto wpisy podróżnika z ostatnich ' + dni + ' dni:\n\n' +
+      stones.map(function(s) { return '[' + s.typ + ' · ' + new Date(s.created_at).toLocaleDateString('pl') + '] ' + s.tresc; }).join('\n') +
+      '\n\nPrzygotuj krótkie, mądre podsumowanie dla terapeuty. Co było tematem? Jakie wzorce się pojawiły? Co może być ważne na nadchodzącej wizycie? Pisz ciepło, konkretnie, bez oceniania. Maksymalnie 200 słów.';
+
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 500,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    var data = await resp.json();
+    var text = data.content && data.content[0] ? data.content[0].text : 'Brak odpowiedzi';
+    result.innerHTML = '<div class="podsum-result">' + escHtml(text) + '</div>';
+  } catch(e) {
+    result.innerHTML = '<div class="podsum-empty">Błąd generowania. Sprawdź połączenie.</div>';
+  }
+}
+
+// ==================== DETAIL PODOPIECZNEGO ====================
+function renderClientDetail() {
+  var wrap = document.getElementById('detail-wrap');
+  if (!selectedClient) { wrap.innerHTML = '<div class="detail-empty">Wybierz podopiecznego z listy →</div>'; return; }
+  var client = clients.find(function(c) { return c.traveler_id === selectedClient; });
+  if (!client) return;
+  var clientWizyty = wizyty.filter(function(w) { return w.traveler_id === selectedClient; });
+  var now = new Date();
+  var przyszle = clientWizyty.filter(function(w) { return new Date(w.due_date) >= now; });
+  var przeszle = clientWizyty.filter(function(w) { return new Date(w.due_date) < now; });
+  var clientZal = zalecenia.filter(function(z) { return z.traveler_id === selectedClient; });
+
+  wrap.innerHTML = '<div class="detail-header fade-in"><div class="detail-nick">' + escHtml(selectedClient) + '</div><span class="' + (client.consent_level === 'pelny' ? 'consent-badge' : 'no-consent-badge') + '">' + consentLabel(client.consent_level) + '</span></div>' +
+    '<div class="detail-sections">' +
+    '<div class="detail-card"><div class="detail-card-title">Wizyty łącznie</div><div class="detail-card-num">' + clientWizyty.length + '</div><div class="detail-card-sub">' + przyszle.length + ' nadchodzących</div></div>' +
+    '<div class="detail-card"><div class="detail-card-title">Zalecenia</div><div class="detail-card-num">' + clientZal.length + '</div><div class="detail-card-sub">' + clientZal.filter(function(z) { return z.sugestia_status === 'zaakceptowana'; }).length + ' zaakceptowanych</div></div>' +
+    '</div>' +
+    '<div class="visits-list"><div class="visits-title">Historia wizyt</div>' +
+    (clientWizyty.length ? clientWizyty.sort(function(a,b) { return new Date(b.due_date) - new Date(a.due_date); }).map(function(w) {
+      var isFuture = new Date(w.due_date) >= now;
+      return '<div class="visit-item"><div class="visit-dot' + (isFuture ? ' future' : '') + '"></div><div class="visit-date">' + formatDate(new Date(w.due_date)) + '</div><div class="visit-note">' + escHtml(w.tresc) + '</div></div>';
+    }).join('') : '<div class="visits-empty">Brak wizyt</div>') +
+    '</div>';
+}
+
+// ==================== STATS ====================
+function updateStats() {
+  var now = new Date();
+  var todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var todayEnd = new Date(todayStart); todayEnd.setDate(todayEnd.getDate() + 1);
+  var weekEnd = new Date(todayStart); weekEnd.setDate(weekEnd.getDate() + 7);
+
+  document.getElementById('stat-today').textContent = wizyty.filter(function(w) {
+    var d = new Date(w.due_date); return d >= todayStart && d < todayEnd;
+  }).length;
+  document.getElementById('stat-week').textContent = wizyty.filter(function(w) {
+    var d = new Date(w.due_date); return d >= now && d < weekEnd;
+  }).length;
+  document.getElementById('stat-clients').textContent = clients.length;
+  document.getElementById('stat-pending').textContent = clients.filter(function(c) { return c.consent_level === 'oczekuje'; }).length;
+}
+
+// ==================== TABS ====================
+function setTab(tab) {
+  ['kal','podop','zal','notatki','podsum'].forEach(function(t) {
+    document.getElementById('rtab-' + t).classList.toggle('active', t === tab);
+    document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
+  });
+  document.getElementById('tab-kal').style.display = tab === 'kal' ? 'flex' : 'none';
+
+  if (tab === 'kal') {
+    setTimeout(function() { if (fcCal) fcCal.updateSize(); }, 50);
+  }
+  if (tab === 'zal') renderZalecenia();
+  if (tab === 'notatki') renderNotatki();
+  if (tab === 'podop') renderClientDetail();
+}
+
+// ==================== HELPERS ====================
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(function(o) { o.addEventListener('click', function(e) { if (e.target === o) o.classList.remove('open'); }); });
+
+function formatDate(d) {
+  var months = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+  var now = new Date();
+  var timeStr = (d.getHours() || d.getMinutes()) ? ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') : '';
+  return d.getDate() + ' ' + months[d.getMonth()] + (d.getFullYear() !== now.getFullYear() ? ' ' + d.getFullYear() : '') + timeStr;
+}
+function formatDateTime(d) {
+  return formatDate(d) + ' · ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function() { t.classList.remove('show'); }, 2800); }
+
+// ==================== BOOT ====================
+window.addEventListener('load', function() {
+  var saved = localStorage.getItem('mana_terapeuta_nick');
+  if (saved) {
+    currentNick = saved;
+    document.getElementById('login-nick').value = saved;
+    document.getElementById('screen-login').style.display = 'none';
+    document.getElementById('screen-main').style.display = 'flex';
+    document.getElementById('screen-main').style.flexDirection = 'column';
+    document.getElementById('top-nick').textContent = saved;
+    init();
+  }
+});
+</script>
+</body>
+</html>
