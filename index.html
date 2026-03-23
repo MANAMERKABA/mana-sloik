@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MANA · Słoik</title>
+<title>MANA · Panel Terapeuty</title>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
@@ -14,53 +14,16 @@
     --text: #2C2418; --text-mid: #6B5C45; --text-light: #9B8C78;
     --border: rgba(139,115,85,0.2); --border-strong: rgba(139,115,85,0.4);
     --white: #FFFDF8; --red: #C0392B; --green: #6B8F71; --blue: #7B8FA0; --purple: #9B7EBD;
-    --cisza-sen: #7B8FA0; --cisza-mysl: #9B7EBD; --cisza-czucie: #C4956A;
-    /* FullCalendar overrides */
+    --terapia: #9B7EBD;
     --fc-border-color: rgba(139,115,85,0.15);
     --fc-today-bg-color: rgba(139,115,85,0.06);
     --fc-event-bg-color: #8B7355;
     --fc-event-border-color: #5C4A35;
     --fc-page-bg-color: var(--sand);
     --fc-neutral-bg-color: var(--white);
-    --fc-list-event-hover-bg-color: var(--sand-dark);
-    --fc-highlight-color: rgba(139,115,85,0.08);
-    --fc-non-business-color: rgba(139,115,85,0.03);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--sand); color: var(--text); min-height: 100vh; font-size: 14px; }
-
-  /* FullCalendar styling */
-  .fc { font-family: 'DM Sans', sans-serif; font-size: 12px; }
-  .fc .fc-toolbar { display: none; }
-  .fc .fc-col-header-cell-cushion { color: var(--text-mid); font-size: 11px; font-weight: 500; padding: 6px 4px; text-decoration: none; }
-  .fc .fc-daygrid-day-number { color: var(--text-mid); font-size: 11px; text-decoration: none; padding: 4px 6px; }
-  .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number { background: var(--brown); color: var(--white); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
-  .fc .fc-event { border-radius: 5px; font-size: 11px; font-weight: 400; border: none; padding: 1px 4px; cursor: pointer; }
-  .fc .fc-event-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .fc .fc-timegrid-slot { height: 32px; }
-  .fc .fc-timegrid-slot-label { font-size: 10px; color: var(--text-light); }
-  .fc .fc-scrollgrid { border-color: var(--border); }
-  .fc .fc-scrollgrid-section > td { border-color: var(--border); }
-  .fc th { background: var(--white); }
-  .fc .fc-daygrid-day:hover { background: rgba(139,115,85,0.03); }
-  .fc .fc-more-popover { background: var(--white); border: 1px solid var(--border-strong); border-radius: 10px; box-shadow: 0 4px 20px rgba(44,36,24,0.12); }
-  .fc .fc-popover-header { background: var(--sand-dark); border-radius: 10px 10px 0 0; padding: 8px 12px; font-size: 11px; font-weight: 500; color: var(--text-mid); }
-  .fc-direction-ltr .fc-daygrid-event.fc-event-end { margin-right: 2px; }
-  .fc-direction-ltr .fc-daygrid-event.fc-event-start { margin-left: 2px; }
-  .fc .fc-timegrid-now-indicator-line { border-color: var(--red); }
-  .fc .fc-timegrid-now-indicator-arrow { border-top-color: var(--red); border-bottom-color: var(--red); }
-
-  /* FC container */
-  #fc-calendar { height: 100%; }
-  .fc-wrap { height: 100%; padding: 12px 14px; overflow: hidden; }
-
-  /* nav bar for calendar */
-  .fc-nav { display: flex; align-items: center; gap: 6px; }
-  .fc-nav-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--white); color: var(--text-mid); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-  .fc-nav-btn:hover { border-color: var(--brown); color: var(--brown); }
-  .fc-nav-title { font-size: 12px; font-weight: 500; color: var(--text); min-width: 120px; text-align: center; }
-  .fc-today-btn { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--white); color: var(--text-mid); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
-  .fc-today-btn:hover { border-color: var(--brown); color: var(--brown); }
 
   /* TOAST */
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--brown-deep); color: var(--white); padding: 10px 20px; border-radius: 20px; font-size: 12px; opacity: 0; transition: all 0.3s; z-index: 9999; white-space: nowrap; pointer-events: none; }
@@ -69,25 +32,27 @@
   /* MODAL */
   .modal-overlay { position: fixed; inset: 0; background: rgba(44,36,24,0.4); display: none; align-items: center; justify-content: center; z-index: 1000; }
   .modal-overlay.open { display: flex; }
-  .modal { background: var(--white); border-radius: 16px; padding: 28px 28px 24px; width: 340px; box-shadow: 0 8px 40px rgba(44,36,24,0.15); }
+  .modal { background: var(--white); border-radius: 16px; padding: 28px; width: 360px; box-shadow: 0 8px 40px rgba(44,36,24,0.15); }
   .modal-title { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 300; color: var(--brown); margin-bottom: 16px; }
   .modal-field { margin-bottom: 12px; }
   .modal-label { font-size: 11px; color: var(--text-mid); margin-bottom: 4px; }
   .modal-input { width: 100%; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; }
   .modal-input:focus { border-color: var(--brown); }
+  .modal-textarea { width: 100%; min-height: 80px; resize: none; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; line-height: 1.6; }
+  .modal-textarea:focus { border-color: var(--brown); }
   .modal-select { width: 100%; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; cursor: pointer; }
   .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
   .modal-btn { flex: 1; padding: 9px; border-radius: 8px; border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
   .modal-btn.primary { background: var(--brown); color: var(--white); }
   .modal-btn.primary:hover { background: var(--brown-deep); }
   .modal-btn.secondary { background: var(--sand-dark); color: var(--text-mid); }
-  .modal-btn.secondary:hover { background: var(--border-strong); }
 
   /* LOGIN */
-  #screen-login { min-height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+  #screen-login { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
   .login-card { background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 48px 40px; width: 340px; text-align: center; }
   .mana-logo { font-family: 'Crimson Pro', serif; font-size: 42px; font-weight: 300; color: var(--brown); letter-spacing: 0.08em; margin-bottom: 4px; }
-  .mana-sub { font-size: 11px; color: var(--text-light); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 40px; }
+  .mana-sub { font-size: 11px; color: var(--text-light); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+  .mana-role { font-size: 12px; color: var(--terapia); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 32px; font-weight: 500; }
   .login-label { font-size: 12px; color: var(--text-mid); margin-bottom: 8px; text-align: left; }
   .login-input { width: 100%; padding: 12px 16px; border: 1px solid var(--border-strong); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--sand); color: var(--text); outline: none; transition: border-color 0.2s; margin-bottom: 16px; }
   .login-input:focus { border-color: var(--brown); }
@@ -96,1326 +61,840 @@
   .login-note { font-size: 11px; color: var(--text-light); margin-top: 16px; font-style: italic; }
 
   /* TOP BAR */
-  .top-bar { padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--white); flex-shrink: 0; }
+  .top-bar { padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--white); flex-shrink: 0; }
   .top-logo { font-family: 'Crimson Pro', serif; font-size: 22px; font-weight: 300; color: var(--brown); letter-spacing: 0.06em; }
+  .top-role { font-size: 10px; color: var(--terapia); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; margin-left: 8px; }
+  .top-right { display: flex; align-items: center; gap: 10px; }
+  .top-nick { font-size: 12px; color: var(--text-light); }
   .top-logout { font-size: 11px; color: var(--text-light); cursor: pointer; padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px; transition: all 0.15s; }
   .top-logout:hover { color: var(--text); border-color: var(--border-strong); }
-  .top-right { display: flex; align-items: center; gap: 10px; }
-  .top-nick-label { font-size: 12px; color: var(--text-light); }
 
-  /* MAIN */
+  /* MAIN LAYOUT */
   #screen-main { display: none; min-height: 100vh; flex-direction: column; }
-  .main-content { flex: 1; padding: 32px 24px; max-width: 900px; margin: 0 auto; width: 100%; }
-  .greeting { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 300; color: var(--text); margin-bottom: 6px; }
-  .greeting-date { font-size: 12px; color: var(--text-light); margin-bottom: 28px; }
-  .main-row-top { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 12px; }
-  .tile-gaweda { background: var(--brown); border: 1px solid var(--brown); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between; animation: fadeIn 0.4s ease both; animation-delay: 0.05s; }
-  .tile-gaweda:hover { background: var(--brown-deep); border-color: var(--brown-deep); }
-  .tile-gaweda-left { display: flex; align-items: baseline; gap: 10px; }
-  .tile-gaweda-name { font-family: 'Crimson Pro', serif; font-size: 24px; font-weight: 300; color: var(--white); }
-  .tile-gaweda-en { font-size: 11px; color: rgba(255,253,248,0.6); letter-spacing: 0.1em; text-transform: uppercase; }
-  .tile-gaweda-arrow { color: rgba(255,253,248,0.7); font-size: 20px; }
-  .tile-help { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: center; animation: fadeIn 0.4s ease both; animation-delay: 0.1s; }
-  .tile-help:hover { border-color: var(--border-strong); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(139,115,85,0.08); }
-  .tile-help-accent { width: 28px; height: 3px; border-radius: 2px; background: var(--blue); margin-bottom: 12px; }
-  .tile-help-name { font-family: 'Crimson Pro', serif; font-size: 22px; font-weight: 300; color: var(--text); margin-bottom: 4px; }
-  .tile-help-en { font-size: 10px; color: var(--text-light); letter-spacing: 0.1em; text-transform: uppercase; }
-  .tile-sloik-btn { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; animation: fadeIn 0.4s ease both; animation-delay: 0.15s; }
-  .tile-sloik-btn:hover { border-color: var(--border-strong); box-shadow: 0 4px 20px rgba(139,115,85,0.08); }
-  .tile-sloik-left { display: flex; align-items: baseline; gap: 10px; }
-  .tile-sloik-name { font-family: 'Crimson Pro', serif; font-size: 22px; font-weight: 300; color: var(--text); }
-  .tile-sloik-en { font-size: 10px; color: var(--text-light); letter-spacing: 0.1em; text-transform: uppercase; }
-  .tile-sloik-stats { font-size: 11px; color: var(--text-light); }
-  .tile-sloik-arrow { color: var(--text-light); font-size: 18px; }
-  .pinned-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
-  .tile-pinned { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 100px; animation: fadeIn 0.4s ease both; }
-  .tile-pinned:hover { border-color: var(--border-strong); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(139,115,85,0.08); }
-  .tile-pinned-accent { width: 24px; height: 3px; border-radius: 2px; margin-bottom: 10px; }
-  .tile-pinned-name { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 300; color: var(--text); }
-  .tile-pinned-en { font-size: 10px; color: var(--text-light); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
-  .pinned-empty { font-size: 12px; color: var(--text-light); font-style: italic; padding: 20px 0; text-align: center; }
+  .main-body { flex: 1; display: flex; overflow: hidden; height: calc(100vh - 53px); }
 
-  /* SŁOIK sekcje */
-  #screen-sloik { display: none; min-height: 100vh; flex-direction: column; }
-  .sloik-content { flex: 1; padding: 24px; max-width: 900px; margin: 0 auto; width: 100%; }
-  .sloik-intro { font-size: 12px; color: var(--text-light); margin-bottom: 20px; font-style: italic; }
-  .sloik-sections { display: flex; flex-direction: column; gap: 10px; }
-  .sloik-section-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; gap: 12px; transition: all 0.15s; cursor: grab; user-select: none; }
-  .sloik-section-card:hover { border-color: var(--border-strong); box-shadow: 0 2px 12px rgba(139,115,85,0.08); }
-  .sloik-section-card:active { cursor: grabbing; }
-  .sloik-section-card.dragging { opacity: 0.4; }
-  .sloik-section-card.drag-over { border-color: var(--brown); }
-  .sloik-drag-handle { display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; padding: 4px; opacity: 0.4; }
-  .sloik-drag-handle span { display: block; width: 14px; height: 1.5px; background: var(--brown); border-radius: 1px; }
-  .sloik-section-accent { width: 4px; border-radius: 2px; align-self: stretch; flex-shrink: 0; min-height: 36px; }
-  .sloik-section-info { flex: 1; min-width: 0; }
-  .sloik-section-name { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 300; color: var(--text); }
-  .sloik-section-en { font-size: 10px; color: var(--text-light); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
-  .sloik-section-desc { font-size: 12px; color: var(--text-light); margin-top: 4px; }
-  .pin-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-light); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
-  .pin-btn:hover { border-color: var(--brown); color: var(--brown); }
-  .pin-btn.pinned { background: var(--brown); border-color: var(--brown); color: var(--white); }
-  .pin-btn.pinned:hover { background: var(--brown-deep); border-color: var(--brown-deep); }
-  .open-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-light); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
-  .open-btn:hover { border-color: var(--border-strong); color: var(--brown); }
+  /* LEWY PANEL */
+  .left-panel { width: 260px; flex-shrink: 0; border-right: 1px solid var(--border); background: var(--white); display: flex; flex-direction: column; overflow-y: auto; }
+  .left-section { padding: 16px; border-bottom: 1px solid var(--border); }
+  .left-section-title { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); font-weight: 500; margin-bottom: 10px; }
 
-  /* GAWĘDA */
-  #screen-gaweda { display: none; min-height: 100vh; flex-direction: column; }
-  .typebot-frame { flex: 1; border: none; width: 100%; min-height: calc(100vh - 53px); }
+  /* STATYSTYKI */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-tile { background: var(--sand); border-radius: 10px; padding: 10px 12px; }
+  .stat-num { font-family: 'Crimson Pro', serif; font-size: 24px; font-weight: 300; color: var(--brown); line-height: 1; }
+  .stat-label { font-size: 10px; color: var(--text-light); margin-top: 2px; }
 
-  /* PLACEHOLDER */
-  #screen-placeholder { display: none; min-height: 100vh; flex-direction: column; }
-  .placeholder-body { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; }
-  .placeholder-icon { font-family: 'Crimson Pro', serif; font-size: 48px; font-weight: 300; color: var(--border-strong); }
-  .placeholder-text { font-size: 14px; color: var(--text-light); }
+  /* PODOPIECZNI */
+  .client-list { display: flex; flex-direction: column; gap: 4px; }
+  .client-item { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--sand); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px; }
+  .client-item:hover { border-color: var(--border-strong); }
+  .client-item.active { border-color: var(--terapia); background: rgba(155,126,189,0.06); }
+  .client-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+  .client-dot.pending { background: var(--brown-light); }
+  .client-nick { font-size: 12px; color: var(--text); font-weight: 500; }
+  .client-last { font-size: 10px; color: var(--text-light); }
+  .client-empty { font-size: 11px; color: var(--text-light); font-style: italic; text-align: center; padding: 12px 0; }
 
-  /* SUB-BAR */
-  .sub-bar { padding: 14px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); background: var(--white); flex-shrink: 0; }
-  .back-btn { font-size: 12px; color: var(--text-light); cursor: pointer; padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px; transition: all 0.15s; white-space: nowrap; }
-  .back-btn:hover { color: var(--text); border-color: var(--border-strong); }
-  .sub-title { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 300; color: var(--brown); }
-  .sub-bar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  /* DODAJ PODOPIECZNEGO */
+  .add-client-form { display: flex; gap: 6px; margin-top: 8px; }
+  .add-client-input { flex: 1; padding: 7px 10px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; background: var(--white); color: var(--text); outline: none; }
+  .add-client-input:focus { border-color: var(--brown); }
+  .add-client-btn { padding: 7px 12px; border-radius: 8px; border: none; background: var(--brown); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; cursor: pointer; white-space: nowrap; }
 
-  /* GŁOS */
-  .voice-btn { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border-strong); background: var(--white); color: var(--text-mid); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-  .voice-btn:hover { border-color: var(--brown); color: var(--brown); }
-  .voice-btn.recording { background: var(--red); border-color: var(--red); color: var(--white); animation: pulse 1.2s ease-in-out infinite; }
-  .voice-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+  /* PRAWY PANEL — TABS */
+  .right-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .right-tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--white); padding: 0 20px; gap: 4px; flex-shrink: 0; }
+  .rtab { padding: 12px 16px; font-size: 12px; font-weight: 500; color: var(--text-light); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .rtab:hover { color: var(--text); }
+  .rtab.active { color: var(--brown); border-bottom-color: var(--brown); }
+  .right-body { flex: 1; overflow: hidden; }
 
-  /* NAKŁADKA GŁOSOWA */
-  .voice-overlay { position: fixed; inset: 0; background: rgba(44,36,24,0.5); display: none; align-items: flex-end; justify-content: center; z-index: 2000; padding: 24px; }
-  .voice-overlay.open { display: flex; }
-  .voice-panel { background: var(--white); border-radius: 20px; padding: 24px; width: 100%; max-width: 520px; box-shadow: 0 12px 60px rgba(44,36,24,0.2); animation: slideUp 0.25s ease both; }
-  @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  .voice-panel-title { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 300; color: var(--brown); margin-bottom: 4px; }
-  .voice-panel-hint { font-size: 11px; color: var(--text-light); margin-bottom: 16px; }
-  .voice-status { min-height: 20px; font-size: 12px; color: var(--text-light); font-style: italic; margin-bottom: 8px; }
-  .voice-status.active { color: var(--red); font-style: normal; font-weight: 500; }
-  .voice-transcript { width: 100%; min-height: 80px; resize: none; padding: 12px 14px; border: 1.5px solid var(--border-strong); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; line-height: 1.6; margin-bottom: 12px; }
-  .voice-transcript:focus { border-color: var(--brown); }
-  .voice-type-row { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
-  .voice-type-chip { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--sand); color: var(--text-mid); font-size: 11px; cursor: pointer; transition: all 0.15s; }
-  .voice-type-chip:hover { border-color: var(--brown); color: var(--brown); }
-  .voice-type-chip.active { background: var(--brown); border-color: var(--brown); color: var(--white); }
-  .voice-actions { display: flex; gap: 8px; }
-  .voice-mic-big { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--border-strong); background: var(--white); color: var(--text-mid); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
-  .voice-mic-big:hover { border-color: var(--brown); color: var(--brown); }
-  .voice-mic-big.recording { background: var(--red); border-color: var(--red); color: var(--white); animation: pulse 1.2s ease-in-out infinite; }
-  .voice-save-btn { flex: 1; padding: 10px; border-radius: 10px; border: none; background: var(--brown); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
-  .voice-save-btn:hover { background: var(--brown-deep); }
-  .voice-cancel-btn { padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--text-mid); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.15s; }
-  .voice-cancel-btn:hover { border-color: var(--border-strong); color: var(--text); }
-  .voice-no-support { font-size: 12px; color: var(--red); padding: 8px 0; }
-
-  /* HORYZONT */
-  #screen-horyzont { display: none; min-height: 100vh; flex-direction: column; }
-  .horyzont-body { flex: 1; display: flex; overflow: hidden; height: calc(100vh - 53px); }
-  .h-left { width: 240px; flex-shrink: 0; border-right: 1px solid var(--border); padding: 14px; overflow-y: auto; background: var(--white); display: flex; flex-direction: column; gap: 10px; }
-  .h-tabs { display: flex; gap: 6px; }
-  .h-tab { flex: 1; padding: 8px 0; font-size: 12px; font-weight: 500; text-align: center; border-radius: 8px; border: 1px solid var(--border-strong); color: var(--text-mid); background: var(--sand); cursor: pointer; transition: all 0.15s; }
-  .h-tab.active { background: var(--brown); border-color: var(--brown); color: var(--white); }
-  .mini-cal { background: var(--sand); border: 1px solid var(--border); border-radius: 10px; padding: 8px; }
-  .mini-cal-nav { display: flex; align-items: center; margin-bottom: 6px; }
-  .mini-cal-arrow { font-size: 12px; color: var(--text-light); cursor: pointer; padding: 0 6px; user-select: none; transition: color 0.15s; }
-  .mini-cal-arrow:hover { color: var(--brown); }
-  .mini-cal-title { flex: 1; text-align: center; font-size: 11px; font-weight: 500; color: var(--text); }
-  .mini-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; row-gap: 2px; }
-  .cal-hd { font-size: 8px; color: var(--text-light); line-height: 16px; }
-  .cal-d { font-size: 10px; color: var(--text-mid); line-height: 1; width: 20px; height: 20px; margin: auto; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; transition: all 0.15s; }
-  .cal-d:hover { background: var(--sand-dark); }
-  .cal-d.today { background: var(--brown); color: white; }
-  .cal-d.has-stone::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; border-radius: 50%; background: var(--brown-light); }
-  .cal-d.today::after { background: rgba(255,253,248,0.7); }
-  .filter-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-  .fchip { font-size: 10px; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-light); cursor: pointer; background: var(--white); white-space: nowrap; transition: all 0.15s; }
-  .fchip.active { background: var(--sand-dark); border-color: var(--border-strong); color: var(--text); font-weight: 500; }
-  .mies-wrap { display: flex; align-items: center; gap: 3px; background: var(--white); border: 1px solid var(--border-strong); border-radius: 6px; padding: 3px 7px; cursor: pointer; }
-  .mies-wrap.active { background: var(--sand-dark); }
-  .mies-input { width: 20px; border: none; background: transparent; font-size: 10px; font-weight: 500; color: var(--text); outline: none; padding: 0; text-align: center; font-family: 'DM Sans', sans-serif; }
-  .h-preview-list { flex: 1; overflow-y: auto; }
-  .preview-empty { font-size: 11px; color: var(--text-light); text-align: center; padding: 16px 0; font-style: italic; }
-  .preview-item { padding: 6px 8px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
-  .preview-item:last-child { border-bottom: none; }
-  .preview-bar { width: 3px; min-height: 18px; border-radius: 2px; flex-shrink: 0; align-self: stretch; }
-  .preview-info { flex: 1; min-width: 0; }
-  .preview-name { font-size: 11px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .preview-date { font-size: 10px; color: var(--text-light); }
-  .preview-date.overdue { color: var(--red); }
-  .preview-check { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border-strong); background: transparent; color: var(--text-light); font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
-  .preview-check:hover { background: var(--green); border-color: var(--green); color: white; }
-  .h-right { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--sand); }
-  .h-right-bar { padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--white); display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+  /* TAB — KALENDARZ */
+  .kal-wrap { height: 100%; display: flex; flex-direction: column; }
+  .kal-bar { padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--white); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
   .view-chips { display: flex; gap: 4px; }
-  .view-chip { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-light); cursor: pointer; background: var(--white); transition: all 0.15s; white-space: nowrap; }
+  .view-chip { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-light); cursor: pointer; background: var(--white); transition: all 0.15s; }
   .view-chip.active { background: var(--sand-dark); border-color: var(--border-strong); color: var(--text); font-weight: 500; }
-  .task-tabs { display: flex; gap: 6px; }
-  .task-tab { font-size: 11px; padding: 5px 14px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-light); cursor: pointer; background: var(--white); transition: all 0.15s; }
-  .task-tab.active { background: var(--sand-dark); border-color: var(--border-strong); color: var(--text); font-weight: 500; }
-  .search-wrap { display: flex; align-items: center; gap: 6px; margin-left: auto; position: relative; }
-  .search-input { width: 0; overflow: hidden; padding: 0; border: none; font-family: 'DM Sans', sans-serif; font-size: 12px; background: var(--sand); border-radius: 6px; outline: none; color: var(--text); transition: all 0.25s; }
-  .search-input.open { width: 160px; padding: 5px 10px; border: 1px solid var(--border-strong); }
-  .search-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); background: var(--white); color: var(--text-light); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.15s; }
-  .search-btn:hover { border-color: var(--border-strong); color: var(--brown); }
-  .add-btn { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--white); color: var(--brown); font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 4px; font-family: 'DM Sans', sans-serif; }
+  .fc-nav { display: flex; align-items: center; gap: 6px; }
+  .fc-nav-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--white); color: var(--text-mid); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .fc-nav-btn:hover { border-color: var(--brown); color: var(--brown); }
+  .fc-nav-title { font-size: 12px; font-weight: 500; color: var(--text); min-width: 120px; text-align: center; }
+  .fc-today-btn { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--white); color: var(--text-mid); cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .fc-today-btn:hover { border-color: var(--brown); color: var(--brown); }
+  .add-btn { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--white); color: var(--brown); font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; margin-left: auto; }
   .add-btn:hover { background: var(--brown); color: var(--white); border-color: var(--brown); }
-  .h-right-body { flex: 1; overflow: hidden; }
-  .h-right-body.tasks-mode { overflow-y: auto; padding: 14px 16px; }
+  .fc { font-family: 'DM Sans', sans-serif; font-size: 12px; }
+  .fc .fc-toolbar { display: none; }
+  .fc .fc-col-header-cell-cushion { color: var(--text-mid); font-size: 11px; font-weight: 500; padding: 6px 4px; text-decoration: none; }
+  .fc .fc-daygrid-day-number { color: var(--text-mid); font-size: 11px; text-decoration: none; padding: 4px 6px; }
+  .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number { background: var(--brown); color: var(--white); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+  .fc .fc-event { border-radius: 5px; font-size: 11px; border: none; padding: 1px 4px; cursor: pointer; }
+  .fc .fc-timegrid-slot { height: 32px; }
+  .fc .fc-timegrid-slot-label { font-size: 10px; color: var(--text-light); }
+  .fc .fc-scrollgrid { border-color: var(--border); }
+  .fc th { background: var(--white); }
+  .fc .fc-timegrid-now-indicator-line { border-color: var(--red); }
+  #fc-terapeuta { height: 100%; }
+  .fc-body-wrap { flex: 1; padding: 12px 14px; overflow: hidden; }
 
-  /* zadania (stary kod) */
-  .month-section { margin-bottom: 16px; }
-  .month-header { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); font-weight: 500; padding: 4px 0 8px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
-  .task-list { display: flex; flex-direction: column; gap: 4px; }
-  .task-item { padding: 9px 10px; border-radius: 8px; background: var(--white); display: flex; align-items: center; gap: 8px; cursor: grab; transition: all 0.15s; border: 1px solid var(--border); }
-  .task-item:hover { box-shadow: 0 2px 8px rgba(139,115,85,0.08); }
-  .task-item:active { cursor: grabbing; opacity: 0.7; }
-  .task-item.dragging { opacity: 0.4; }
-  .drag-handle { display: flex; flex-direction: column; gap: 2.5px; flex-shrink: 0; padding: 2px; }
-  .drag-handle span { display: block; width: 12px; height: 1.5px; background: var(--border-strong); border-radius: 1px; }
-  .task-name { flex: 1; font-size: 12px; color: var(--text); }
-  .task-actions { display: flex; gap: 4px; }
-  .task-btn { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-light); font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-  .task-btn:hover { border-color: var(--border-strong); color: var(--brown); }
-  .task-btn.done:hover { background: var(--green); border-color: var(--green); color: white; }
-  .task-btn.del:hover { background: var(--red); border-color: var(--red); color: white; }
-  .task-hist-item { padding: 8px 10px; border-radius: 8px; background: var(--white); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); margin-bottom: 4px; opacity: 0.7; }
-  .hist-bar { width: 3px; min-height: 18px; border-radius: 2px; flex-shrink: 0; align-self: stretch; }
-  .task-hist-name { flex: 1; font-size: 12px; color: var(--text-light); text-decoration: line-through; }
-  .task-hist-date { font-size: 10px; color: var(--text-light); }
-  .add-task-form { display: flex; gap: 6px; margin-bottom: 12px; }
-  .add-task-input { flex: 1; padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; background: var(--white); color: var(--text); outline: none; }
-  .add-task-input:focus { border-color: var(--brown); }
-  .add-task-btn { padding: 8px 14px; border-radius: 8px; border: none; background: var(--brown); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
-  .add-task-btn:hover { background: var(--brown-deep); }
-  .hist-filter { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
-  .hist-chip { font-size: 10px; padding: 2px 7px; border-radius: 4px; border: 1px solid var(--border); color: var(--text-light); cursor: pointer; background: var(--white); transition: all 0.15s; }
-  .hist-chip.active { background: var(--sand-dark); border-color: var(--border-strong); color: var(--text); }
-  .empty-msg { font-size: 12px; color: var(--text-light); text-align: center; padding: 24px 0; font-style: italic; }
+  /* TAB — PODOPIECZNY DETAIL */
+  .detail-wrap { padding: 20px 24px; overflow-y: auto; height: 100%; }
+  .detail-empty { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 300; color: var(--text-light); text-align: center; padding: 60px 0; font-style: italic; }
+  .detail-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
+  .detail-nick { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 300; color: var(--text); }
+  .detail-since { font-size: 11px; color: var(--text-light); }
+  .detail-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .detail-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  .detail-card-title { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); margin-bottom: 8px; }
+  .detail-card-num { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 300; color: var(--brown); }
+  .detail-card-sub { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+  .visits-list { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+  .visits-title { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); margin-bottom: 10px; }
+  .visit-item { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .visit-item:last-child { border-bottom: none; }
+  .visit-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+  .visit-dot.future { background: var(--blue); }
+  .visit-date { font-size: 12px; color: var(--text); font-weight: 500; min-width: 80px; }
+  .visit-note { font-size: 11px; color: var(--text-light); flex: 1; }
+  .visits-empty { font-size: 11px; color: var(--text-light); font-style: italic; }
+
+  /* TAB — ZALECENIA */
+  .zal-wrap { padding: 20px 24px; overflow-y: auto; height: 100%; }
+  .zal-form { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .zal-form-title { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 300; color: var(--brown); margin-bottom: 12px; }
+  .zal-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .zal-input { flex: 1; min-width: 200px; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; }
+  .zal-input:focus { border-color: var(--brown); }
+  .zal-select { padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; cursor: pointer; }
+  .zal-date { padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; }
+  .zal-textarea { width: 100%; min-height: 60px; resize: none; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; line-height: 1.6; margin-bottom: 8px; }
+  .zal-textarea:focus { border-color: var(--brown); }
+  .zal-save-btn { padding: 9px 20px; border-radius: 8px; border: none; background: var(--brown); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .zal-save-btn:hover { background: var(--brown-deep); }
+  .zal-list-title { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); margin-bottom: 10px; }
+  .zal-item { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; display: flex; gap: 10px; align-items: flex-start; }
+  .zal-bar { width: 4px; border-radius: 2px; align-self: stretch; flex-shrink: 0; min-height: 20px; }
+  .zal-body { flex: 1; min-width: 0; }
+  .zal-tresc { font-size: 13px; color: var(--text); line-height: 1.5; margin-bottom: 4px; }
+  .zal-meta { font-size: 10px; color: var(--text-light); }
+  .zal-status { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+  .zal-status.oczekuje { background: rgba(139,115,85,0.1); color: var(--brown); }
+  .zal-status.zaakceptowane { background: rgba(107,143,113,0.15); color: var(--green); }
+  .zal-empty { font-size: 12px; color: var(--text-light); font-style: italic; text-align: center; padding: 20px 0; }
+
+  /* TAB — NOTATKI PO SESJI */
+  .notatki-wrap { padding: 20px 24px; overflow-y: auto; height: 100%; }
+  .notatka-form { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .notatka-form-title { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 300; color: var(--brown); margin-bottom: 12px; }
+  .notatka-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .notatka-select { padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; cursor: pointer; }
+  .notatka-textarea { width: 100%; min-height: 80px; resize: none; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--sand); color: var(--text); outline: none; line-height: 1.6; margin-bottom: 8px; }
+  .notatka-textarea:focus { border-color: var(--brown); }
+  .notatka-save-btn { padding: 9px 20px; border-radius: 8px; border: none; background: var(--terapia); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .notatka-item { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+  .notatka-meta { font-size: 10px; color: var(--text-light); margin-bottom: 6px; }
+  .notatka-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .notatka-client { font-size: 11px; color: var(--terapia); font-weight: 500; margin-top: 4px; }
+
+  /* TAB — PODSUMOWANIE */
+  .podsum-wrap { padding: 20px 24px; overflow-y: auto; height: 100%; }
+  .podsum-select-row { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+  .podsum-label { font-size: 12px; color: var(--text-mid); }
+  .podsum-select { padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--white); color: var(--text); outline: none; cursor: pointer; }
+  .podsum-btn { padding: 8px 18px; border-radius: 8px; border: none; background: var(--brown); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .podsum-btn:hover { background: var(--brown-deep); }
+  .podsum-result { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 20px; white-space: pre-wrap; font-size: 13px; color: var(--text); line-height: 1.8; }
+  .podsum-empty { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 300; color: var(--text-light); font-style: italic; text-align: center; padding: 40px 0; }
+  .podsum-loading { font-size: 12px; color: var(--text-light); font-style: italic; padding: 20px 0; text-align: center; }
+  .consent-badge { font-size: 10px; padding: 3px 8px; border-radius: 4px; background: rgba(107,143,113,0.15); color: var(--green); font-weight: 500; }
+  .no-consent-badge { font-size: 10px; padding: 3px 8px; border-radius: 4px; background: rgba(192,57,43,0.1); color: var(--red); font-weight: 500; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn 0.3s ease both; }
   .loading { font-size: 11px; color: var(--text-light); padding: 12px; text-align: center; font-style: italic; }
-
-  /* CISZA */
-  #screen-cisza { display: none; min-height: 100vh; flex-direction: column; }
-  .cisza-body { flex: 1; display: flex; flex-direction: column; max-width: 680px; margin: 0 auto; width: 100%; padding: 20px 24px; gap: 14px; overflow-y: auto; }
-  .cisza-type-row { display: flex; gap: 8px; }
-  .cisza-type-btn { flex: 1; padding: 11px 0; border-radius: 12px; border: 1.5px solid var(--border); background: var(--white); font-family: 'Crimson Pro', serif; font-size: 17px; font-weight: 300; color: var(--text-mid); cursor: pointer; transition: all 0.2s; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .cisza-type-btn:hover { border-color: var(--border-strong); color: var(--text); }
-  .cisza-type-btn .cisza-count { font-family: 'DM Sans', sans-serif; font-size: 10px; color: var(--text-light); }
-  .cisza-type-btn.filter-active { border-width: 2px; }
-  .cisza-type-btn.filter-active.sen  { border-color: var(--cisza-sen);    color: var(--cisza-sen); }
-  .cisza-type-btn.filter-active.mysl { border-color: var(--cisza-mysl);   color: var(--cisza-mysl); }
-  .cisza-type-btn.filter-active.czucie { border-color: var(--cisza-czucie); color: var(--cisza-czucie); }
-  .cisza-input-area { display: none; flex-direction: column; gap: 8px; animation: fadeIn 0.2s ease both; }
-  .cisza-input-area.visible { display: flex; }
-  .cisza-input-header { font-size: 11px; color: var(--text-light); }
-  .cisza-input-header span { font-weight: 500; }
-  .cisza-textarea { width: 100%; min-height: 90px; resize: none; padding: 12px 14px; border: 1.5px solid var(--border-strong); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--white); color: var(--text); outline: none; line-height: 1.6; transition: border-color 0.2s; }
-  .cisza-textarea:focus { border-color: var(--brown); }
-  .cisza-save-row { display: flex; justify-content: flex-end; gap: 8px; }
-  .cisza-cancel-btn { padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-mid); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; }
-  .cisza-cancel-btn:hover { border-color: var(--border-strong); color: var(--text); }
-  .cisza-save-btn { padding: 7px 18px; border-radius: 8px; border: none; background: var(--brown); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
-  .cisza-save-btn:hover { background: var(--brown-deep); }
-  .cisza-filter-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .cisza-mies-wrap { display: flex; align-items: center; gap: 5px; background: var(--white); border: 1px solid var(--border-strong); border-radius: 8px; padding: 4px 10px; }
-  .cisza-mies-input { width: 28px; border: none; background: transparent; font-size: 12px; font-weight: 500; color: var(--text); outline: none; text-align: center; font-family: 'DM Sans', sans-serif; -moz-appearance: textfield; }
-  .cisza-mies-input::-webkit-outer-spin-button, .cisza-mies-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-  .cisza-mies-label { font-size: 11px; color: var(--text-mid); font-weight: 500; }
-  .cisza-mies-all { font-size: 11px; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-light); cursor: pointer; background: var(--white); transition: all 0.15s; white-space: nowrap; }
-  .cisza-mies-all:hover { border-color: var(--border-strong); color: var(--text); }
-  .cisza-mies-all.active { background: var(--sand-dark); border-color: var(--border-strong); color: var(--text); font-weight: 500; }
-  .cisza-search-wrap { display: flex; align-items: center; gap: 4px; }
-  .cisza-search-input { width: 0; overflow: hidden; padding: 0; border: none; font-family: 'DM Sans', sans-serif; font-size: 12px; background: var(--sand); border-radius: 6px; outline: none; color: var(--text); transition: all 0.25s; }
-  .cisza-search-input.open { width: 140px; padding: 4px 10px; border: 1px solid var(--border-strong); }
-  .cisza-search-btn { width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border); background: var(--white); color: var(--text-light); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.15s; }
-  .cisza-search-btn:hover { border-color: var(--border-strong); color: var(--brown); }
-  .cisza-list { display: flex; flex-direction: column; gap: 8px; }
-  .cisza-entry { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; transition: all 0.15s; animation: fadeIn 0.3s ease both; }
-  .cisza-entry:hover { border-color: var(--border-strong); box-shadow: 0 2px 10px rgba(139,115,85,0.07); }
-  .cisza-entry-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
-  .cisza-entry-body { flex: 1; min-width: 0; }
-  .cisza-entry-type { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; font-weight: 500; }
-  .cisza-entry-text { font-size: 13px; color: var(--text); line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
-  .cisza-entry-time { font-size: 10px; color: var(--text-light); margin-top: 6px; }
-  .cisza-del-btn { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-light); font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; opacity: 0; }
-  .cisza-entry:hover .cisza-del-btn { opacity: 1; }
-  .cisza-del-btn:hover { background: var(--red); border-color: var(--red); color: var(--white); }
-  .cisza-empty { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 300; color: var(--text-light); text-align: center; padding: 40px 0; font-style: italic; line-height: 1.7; }
-
-  /* NOTATNIK */
-  #screen-notatnik { display: none; min-height: 100vh; flex-direction: column; }
-  .notatnik-body { flex: 1; display: flex; flex-direction: column; max-width: 680px; margin: 0 auto; width: 100%; padding: 20px 24px; gap: 14px; overflow-y: auto; }
-  .notatnik-empty { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 300; color: var(--text-light); text-align: center; padding: 40px 0; font-style: italic; line-height: 1.7; }
-  .notatnik-entry { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; transition: all 0.15s; animation: fadeIn 0.3s ease both; }
-  .notatnik-entry:hover { border-color: var(--border-strong); box-shadow: 0 2px 10px rgba(139,115,85,0.07); }
-  .notatnik-entry-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brown-light); flex-shrink: 0; margin-top: 5px; }
-  .notatnik-entry-body { flex: 1; min-width: 0; }
-  .notatnik-entry-text { font-size: 13px; color: var(--text); line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
-  .notatnik-entry-time { font-size: 10px; color: var(--text-light); margin-top: 6px; }
-  .notatnik-del-btn { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-light); font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; opacity: 0; }
-  .notatnik-entry:hover .notatnik-del-btn { opacity: 1; }
-  .notatnik-del-btn:hover { background: var(--red); border-color: var(--red); color: var(--white); }
-  .notatnik-filter-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .notatnik-mies-wrap { display: flex; align-items: center; gap: 5px; background: var(--white); border: 1px solid var(--border-strong); border-radius: 8px; padding: 4px 10px; }
-  .notatnik-mies-input { width: 28px; border: none; background: transparent; font-size: 12px; font-weight: 500; color: var(--text); outline: none; text-align: center; font-family: 'DM Sans', sans-serif; -moz-appearance: textfield; }
-  .notatnik-mies-input::-webkit-outer-spin-button, .notatnik-mies-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-  .notatnik-mies-label { font-size: 11px; color: var(--text-mid); font-weight: 500; }
-  .notatnik-mies-all { font-size: 11px; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-light); cursor: pointer; background: var(--white); transition: all 0.15s; }
-  .notatnik-mies-all:hover { border-color: var(--border-strong); color: var(--text); }
-  .notatnik-mies-all.active { background: var(--sand-dark); border-color: var(--border-strong); color: var(--text); font-weight: 500; }
-  .notatnik-list { display: flex; flex-direction: column; gap: 8px; }
-
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-  @media (max-width: 640px) {
-    .main-row-top { grid-template-columns: 2fr 1fr; }
-    .horyzont-body { flex-direction: column; }
-    .h-left { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
-    .cisza-body { padding: 16px; }
-    .notatnik-body { padding: 16px; }
-    .fc-nav-title { min-width: 80px; font-size: 11px; }
-  }
 </style>
 </head>
 <body>
 
 <div class="toast" id="toast"></div>
 
-<!-- MODAL KAMIEŃ -->
-<div class="modal-overlay" id="modal-stone">
+<!-- MODAL WIZYTA -->
+<div class="modal-overlay" id="modal-wizyta">
   <div class="modal">
-    <div class="modal-title" id="modal-stone-title">Nowy wpis</div>
-    <div class="modal-field"><div class="modal-label">Treść</div><input class="modal-input" id="modal-stone-tresc" type="text" placeholder="np. wizyta u lekarza"></div>
-    <div class="modal-field" id="modal-sekcja-row" style="display:none"><div class="modal-label">Sekcja</div>
-      <select class="modal-select" id="modal-stone-sekcja">
-        <option value="horyzont">📅 Horyzont (kalendarz / zadania)</option>
-        <option value="cisza">🌙 Cisza (sen / myśl / czucie)</option>
-      </select>
+    <div class="modal-title">Nowa wizyta</div>
+    <div class="modal-field">
+      <div class="modal-label">Podopieczny</div>
+      <select class="modal-select" id="modal-w-client"></select>
     </div>
-    <div class="modal-field"><div class="modal-label">Typ</div>
-      <select class="modal-select" id="modal-stone-typ">
-        <option value="zadanie">Zadanie</option>
-        <option value="calodniowe">Całodniowe (urodziny, rocznica…)</option>
-        <option value="odczucie">Odczucie</option>
-        <option value="sen">Sen</option>
-      </select>
+    <div class="modal-field">
+      <div class="modal-label">Data i godzina</div>
+      <input class="modal-input" type="datetime-local" id="modal-w-date">
     </div>
-    <div class="modal-field"><div class="modal-label">Data</div><input class="modal-input" id="modal-stone-date" type="date"></div>
-    <div class="modal-field"><div class="modal-label">Godzina (opcjonalnie)</div><input class="modal-input" id="modal-stone-time" type="time"></div>
+    <div class="modal-field">
+      <div class="modal-label">Czas trwania (min)</div>
+      <input class="modal-input" type="number" id="modal-w-czas" value="60" min="15" step="15">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Notatka (opcjonalnie)</div>
+      <input class="modal-input" type="text" id="modal-w-notatka" placeholder="np. pierwsza wizyta">
+    </div>
     <div class="modal-actions">
-      <button class="modal-btn secondary" onclick="closeModal('modal-stone')">Anuluj</button>
-      <button class="modal-btn primary" onclick="saveStone()">Zapisz</button>
+      <button class="modal-btn secondary" onclick="closeModal('modal-wizyta')">Anuluj</button>
+      <button class="modal-btn primary" onclick="saveWizyta()">Zapisz wizytę</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL ZADANIE -->
-<div class="modal-overlay" id="modal-task">
-  <div class="modal">
-    <div class="modal-title">Edytuj zadanie</div>
-    <div class="modal-field"><div class="modal-label">Treść</div><input class="modal-input" id="modal-task-tresc" type="text"></div>
-    <div class="modal-actions">
-      <button class="modal-btn secondary" onclick="closeModal('modal-task')">Anuluj</button>
-      <button class="modal-btn primary" onclick="saveTaskEdit()">Zapisz</button>
-    </div>
-  </div>
-</div>
-
-<!-- NAKŁADKA GŁOSOWA -->
-<div class="voice-overlay" id="voice-overlay">
-  <div class="voice-panel">
-    <div class="voice-panel-title">Notatka głosowa</div>
-    <div class="voice-panel-hint">Nagraj myśl, sen lub odczucie — zapisze się do Ciszy</div>
-    <div class="voice-status" id="voice-status">Naciśnij mikrofon i mów…</div>
-    <textarea class="voice-transcript" id="voice-transcript" placeholder="Tekst pojawi się tutaj… możesz też wpisać ręcznie"></textarea>
-    <div class="voice-type-row">
-      <div class="voice-type-chip active" id="vtype-mysl" onclick="vSetType('mysl')">Myśl</div>
-      <div class="voice-type-chip" id="vtype-sen" onclick="vSetType('sen')">Sen</div>
-      <div class="voice-type-chip" id="vtype-czucie" onclick="vSetType('czucie')">Czucie</div>
-    </div>
-    <div id="voice-no-support" class="voice-no-support" style="display:none">Twoja przeglądarka nie obsługuje rozpoznawania mowy. Wpisz tekst ręcznie.</div>
-    <div class="voice-actions">
-      <button class="voice-mic-big" id="voice-mic-big" onclick="toggleVoiceRecording()" title="Nagraj">🎙</button>
-      <button class="voice-save-btn" onclick="voiceSave()">Zapisz do Ciszy</button>
-      <button class="voice-cancel-btn" onclick="closeVoiceOverlay()">Anuluj</button>
-    </div>
-  </div>
-</div>
-
-<!-- EKRAN LOGOWANIA -->
+<!-- LOGIN -->
 <div id="screen-login">
   <div class="login-card">
     <div class="mana-logo">MANA</div>
-    <div class="mana-sub">Słoik · Twoja przestrzeń</div>
-    <div class="login-label">Twój klucz (nick)</div>
-    <input class="login-input" type="text" id="nick-input" placeholder="wpisz swój nick" autocomplete="off">
-    <button class="login-btn" onclick="doLogin()">Wejdź</button>
-    <div class="login-note">Wpisz ten sam nick co w Gawędzie</div>
+    <div class="mana-sub">Ekosystem · Merkaba</div>
+    <div class="mana-role">Panel Terapeuty</div>
+    <div class="login-label">Twój nick terapeuty</div>
+    <input class="login-input" type="text" id="login-nick" placeholder="wpisz nick" autocomplete="off">
+    <button class="login-btn" onclick="doLogin()">Wejdź do panelu</button>
+    <div class="login-note">Ten sam nick co w MANA</div>
   </div>
 </div>
 
-<!-- EKRAN GŁÓWNY -->
-<div id="screen-main" style="display:none;flex-direction:column">
+<!-- MAIN -->
+<div id="screen-main">
   <div class="top-bar">
-    <div class="top-logo">MANA</div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div class="top-logo">MANA</div>
+      <div class="top-role">Terapeuta</div>
+    </div>
     <div class="top-right">
-      <div class="top-nick-label" id="top-nick-display"></div>
+      <div class="top-nick" id="top-nick"></div>
       <div class="top-logout" onclick="doLogout()">wyloguj</div>
     </div>
   </div>
-  <div class="main-content">
-    <div class="greeting" id="greeting-text">Cześć</div>
-    <div class="greeting-date" id="greeting-date"></div>
-    <div class="main-row-top">
-      <div class="tile-gaweda" onclick="openGaweda()">
-        <div class="tile-gaweda-left">
-          <div class="tile-gaweda-name">Gawęda</div>
-          <div class="tile-gaweda-en">Talk</div>
-        </div>
-        <div class="tile-gaweda-arrow">→</div>
-      </div>
-      <div class="tile-help" onclick="openPlaceholder('MANA Help','Help')">
-        <div class="tile-help-accent"></div>
-        <div class="tile-help-name">Help</div>
-        <div class="tile-help-en">MANA Help</div>
-      </div>
-    </div>
-    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:12px;">
-      <button id="main-mic-btn" onclick="toggleMainMic()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;border:1.5px solid var(--border-strong);background:var(--white);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;">
-        <span id="main-mic-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-light);transition:background 0.2s;"></span>
-        <span id="main-mic-label">🎙 Mikrofon</span>
-      </button>
-      <button onclick="openNotatnik()" id="main-notatnik-btn" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;border:1.5px solid var(--border-strong);background:var(--white);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;">
-        <span id="notatnik-count-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-light);transition:background 0.2s;"></span>
-        <span>📓 Notatnik</span>
-      </button>
-    </div>
-    <div id="main-mic-bar" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:12px;flex-direction:column;gap:8px;">
-      <div style="font-size:10px;color:var(--text-light);" id="main-mic-status">Naciśnij mikrofon i mów, lub wpisz ręcznie</div>
-      <textarea id="main-mic-text" rows="2" style="width:100%;padding:8px 12px;border:1.5px solid var(--border-strong);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--sand);color:var(--text);outline:none;resize:none;line-height:1.5;" placeholder="Tekst pojawi się tutaj…"></textarea>
-      <div style="display:flex;gap:8px;justify-content:flex-end;">
-        <button onclick="cancelMainMic()" style="padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-light);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">Anuluj</button>
-        <button onclick="saveMainMic()" style="padding:7px 18px;border-radius:8px;border:none;background:var(--brown);color:var(--white);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;">Zapisz</button>
-      </div>
-    </div>
-    <div class="tile-sloik-btn" onclick="openSloik()">
-      <div class="tile-sloik-left">
-        <div class="tile-sloik-name">Słoik</div>
-        <div class="tile-sloik-en">Jar</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <div class="tile-sloik-stats" id="sloik-stats"></div>
-        <div class="tile-sloik-arrow">→</div>
-      </div>
-    </div>
-    <div class="pinned-grid" id="pinned-grid"></div>
-  </div>
-</div>
 
-<!-- EKRAN SŁOIKA -->
-<div id="screen-sloik" style="display:none;flex-direction:column">
-  <div class="sub-bar">
-    <div class="back-btn" onclick="showMain()">← MANA</div>
-    <div class="sub-title">Słoik · Twoja przestrzeń</div>
-  </div>
-  <div class="sloik-content">
-    <div class="sloik-intro">Przeciągnij sekcje w wybranej kolejności. Przypnij 1–2 do ekranu głównego.</div>
-    <div class="sloik-sections" id="sloik-sections"></div>
-  </div>
-</div>
-
-<!-- EKRAN GAWĘDA -->
-<div id="screen-gaweda" style="display:none;flex-direction:column">
-  <div class="sub-bar">
-    <div class="back-btn" onclick="showMain()">← MANA</div>
-    <div class="sub-title">Gawęda · Serce MANA</div>
-    <div class="sub-bar-right">
-      <button class="voice-btn" id="voice-btn-gaweda" onclick="toggleGawedaVoice()">
-        <span class="voice-dot" id="gaweda-voice-dot"></span> <span id="gaweda-voice-label">Głos</span>
-      </button>
-    </div>
-  </div>
-  <div id="gaweda-dictate-bar" style="display:none; padding:10px 16px; background:var(--sand-dark); border-bottom:1px solid var(--border); gap:8px; align-items:flex-end; flex-wrap:wrap;">
-    <div style="flex:1;min-width:200px;">
-      <div style="font-size:10px;color:var(--text-light);margin-bottom:4px;">Podyktuj → Kopiuj → wklej do Serca poniżej</div>
-      <textarea id="gaweda-dictate-text" style="width:100%;padding:8px 12px;border:1.5px solid var(--border-strong);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--white);color:var(--text);outline:none;resize:none;min-height:44px;line-height:1.5;" placeholder="Mów — tekst pojawi się tutaj" rows="2"></textarea>
-    </div>
-    <button onclick="copyGawedaDictate()" style="padding:8px 14px;border-radius:8px;border:none;background:var(--brown);color:var(--white);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;">Kopiuj</button>
-    <button onclick="clearGawedaDictate()" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-light);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;white-space:nowrap;">Wyczyść</button>
-  </div>
-  <iframe id="typebot-frame" class="typebot-frame" src="" allow="microphone"></iframe>
-</div>
-
-<!-- EKRAN PLACEHOLDER -->
-<div id="screen-placeholder" style="display:none;flex-direction:column">
-  <div class="sub-bar">
-    <div class="back-btn" id="placeholder-back-btn" onclick="showMain()">← MANA</div>
-    <div class="sub-title" id="placeholder-title">—</div>
-    <div class="sub-bar-right">
-      <button class="voice-btn" onclick="openVoiceOverlay()"><span class="voice-dot"></span> Głos</button>
-    </div>
-  </div>
-  <div class="placeholder-body">
-    <div class="placeholder-icon" id="placeholder-icon">—</div>
-    <div class="placeholder-text">wkrótce</div>
-  </div>
-</div>
-
-<!-- EKRAN HORYZONT -->
-<div id="screen-horyzont" style="display:none;flex-direction:column">
-  <div class="sub-bar">
-    <div class="back-btn" onclick="openSloik()">← Słoik</div>
-    <div class="sub-title">Horyzont</div>
-    <div class="sub-bar-right">
-      <button class="voice-btn" onclick="openVoiceOverlay()"><span class="voice-dot"></span> Głos</button>
-    </div>
-  </div>
-  <div class="horyzont-body">
-    <div class="h-left">
-      <div class="h-tabs">
-        <div class="h-tab" id="htab-kal" onclick="hSetTab('kal')">Kalendarz</div>
-        <div class="h-tab active" id="htab-zad" onclick="hSetTab('zad')">Zadania</div>
-      </div>
-      <div class="mini-cal">
-        <div class="mini-cal-nav">
-          <span class="mini-cal-arrow" onclick="calNavMonth(-1)">◀</span>
-          <div class="mini-cal-title" id="cal-title"></div>
-          <span class="mini-cal-arrow" onclick="calNavMonth(1)">▶</span>
-        </div>
-        <div class="mini-cal-grid" id="cal-grid"></div>
-      </div>
-      <div id="h-filter-row" class="filter-row">
-        <div class="mies-wrap active" id="fchip-mies" onclick="hSetFilter('mies')">
-          <input type="number" id="mies-val" class="mies-input" min="1" max="12" value="3" onclick="event.stopPropagation()">
-          <span style="font-size:10px;font-weight:500;color:var(--text)">mies.</span>
-        </div>
-        <div class="fchip" id="fchip-wszystkie" onclick="hSetFilter('wszystkie')">Wszystkie</div>
-        <div class="fchip" id="fchip-hist" onclick="hSetFilter('hist')">Historia</div>
-      </div>
-      <div class="h-preview-list" id="h-preview-list"><div class="loading">ładowanie…</div></div>
-    </div>
-    <div class="h-right">
-      <div class="h-right-bar" id="h-right-bar">
-        <!-- Kalendarz controls -->
-        <div id="bar-kal" style="display:none;align-items:center;gap:8px;flex:1;flex-wrap:wrap;">
-          <div class="view-chips">
-            <div class="view-chip active" id="vchip-miesiac" onclick="hSetView('miesiac')">Miesiąc</div>
-            <div class="view-chip" id="vchip-tydzien" onclick="hSetView('tydzien')">Tydzień</div>
-            <div class="view-chip" id="vchip-dzien" onclick="hSetView('dzien')">Dzień</div>
+  <div class="main-body">
+    <!-- LEWY PANEL -->
+    <div class="left-panel">
+      <div class="left-section">
+        <div class="left-section-title">Dzisiaj</div>
+        <div class="stats-grid">
+          <div class="stat-tile">
+            <div class="stat-num" id="stat-today">0</div>
+            <div class="stat-label">wizyt dziś</div>
           </div>
-          <div class="fc-nav">
-            <button class="fc-nav-btn" onclick="fcPrev()" title="Poprzedni">◀</button>
-            <button class="fc-today-btn" onclick="fcToday()">dziś</button>
-            <button class="fc-nav-btn" onclick="fcNext()" title="Następny">▶</button>
-            <div class="fc-nav-title" id="fc-nav-title"></div>
+          <div class="stat-tile">
+            <div class="stat-num" id="stat-week">0</div>
+            <div class="stat-label">w tym tygodniu</div>
           </div>
-          <button class="add-btn" style="margin-left:auto" onclick="openAddStone()">+ dodaj</button>
-        </div>
-        <!-- Zadania controls -->
-        <div id="bar-zad" style="display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap;">
-          <div class="task-tabs">
-            <div class="task-tab active" id="ztab-aktywne" onclick="zSetTab('aktywne')">Aktywne</div>
-            <div class="task-tab" id="ztab-historia" onclick="zSetTab('historia')">Historia</div>
+          <div class="stat-tile">
+            <div class="stat-num" id="stat-clients">0</div>
+            <div class="stat-label">podopiecznych</div>
           </div>
-          <div class="search-wrap">
-            <input class="search-input" id="search-input" type="text" placeholder="szukaj…" oninput="hSearch(this.value)">
-            <button class="search-btn" onclick="toggleSearch()" title="Szukaj">🔍</button>
+          <div class="stat-tile">
+            <div class="stat-num" id="stat-pending">0</div>
+            <div class="stat-label">oczekuje zgody</div>
           </div>
-          <button class="add-btn" id="add-btn-zad" onclick="focusAddTask()">+ dodaj</button>
         </div>
       </div>
-      <div class="h-right-body tasks-mode" id="h-right-body"><div class="loading">ładowanie…</div></div>
-    </div>
-  </div>
-</div>
 
-<!-- EKRAN CISZA -->
-<div id="screen-cisza" style="display:none;flex-direction:column">
-  <div class="sub-bar">
-    <div class="back-btn" onclick="openSloik()">← Słoik</div>
-    <div class="sub-title" id="cisza-title" onclick="ciszaResetFilter()" style="cursor:default">Cisza · Silence</div>
-    <div class="sub-bar-right">
-      <button class="voice-btn" onclick="openVoiceOverlay()">
-        <span class="voice-dot"></span> Głos
-      </button>
-    </div>
-  </div>
-  <div class="cisza-body">
-    <div class="cisza-type-row">
-      <button class="cisza-type-btn sen"    id="ctype-sen"    onclick="ciszaToggleType('sen')">Sen <span class="cisza-count" id="ccount-sen"></span></button>
-      <button class="cisza-type-btn mysl"   id="ctype-mysl"   onclick="ciszaToggleType('mysl')">Myśl <span class="cisza-count" id="ccount-mysl"></span></button>
-      <button class="cisza-type-btn czucie" id="ctype-czucie" onclick="ciszaToggleType('czucie')">Czucie <span class="cisza-count" id="ccount-czucie"></span></button>
-    </div>
-    <div class="cisza-input-area" id="cisza-input-area">
-      <div class="cisza-input-header">Nowy wpis — <span id="cisza-input-label">…</span></div>
-      <textarea class="cisza-textarea" id="cisza-textarea"></textarea>
-      <div class="cisza-save-row">
-        <button class="cisza-cancel-btn" onclick="ciszaCancelInput()">Anuluj</button>
-        <button class="cisza-save-btn" onclick="ciszaSave()">Zapisz</button>
+      <div class="left-section" style="flex:1">
+        <div class="left-section-title">Podopieczni</div>
+        <div class="client-list" id="client-list"><div class="client-empty">Brak podopiecznych</div></div>
+        <div class="add-client-form">
+          <input class="add-client-input" type="text" id="add-client-input" placeholder="nick podróżnika…">
+          <button class="add-client-btn" onclick="addClient()">+ Dodaj</button>
+        </div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:6px;font-style:italic;">Podróżnik musi potwierdzić zgodę</div>
       </div>
     </div>
-    <div class="cisza-filter-bar" id="cisza-filter-bar">
-      <div class="cisza-mies-wrap">
-        <input type="number" id="cisza-mies-input" class="cisza-mies-input" min="1" max="12" value="1" oninput="ciszaChangeMies(this.value)">
-        <span class="cisza-mies-label">mies.</span>
-      </div>
-      <div class="cisza-mies-all" id="cisza-mies-all" onclick="ciszaSetAll()">Wszystkie</div>
-      <div class="cisza-search-wrap" id="cisza-search-wrap" style="display:none">
-        <input class="cisza-search-input" id="cisza-search-input" type="text" placeholder="szukaj…" oninput="ciszaSearch(this.value)">
-        <button class="cisza-search-btn" onclick="ciszaToggleSearch()">🔍</button>
-      </div>
-      <button class="cisza-search-btn" id="cisza-search-toggle" onclick="ciszaToggleSearch()">🔍</button>
-    </div>
-    <div class="cisza-list" id="cisza-list"><div class="loading">ładowanie…</div></div>
-  </div>
-</div>
 
-<!-- EKRAN NOTATNIK -->
-<div id="screen-notatnik" style="display:none;flex-direction:column">
-  <div class="sub-bar">
-    <div class="back-btn" onclick="openSloik()">← Słoik</div>
-    <div class="sub-title">Notatnik · Notepad</div>
-  </div>
-  <div class="notatnik-body">
-    <div style="font-size:12px;color:var(--text-light);font-style:italic;">Tu lądują Twoje nagrania głosowe z ekranu głównego.</div>
-    <div class="notatnik-filter-bar">
-      <div class="notatnik-mies-wrap">
-        <input type="number" id="notatnik-mies-input" class="notatnik-mies-input" min="1" max="12" value="1" oninput="notatnikChangeMies(this.value)">
-        <span class="notatnik-mies-label">mies.</span>
+    <!-- PRAWY PANEL -->
+    <div class="right-panel">
+      <div class="right-tabs">
+        <div class="rtab active" id="rtab-kal" onclick="setTab('kal')">Kalendarz</div>
+        <div class="rtab" id="rtab-podop" onclick="setTab('podop')">Podopieczny</div>
+        <div class="rtab" id="rtab-zal" onclick="setTab('zal')">Zalecenia</div>
+        <div class="rtab" id="rtab-notatki" onclick="setTab('notatki')">Notatki po sesji</div>
+        <div class="rtab" id="rtab-podsum" onclick="setTab('podsum')">Podsumowanie</div>
       </div>
-      <div class="notatnik-mies-all" id="notatnik-mies-all" onclick="notatnikSetAll()">Wszystkie</div>
+
+      <div class="right-body" id="right-body">
+        <!-- Kalendarz -->
+        <div id="tab-kal" class="kal-wrap">
+          <div class="kal-bar">
+            <div class="view-chips">
+              <div class="view-chip active" id="vchip-miesiac" onclick="fcSetView('dayGridMonth')">Miesiąc</div>
+              <div class="view-chip" id="vchip-tydzien" onclick="fcSetView('timeGridWeek')">Tydzień</div>
+              <div class="view-chip" id="vchip-dzien" onclick="fcSetView('timeGridDay')">Dzień</div>
+            </div>
+            <div class="fc-nav">
+              <button class="fc-nav-btn" onclick="fcPrev()">◀</button>
+              <button class="fc-today-btn" onclick="fcToday()">dziś</button>
+              <button class="fc-nav-btn" onclick="fcNext()">▶</button>
+              <div class="fc-nav-title" id="fc-nav-title"></div>
+            </div>
+            <button class="add-btn" onclick="openModalWizyta()">+ wizyta</button>
+          </div>
+          <div class="fc-body-wrap">
+            <div id="fc-terapeuta"></div>
+          </div>
+        </div>
+
+        <!-- Podopieczny detail -->
+        <div id="tab-podop" style="display:none;height:100%;">
+          <div class="detail-wrap" id="detail-wrap">
+            <div class="detail-empty">Wybierz podopiecznego z listy →</div>
+          </div>
+        </div>
+
+        <!-- Zalecenia -->
+        <div id="tab-zal" style="display:none;height:100%;">
+          <div class="zal-wrap">
+            <div class="zal-form">
+              <div class="zal-form-title">Nowe zalecenie</div>
+              <div class="zal-row">
+                <select class="zal-select" id="zal-client"></select>
+                <select class="zal-select" id="zal-typ">
+                  <option value="cwiczenie">Ćwiczenie</option>
+                  <option value="technika">Technika</option>
+                  <option value="nawyk">Zmiana nawyku</option>
+                  <option value="materiał">Materiał do przeczytania</option>
+                  <option value="inne">Inne</option>
+                </select>
+                <input class="zal-date" type="date" id="zal-date" placeholder="termin (opcjonalnie)">
+              </div>
+              <textarea class="zal-textarea" id="zal-tresc" placeholder="Opisz zalecenie dla podopiecznego…"></textarea>
+              <button class="zal-save-btn" onclick="saveZalecenie()">Wyślij do Słoika podróżnika</button>
+            </div>
+            <div class="zal-list-title">Wysłane zalecenia</div>
+            <div id="zal-list"><div class="zal-empty">Brak zaleceń</div></div>
+          </div>
+        </div>
+
+        <!-- Notatki po sesji -->
+        <div id="tab-notatki" style="display:none;height:100%;">
+          <div class="notatki-wrap">
+            <div class="notatka-form">
+              <div class="notatka-form-title">Notatka po sesji</div>
+              <div class="notatka-row">
+                <select class="notatka-select" id="notatka-client"></select>
+              </div>
+              <textarea class="notatka-textarea" id="notatka-tresc" placeholder="Co było tematem sesji? Co zauważyłeś? Co warto pamiętać przed kolejną wizytą…"></textarea>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <button class="notatka-save-btn" onclick="saveNotatka()">Zapisz notatkę</button>
+                <div style="font-size:11px;color:var(--text-light);font-style:italic;">Notatka jest widoczna tylko dla Ciebie</div>
+              </div>
+            </div>
+            <div class="zal-list-title">Poprzednie notatki</div>
+            <div id="notatki-list"><div class="zal-empty">Brak notatek</div></div>
+          </div>
+        </div>
+
+        <!-- Podsumowanie przed wizytą -->
+        <div id="tab-podsum" style="display:none;height:100%;">
+          <div class="podsum-wrap">
+            <div style="font-family:'Crimson Pro',serif;font-size:22px;font-weight:300;color:var(--text);margin-bottom:6px;">Podsumowanie przed wizytą</div>
+            <div style="font-size:12px;color:var(--text-light);margin-bottom:16px;">Serce MANA przygotuje kontekst z ostatnich dni — tylko za zgodą podróżnika.</div>
+            <div class="podsum-select-row">
+              <div class="podsum-label">Podopieczny:</div>
+              <select class="podsum-select" id="podsum-client"></select>
+              <div class="podsum-label">Ostatnie:</div>
+              <select class="podsum-select" id="podsum-dni">
+                <option value="7">7 dni</option>
+                <option value="14">14 dni</option>
+                <option value="30">30 dni</option>
+              </select>
+              <button class="podsum-btn" onclick="generatePodsum()">Generuj podsumowanie</button>
+            </div>
+            <div id="podsum-consent-info"></div>
+            <div id="podsum-result"><div class="podsum-empty">Wybierz podopiecznego i kliknij Generuj</div></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="notatnik-list" id="notatnik-list"><div class="loading">ładowanie…</div></div>
   </div>
 </div>
 
 <script>
 const SUPABASE_URL = 'https://kkxhqtfxvgxdqpnzaufu.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtreGhxdGZ4dmd4ZHFwbnphdWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MjE0NTYsImV4cCI6MjA4ODM5NzQ1Nn0.s8Ju-ww3G4_yyH6RedK2gwLveVJKD3hY2IHh62-qjfo';
-const TYPEBOT_URL = 'https://typebot.co/serce-mana-2-cc5udq3';
-const CISZA_LUPA_AFTER = 20;
 
 let currentNick = '';
-let stonesData = [];
-let ciszaData = [];
-let notatnikData = [];
-let calYear = new Date().getFullYear();
-let calMonth = new Date().getMonth();
-let currentTab = 'zad';
-let currentView = 'miesiac';
-let currentFilter = 'mies';
-let zadTab = 'aktywne';
-let searchQuery = '';
-let editingStoneId = null;
-let editingTaskId = null;
+let clients = []; // { traveler_id, consent_level, added_at }
+let wizyty = []; // stones z typ=wizyta
+let zalecenia = [];
+let notatki = [];
+let selectedClient = null;
+let fcCal = null;
+let currentFCView = 'dayGridMonth';
 
-// FullCalendar instance
-let fcCalendar = null;
-
-// Cisza state
-let ciszaActiveType = null;
-let ciszaMonths = 1;
-let ciszaSearchQuery = '';
-let ciszaShowSearch = false;
-
-// Notatnik state
-let notatnikMonths = 1;
-
-// Głos state
-let recognition = null;
-let isRecording = false;
-let voiceType = 'mysl';
-
-const SLOIK_SECTIONS = [
-  { id: 'horyzont',  name: 'Horyzont',  nameEn: 'Horizon',   color: '#6B8F71', desc: 'Kalendarz i zadania — co przed Tobą',            action: 'openHoryzont' },
-  { id: 'cisza',     name: 'Cisza',     nameEn: 'Silence',   color: '#9B7EBD', desc: 'Sny, myśli i odczucia — przestrzeń wewnętrzna',  action: 'openCisza' },
-  { id: 'notatnik',  name: 'Notatnik',  nameEn: 'Notepad',   color: '#B8A898', desc: 'Nagrania głosowe do posortowania przez Serce',    action: 'openNotatnik' },
-  { id: 'puls',      name: 'Puls',      nameEn: 'Pulse',     color: '#C0392B', desc: 'Rytm ciała — historia zdrowotna',                action: 'placeholder' },
-  { id: 'trzos',     name: 'Trzos',     nameEn: 'Wallet',    color: '#A0845C', desc: 'Finanse, paragony i organizacja czasu',           action: 'placeholder' },
-  { id: 'rod',       name: 'Ród',       nameEn: 'Genealogy', color: '#5C4A35', desc: 'Drzewo rodzinne — skąd pochodzisz',               action: 'placeholder' },
-  { id: 'pamietnik', name: 'Pamiętnik', nameEn: 'Journal',   color: '#7B8FA0', desc: 'Kronika życia — Twoja historia',                  action: 'placeholder' },
-];
-
-// ==================== LOCALSTORAGE ====================
-function getPinned() { try { return JSON.parse(localStorage.getItem('mana_pinned') || '[]'); } catch(e) { return []; } }
-function setPinned(arr) { localStorage.setItem('mana_pinned', JSON.stringify(arr)); }
-function getSloikOrder() {
-  try {
-    var saved = JSON.parse(localStorage.getItem('mana_sloik_order') || '[]');
-    var allIds = SLOIK_SECTIONS.map(function(s) { return s.id; });
-    allIds.forEach(function(id) { if (saved.indexOf(id) === -1) saved.push(id); });
-    return saved;
-  } catch(e) { return SLOIK_SECTIONS.map(function(s) { return s.id; }); }
-}
-function setSloikOrder(arr) { localStorage.setItem('mana_sloik_order', JSON.stringify(arr)); }
-function getNickDisplay(nick) { return nick.replace(/\d+$/, ''); }
-
-// ==================== NAWIGACJA ====================
-function showScreen(name) {
-  ['login','main','gaweda','horyzont','placeholder','sloik','cisza','notatnik'].forEach(function(s) {
-    var el = document.getElementById('screen-' + s);
-    if (el) el.style.display = 'none';
-  });
-  var t = document.getElementById('screen-' + name);
-  if (t) t.style.display = 'flex';
-}
-function showMain() { showScreen('main'); renderPinnedGrid(); }
+// ==================== AUTH ====================
 function doLogin() {
-  var nick = document.getElementById('nick-input').value.trim();
+  var nick = document.getElementById('login-nick').value.trim();
   if (!nick) return;
-  currentNick = nick; localStorage.setItem('mana_nick', nick);
-  showScreen('main'); loadData();
+  currentNick = nick;
+  localStorage.setItem('mana_terapeuta_nick', nick);
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-main').style.display = 'flex';
+  document.getElementById('screen-main').style.flexDirection = 'column';
+  document.getElementById('top-nick').textContent = nick;
+  init();
 }
-function doLogout() { localStorage.removeItem('mana_nick'); currentNick = ''; if (fcCalendar) { fcCalendar.destroy(); fcCalendar = null; } showScreen('login'); }
-document.getElementById('nick-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+function doLogout() {
+  localStorage.removeItem('mana_terapeuta_nick');
+  currentNick = '';
+  if (fcCal) { fcCal.destroy(); fcCal = null; }
+  document.getElementById('screen-main').style.display = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+}
+document.getElementById('login-nick').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
 
-function openGaweda() {
-  document.getElementById('typebot-frame').src = TYPEBOT_URL + '?nick_raw=' + encodeURIComponent(currentNick);
-  showScreen('gaweda');
+// ==================== INIT ====================
+async function init() {
+  await loadClients();
+  await loadWizyty();
+  await loadZalecenia();
+  await loadNotatki();
+  updateStats();
+  renderClientList();
+  populateClientSelects();
+  initFC();
 }
-function openPlaceholder(name, nameEn, backTo) {
-  document.getElementById('placeholder-title').textContent = name + ' · ' + nameEn;
-  document.getElementById('placeholder-icon').textContent = name;
-  var backBtn = document.getElementById('placeholder-back-btn');
-  if (backTo === 'sloik') { backBtn.textContent = '← Słoik'; backBtn.onclick = openSloik; }
-  else { backBtn.textContent = '← MANA'; backBtn.onclick = showMain; }
-  showScreen('placeholder');
+
+// ==================== SUPABASE HELPERS ====================
+async function sbGet(table, query) {
+  var r = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + query, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  });
+  return await r.json();
 }
-function openHoryzont() {
-  showScreen('horyzont');
-  buildMiniCal();
-  renderPreview();
-  // Uruchom aktywny tab
-  if (currentTab === 'kal') {
-    document.getElementById('h-right-body').classList.remove('tasks-mode');
-    document.getElementById('h-right-body').innerHTML = '<div class="fc-wrap"><div id="fc-calendar"></div></div>';
-    initOrUpdateFC();
-  } else {
-    document.getElementById('h-right-body').classList.add('tasks-mode');
-    renderZadania();
+async function sbPost(table, body) {
+  return await fetch(SUPABASE_URL + '/rest/v1/' + table, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+    body: JSON.stringify(body)
+  });
+}
+async function sbPatch(table, query, body) {
+  return await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + query, {
+    method: 'PATCH',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+    body: JSON.stringify(body)
+  });
+}
+
+// ==================== KLIENCI ====================
+async function loadClients() {
+  try {
+    var data = await sbGet('therapist_clients', 'therapist_id=eq.' + encodeURIComponent(currentNick) + '&order=created_at.desc');
+    clients = Array.isArray(data) ? data : [];
+  } catch(e) { clients = []; }
+}
+
+async function addClient() {
+  var nick = document.getElementById('add-client-input').value.trim();
+  if (!nick) return;
+  // Sprawdź czy podróżnik istnieje
+  try {
+    var check = await sbGet('travelers', 'nick=ilike.' + encodeURIComponent(nick) + '&limit=1');
+    if (!Array.isArray(check) || !check.length) {
+      showToast('Nie znaleziono podróżnika: ' + nick);
+      return;
+    }
+    // Dodaj relację
+    var r = await sbPost('therapist_clients', {
+      therapist_id: currentNick,
+      traveler_id: nick,
+      consent_level: 'oczekuje', // podróżnik musi potwierdzić
+      created_at: new Date().toISOString()
+    });
+    if (r.ok) {
+      showToast('Wysłano zaproszenie do ' + nick);
+      document.getElementById('add-client-input').value = '';
+      await loadClients();
+      renderClientList();
+      populateClientSelects();
+      updateStats();
+    } else {
+      var err = await r.text();
+      // Jeśli tabela nie istnieje — tworzymy lokalnie dla demo
+      clients.push({ therapist_id: currentNick, traveler_id: nick, consent_level: 'oczekuje', created_at: new Date().toISOString() });
+      showToast('Dodano ' + nick + ' (tryb demo)');
+      document.getElementById('add-client-input').value = '';
+      renderClientList();
+      populateClientSelects();
+      updateStats();
+    }
+  } catch(e) {
+    // Tryb demo — dodaj lokalnie
+    clients.push({ therapist_id: currentNick, traveler_id: nick, consent_level: 'oczekuje', created_at: new Date().toISOString() });
+    showToast('Dodano ' + nick);
+    document.getElementById('add-client-input').value = '';
+    renderClientList();
+    populateClientSelects();
+    updateStats();
   }
 }
-function openSloik() { showScreen('sloik'); renderSloikSections(); }
-function openCisza() {
-  ciszaActiveType = null; ciszaSearchQuery = ''; ciszaShowSearch = false;
-  buildCiszaMiesChips(); ciszaResetInput();
-  showScreen('cisza'); loadCiszaData();
+
+function renderClientList() {
+  var list = document.getElementById('client-list');
+  if (!clients.length) { list.innerHTML = '<div class="client-empty">Brak podopiecznych</div>'; return; }
+  list.innerHTML = '';
+  clients.forEach(function(c) {
+    var div = document.createElement('div');
+    div.className = 'client-item' + (selectedClient === c.traveler_id ? ' active' : '');
+    var dotClass = c.consent_level === 'pelny' || c.consent_level === 'wizyty' ? '' : ' pending';
+    div.innerHTML = '<div class="client-dot' + dotClass + '"></div><div><div class="client-nick">' + escHtml(c.traveler_id) + '</div><div class="client-last">' + consentLabel(c.consent_level) + '</div></div>';
+    div.onclick = function() { selectClient(c.traveler_id); };
+    list.appendChild(div);
+  });
 }
-function openNotatnik() {
-  notatnikMonths = 1;
-  var inp = document.getElementById('notatnik-mies-input');
-  if (inp) inp.value = 1;
-  var allBtn = document.getElementById('notatnik-mies-all');
-  if (allBtn) allBtn.classList.remove('active');
-  showScreen('notatnik');
-  loadNotatnikData();
+
+function consentLabel(level) {
+  var labels = { 'pelny': 'pełna zgoda', 'wizyty': 'tylko wizyty', 'oczekuje': 'oczekuje na zgodę', 'brak': 'brak zgody' };
+  return labels[level] || level;
+}
+
+function selectClient(nick) {
+  selectedClient = nick;
+  renderClientList();
+  setTab('podop');
+  renderClientDetail();
+}
+
+function populateClientSelects() {
+  var selects = ['modal-w-client', 'zal-client', 'notatka-client', 'podsum-client'];
+  selects.forEach(function(id) {
+    var sel = document.getElementById(id);
+    if (!sel) return;
+    sel.innerHTML = clients.length
+      ? clients.map(function(c) { return '<option value="' + escHtml(c.traveler_id) + '">' + escHtml(c.traveler_id) + '</option>'; }).join('')
+      : '<option value="">brak podopiecznych</option>';
+  });
+}
+
+// ==================== WIZYTY ====================
+async function loadWizyty() {
+  try {
+    var data = await sbGet('stones', 'traveler_id=in.(' + clients.map(function(c) { return encodeURIComponent(c.traveler_id); }).join(',') + ')&typ=eq.wizyta&order=due_date.asc');
+    wizyty = Array.isArray(data) ? data : [];
+  } catch(e) { wizyty = []; }
+}
+
+function openModalWizyta(prefillDate) {
+  if (!clients.length) { showToast('Najpierw dodaj podopiecznego'); return; }
+  var d = document.getElementById('modal-w-date');
+  if (prefillDate) d.value = prefillDate;
+  else { var now = new Date(); d.value = now.toISOString().slice(0,16); }
+  document.getElementById('modal-wizyta').classList.add('open');
+}
+
+async function saveWizyta() {
+  var clientNick = document.getElementById('modal-w-client').value;
+  var dateVal = document.getElementById('modal-w-date').value;
+  var czas = document.getElementById('modal-w-czas').value;
+  var notatka = document.getElementById('modal-w-notatka').value.trim();
+  if (!clientNick || !dateVal) { showToast('Wypełnij pola'); return; }
+  var tresc = 'Wizyta u terapeuty' + (notatka ? ' — ' + notatka : '') + ' (' + czas + ' min)';
+  try {
+    var r = await sbPost('stones', {
+      traveler_id: clientNick,
+      tresc: tresc,
+      typ: 'wizyta',
+      status: 'aktywny',
+      due_date: dateVal + ':00',
+      therapist_id: currentNick
+    });
+    showToast('Wizyta zapisana w Horyzoncie podróżnika ✓');
+    closeModal('modal-wizyta');
+    await loadWizyty();
+    updateFCEvents();
+    updateStats();
+  } catch(e) { showToast('Błąd zapisu'); }
 }
 
 // ==================== FULLCALENDAR ====================
-function getStonesAsEvents() {
-  return stonesData
-    .filter(function(s) { return s.due_date && s.status === 'aktywny'; })
-    .map(function(s) {
-      return {
-        id: String(s.id),
-        title: s.tresc,
-        start: s.due_date,
-        allDay: s.typ === 'calodniowe',
-        backgroundColor: getKolor(s.typ),
-        borderColor: getKolor(s.typ),
-        textColor: '#FFFDF8',
-        extendedProps: { stoneId: s.id }
-      };
-    });
+function getWizytyAsEvents() {
+  return wizyty.map(function(w) {
+    var clientObj = clients.find(function(c) { return c.traveler_id === w.traveler_id; });
+    return {
+      id: String(w.id),
+      title: w.traveler_id + ' — ' + w.tresc.replace('Wizyta u terapeuty', '').replace(' — ', '').trim(),
+      start: w.due_date,
+      backgroundColor: '#9B7EBD',
+      borderColor: '#7B5FA0',
+      textColor: '#FFFDF8',
+      extendedProps: { traveler_id: w.traveler_id }
+    };
+  });
 }
 
-function getFCView() {
-  if (currentView === 'miesiac') return 'dayGridMonth';
-  if (currentView === 'tydzien') return 'timeGridWeek';
-  return 'timeGridDay';
-}
-
-function updateFCTitle() {
-  if (!fcCalendar) return;
-  var title = document.getElementById('fc-nav-title');
-  if (title) title.textContent = fcCalendar.view.title;
-}
-
-function initOrUpdateFC() {
-  var el = document.getElementById('fc-calendar');
-  if (!el) return;
-
-  var events = getStonesAsEvents();
-
-  if (fcCalendar) {
-    // Aktualizuj events i widok
-    fcCalendar.removeAllEvents();
-    events.forEach(function(e) { fcCalendar.addEvent(e); });
-    fcCalendar.changeView(getFCView());
-    updateFCTitle();
-    return;
-  }
-
-  fcCalendar = new FullCalendar.Calendar(el, {
-    initialView: getFCView(),
+function initFC() {
+  var el = document.getElementById('fc-terapeuta');
+  if (!el || fcCal) return;
+  fcCal = new FullCalendar.Calendar(el, {
+    initialView: currentFCView,
     locale: 'pl',
-    firstDay: 1, // poniedziałek
+    firstDay: 1,
     headerToolbar: false,
     height: '100%',
-    events: events,
-    buttonText: { today: 'dziś', month: 'miesiąc', week: 'tydzień', day: 'dzień' },
-    allDayText: 'cały dzień',
-    noEventsText: 'Brak wpisów',
-    moreLinkText: function(n) { return '+' + n + ' więcej'; },
-    dayMaxEvents: 3,
+    events: getWizytyAsEvents(),
     nowIndicator: true,
     selectable: true,
-    // Klik w dzień → dodaj wpis
-    dateClick: function(info) {
-      openAddStone(info.dateStr.split('T')[0]);
-    },
-    // Klik w event → edytuj
-    eventClick: function(info) {
-      editStone(parseInt(info.event.extendedProps.stoneId));
-    },
-    // Po wyrenderowaniu — zaktualizuj tytuł
-    datesSet: function() {
-      updateFCTitle();
-    },
-    // Styl eventów
-    eventDidMount: function(info) {
-      info.el.title = info.event.title;
-    }
+    dateClick: function(info) { openModalWizyta(info.dateStr.replace('T', 'T') + (info.dateStr.length === 10 ? 'T09:00' : '')); },
+    eventClick: function(info) { selectClient(info.event.extendedProps.traveler_id); },
+    datesSet: function() { updateFCTitle(); }
   });
-
-  fcCalendar.render();
+  fcCal.render();
   updateFCTitle();
 }
 
-function fcPrev() { if (fcCalendar) { fcCalendar.prev(); updateFCTitle(); } }
-function fcNext() { if (fcCalendar) { fcCalendar.next(); updateFCTitle(); } }
-function fcToday() { if (fcCalendar) { fcCalendar.today(); updateFCTitle(); } }
-
-// ==================== DANE ====================
-async function loadData() {
-  var now = new Date();
-  var hour = now.getHours();
-  var greet = hour < 12 ? 'Dzień dobry' : hour < 18 ? 'Cześć' : 'Dobry wieczór';
-  document.getElementById('greeting-text').textContent = greet + ', ' + getNickDisplay(currentNick);
-  document.getElementById('top-nick-display').textContent = currentNick;
-  var days = ['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
-  var months = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
-  document.getElementById('greeting-date').textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
-  try {
-    var r = await fetch(SUPABASE_URL + '/rest/v1/stones?traveler_id=eq.' + encodeURIComponent(currentNick) + '&order=created_at.desc', { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } });
-    stonesData = await r.json();
-    updateStats(); renderPinnedGrid();
-  } catch(e) { console.error(e); }
+function updateFCEvents() {
+  if (!fcCal) return;
+  fcCal.removeAllEvents();
+  getWizytyAsEvents().forEach(function(e) { fcCal.addEvent(e); });
 }
 
+function fcSetView(view) {
+  currentFCView = view;
+  ['miesiac','tydzien','dzien'].forEach(function(v) {
+    var map = { miesiac: 'dayGridMonth', tydzien: 'timeGridWeek', dzien: 'timeGridDay' };
+    document.getElementById('vchip-' + v).classList.toggle('active', map[v] === view);
+  });
+  if (fcCal) { fcCal.changeView(view); updateFCTitle(); }
+}
+function fcPrev() { if (fcCal) { fcCal.prev(); updateFCTitle(); } }
+function fcNext() { if (fcCal) { fcCal.next(); updateFCTitle(); } }
+function fcToday() { if (fcCal) { fcCal.today(); updateFCTitle(); } }
+function updateFCTitle() { if (fcCal) { var t = document.getElementById('fc-nav-title'); if (t) t.textContent = fcCal.view.title; } }
+
+// ==================== ZALECENIA ====================
+async function loadZalecenia() {
+  try {
+    var travelerIds = clients.map(function(c) { return c.traveler_id; });
+    if (!travelerIds.length) { zalecenia = []; return; }
+    var data = await sbGet('stones', 'therapist_id=eq.' + encodeURIComponent(currentNick) + '&typ=eq.zalecenie&order=created_at.desc');
+    zalecenia = Array.isArray(data) ? data : [];
+  } catch(e) { zalecenia = []; }
+}
+
+async function saveZalecenie() {
+  var clientNick = document.getElementById('zal-client').value;
+  var typ = document.getElementById('zal-typ').value;
+  var tresc = document.getElementById('zal-tresc').value.trim();
+  var dateVal = document.getElementById('zal-date').value;
+  if (!clientNick || !tresc) { showToast('Wybierz podopiecznego i wpisz zalecenie'); return; }
+  try {
+    var r = await sbPost('stones', {
+      traveler_id: clientNick,
+      tresc: tresc,
+      typ: 'zalecenie',
+      status: 'aktywny',
+      due_date: dateVal ? dateVal + 'T09:00:00' : null,
+      sekcja: 'terapia',
+      therapist_id: currentNick,
+      sugestia_status: 'oczekuje'
+    });
+    showToast('Zalecenie wysłane do Słoika ' + clientNick + ' ✓');
+    document.getElementById('zal-tresc').value = '';
+    document.getElementById('zal-date').value = '';
+    await loadZalecenia();
+    renderZalecenia();
+  } catch(e) { showToast('Błąd zapisu'); }
+}
+
+function renderZalecenia() {
+  var list = document.getElementById('zal-list');
+  if (!zalecenia.length) { list.innerHTML = '<div class="zal-empty">Brak wysłanych zaleceń</div>'; return; }
+  list.innerHTML = '';
+  zalecenia.forEach(function(z) {
+    var div = document.createElement('div'); div.className = 'zal-item fade-in';
+    var statusLabel = z.sugestia_status === 'zaakceptowana' ? '<span class="zal-status zaakceptowane">zaakceptowane</span>' : '<span class="zal-status oczekuje">oczekuje</span>';
+    div.innerHTML = '<div class="zal-bar" style="background:var(--terapia)"></div><div class="zal-body"><div class="zal-tresc">' + escHtml(z.tresc) + '</div><div class="zal-meta">→ ' + escHtml(z.traveler_id) + ' · ' + formatDate(new Date(z.created_at)) + (z.due_date ? ' · termin: ' + formatDate(new Date(z.due_date)) : '') + ' &nbsp;' + statusLabel + '</div></div>';
+    list.appendChild(div);
+  });
+}
+
+// ==================== NOTATKI PO SESJI ====================
+async function loadNotatki() {
+  try {
+    var data = await sbGet('therapist_notes', 'therapist_id=eq.' + encodeURIComponent(currentNick) + '&order=created_at.desc');
+    notatki = Array.isArray(data) ? data : [];
+  } catch(e) { notatki = []; }
+}
+
+async function saveNotatka() {
+  var clientNick = document.getElementById('notatka-client').value;
+  var tresc = document.getElementById('notatka-tresc').value.trim();
+  if (!clientNick || !tresc) { showToast('Wybierz podopiecznego i wpisz notatkę'); return; }
+  try {
+    var r = await sbPost('therapist_notes', {
+      therapist_id: currentNick,
+      traveler_id: clientNick,
+      tresc: tresc,
+      created_at: new Date().toISOString()
+    });
+    showToast('Notatka zapisana ✓');
+    document.getElementById('notatka-tresc').value = '';
+    await loadNotatki();
+    renderNotatki();
+  } catch(e) {
+    // Demo — zapisz lokalnie
+    notatki.unshift({ therapist_id: currentNick, traveler_id: clientNick, tresc: tresc, created_at: new Date().toISOString() });
+    showToast('Notatka zapisana ✓');
+    document.getElementById('notatka-tresc').value = '';
+    renderNotatki();
+  }
+}
+
+function renderNotatki() {
+  var list = document.getElementById('notatki-list');
+  var filtered = selectedClient ? notatki.filter(function(n) { return n.traveler_id === selectedClient; }) : notatki;
+  if (!filtered.length) { list.innerHTML = '<div class="zal-empty">Brak notatek</div>'; return; }
+  list.innerHTML = '';
+  filtered.forEach(function(n) {
+    var div = document.createElement('div'); div.className = 'notatka-item fade-in';
+    div.innerHTML = '<div class="notatka-meta">' + formatDateTime(new Date(n.created_at)) + '</div><div class="notatka-text">' + escHtml(n.tresc) + '</div><div class="notatka-client">→ ' + escHtml(n.traveler_id) + '</div>';
+    list.appendChild(div);
+  });
+}
+
+// ==================== PODSUMOWANIE ====================
+async function generatePodsum() {
+  var clientNick = document.getElementById('podsum-client').value;
+  var dni = parseInt(document.getElementById('podsum-dni').value);
+  if (!clientNick) { showToast('Wybierz podopiecznego'); return; }
+
+  var client = clients.find(function(c) { return c.traveler_id === clientNick; });
+  var consentInfo = document.getElementById('podsum-consent-info');
+  var result = document.getElementById('podsum-result');
+
+  if (!client || (client.consent_level !== 'pelny' && client.consent_level !== 'podsumowanie')) {
+    consentInfo.innerHTML = '<div style="margin-bottom:12px;padding:10px 14px;background:rgba(192,57,43,0.08);border-radius:8px;font-size:12px;color:var(--red);">⚠ Podróżnik ' + escHtml(clientNick) + ' nie wyraził zgody na podsumowanie. Poziom zgody: <strong>' + consentLabel(client ? client.consent_level : 'brak') + '</strong></div>';
+    result.innerHTML = '<div class="podsum-empty">Brak zgody podróżnika na wgląd w historię.</div>';
+    return;
+  }
+
+  consentInfo.innerHTML = '<div style="margin-bottom:12px;"><span class="consent-badge">✓ zgoda podróżnika</span></div>';
+  result.innerHTML = '<div class="podsum-loading">Serce MANA analizuje ostatnie ' + dni + ' dni…</div>';
+
+  try {
+    // Pobierz stones podróżnika
+    var cutoff = new Date(); cutoff.setDate(cutoff.getDate() - dni);
+    var stones = await sbGet('stones', 'traveler_id=eq.' + encodeURIComponent(clientNick) + '&created_at=gte.' + cutoff.toISOString() + '&order=created_at.desc');
+
+    if (!Array.isArray(stones) || !stones.length) {
+      result.innerHTML = '<div class="podsum-empty">Brak wpisów z ostatnich ' + dni + ' dni.</div>';
+      return;
+    }
+
+    // Wywołaj Claude przez Anthropic API
+    var prompt = 'Jesteś Sercem MANA — mądrym towarzyszem podróżnika. Terapeuta prosi o podsumowanie przed wizytą z podróżnikiem o nicku "' + clientNick + '".\n\nOto wpisy podróżnika z ostatnich ' + dni + ' dni:\n\n' +
+      stones.map(function(s) { return '[' + s.typ + ' · ' + new Date(s.created_at).toLocaleDateString('pl') + '] ' + s.tresc; }).join('\n') +
+      '\n\nPrzygotuj krótkie, mądre podsumowanie dla terapeuty. Co było tematem? Jakie wzorce się pojawiły? Co może być ważne na nadchodzącej wizycie? Pisz ciepło, konkretnie, bez oceniania. Maksymalnie 200 słów.';
+
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 500,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    var data = await resp.json();
+    var text = data.content && data.content[0] ? data.content[0].text : 'Brak odpowiedzi';
+    result.innerHTML = '<div class="podsum-result">' + escHtml(text) + '</div>';
+  } catch(e) {
+    result.innerHTML = '<div class="podsum-empty">Błąd generowania. Sprawdź połączenie.</div>';
+  }
+}
+
+// ==================== DETAIL PODOPIECZNEGO ====================
+function renderClientDetail() {
+  var wrap = document.getElementById('detail-wrap');
+  if (!selectedClient) { wrap.innerHTML = '<div class="detail-empty">Wybierz podopiecznego z listy →</div>'; return; }
+  var client = clients.find(function(c) { return c.traveler_id === selectedClient; });
+  if (!client) return;
+  var clientWizyty = wizyty.filter(function(w) { return w.traveler_id === selectedClient; });
+  var now = new Date();
+  var przyszle = clientWizyty.filter(function(w) { return new Date(w.due_date) >= now; });
+  var przeszle = clientWizyty.filter(function(w) { return new Date(w.due_date) < now; });
+  var clientZal = zalecenia.filter(function(z) { return z.traveler_id === selectedClient; });
+
+  wrap.innerHTML = '<div class="detail-header fade-in"><div class="detail-nick">' + escHtml(selectedClient) + '</div><span class="' + (client.consent_level === 'pelny' ? 'consent-badge' : 'no-consent-badge') + '">' + consentLabel(client.consent_level) + '</span></div>' +
+    '<div class="detail-sections">' +
+    '<div class="detail-card"><div class="detail-card-title">Wizyty łącznie</div><div class="detail-card-num">' + clientWizyty.length + '</div><div class="detail-card-sub">' + przyszle.length + ' nadchodzących</div></div>' +
+    '<div class="detail-card"><div class="detail-card-title">Zalecenia</div><div class="detail-card-num">' + clientZal.length + '</div><div class="detail-card-sub">' + clientZal.filter(function(z) { return z.sugestia_status === 'zaakceptowana'; }).length + ' zaakceptowanych</div></div>' +
+    '</div>' +
+    '<div class="visits-list"><div class="visits-title">Historia wizyt</div>' +
+    (clientWizyty.length ? clientWizyty.sort(function(a,b) { return new Date(b.due_date) - new Date(a.due_date); }).map(function(w) {
+      var isFuture = new Date(w.due_date) >= now;
+      return '<div class="visit-item"><div class="visit-dot' + (isFuture ? ' future' : '') + '"></div><div class="visit-date">' + formatDate(new Date(w.due_date)) + '</div><div class="visit-note">' + escHtml(w.tresc) + '</div></div>';
+    }).join('') : '<div class="visits-empty">Brak wizyt</div>') +
+    '</div>';
+}
+
+// ==================== STATS ====================
 function updateStats() {
   var now = new Date();
-  var future = stonesData.filter(function(s) { return s.due_date && new Date(s.due_date) >= now && s.status === 'aktywny'; });
-  var tasks = stonesData.filter(function(s) { return s.typ === 'zadanie' && !s.due_date && s.status === 'aktywny'; });
-  var notatki = stonesData.filter(function(s) { return s.typ === 'notatka' && s.status === 'aktywny'; });
-  var parts = [];
-  if (future.length) parts.push(future.length + ' w kalendarzu');
-  if (tasks.length) parts.push(tasks.length + ' zadań');
-  if (notatki.length) parts.push(notatki.length + ' notatek');
-  document.getElementById('sloik-stats').textContent = parts.join(' · ');
-  var dot = document.getElementById('notatnik-count-dot');
-  if (dot) dot.style.background = notatki.length ? 'var(--brown)' : 'var(--text-light)';
+  var todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var todayEnd = new Date(todayStart); todayEnd.setDate(todayEnd.getDate() + 1);
+  var weekEnd = new Date(todayStart); weekEnd.setDate(weekEnd.getDate() + 7);
+
+  document.getElementById('stat-today').textContent = wizyty.filter(function(w) {
+    var d = new Date(w.due_date); return d >= todayStart && d < todayEnd;
+  }).length;
+  document.getElementById('stat-week').textContent = wizyty.filter(function(w) {
+    var d = new Date(w.due_date); return d >= now && d < weekEnd;
+  }).length;
+  document.getElementById('stat-clients').textContent = clients.length;
+  document.getElementById('stat-pending').textContent = clients.filter(function(c) { return c.consent_level === 'oczekuje'; }).length;
 }
 
-async function reloadStones() {
-  try {
-    var r = await fetch(SUPABASE_URL + '/rest/v1/stones?traveler_id=eq.' + encodeURIComponent(currentNick) + '&order=created_at.desc', { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } });
-    stonesData = await r.json();
-    updateStats();
-    buildMiniCal();
-    renderPreview();
-    if (currentTab === 'kal') {
-      // Odśwież events w FC
-      if (fcCalendar) {
-        fcCalendar.removeAllEvents();
-        getStonesAsEvents().forEach(function(e) { fcCalendar.addEvent(e); });
-      }
-    } else {
-      renderZadania();
-    }
-  } catch(e) { console.error(e); }
-}
-
-// ==================== NOTATNIK ====================
-async function loadNotatnikData() {
-  document.getElementById('notatnik-list').innerHTML = '<div class="loading">ładowanie…</div>';
-  try {
-    var r = await fetch(
-      SUPABASE_URL + '/rest/v1/stones?traveler_id=eq.' + encodeURIComponent(currentNick) +
-      '&typ=eq.notatka&status=eq.aktywny&order=created_at.desc',
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
-    );
-    notatnikData = await r.json();
-    renderNotatnikList();
-  } catch(e) { console.error(e); document.getElementById('notatnik-list').innerHTML = '<div class="empty-msg">Błąd ładowania</div>'; }
-}
-
-function notatnikChangeMies(val) {
-  var v = parseInt(val);
-  if (v >= 1 && v <= 12) { notatnikMonths = v; document.getElementById('notatnik-mies-all').classList.remove('active'); renderNotatnikList(); }
-}
-function notatnikSetAll() { notatnikMonths = 0; document.getElementById('notatnik-mies-all').classList.add('active'); renderNotatnikList(); }
-
-function renderNotatnikList() {
-  var list = document.getElementById('notatnik-list');
-  var now = new Date();
-  var items = notatnikData.filter(function(s) {
-    if (notatnikMonths > 0) { var cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - notatnikMonths); if (new Date(s.created_at) < cutoff) return false; }
-    return true;
+// ==================== TABS ====================
+function setTab(tab) {
+  ['kal','podop','zal','notatki','podsum'].forEach(function(t) {
+    document.getElementById('rtab-' + t).classList.toggle('active', t === tab);
+    document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
   });
-  if (!items.length) { list.innerHTML = '<div class="notatnik-empty">Tu lądują Twoje nagrania głosowe.<br>Nagraj cokolwiek z ekranu głównego.</div>'; return; }
-  list.innerHTML = '';
-  items.forEach(function(item) {
-    var div = document.createElement('div'); div.className = 'notatnik-entry';
-    var sugestiaHtml = '';
-    if (item.sugestia_sekcja && item.sugestia_status === 'oczekuje') {
-      var sekcjaLabel = { horyzont: '📅 Horyzont', cisza: '🌙 Cisza', notatka: '📓 Notatnik' }[item.sugestia_sekcja] || item.sugestia_sekcja;
-      var dataInfo = item.sugestia_due_date ? ' · ' + formatDate(new Date(item.sugestia_due_date)) : '';
-      sugestiaHtml = '<div style="margin-top:8px;padding:8px 10px;background:var(--sand);border-radius:8px;border:1px solid var(--border);"><div style="font-size:10px;color:var(--text-light);margin-bottom:6px;">Serce sugeruje:</div><div style="font-size:12px;color:var(--brown);font-weight:500;margin-bottom:8px;">' + sekcjaLabel + dataInfo + '</div><div style="display:flex;gap:6px;"><button onclick="akceptujNotatke(' + item.id + ')" style="flex:1;padding:6px;border-radius:6px;border:none;background:var(--brown);color:var(--white);font-family:\'DM Sans\',sans-serif;font-size:11px;font-weight:500;cursor:pointer;">Akceptuj ✓</button><button onclick="zmienNotatke(' + item.id + ')" style="padding:6px 12px;border-radius:6px;border:1px solid var(--border-strong);background:transparent;color:var(--text-mid);font-family:\'DM Sans\',sans-serif;font-size:11px;cursor:pointer;">Zmień</button></div></div>';
-    } else if (item.sugestia_status === 'zaakceptowana') {
-      var sekcjaLabel2 = { horyzont: 'Horyzont', cisza: 'Cisza', notatka: 'Notatnik' }[item.sugestia_sekcja] || item.sugestia_sekcja;
-      sugestiaHtml = '<div style="margin-top:6px;font-size:10px;color:var(--green);">✓ Przeniesiono do ' + sekcjaLabel2 + '</div>';
-    }
-    div.innerHTML = '<div class="notatnik-entry-dot"></div><div class="notatnik-entry-body"><div class="notatnik-entry-text">' + escHtml(item.tresc) + '</div><div class="notatnik-entry-time">' + formatDateTime(new Date(item.created_at)) + '</div>' + sugestiaHtml + '</div><button class="notatnik-del-btn" title="Usuń" onclick="deleteNotatnikEntry(' + item.id + ')">✕</button>';
-    list.appendChild(div);
-  });
-}
+  document.getElementById('tab-kal').style.display = tab === 'kal' ? 'flex' : 'none';
 
-async function akceptujNotatke(id) {
-  var item = notatnikData.find(function(s) { return s.id === id; }); if (!item) return;
-  try {
-    var newStone = { traveler_id: currentNick, tresc: item.tresc, typ: item.sugestia_sekcja === 'cisza' ? 'mysl' : 'zadanie', status: 'aktywny', due_date: item.sugestia_due_date || null };
-    await fetch(SUPABASE_URL + '/rest/v1/stones', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify(newStone) });
-    await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ sugestia_status: 'zaakceptowana' }) });
-    await fetch(SUPABASE_URL + '/rest/v1/notatnik_trening', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ traveler_id: currentNick, kamien_id: id, sugestia_sekcja: item.sugestia_sekcja, sugestia_due_date: item.sugestia_due_date, decyzja: 'akceptacja' }) });
-    var sekcjaLabel = { horyzont: 'Horyzontu', cisza: 'Ciszy', notatka: 'Notatnika' }[item.sugestia_sekcja] || item.sugestia_sekcja;
-    showToast('Przeniesiono do ' + sekcjaLabel + ' ✓');
-    await loadNotatnikData();
-  } catch(e) { console.error(e); showToast('Błąd'); }
-}
-
-var zmienNotatkeId = null;
-function zmienNotatke(id) {
-  zmienNotatkeId = id;
-  var item = notatnikData.find(function(s) { return s.id === id; }); if (!item) return;
-  editingStoneId = null;
-  document.getElementById('modal-stone-title').textContent = 'Zmień gdzie trafi';
-  document.getElementById('modal-stone-tresc').value = item.tresc;
-  document.getElementById('modal-sekcja-row').style.display = '';
-  document.getElementById('modal-stone-sekcja').value = item.sugestia_sekcja === 'cisza' ? 'cisza' : 'horyzont';
-  document.getElementById('modal-stone-typ').value = item.sugestia_sekcja === 'cisza' ? 'sen' : 'zadanie';
-  document.getElementById('modal-stone-date').value = item.sugestia_due_date ? new Date(item.sugestia_due_date).toISOString().split('T')[0] : '';
-  document.getElementById('modal-stone-time').value = item.sugestia_due_date ? String(new Date(item.sugestia_due_date).getHours()).padStart(2,'0') + ':' + String(new Date(item.sugestia_due_date).getMinutes()).padStart(2,'0') : '';
-  window._saveStoneFromNotatnik = id;
-  document.getElementById('modal-stone').classList.add('open');
-  document.getElementById('modal-stone-tresc').focus();
-}
-
-async function deleteNotatnikEntry(id) {
-  if (!confirm('Usunąć tę notatkę?')) return;
-  try { await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }); showToast('Usunięto'); await loadNotatnikData(); } catch(e) { console.error(e); }
-}
-
-// ==================== CISZA ====================
-async function loadCiszaData() {
-  document.getElementById('cisza-list').innerHTML = '<div class="loading">ładowanie…</div>';
-  try {
-    var r = await fetch(SUPABASE_URL + '/rest/v1/stones?traveler_id=eq.' + encodeURIComponent(currentNick) + '&typ=in.(sen,mysl,czucie)&order=created_at.desc', { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } });
-    ciszaData = await r.json();
-    updateCiszaCounts(); renderCiszaList();
-  } catch(e) { console.error(e); }
-}
-function updateCiszaCounts() {
-  ['sen','mysl','czucie'].forEach(function(t) { var count = ciszaData.filter(function(s) { return s.typ === t; }).length; var el = document.getElementById('ccount-' + t); if (el) el.textContent = count ? '(' + count + ')' : ''; });
-  var total = ciszaData.length; var searchToggle = document.getElementById('cisza-search-toggle');
-  if (total >= CISZA_LUPA_AFTER) searchToggle.style.display = 'flex'; else { searchToggle.style.display = 'none'; document.getElementById('cisza-search-wrap').style.display = 'none'; ciszaShowSearch = false; }
-}
-function buildCiszaMiesChips() { var inp = document.getElementById('cisza-mies-input'); if (inp && ciszaMonths > 0) inp.value = ciszaMonths; var allBtn = document.getElementById('cisza-mies-all'); if (allBtn) allBtn.classList.toggle('active', ciszaMonths === 0); }
-function ciszaChangeMies(val) { var v = parseInt(val); if (v >= 1 && v <= 12) { ciszaMonths = v; document.getElementById('cisza-mies-all').classList.remove('active'); renderCiszaList(); } }
-function ciszaSetAll() { ciszaMonths = 0; document.getElementById('cisza-mies-all').classList.add('active'); renderCiszaList(); }
-function renderCiszaList() {
-  var list = document.getElementById('cisza-list'); var now = new Date();
-  var items = ciszaData.filter(function(s) {
-    if (ciszaActiveType && s.typ !== ciszaActiveType) return false;
-    if (ciszaMonths > 0) { var cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - ciszaMonths); if (new Date(s.created_at) < cutoff) return false; }
-    if (ciszaSearchQuery && !s.tresc.toLowerCase().includes(ciszaSearchQuery)) return false;
-    return true;
-  });
-  if (!items.length) { var msg = ciszaActiveType ? 'Brak wpisów — ' + ciszaTypeLabel(ciszaActiveType).toLowerCase() + ' czeka na swoją chwilę.' : 'Tu czeka na Ciebie cisza.<br>Wpisz sen, myśl lub odczucie.'; list.innerHTML = '<div class="cisza-empty">' + msg + '</div>'; return; }
-  list.innerHTML = '';
-  items.forEach(function(item) {
-    var color = ciszaTypeColor(item.typ); var label = ciszaTypeLabel(item.typ);
-    var div = document.createElement('div'); div.className = 'cisza-entry';
-    div.innerHTML = '<div class="cisza-entry-dot" style="background:' + color + '"></div><div class="cisza-entry-body"><div class="cisza-entry-type" style="color:' + color + '">' + label + '</div><div class="cisza-entry-text">' + escHtml(item.tresc) + '</div><div class="cisza-entry-time">' + formatDateTime(new Date(item.created_at)) + '</div></div><button class="cisza-del-btn" title="Usuń" onclick="deleteCiszaEntry(' + item.id + ')">✕</button>';
-    list.appendChild(div);
-  });
-}
-function ciszaToggleType(typ) {
-  if (ciszaActiveType === typ) { ciszaActiveType = null; document.getElementById('ctype-' + typ).classList.remove('filter-active'); ciszaResetInput(); }
-  else { ['sen','mysl','czucie'].forEach(function(t) { document.getElementById('ctype-' + t).classList.remove('filter-active'); }); ciszaActiveType = typ; document.getElementById('ctype-' + typ).classList.add('filter-active'); var area = document.getElementById('cisza-input-area'); area.classList.add('visible'); var labels = { 'sen': 'Sen', 'mysl': 'Myśl', 'czucie': 'Czucie' }; var placeholders = { 'sen': 'Co mi się śniło…', 'mysl': 'Co mnie nawiedza…', 'czucie': 'Co teraz czuję…' }; document.getElementById('cisza-input-label').textContent = labels[typ]; var ta = document.getElementById('cisza-textarea'); ta.placeholder = placeholders[typ]; ta.focus(); }
-  updateCiszaTitle(); renderCiszaList();
-}
-function ciszaCancelInput() { ciszaActiveType = null; ['sen','mysl','czucie'].forEach(function(t) { document.getElementById('ctype-' + t).classList.remove('filter-active'); }); ciszaResetInput(); updateCiszaTitle(); renderCiszaList(); }
-function ciszaResetInput() { document.getElementById('cisza-input-area').classList.remove('visible'); document.getElementById('cisza-textarea').value = ''; }
-async function ciszaSave() {
-  var tresc = document.getElementById('cisza-textarea').value.trim(); if (!tresc || !ciszaActiveType) { showToast('Wybierz typ i wpisz treść'); return; }
-  try {
-    var r = await fetch(SUPABASE_URL + '/rest/v1/stones', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ traveler_id: currentNick, tresc: tresc, typ: ciszaActiveType, status: 'aktywny', due_date: null }) });
-    if (!r.ok) { var err = await r.text(); showToast('Błąd: ' + err.substring(0,80)); return; }
-    showToast('Zapisano ✓'); ciszaResetInput(); await loadCiszaData();
-  } catch(e) { console.error(e); showToast('Błąd połączenia'); }
-}
-async function deleteCiszaEntry(id) {
-  if (!confirm('Usunąć ten wpis?')) return;
-  try { await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }); showToast('Usunięto'); await loadCiszaData(); } catch(e) { console.error(e); }
-}
-function ciszaResetFilter() { if (!ciszaActiveType) return; ciszaActiveType = null; ['sen','mysl','czucie'].forEach(function(t) { document.getElementById('ctype-' + t).classList.remove('filter-active'); }); ciszaResetInput(); updateCiszaTitle(); renderCiszaList(); }
-function updateCiszaTitle() {
-  var el = document.getElementById('cisza-title'); if (!el) return;
-  if (ciszaActiveType) { var labels = { 'sen': 'Sen', 'mysl': 'Myśl', 'czucie': 'Czucie' }; el.textContent = '← Cisza · ' + labels[ciszaActiveType]; el.style.cursor = 'pointer'; el.style.color = 'var(--brown)'; }
-  else { el.textContent = 'Cisza · Silence'; el.style.cursor = 'default'; el.style.color = ''; }
-}
-function ciszaToggleSearch() {
-  ciszaShowSearch = !ciszaShowSearch;
-  var wrap = document.getElementById('cisza-search-wrap'); var toggle = document.getElementById('cisza-search-toggle');
-  if (ciszaShowSearch) { wrap.style.display = 'flex'; toggle.style.display = 'none'; document.getElementById('cisza-search-input').focus(); }
-  else { wrap.style.display = 'none'; toggle.style.display = 'flex'; ciszaSearchQuery = ''; document.getElementById('cisza-search-input').value = ''; renderCiszaList(); }
-}
-function ciszaSearch(val) { ciszaSearchQuery = val.toLowerCase(); renderCiszaList(); }
-document.getElementById('cisza-textarea').addEventListener('keydown', function(e) { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) ciszaSave(); if (e.key === 'Escape') ciszaCancelInput(); });
-
-// ==================== MIKROFON EKRAN GŁÓWNY ====================
-var mainMicRecognition = null; var mainMicRecording = false;
-function toggleMainMic() { var bar = document.getElementById('main-mic-bar'); if (bar.style.display === 'none') { bar.style.display = 'flex'; startMainMicRecording(); } else { if (mainMicRecording) stopMainMicRecording(); else startMainMicRecording(); } }
-function startMainMicRecording() {
-  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) { document.getElementById('main-mic-status').textContent = 'Przeglądarka nie obsługuje głosu — wpisz ręcznie.'; return; }
-  mainMicRecognition = new SpeechRecognition(); mainMicRecognition.lang = 'pl-PL'; mainMicRecognition.continuous = false; mainMicRecognition.interimResults = true;
-  mainMicRecognition.onstart = function() { mainMicRecording = true; document.getElementById('main-mic-dot').style.background = 'var(--red)'; document.getElementById('main-mic-label').textContent = '⏹ Stop'; document.getElementById('main-mic-status').textContent = '● Słucham…'; };
-  mainMicRecognition.onend = function() { mainMicRecording = false; document.getElementById('main-mic-dot').style.background = 'var(--text-light)'; document.getElementById('main-mic-label').textContent = '🎙 Nagraj więcej'; document.getElementById('main-mic-status').textContent = 'Gotowe — sprawdź i zapisz.'; };
-  mainMicRecognition.onerror = function(e) { mainMicRecording = false; document.getElementById('main-mic-dot').style.background = 'var(--text-light)'; document.getElementById('main-mic-label').textContent = '🎙 Mikrofon'; document.getElementById('main-mic-status').textContent = 'Błąd: ' + e.error + '. Wpisz ręcznie.'; };
-  mainMicRecognition.onresult = function(event) { var finalText = ''; for (var i = event.resultIndex; i < event.results.length; i++) { if (event.results[i].isFinal) finalText += event.results[i][0].transcript; } if (finalText) { var ta = document.getElementById('main-mic-text'); ta.value = ta.value ? ta.value + ' ' + finalText.trim() : finalText.trim(); } };
-  try { mainMicRecognition.start(); } catch(e) { showToast('Błąd mikrofonu'); }
-}
-function stopMainMicRecording() { if (mainMicRecognition) mainMicRecognition.stop(); }
-function cancelMainMic() { stopMainMicRecording(); document.getElementById('main-mic-bar').style.display = 'none'; document.getElementById('main-mic-text').value = ''; document.getElementById('main-mic-label').textContent = '🎙 Mikrofon'; document.getElementById('main-mic-dot').style.background = 'var(--text-light)'; }
-async function saveMainMic() {
-  var tresc = document.getElementById('main-mic-text').value.trim(); if (!tresc) { showToast('Brak tekstu'); return; } if (!currentNick) { showToast('Nie jesteś zalogowany'); return; }
-  stopMainMicRecording();
-  var sugestia = { sekcja: 'notatka', due_date: null, typ: 'notatka', pewnosc: 'niska', opis: 'bez analizy' };
-  try { var sr = await fetch('https://kkxhqtfxvgxdqpnzaufu.supabase.co/functions/v1/sort-notatka', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ tresc: tresc }) }); if (sr.ok) sugestia = await sr.json(); } catch(e) { console.error('sort-notatka error:', e); }
-  try {
-    var r = await fetch(SUPABASE_URL + '/rest/v1/stones', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' }, body: JSON.stringify({ traveler_id: currentNick, tresc: tresc, typ: 'notatka', status: 'aktywny', due_date: null, sugestia_sekcja: sugestia.sekcja, sugestia_due_date: sugestia.due_date, sugestia_status: 'oczekuje' }) });
-    if (!r.ok) { var err = await r.text(); showToast('Błąd: ' + err.substring(0,60)); return; }
-    var pewnosc = sugestia.pewnosc === 'wysoka' ? '✓' : sugestia.pewnosc === 'srednia' ? '~' : '?';
-    showToast('Zapisano · Serce: → ' + sugestia.sekcja + ' ' + pewnosc);
-    cancelMainMic();
-    var d = await fetch(SUPABASE_URL + '/rest/v1/stones?traveler_id=eq.' + encodeURIComponent(currentNick) + '&order=created_at.desc', { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } });
-    stonesData = await d.json(); updateStats();
-  } catch(e) { showToast('Błąd połączenia'); }
-}
-
-// ==================== GŁOS GAWĘDA ====================
-var gawedaRecognition = null; var gawedaRecording = false;
-function toggleGawedaVoice() { var bar = document.getElementById('gaweda-dictate-bar'); if (!gawedaRecording) { bar.style.display = 'flex'; startGawedaRecording(); } else { stopGawedaRecording(); } }
-function startGawedaRecording() {
-  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) { showToast('Przeglądarka nie obsługuje głosu'); return; }
-  gawedaRecognition = new SpeechRecognition(); gawedaRecognition.lang = 'pl-PL'; gawedaRecognition.continuous = false; gawedaRecognition.interimResults = true;
-  gawedaRecognition.onstart = function() { gawedaRecording = true; document.getElementById('voice-btn-gaweda').classList.add('recording'); document.getElementById('gaweda-voice-label').textContent = 'Słucham…'; };
-  gawedaRecognition.onend = function() { gawedaRecording = false; document.getElementById('voice-btn-gaweda').classList.remove('recording'); document.getElementById('gaweda-voice-label').textContent = 'Głos'; };
-  gawedaRecognition.onerror = function(e) { gawedaRecording = false; document.getElementById('voice-btn-gaweda').classList.remove('recording'); document.getElementById('gaweda-voice-label').textContent = 'Głos'; showToast('Błąd mikrofonu: ' + e.error); };
-  gawedaRecognition.onresult = function(event) { var ta = document.getElementById('gaweda-dictate-text'); var finalText = ''; for (var i = event.resultIndex; i < event.results.length; i++) { if (event.results[i].isFinal) finalText += event.results[i][0].transcript; } if (finalText) { ta.value = ta.value ? ta.value + ' ' + finalText.trim() : finalText.trim(); } };
-  try { gawedaRecognition.start(); } catch(e) { showToast('Błąd startu mikrofonu'); }
-}
-function stopGawedaRecording() { if (gawedaRecognition) gawedaRecognition.stop(); }
-function clearGawedaDictate() { document.getElementById('gaweda-dictate-text').value = ''; }
-function copyGawedaDictate() { var ta = document.getElementById('gaweda-dictate-text'); if (!ta.value.trim()) { showToast('Brak tekstu do skopiowania'); return; } navigator.clipboard.writeText(ta.value.trim()).then(function() { showToast('Skopiowano — wklej do Serca poniżej'); }).catch(function() { ta.select(); document.execCommand('copy'); showToast('Skopiowano — wklej do Serca poniżej'); }); }
-
-// ==================== GŁOS (nakładka Ciszy) ====================
-function initSpeechRecognition() {
-  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) { document.getElementById('voice-no-support').style.display = 'block'; return false; }
-  recognition = new SpeechRecognition(); recognition.lang = 'pl-PL'; recognition.continuous = false; recognition.interimResults = true; recognition.maxAlternatives = 1;
-  recognition.onstart = function() { isRecording = true; document.getElementById('voice-status').textContent = '● Słucham…'; document.getElementById('voice-status').classList.add('active'); document.getElementById('voice-mic-big').classList.add('recording'); };
-  recognition.onend = function() { isRecording = false; document.getElementById('voice-status').textContent = 'Gotowe — sprawdź tekst i zapisz.'; document.getElementById('voice-status').classList.remove('active'); document.getElementById('voice-mic-big').classList.remove('recording'); };
-  recognition.onerror = function(e) { isRecording = false; var msg = { 'no-speech': 'Nie wykryto mowy.', 'not-allowed': 'Brak dostępu do mikrofonu.', 'network': 'Błąd sieci.' }; document.getElementById('voice-status').textContent = msg[e.error] || ('Błąd: ' + e.error); document.getElementById('voice-status').classList.remove('active'); document.getElementById('voice-mic-big').classList.remove('recording'); };
-  recognition.onresult = function(event) {
-    var ta = document.getElementById('voice-transcript'); var finalText = ''; var interimText = '';
-    for (var i = event.resultIndex; i < event.results.length; i++) { var t = event.results[i][0].transcript; if (event.results[i].isFinal) finalText += t; else interimText += t; }
-    if (finalText) { var current = ta.value; ta.value = current ? current + ' ' + finalText.trim() : finalText.trim(); document.getElementById('voice-status').textContent = 'Nagrano.'; document.getElementById('voice-status').classList.remove('active'); }
-    if (interimText) document.getElementById('voice-status').textContent = '● ' + interimText;
-  };
-  return true;
-}
-function openVoiceOverlay() { document.getElementById('voice-transcript').value = ''; document.getElementById('voice-status').textContent = 'Naciśnij mikrofon i mów…'; document.getElementById('voice-status').classList.remove('active'); document.getElementById('voice-overlay').classList.add('open'); var typ = ciszaActiveType || 'mysl'; vSetType(typ); if (!recognition) initSpeechRecognition(); }
-function closeVoiceOverlay() { if (isRecording && recognition) recognition.stop(); document.getElementById('voice-overlay').classList.remove('open'); }
-function toggleVoiceRecording() { if (isRecording) { if (recognition) recognition.stop(); return; } recognition = null; if (!initSpeechRecognition()) return; try { recognition.start(); } catch(e) { console.error(e); } }
-function vSetType(typ) { voiceType = typ; ['mysl','sen','czucie'].forEach(function(t) { document.getElementById('vtype-' + t).classList.remove('active'); }); document.getElementById('vtype-' + typ).classList.add('active'); }
-async function voiceSave() {
-  var tresc = document.getElementById('voice-transcript').value.trim(); if (!tresc) { showToast('Brak tekstu'); return; }
-  if (isRecording && recognition) recognition.stop();
-  var payload = { traveler_id: currentNick, tresc: tresc, typ: voiceType, status: 'aktywny', due_date: null };
-  try {
-    var r = await fetch(SUPABASE_URL + '/rest/v1/stones', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify(Object.assign({}, payload, { sekcja: 'cisza' })) });
-    if (!r.ok) { var r2 = await fetch(SUPABASE_URL + '/rest/v1/stones', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify(payload) }); if (!r2.ok) { var err = await r2.text(); showToast('Błąd: ' + err.substring(0,60)); return; } }
-    showToast('Zapisano do Ciszy ✓'); closeVoiceOverlay();
-    if (document.getElementById('screen-cisza').style.display !== 'none') await loadCiszaData();
-  } catch(e) { console.error(e); showToast('Błąd zapisu'); }
-}
-
-// ==================== PINNED ====================
-function renderPinnedGrid() {
-  var grid = document.getElementById('pinned-grid'); var pinned = getPinned();
-  if (!pinned.length) { grid.innerHTML = '<div class="pinned-empty">Wejdź do Słoika i przypnij co ważne →</div>'; return; }
-  grid.innerHTML = '';
-  pinned.forEach(function(id, idx) {
-    var sec = SLOIK_SECTIONS.find(function(s) { return s.id === id; }); if (!sec) return;
-    var div = document.createElement('div'); div.className = 'tile-pinned'; div.style.animationDelay = (0.2 + idx * 0.05) + 's';
-    div.innerHTML = '<div><div class="tile-pinned-accent" style="background:' + sec.color + '"></div><div class="tile-pinned-name">' + sec.name + '</div><div class="tile-pinned-en">' + sec.nameEn + '</div></div>';
-    div.onclick = function() { sloikSectionAction(sec); };
-    grid.appendChild(div);
-  });
-}
-
-// ==================== SŁOIK SEKCJE ====================
-function renderSloikSections() {
-  var container = document.getElementById('sloik-sections'); container.innerHTML = '';
-  var order = getSloikOrder(); var pinned = getPinned();
-  var sorted = order.map(function(id) { return SLOIK_SECTIONS.find(function(s) { return s.id === id; }); }).filter(Boolean);
-  sorted.forEach(function(sec) {
-    var isPinned = pinned.indexOf(sec.id) !== -1;
-    var card = document.createElement('div'); card.className = 'sloik-section-card'; card.draggable = true; card.dataset.id = sec.id;
-    card.innerHTML = '<div class="sloik-drag-handle"><span></span><span></span><span></span></div><div class="sloik-section-accent" style="background:' + sec.color + '"></div><div class="sloik-section-info"><div class="sloik-section-name">' + sec.name + '</div><div class="sloik-section-en">' + sec.nameEn + '</div><div class="sloik-section-desc">' + sec.desc + '</div></div><button class="pin-btn' + (isPinned ? ' pinned' : '') + '" onclick="togglePin(event,\'' + sec.id + '\')">' + (isPinned ? '📌' : '📍') + '</button><button class="open-btn" onclick="sloikSectionAction_fromBtn(event,\'' + sec.id + '\')">→</button>';
-    card.addEventListener('click', function(e) { if (e.target.closest('.pin-btn') || e.target.closest('.open-btn')) return; sloikSectionAction(sec); });
-    container.appendChild(card);
-  });
-  setupSloikDrag();
-}
-function sloikSectionAction(sec) {
-  if (sec.action === 'openHoryzont') openHoryzont();
-  else if (sec.action === 'openCisza') openCisza();
-  else if (sec.action === 'openNotatnik') openNotatnik();
-  else openPlaceholder(sec.name, sec.nameEn, 'sloik');
-}
-function sloikSectionAction_fromBtn(e, id) { e.stopPropagation(); var sec = SLOIK_SECTIONS.find(function(s) { return s.id === id; }); if (sec) sloikSectionAction(sec); }
-function togglePin(e, id) { e.stopPropagation(); var pinned = getPinned(); var idx = pinned.indexOf(id); if (idx !== -1) { pinned.splice(idx, 1); showToast('Odpięto'); } else { pinned.push(id); showToast('Przypięto 📌'); } setPinned(pinned); renderSloikSections(); }
-function setupSloikDrag() {
-  var container = document.getElementById('sloik-sections'); var dragged = null;
-  container.addEventListener('dragstart', function(e) { dragged = e.target.closest('.sloik-section-card'); if (dragged) setTimeout(function() { dragged.classList.add('dragging'); }, 0); });
-  container.addEventListener('dragend', function() { if (dragged) dragged.classList.remove('dragging'); container.querySelectorAll('.sloik-section-card').forEach(function(c) { c.classList.remove('drag-over'); }); var newOrder = []; container.querySelectorAll('.sloik-section-card').forEach(function(c) { newOrder.push(c.dataset.id); }); setSloikOrder(newOrder); dragged = null; });
-  container.addEventListener('dragover', function(e) { e.preventDefault(); var over = e.target.closest('.sloik-section-card'); if (over && over !== dragged) { container.querySelectorAll('.sloik-section-card').forEach(function(c) { c.classList.remove('drag-over'); }); over.classList.add('drag-over'); var mid = over.getBoundingClientRect().top + over.getBoundingClientRect().height / 2; if (e.clientY < mid) container.insertBefore(dragged, over); else container.insertBefore(dragged, over.nextSibling); } });
-}
-
-// ==================== MINI KALENDARZ ====================
-function buildMiniCal() {
-  var monthNames = ['styczeń','luty','marzec','kwiecień','maj','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień'];
-  document.getElementById('cal-title').textContent = monthNames[calMonth] + ' ' + calYear;
-  var stoneDates = new Set();
-  stonesData.forEach(function(s) { if (s.due_date && s.status === 'aktywny') { var d = new Date(s.due_date); if (d.getFullYear() === calYear && d.getMonth() === calMonth) stoneDates.add(d.getDate()); } });
-  var grid = document.getElementById('cal-grid'); grid.innerHTML = '';
-  ['Pn','Wt','Śr','Cz','Pt','So','Nd'].forEach(function(d) { var hd = document.createElement('div'); hd.className = 'cal-hd'; hd.textContent = d; grid.appendChild(hd); });
-  var now = new Date(); var first = new Date(calYear, calMonth, 1); var startDay = (first.getDay() + 6) % 7; var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-  for (var i = 0; i < startDay; i++) grid.appendChild(document.createElement('div'));
-  for (var d = 1; d <= daysInMonth; d++) {
-    var el = document.createElement('div'); el.className = 'cal-d'; el.textContent = d;
-    if (d === now.getDate() && calMonth === now.getMonth() && calYear === now.getFullYear()) el.classList.add('today');
-    if (stoneDates.has(d)) el.classList.add('has-stone');
-    (function(day) { el.onclick = function() { calClickDay(day); }; })(d);
-    grid.appendChild(el);
-  }
-}
-function calNavMonth(dir) { calMonth += dir; if (calMonth > 11) { calMonth = 0; calYear++; } if (calMonth < 0) { calMonth = 11; calYear--; } buildMiniCal(); }
-function calClickDay(day) { var dateStr = calYear + '-' + String(calMonth + 1).padStart(2,'0') + '-' + String(day).padStart(2,'0'); openAddStone(dateStr); }
-
-// ==================== HORYZONT ====================
-function hSetTab(tab) {
-  currentTab = tab;
-  document.getElementById('htab-kal').classList.toggle('active', tab === 'kal');
-  document.getElementById('htab-zad').classList.toggle('active', tab === 'zad');
-
-  var barKal = document.getElementById('bar-kal');
-  var barZad = document.getElementById('bar-zad');
-  barKal.style.display = tab === 'kal' ? 'flex' : 'none';
-  barZad.style.display = tab === 'zad' ? 'flex' : 'none';
-
-  var body = document.getElementById('h-right-body');
   if (tab === 'kal') {
-    body.classList.remove('tasks-mode');
-    body.innerHTML = '<div class="fc-wrap"><div id="fc-calendar"></div></div>';
-    initOrUpdateFC();
-  } else {
-    body.classList.add('tasks-mode');
-    // Zniszcz FC gdy przełączamy na zadania
-    if (fcCalendar) { fcCalendar.destroy(); fcCalendar = null; }
-    renderZadania();
+    setTimeout(function() { if (fcCal) fcCal.updateSize(); }, 50);
   }
+  if (tab === 'zal') renderZalecenia();
+  if (tab === 'notatki') renderNotatki();
+  if (tab === 'podop') renderClientDetail();
 }
-
-function hSetView(view) {
-  currentView = view;
-  ['miesiac','tydzien','dzien'].forEach(function(v) { document.getElementById('vchip-' + v).classList.toggle('active', v === view); });
-  if (fcCalendar) {
-    fcCalendar.changeView(getFCView());
-    updateFCTitle();
-  }
-}
-
-function hSetFilter(f) {
-  currentFilter = f;
-  ['mies','wszystkie','hist'].forEach(function(x) { var el = document.getElementById('fchip-' + x); if (el) el.classList.remove('active'); });
-  document.getElementById('fchip-' + f).classList.add('active');
-  renderPreview();
-}
-
-function zSetTab(tab) { zadTab = tab; document.getElementById('ztab-aktywne').classList.toggle('active', tab === 'aktywne'); document.getElementById('ztab-historia').classList.toggle('active', tab === 'historia'); renderZadania(); }
-function toggleSearch() { var inp = document.getElementById('search-input'); inp.classList.toggle('open'); if (inp.classList.contains('open')) inp.focus(); else { inp.value = ''; searchQuery = ''; renderZadania(); } }
-function hSearch(val) { searchQuery = val.toLowerCase(); if (currentTab === 'zad') renderZadania(); }
-
-function renderPreview() {
-  var lista = document.getElementById('h-preview-list'); var now = new Date(); var prefM = parseInt(document.getElementById('mies-val').value) || 3;
-  var items = stonesData.filter(function(s) {
-    if (!s.due_date || s.status !== 'aktywny') return false;
-    if (searchQuery && !s.tresc.toLowerCase().includes(searchQuery)) return false;
-    var d = new Date(s.due_date);
-    if (currentFilter === 'hist') return d < now;
-    if (currentFilter === 'mies') { var cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() + prefM); return d >= now && d <= cutoff; }
-    return d >= now;
-  }).sort(function(a, b) { return currentFilter === 'hist' ? new Date(b.due_date) - new Date(a.due_date) : new Date(a.due_date) - new Date(b.due_date); });
-  if (!items.length) { lista.innerHTML = '<div class="preview-empty">brak wpisów</div>'; return; }
-  lista.innerHTML = '';
-  items.forEach(function(item) {
-    var d = new Date(item.due_date); var isPast = d < now; var kolor = getKolor(item.typ);
-    var div = document.createElement('div'); div.className = 'preview-item';
-    div.innerHTML = '<div class="preview-bar" style="background:' + kolor + '"></div><div class="preview-info"><div class="preview-name">' + escHtml(item.tresc) + '</div><div class="preview-date' + (isPast ? ' overdue' : '') + '">' + formatDate(d) + '</div></div>' + (isPast ? '<button class="preview-check" onclick="markDone(' + item.id + ')">✓</button>' : '');
-    lista.appendChild(div);
-  });
-}
-
-function renderZadania() {
-  var body = document.getElementById('h-right-body'); body.innerHTML = '';
-  if (zadTab === 'aktywne') {
-    var form = document.createElement('div'); form.className = 'add-task-form';
-    form.innerHTML = '<input class="add-task-input" id="new-task-input" type="text" placeholder="nowe zadanie…"><button class="add-task-btn" onclick="addTask()">Dodaj</button>';
-    body.appendChild(form);
-    document.getElementById('new-task-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') addTask(); });
-    var tasks = stonesData.filter(function(s) { return s.typ === 'zadanie' && !s.due_date && s.status === 'aktywny' && (!searchQuery || s.tresc.toLowerCase().includes(searchQuery)); });
-    if (!tasks.length) { var em = document.createElement('div'); em.className = 'empty-msg'; em.textContent = 'Brak aktywnych zadań'; body.appendChild(em); return; }
-    var list = document.createElement('div'); list.className = 'task-list'; list.id = 'drag-list';
-    tasks.forEach(function(item) { list.appendChild(buildTaskEl(item)); });
-    body.appendChild(list); setupDrag();
-  } else {
-    var histFilter = document.createElement('div'); histFilter.className = 'hist-filter';
-    var allMonths = ['Sty','Lut','Mar','Kwi','Maj','Cze','Lip','Sie','Wrz','Paź','Lis','Gru'];
-    var currentHistMonth = window._histMonth !== undefined ? window._histMonth : -1;
-    var allChip = document.createElement('div'); allChip.className = 'hist-chip' + (currentHistMonth === -1 ? ' active' : ''); allChip.textContent = 'Wszystkie'; allChip.onclick = function() { window._histMonth = -1; renderZadania(); }; histFilter.appendChild(allChip);
-    allMonths.forEach(function(m, i) { var chip = document.createElement('div'); chip.className = 'hist-chip' + (currentHistMonth === i ? ' active' : ''); chip.textContent = m; chip.onclick = function() { window._histMonth = i; renderZadania(); }; histFilter.appendChild(chip); }); body.appendChild(histFilter);
-    var done = stonesData.filter(function(s) {
-      if (s.typ !== 'zadanie' || s.due_date || s.status !== 'wykonany') return false;
-      if (searchQuery && !s.tresc.toLowerCase().includes(searchQuery)) return false;
-      if (currentHistMonth !== -1) { var d = new Date(s.updated_at || s.created_at); if (d.getMonth() !== currentHistMonth) return false; }
-      return true;
-    }).sort(function(a, b) { return new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at); });
-    if (!done.length) { body.innerHTML += '<div class="empty-msg">Brak historii</div>'; return; }
-    done.forEach(function(item) { var div = document.createElement('div'); div.className = 'task-hist-item'; var d = new Date(item.updated_at || item.created_at); div.innerHTML = '<div class="hist-bar" style="background:#bbb"></div><div class="task-hist-name">' + escHtml(item.tresc) + '</div><div class="task-hist-date">' + formatDate(d) + '</div>'; body.appendChild(div); });
-  }
-}
-
-function buildTaskEl(item) {
-  var div = document.createElement('div'); div.className = 'task-item'; div.draggable = true; div.dataset.id = item.id;
-  div.innerHTML = '<div class="drag-handle"><span></span><span></span><span></span></div><div class="task-name">' + escHtml(item.tresc) + '</div><div class="task-actions"><button class="task-btn done" onclick="markDone(' + item.id + ')">✓</button><button class="task-btn" onclick="editTask(' + item.id + ')">✎</button><button class="task-btn del" onclick="deleteStone(' + item.id + ')">✕</button></div>';
-  return div;
-}
-function focusAddTask() { hSetTab('zad'); setTimeout(function() { var inp = document.getElementById('new-task-input'); if (inp) inp.focus(); }, 100); }
-function setupDrag() {
-  var dl = document.getElementById('drag-list'); if (!dl) return; var dragged = null;
-  dl.addEventListener('dragstart', function(e) { dragged = e.target.closest('.task-item'); if (dragged) setTimeout(function() { dragged.classList.add('dragging'); }, 0); });
-  dl.addEventListener('dragend', function() { if (dragged) { dragged.classList.remove('dragging'); dragged = null; } });
-  dl.addEventListener('dragover', function(e) { e.preventDefault(); var over = e.target.closest('.task-item'); if (over && over !== dragged) { var mid = over.getBoundingClientRect().top + over.getBoundingClientRect().height / 2; if (e.clientY < mid) dl.insertBefore(dragged, over); else dl.insertBefore(dragged, over.nextSibling); } });
-}
-
-// ==================== AKCJE ====================
-async function markDone(id) { try { await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ status: 'wykonany' }) }); showToast('Wykonane ✓'); await reloadStones(); } catch(e) { console.error(e); } }
-async function deleteStone(id) { if (!confirm('Usunąć?')) return; try { await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }); showToast('Usunięto'); await reloadStones(); } catch(e) { console.error(e); } }
-function openAddStone(prefillDate) { editingStoneId = null; window._saveStoneFromNotatnik = null; document.getElementById('modal-sekcja-row').style.display = 'none'; document.getElementById('modal-stone-title').textContent = 'Nowy wpis w kalendarzu'; document.getElementById('modal-stone-tresc').value = ''; document.getElementById('modal-stone-typ').value = 'zadanie'; document.getElementById('modal-stone-date').value = prefillDate || todayStr(); document.getElementById('modal-stone-time').value = ''; document.getElementById('modal-stone').classList.add('open'); document.getElementById('modal-stone-tresc').focus(); }
-function editStone(id) { var s = stonesData.find(function(x) { return x.id === id; }); if (!s) return; editingStoneId = id; document.getElementById('modal-stone-title').textContent = 'Edytuj wpis'; document.getElementById('modal-stone-tresc').value = s.tresc; document.getElementById('modal-stone-typ').value = s.typ || 'zadanie'; if (s.due_date) { var d = new Date(s.due_date); document.getElementById('modal-stone-date').value = d.toISOString().split('T')[0]; document.getElementById('modal-stone-time').value = (d.getHours() || d.getMinutes()) ? String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') : ''; } document.getElementById('modal-stone').classList.add('open'); }
-async function saveStone() {
-  var tresc = document.getElementById('modal-stone-tresc').value.trim(); if (!tresc) return;
-  var typ = document.getElementById('modal-stone-typ').value;
-  var dateVal = document.getElementById('modal-stone-date').value;
-  var timeVal = document.getElementById('modal-stone-time').value;
-  var due_date = dateVal ? (timeVal ? dateVal + 'T' + timeVal + ':00' : dateVal + 'T09:00:00') : null;
-  if (window._saveStoneFromNotatnik) {
-    var sekcja = document.getElementById('modal-stone-sekcja').value;
-    if (sekcja === 'cisza') { due_date = null; if (typ !== 'sen' && typ !== 'odczucie') typ = 'mysl'; } else { if (typ === 'sen' || typ === 'odczucie') typ = 'zadanie'; }
-  }
-  var payload = { traveler_id: currentNick, tresc: tresc, typ: typ, status: 'aktywny', due_date: due_date };
-  try {
-    if (editingStoneId) {
-      await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + editingStoneId, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ tresc: tresc, typ: typ, due_date: due_date }) });
-      showToast('Zaktualizowano');
-    } else {
-      await fetch(SUPABASE_URL + '/rest/v1/stones', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify(payload) });
-      showToast('Dodano');
-    }
-    closeModal('modal-stone');
-    if (window._saveStoneFromNotatnik) {
-      var origId = window._saveStoneFromNotatnik; window._saveStoneFromNotatnik = null;
-      var origItem = notatnikData.find(function(s) { return s.id === origId; });
-      if (origItem) {
-        var sekcjaWybrana = document.getElementById('modal-stone-sekcja') ? document.getElementById('modal-stone-sekcja').value : 'horyzont';
-        await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + origId, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ sugestia_status: 'zmieniona' }) });
-        await fetch(SUPABASE_URL + '/rest/v1/notatnik_trening', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ traveler_id: currentNick, kamien_id: origId, sugestia_sekcja: origItem.sugestia_sekcja, sugestia_due_date: origItem.sugestia_due_date, decyzja: 'zmiana', zmiana_sekcja: sekcjaWybrana, zmiana_due_date: due_date }) });
-        await loadNotatnikData();
-      }
-    }
-    await reloadStones();
-  } catch(e) { console.error(e); }
-}
-async function addTask() { var inp = document.getElementById('new-task-input'); var tresc = inp ? inp.value.trim() : ''; if (!tresc) return; try { await fetch(SUPABASE_URL + '/rest/v1/stones', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ traveler_id: currentNick, tresc: tresc, typ: 'zadanie', status: 'aktywny', due_date: null }) }); showToast('Dodano zadanie'); await reloadStones(); } catch(e) { console.error(e); } }
-function editTask(id) { var s = stonesData.find(function(x) { return x.id === id; }); if (!s) return; editingTaskId = id; document.getElementById('modal-task-tresc').value = s.tresc; document.getElementById('modal-task').classList.add('open'); }
-async function saveTaskEdit() { var tresc = document.getElementById('modal-task-tresc').value.trim(); if (!tresc || !editingTaskId) return; try { await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + editingTaskId, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ tresc: tresc }) }); showToast('Zaktualizowano'); closeModal('modal-task'); await reloadStones(); } catch(e) { console.error(e); } }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(function(overlay) { overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); }); });
-document.getElementById('mies-val').addEventListener('change', function() { localStorage.setItem('mana_mies', this.value); renderPreview(); });
 
 // ==================== HELPERS ====================
-function todayStr() { var now = new Date(); return now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(function(o) { o.addEventListener('click', function(e) { if (e.target === o) o.classList.remove('open'); }); });
+
 function formatDate(d) {
-  var now = new Date(); var today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); var tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate() + 1);
-  var day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
   var months = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
-  var timeStr = (d.getHours() !== 0 || d.getMinutes() !== 0) ? ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') : '';
-  if (day.getTime() === today.getTime()) return 'dziś' + timeStr;
-  if (day.getTime() === tomorrow.getTime()) return 'jutro' + timeStr;
+  var now = new Date();
+  var timeStr = (d.getHours() || d.getMinutes()) ? ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') : '';
   return d.getDate() + ' ' + months[d.getMonth()] + (d.getFullYear() !== now.getFullYear() ? ' ' + d.getFullYear() : '') + timeStr;
 }
 function formatDateTime(d) {
-  var now = new Date(); var today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); var day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  var months = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
-  var timeStr = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
-  if (day.getTime() === today.getTime()) return 'dziś ' + timeStr;
-  return d.getDate() + ' ' + months[d.getMonth()] + (d.getFullYear() !== now.getFullYear() ? ' ' + d.getFullYear() : '') + ' · ' + timeStr;
+  return formatDate(d) + ' · ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
 }
-function ciszaTypeColor(typ) { return { 'sen': 'var(--cisza-sen)', 'mysl': 'var(--cisza-mysl)', 'czucie': 'var(--cisza-czucie)' }[typ] || 'var(--text-light)'; }
-function ciszaTypeLabel(typ) { return { 'sen': 'Sen', 'mysl': 'Myśl', 'czucie': 'Czucie' }[typ] || typ; }
-function getKolor(typ) { return { 'zadanie': '#6B8F71', 'calodniowe': '#9B7EBD', 'sen': '#7B8FA0', 'odczucie': '#A0845C' }[typ] || '#8B7355'; }
 function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function() { t.classList.remove('show'); }, 2500); }
+function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function() { t.classList.remove('show'); }, 2800); }
 
+// ==================== BOOT ====================
 window.addEventListener('load', function() {
-  var saved = localStorage.getItem('mana_nick');
-  if (saved) { currentNick = saved; document.getElementById('nick-input').value = saved; showScreen('main'); loadData(); }
-  else showScreen('login');
+  var saved = localStorage.getItem('mana_terapeuta_nick');
+  if (saved) {
+    currentNick = saved;
+    document.getElementById('login-nick').value = saved;
+    document.getElementById('screen-login').style.display = 'none';
+    document.getElementById('screen-main').style.display = 'flex';
+    document.getElementById('screen-main').style.flexDirection = 'column';
+    document.getElementById('top-nick').textContent = saved;
+    init();
+  }
 });
 </script>
 </body>
