@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MANA · Słoik</title>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 <style>
   :root {
     --sand: #F5F0E8; --sand-dark: #EDE7D8;
@@ -13,9 +15,52 @@
     --border: rgba(139,115,85,0.2); --border-strong: rgba(139,115,85,0.4);
     --white: #FFFDF8; --red: #C0392B; --green: #6B8F71; --blue: #7B8FA0; --purple: #9B7EBD;
     --cisza-sen: #7B8FA0; --cisza-mysl: #9B7EBD; --cisza-czucie: #C4956A;
+    /* FullCalendar overrides */
+    --fc-border-color: rgba(139,115,85,0.15);
+    --fc-today-bg-color: rgba(139,115,85,0.06);
+    --fc-event-bg-color: #8B7355;
+    --fc-event-border-color: #5C4A35;
+    --fc-page-bg-color: var(--sand);
+    --fc-neutral-bg-color: var(--white);
+    --fc-list-event-hover-bg-color: var(--sand-dark);
+    --fc-highlight-color: rgba(139,115,85,0.08);
+    --fc-non-business-color: rgba(139,115,85,0.03);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--sand); color: var(--text); min-height: 100vh; font-size: 14px; }
+
+  /* FullCalendar styling */
+  .fc { font-family: 'DM Sans', sans-serif; font-size: 12px; }
+  .fc .fc-toolbar { display: none; }
+  .fc .fc-col-header-cell-cushion { color: var(--text-mid); font-size: 11px; font-weight: 500; padding: 6px 4px; text-decoration: none; }
+  .fc .fc-daygrid-day-number { color: var(--text-mid); font-size: 11px; text-decoration: none; padding: 4px 6px; }
+  .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number { background: var(--brown); color: var(--white); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+  .fc .fc-event { border-radius: 5px; font-size: 11px; font-weight: 400; border: none; padding: 1px 4px; cursor: pointer; }
+  .fc .fc-event-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fc .fc-timegrid-slot { height: 32px; }
+  .fc .fc-timegrid-slot-label { font-size: 10px; color: var(--text-light); }
+  .fc .fc-scrollgrid { border-color: var(--border); }
+  .fc .fc-scrollgrid-section > td { border-color: var(--border); }
+  .fc th { background: var(--white); }
+  .fc .fc-daygrid-day:hover { background: rgba(139,115,85,0.03); }
+  .fc .fc-more-popover { background: var(--white); border: 1px solid var(--border-strong); border-radius: 10px; box-shadow: 0 4px 20px rgba(44,36,24,0.12); }
+  .fc .fc-popover-header { background: var(--sand-dark); border-radius: 10px 10px 0 0; padding: 8px 12px; font-size: 11px; font-weight: 500; color: var(--text-mid); }
+  .fc-direction-ltr .fc-daygrid-event.fc-event-end { margin-right: 2px; }
+  .fc-direction-ltr .fc-daygrid-event.fc-event-start { margin-left: 2px; }
+  .fc .fc-timegrid-now-indicator-line { border-color: var(--red); }
+  .fc .fc-timegrid-now-indicator-arrow { border-top-color: var(--red); border-bottom-color: var(--red); }
+
+  /* FC container */
+  #fc-calendar { height: 100%; }
+  .fc-wrap { height: 100%; padding: 12px 14px; overflow: hidden; }
+
+  /* nav bar for calendar */
+  .fc-nav { display: flex; align-items: center; gap: 6px; }
+  .fc-nav-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--white); color: var(--text-mid); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .fc-nav-btn:hover { border-color: var(--brown); color: var(--brown); }
+  .fc-nav-title { font-size: 12px; font-weight: 500; color: var(--text); min-width: 120px; text-align: center; }
+  .fc-today-btn { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--white); color: var(--text-mid); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .fc-today-btn:hover { border-color: var(--brown); color: var(--brown); }
 
   /* TOAST */
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--brown-deep); color: var(--white); padding: 10px 20px; border-radius: 20px; font-size: 12px; opacity: 0; transition: all 0.3s; z-index: 9999; white-space: nowrap; pointer-events: none; }
@@ -214,23 +259,12 @@
   .search-btn:hover { border-color: var(--border-strong); color: var(--brown); }
   .add-btn { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--white); color: var(--brown); font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 4px; font-family: 'DM Sans', sans-serif; }
   .add-btn:hover { background: var(--brown); color: var(--white); border-color: var(--brown); }
-  .h-right-body { flex: 1; overflow-y: auto; padding: 14px 16px; }
+  .h-right-body { flex: 1; overflow: hidden; }
+  .h-right-body.tasks-mode { overflow-y: auto; padding: 14px 16px; }
+
+  /* zadania (stary kod) */
   .month-section { margin-bottom: 16px; }
   .month-header { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); font-weight: 500; padding: 4px 0 8px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
-  .cal-stone { padding: 8px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; background: var(--white); border-radius: 8px; margin-bottom: 4px; transition: all 0.15s; }
-  .cal-stone:hover { box-shadow: 0 2px 8px rgba(139,115,85,0.08); }
-  .cal-stone.allday { border-left: 3px solid var(--purple); }
-  .stone-bar { width: 3px; min-height: 24px; border-radius: 2px; flex-shrink: 0; align-self: stretch; }
-  .stone-info { flex: 1; min-width: 0; }
-  .stone-name { font-size: 12px; color: var(--text); }
-  .stone-date { font-size: 10px; color: var(--text-light); margin-top: 1px; }
-  .stone-date.overdue { color: var(--red); }
-  .stone-tag { font-size: 9px; padding: 2px 6px; border-radius: 4px; background: rgba(155,126,189,0.15); color: var(--purple); letter-spacing: 0.05em; }
-  .stone-actions { display: flex; gap: 4px; align-items: center; }
-  .stone-action-btn { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-light); font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-  .stone-action-btn:hover { border-color: var(--border-strong); color: var(--brown); }
-  .stone-action-btn.done:hover { background: var(--green); border-color: var(--green); color: white; }
-  .stone-action-btn.del:hover { background: var(--red); border-color: var(--red); color: white; }
   .task-list { display: flex; flex-direction: column; gap: 4px; }
   .task-item { padding: 9px 10px; border-radius: 8px; background: var(--white); display: flex; align-items: center; gap: 8px; cursor: grab; transition: all 0.15s; border: 1px solid var(--border); }
   .task-item:hover { box-shadow: 0 2px 8px rgba(139,115,85,0.08); }
@@ -307,7 +341,7 @@
   .cisza-del-btn:hover { background: var(--red); border-color: var(--red); color: var(--white); }
   .cisza-empty { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 300; color: var(--text-light); text-align: center; padding: 40px 0; font-style: italic; line-height: 1.7; }
 
-  /* ==================== NOTATNIK ==================== */
+  /* NOTATNIK */
   #screen-notatnik { display: none; min-height: 100vh; flex-direction: column; }
   .notatnik-body { flex: 1; display: flex; flex-direction: column; max-width: 680px; margin: 0 auto; width: 100%; padding: 20px 24px; gap: 14px; overflow-y: auto; }
   .notatnik-empty { font-family: 'Crimson Pro', serif; font-size: 18px; font-weight: 300; color: var(--text-light); text-align: center; padding: 40px 0; font-style: italic; line-height: 1.7; }
@@ -338,6 +372,7 @@
     .h-left { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
     .cisza-body { padding: 16px; }
     .notatnik-body { padding: 16px; }
+    .fc-nav-title { min-width: 80px; font-size: 11px; }
   }
 </style>
 </head>
@@ -444,7 +479,6 @@
         <div class="tile-help-en">MANA Help</div>
       </div>
     </div>
-    <!-- MIKROFON + NOTATNIK -->
     <div style="display:flex;justify-content:center;gap:8px;margin-bottom:12px;">
       <button id="main-mic-btn" onclick="toggleMainMic()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;border:1.5px solid var(--border-strong);background:var(--white);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;">
         <span id="main-mic-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-light);transition:background 0.2s;"></span>
@@ -560,24 +594,36 @@
       <div class="h-preview-list" id="h-preview-list"><div class="loading">ładowanie…</div></div>
     </div>
     <div class="h-right">
-      <div class="h-right-bar">
-        <div class="view-chips" id="view-chips-kal" style="display:none">
-          <div class="view-chip active" id="vchip-miesiac" onclick="hSetView('miesiac')">Miesiąc</div>
-          <div class="view-chip" id="vchip-tydzien" onclick="hSetView('tydzien')">Tydzień</div>
-          <div class="view-chip" id="vchip-dzien" onclick="hSetView('dzien')">Dzień</div>
+      <div class="h-right-bar" id="h-right-bar">
+        <!-- Kalendarz controls -->
+        <div id="bar-kal" style="display:none;align-items:center;gap:8px;flex:1;flex-wrap:wrap;">
+          <div class="view-chips">
+            <div class="view-chip active" id="vchip-miesiac" onclick="hSetView('miesiac')">Miesiąc</div>
+            <div class="view-chip" id="vchip-tydzien" onclick="hSetView('tydzien')">Tydzień</div>
+            <div class="view-chip" id="vchip-dzien" onclick="hSetView('dzien')">Dzień</div>
+          </div>
+          <div class="fc-nav">
+            <button class="fc-nav-btn" onclick="fcPrev()" title="Poprzedni">◀</button>
+            <button class="fc-today-btn" onclick="fcToday()">dziś</button>
+            <button class="fc-nav-btn" onclick="fcNext()" title="Następny">▶</button>
+            <div class="fc-nav-title" id="fc-nav-title"></div>
+          </div>
+          <button class="add-btn" style="margin-left:auto" onclick="openAddStone()">+ dodaj</button>
         </div>
-        <div class="task-tabs" id="view-chips-zad">
-          <div class="task-tab active" id="ztab-aktywne" onclick="zSetTab('aktywne')">Aktywne</div>
-          <div class="task-tab" id="ztab-historia" onclick="zSetTab('historia')">Historia</div>
+        <!-- Zadania controls -->
+        <div id="bar-zad" style="display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap;">
+          <div class="task-tabs">
+            <div class="task-tab active" id="ztab-aktywne" onclick="zSetTab('aktywne')">Aktywne</div>
+            <div class="task-tab" id="ztab-historia" onclick="zSetTab('historia')">Historia</div>
+          </div>
+          <div class="search-wrap">
+            <input class="search-input" id="search-input" type="text" placeholder="szukaj…" oninput="hSearch(this.value)">
+            <button class="search-btn" onclick="toggleSearch()" title="Szukaj">🔍</button>
+          </div>
+          <button class="add-btn" id="add-btn-zad" onclick="focusAddTask()">+ dodaj</button>
         </div>
-        <div class="search-wrap">
-          <input class="search-input" id="search-input" type="text" placeholder="szukaj…" oninput="hSearch(this.value)">
-          <button class="search-btn" onclick="toggleSearch()" title="Szukaj">🔍</button>
-        </div>
-        <button class="add-btn" id="add-btn-kal" onclick="openAddStone()">+ dodaj</button>
-        <button class="add-btn" id="add-btn-zad" style="display:none" onclick="focusAddTask()">+ dodaj</button>
       </div>
-      <div class="h-right-body" id="h-right-body"><div class="loading">ładowanie…</div></div>
+      <div class="h-right-body tasks-mode" id="h-right-body"><div class="loading">ładowanie…</div></div>
     </div>
   </div>
 </div>
@@ -662,6 +708,9 @@ let searchQuery = '';
 let editingStoneId = null;
 let editingTaskId = null;
 
+// FullCalendar instance
+let fcCalendar = null;
+
 // Cisza state
 let ciszaActiveType = null;
 let ciszaMonths = 1;
@@ -716,7 +765,7 @@ function doLogin() {
   currentNick = nick; localStorage.setItem('mana_nick', nick);
   showScreen('main'); loadData();
 }
-function doLogout() { localStorage.removeItem('mana_nick'); currentNick = ''; showScreen('login'); }
+function doLogout() { localStorage.removeItem('mana_nick'); currentNick = ''; if (fcCalendar) { fcCalendar.destroy(); fcCalendar = null; } showScreen('login'); }
 document.getElementById('nick-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
 
 function openGaweda() {
@@ -731,7 +780,20 @@ function openPlaceholder(name, nameEn, backTo) {
   else { backBtn.textContent = '← MANA'; backBtn.onclick = showMain; }
   showScreen('placeholder');
 }
-function openHoryzont() { showScreen('horyzont'); buildMiniCal(); renderAll(); }
+function openHoryzont() {
+  showScreen('horyzont');
+  buildMiniCal();
+  renderPreview();
+  // Uruchom aktywny tab
+  if (currentTab === 'kal') {
+    document.getElementById('h-right-body').classList.remove('tasks-mode');
+    document.getElementById('h-right-body').innerHTML = '<div class="fc-wrap"><div id="fc-calendar"></div></div>';
+    initOrUpdateFC();
+  } else {
+    document.getElementById('h-right-body').classList.add('tasks-mode');
+    renderZadania();
+  }
+}
 function openSloik() { showScreen('sloik'); renderSloikSections(); }
 function openCisza() {
   ciszaActiveType = null; ciszaSearchQuery = ''; ciszaShowSearch = false;
@@ -747,6 +809,91 @@ function openNotatnik() {
   showScreen('notatnik');
   loadNotatnikData();
 }
+
+// ==================== FULLCALENDAR ====================
+function getStonesAsEvents() {
+  return stonesData
+    .filter(function(s) { return s.due_date && s.status === 'aktywny'; })
+    .map(function(s) {
+      return {
+        id: String(s.id),
+        title: s.tresc,
+        start: s.due_date,
+        allDay: s.typ === 'calodniowe',
+        backgroundColor: getKolor(s.typ),
+        borderColor: getKolor(s.typ),
+        textColor: '#FFFDF8',
+        extendedProps: { stoneId: s.id }
+      };
+    });
+}
+
+function getFCView() {
+  if (currentView === 'miesiac') return 'dayGridMonth';
+  if (currentView === 'tydzien') return 'timeGridWeek';
+  return 'timeGridDay';
+}
+
+function updateFCTitle() {
+  if (!fcCalendar) return;
+  var title = document.getElementById('fc-nav-title');
+  if (title) title.textContent = fcCalendar.view.title;
+}
+
+function initOrUpdateFC() {
+  var el = document.getElementById('fc-calendar');
+  if (!el) return;
+
+  var events = getStonesAsEvents();
+
+  if (fcCalendar) {
+    // Aktualizuj events i widok
+    fcCalendar.removeAllEvents();
+    events.forEach(function(e) { fcCalendar.addEvent(e); });
+    fcCalendar.changeView(getFCView());
+    updateFCTitle();
+    return;
+  }
+
+  fcCalendar = new FullCalendar.Calendar(el, {
+    initialView: getFCView(),
+    locale: 'pl',
+    firstDay: 1, // poniedziałek
+    headerToolbar: false,
+    height: '100%',
+    events: events,
+    buttonText: { today: 'dziś', month: 'miesiąc', week: 'tydzień', day: 'dzień' },
+    allDayText: 'cały dzień',
+    noEventsText: 'Brak wpisów',
+    moreLinkText: function(n) { return '+' + n + ' więcej'; },
+    dayMaxEvents: 3,
+    nowIndicator: true,
+    selectable: true,
+    // Klik w dzień → dodaj wpis
+    dateClick: function(info) {
+      openAddStone(info.dateStr.split('T')[0]);
+    },
+    // Klik w event → edytuj
+    eventClick: function(info) {
+      editStone(parseInt(info.event.extendedProps.stoneId));
+    },
+    // Po wyrenderowaniu — zaktualizuj tytuł
+    datesSet: function() {
+      updateFCTitle();
+    },
+    // Styl eventów
+    eventDidMount: function(info) {
+      info.el.title = info.event.title;
+    }
+  });
+
+  fcCalendar.render();
+  updateFCTitle();
+}
+
+function fcPrev() { if (fcCalendar) { fcCalendar.prev(); updateFCTitle(); } }
+function fcNext() { if (fcCalendar) { fcCalendar.next(); updateFCTitle(); } }
+function fcToday() { if (fcCalendar) { fcCalendar.today(); updateFCTitle(); } }
 
 // ==================== DANE ====================
 async function loadData() {
@@ -764,6 +911,7 @@ async function loadData() {
     updateStats(); renderPinnedGrid();
   } catch(e) { console.error(e); }
 }
+
 function updateStats() {
   var now = new Date();
   var future = stonesData.filter(function(s) { return s.due_date && new Date(s.due_date) >= now && s.status === 'aktywny'; });
@@ -774,19 +922,30 @@ function updateStats() {
   if (tasks.length) parts.push(tasks.length + ' zadań');
   if (notatki.length) parts.push(notatki.length + ' notatek');
   document.getElementById('sloik-stats').textContent = parts.join(' · ');
-  // Kropka przy Notatniku — świeci gdy są nieprzejrzane
   var dot = document.getElementById('notatnik-count-dot');
   if (dot) dot.style.background = notatki.length ? 'var(--brown)' : 'var(--text-light)';
 }
+
 async function reloadStones() {
   try {
     var r = await fetch(SUPABASE_URL + '/rest/v1/stones?traveler_id=eq.' + encodeURIComponent(currentNick) + '&order=created_at.desc', { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } });
     stonesData = await r.json();
-    updateStats(); buildMiniCal(); renderAll();
+    updateStats();
+    buildMiniCal();
+    renderPreview();
+    if (currentTab === 'kal') {
+      // Odśwież events w FC
+      if (fcCalendar) {
+        fcCalendar.removeAllEvents();
+        getStonesAsEvents().forEach(function(e) { fcCalendar.addEvent(e); });
+      }
+    } else {
+      renderZadania();
+    }
   } catch(e) { console.error(e); }
 }
 
-// ==================== NOTATNIK — DANE ====================
+// ==================== NOTATNIK ====================
 async function loadNotatnikData() {
   document.getElementById('notatnik-list').innerHTML = '<div class="loading">ładowanie…</div>';
   try {
@@ -802,98 +961,42 @@ async function loadNotatnikData() {
 
 function notatnikChangeMies(val) {
   var v = parseInt(val);
-  if (v >= 1 && v <= 12) {
-    notatnikMonths = v;
-    document.getElementById('notatnik-mies-all').classList.remove('active');
-    renderNotatnikList();
-  }
+  if (v >= 1 && v <= 12) { notatnikMonths = v; document.getElementById('notatnik-mies-all').classList.remove('active'); renderNotatnikList(); }
 }
-
-function notatnikSetAll() {
-  notatnikMonths = 0;
-  document.getElementById('notatnik-mies-all').classList.add('active');
-  renderNotatnikList();
-}
+function notatnikSetAll() { notatnikMonths = 0; document.getElementById('notatnik-mies-all').classList.add('active'); renderNotatnikList(); }
 
 function renderNotatnikList() {
   var list = document.getElementById('notatnik-list');
   var now = new Date();
   var items = notatnikData.filter(function(s) {
-    if (notatnikMonths > 0) {
-      var cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - notatnikMonths);
-      if (new Date(s.created_at) < cutoff) return false;
-    }
+    if (notatnikMonths > 0) { var cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - notatnikMonths); if (new Date(s.created_at) < cutoff) return false; }
     return true;
   });
-  if (!items.length) {
-    list.innerHTML = '<div class="notatnik-empty">Tu lądują Twoje nagrania głosowe.<br>Nagraj cokolwiek z ekranu głównego.</div>';
-    return;
-  }
+  if (!items.length) { list.innerHTML = '<div class="notatnik-empty">Tu lądują Twoje nagrania głosowe.<br>Nagraj cokolwiek z ekranu głównego.</div>'; return; }
   list.innerHTML = '';
   items.forEach(function(item) {
-    var div = document.createElement('div');
-    div.className = 'notatnik-entry';
-
-    // Sugestia Serca
+    var div = document.createElement('div'); div.className = 'notatnik-entry';
     var sugestiaHtml = '';
     if (item.sugestia_sekcja && item.sugestia_status === 'oczekuje') {
       var sekcjaLabel = { horyzont: '📅 Horyzont', cisza: '🌙 Cisza', notatka: '📓 Notatnik' }[item.sugestia_sekcja] || item.sugestia_sekcja;
       var dataInfo = item.sugestia_due_date ? ' · ' + formatDate(new Date(item.sugestia_due_date)) : '';
-      sugestiaHtml =
-        '<div style="margin-top:8px;padding:8px 10px;background:var(--sand);border-radius:8px;border:1px solid var(--border);">' +
-          '<div style="font-size:10px;color:var(--text-light);margin-bottom:6px;">Serce sugeruje:</div>' +
-          '<div style="font-size:12px;color:var(--brown);font-weight:500;margin-bottom:8px;">' + sekcjaLabel + dataInfo + '</div>' +
-          '<div style="display:flex;gap:6px;">' +
-            '<button onclick="akceptujNotatke(' + item.id + ')" style="flex:1;padding:6px;border-radius:6px;border:none;background:var(--brown);color:var(--white);font-family:\'DM Sans\',sans-serif;font-size:11px;font-weight:500;cursor:pointer;">Akceptuj ✓</button>' +
-            '<button onclick="zmienNotatke(' + item.id + ')" style="padding:6px 12px;border-radius:6px;border:1px solid var(--border-strong);background:transparent;color:var(--text-mid);font-family:\'DM Sans\',sans-serif;font-size:11px;cursor:pointer;">Zmień</button>' +
-          '</div>' +
-        '</div>';
+      sugestiaHtml = '<div style="margin-top:8px;padding:8px 10px;background:var(--sand);border-radius:8px;border:1px solid var(--border);"><div style="font-size:10px;color:var(--text-light);margin-bottom:6px;">Serce sugeruje:</div><div style="font-size:12px;color:var(--brown);font-weight:500;margin-bottom:8px;">' + sekcjaLabel + dataInfo + '</div><div style="display:flex;gap:6px;"><button onclick="akceptujNotatke(' + item.id + ')" style="flex:1;padding:6px;border-radius:6px;border:none;background:var(--brown);color:var(--white);font-family:\'DM Sans\',sans-serif;font-size:11px;font-weight:500;cursor:pointer;">Akceptuj ✓</button><button onclick="zmienNotatke(' + item.id + ')" style="padding:6px 12px;border-radius:6px;border:1px solid var(--border-strong);background:transparent;color:var(--text-mid);font-family:\'DM Sans\',sans-serif;font-size:11px;cursor:pointer;">Zmień</button></div></div>';
     } else if (item.sugestia_status === 'zaakceptowana') {
       var sekcjaLabel2 = { horyzont: 'Horyzont', cisza: 'Cisza', notatka: 'Notatnik' }[item.sugestia_sekcja] || item.sugestia_sekcja;
       sugestiaHtml = '<div style="margin-top:6px;font-size:10px;color:var(--green);">✓ Przeniesiono do ' + sekcjaLabel2 + '</div>';
     }
-
-    div.innerHTML =
-      '<div class="notatnik-entry-dot"></div>' +
-      '<div class="notatnik-entry-body">' +
-        '<div class="notatnik-entry-text">' + escHtml(item.tresc) + '</div>' +
-        '<div class="notatnik-entry-time">' + formatDateTime(new Date(item.created_at)) + '</div>' +
-        sugestiaHtml +
-      '</div>' +
-      '<button class="notatnik-del-btn" title="Usuń" onclick="deleteNotatnikEntry(' + item.id + ')">✕</button>';
+    div.innerHTML = '<div class="notatnik-entry-dot"></div><div class="notatnik-entry-body"><div class="notatnik-entry-text">' + escHtml(item.tresc) + '</div><div class="notatnik-entry-time">' + formatDateTime(new Date(item.created_at)) + '</div>' + sugestiaHtml + '</div><button class="notatnik-del-btn" title="Usuń" onclick="deleteNotatnikEntry(' + item.id + ')">✕</button>';
     list.appendChild(div);
   });
 }
 
 async function akceptujNotatke(id) {
-  var item = notatnikData.find(function(s) { return s.id === id; });
-  if (!item) return;
+  var item = notatnikData.find(function(s) { return s.id === id; }); if (!item) return;
   try {
-    // Zapisz do właściwej sekcji
-    var newStone = {
-      traveler_id: currentNick,
-      tresc: item.tresc,
-      typ: item.sugestia_sekcja === 'cisza' ? 'mysl' : 'zadanie',
-      status: 'aktywny',
-      due_date: item.sugestia_due_date || null
-    };
-    await fetch(SUPABASE_URL + '/rest/v1/stones', {
-      method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify(newStone)
-    });
-    // Zaktualizuj status notatki
-    await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, {
-      method: 'PATCH',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ sugestia_status: 'zaakceptowana' })
-    });
-    // Zapisz do treningu
-    await fetch(SUPABASE_URL + '/rest/v1/notatnik_trening', {
-      method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ traveler_id: currentNick, kamien_id: id, sugestia_sekcja: item.sugestia_sekcja, sugestia_due_date: item.sugestia_due_date, decyzja: 'akceptacja' })
-    });
+    var newStone = { traveler_id: currentNick, tresc: item.tresc, typ: item.sugestia_sekcja === 'cisza' ? 'mysl' : 'zadanie', status: 'aktywny', due_date: item.sugestia_due_date || null };
+    await fetch(SUPABASE_URL + '/rest/v1/stones', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify(newStone) });
+    await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ sugestia_status: 'zaakceptowana' }) });
+    await fetch(SUPABASE_URL + '/rest/v1/notatnik_trening', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ traveler_id: currentNick, kamien_id: id, sugestia_sekcja: item.sugestia_sekcja, sugestia_due_date: item.sugestia_due_date, decyzja: 'akceptacja' }) });
     var sekcjaLabel = { horyzont: 'Horyzontu', cisza: 'Ciszy', notatka: 'Notatnika' }[item.sugestia_sekcja] || item.sugestia_sekcja;
     showToast('Przeniesiono do ' + sekcjaLabel + ' ✓');
     await loadNotatnikData();
@@ -903,17 +1006,13 @@ async function akceptujNotatke(id) {
 var zmienNotatkeId = null;
 function zmienNotatke(id) {
   zmienNotatkeId = id;
-  var item = notatnikData.find(function(s) { return s.id === id; });
-  if (!item) return;
+  var item = notatnikData.find(function(s) { return s.id === id; }); if (!item) return;
   editingStoneId = null;
   document.getElementById('modal-stone-title').textContent = 'Zmień gdzie trafi';
   document.getElementById('modal-stone-tresc').value = item.tresc;
-  // Pokaż wybór sekcji
   document.getElementById('modal-sekcja-row').style.display = '';
   document.getElementById('modal-stone-sekcja').value = item.sugestia_sekcja === 'cisza' ? 'cisza' : 'horyzont';
-  // Ustaw typ
   document.getElementById('modal-stone-typ').value = item.sugestia_sekcja === 'cisza' ? 'sen' : 'zadanie';
-  // Ustaw datę jeśli jest
   document.getElementById('modal-stone-date').value = item.sugestia_due_date ? new Date(item.sugestia_due_date).toISOString().split('T')[0] : '';
   document.getElementById('modal-stone-time').value = item.sugestia_due_date ? String(new Date(item.sugestia_due_date).getHours()).padStart(2,'0') + ':' + String(new Date(item.sugestia_due_date).getMinutes()).padStart(2,'0') : '';
   window._saveStoneFromNotatnik = id;
@@ -923,64 +1022,35 @@ function zmienNotatke(id) {
 
 async function deleteNotatnikEntry(id) {
   if (!confirm('Usunąć tę notatkę?')) return;
-  try {
-    await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, {
-      method: 'DELETE',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
-    });
-    showToast('Usunięto');
-    await loadNotatnikData();
-  } catch(e) { console.error(e); }
+  try { await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }); showToast('Usunięto'); await loadNotatnikData(); } catch(e) { console.error(e); }
 }
 
-// ==================== CISZA — DANE ====================
+// ==================== CISZA ====================
 async function loadCiszaData() {
   document.getElementById('cisza-list').innerHTML = '<div class="loading">ładowanie…</div>';
   try {
-    var r = await fetch(
-      SUPABASE_URL + '/rest/v1/stones?traveler_id=eq.' + encodeURIComponent(currentNick) +
-      '&typ=in.(sen,mysl,czucie)&order=created_at.desc',
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
-    );
+    var r = await fetch(SUPABASE_URL + '/rest/v1/stones?traveler_id=eq.' + encodeURIComponent(currentNick) + '&typ=in.(sen,mysl,czucie)&order=created_at.desc', { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } });
     ciszaData = await r.json();
     updateCiszaCounts(); renderCiszaList();
   } catch(e) { console.error(e); }
 }
-
 function updateCiszaCounts() {
-  ['sen','mysl','czucie'].forEach(function(t) {
-    var count = ciszaData.filter(function(s) { return s.typ === t; }).length;
-    var el = document.getElementById('ccount-' + t);
-    if (el) el.textContent = count ? '(' + count + ')' : '';
-  });
-  var total = ciszaData.length;
-  var searchToggle = document.getElementById('cisza-search-toggle');
-  if (total >= CISZA_LUPA_AFTER) { searchToggle.style.display = 'flex'; }
-  else { searchToggle.style.display = 'none'; document.getElementById('cisza-search-wrap').style.display = 'none'; ciszaShowSearch = false; }
+  ['sen','mysl','czucie'].forEach(function(t) { var count = ciszaData.filter(function(s) { return s.typ === t; }).length; var el = document.getElementById('ccount-' + t); if (el) el.textContent = count ? '(' + count + ')' : ''; });
+  var total = ciszaData.length; var searchToggle = document.getElementById('cisza-search-toggle');
+  if (total >= CISZA_LUPA_AFTER) searchToggle.style.display = 'flex'; else { searchToggle.style.display = 'none'; document.getElementById('cisza-search-wrap').style.display = 'none'; ciszaShowSearch = false; }
 }
-
-function buildCiszaMiesChips() {
-  var inp = document.getElementById('cisza-mies-input');
-  if (inp && ciszaMonths > 0) inp.value = ciszaMonths;
-  var allBtn = document.getElementById('cisza-mies-all');
-  if (allBtn) allBtn.classList.toggle('active', ciszaMonths === 0);
-}
+function buildCiszaMiesChips() { var inp = document.getElementById('cisza-mies-input'); if (inp && ciszaMonths > 0) inp.value = ciszaMonths; var allBtn = document.getElementById('cisza-mies-all'); if (allBtn) allBtn.classList.toggle('active', ciszaMonths === 0); }
 function ciszaChangeMies(val) { var v = parseInt(val); if (v >= 1 && v <= 12) { ciszaMonths = v; document.getElementById('cisza-mies-all').classList.remove('active'); renderCiszaList(); } }
 function ciszaSetAll() { ciszaMonths = 0; document.getElementById('cisza-mies-all').classList.add('active'); renderCiszaList(); }
-
 function renderCiszaList() {
-  var list = document.getElementById('cisza-list');
-  var now = new Date();
+  var list = document.getElementById('cisza-list'); var now = new Date();
   var items = ciszaData.filter(function(s) {
     if (ciszaActiveType && s.typ !== ciszaActiveType) return false;
     if (ciszaMonths > 0) { var cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - ciszaMonths); if (new Date(s.created_at) < cutoff) return false; }
     if (ciszaSearchQuery && !s.tresc.toLowerCase().includes(ciszaSearchQuery)) return false;
     return true;
   });
-  if (!items.length) {
-    var msg = ciszaActiveType ? 'Brak wpisów — ' + ciszaTypeLabel(ciszaActiveType).toLowerCase() + ' czeka na swoją chwilę.' : 'Tu czeka na Ciebie cisza.<br>Wpisz sen, myśl lub odczucie.';
-    list.innerHTML = '<div class="cisza-empty">' + msg + '</div>'; return;
-  }
+  if (!items.length) { var msg = ciszaActiveType ? 'Brak wpisów — ' + ciszaTypeLabel(ciszaActiveType).toLowerCase() + ' czeka na swoją chwilę.' : 'Tu czeka na Ciebie cisza.<br>Wpisz sen, myśl lub odczucie.'; list.innerHTML = '<div class="cisza-empty">' + msg + '</div>'; return; }
   list.innerHTML = '';
   items.forEach(function(item) {
     var color = ciszaTypeColor(item.typ); var label = ciszaTypeLabel(item.typ);
@@ -989,18 +1059,9 @@ function renderCiszaList() {
     list.appendChild(div);
   });
 }
-
 function ciszaToggleType(typ) {
   if (ciszaActiveType === typ) { ciszaActiveType = null; document.getElementById('ctype-' + typ).classList.remove('filter-active'); ciszaResetInput(); }
-  else {
-    ['sen','mysl','czucie'].forEach(function(t) { document.getElementById('ctype-' + t).classList.remove('filter-active'); });
-    ciszaActiveType = typ; document.getElementById('ctype-' + typ).classList.add('filter-active');
-    var area = document.getElementById('cisza-input-area'); area.classList.add('visible');
-    var labels = { 'sen': 'Sen', 'mysl': 'Myśl', 'czucie': 'Czucie' };
-    var placeholders = { 'sen': 'Co mi się śniło…', 'mysl': 'Co mnie nawiedza…', 'czucie': 'Co teraz czuję…' };
-    document.getElementById('cisza-input-label').textContent = labels[typ];
-    var ta = document.getElementById('cisza-textarea'); ta.placeholder = placeholders[typ]; ta.focus();
-  }
+  else { ['sen','mysl','czucie'].forEach(function(t) { document.getElementById('ctype-' + t).classList.remove('filter-active'); }); ciszaActiveType = typ; document.getElementById('ctype-' + typ).classList.add('filter-active'); var area = document.getElementById('cisza-input-area'); area.classList.add('visible'); var labels = { 'sen': 'Sen', 'mysl': 'Myśl', 'czucie': 'Czucie' }; var placeholders = { 'sen': 'Co mi się śniło…', 'mysl': 'Co mnie nawiedza…', 'czucie': 'Co teraz czuję…' }; document.getElementById('cisza-input-label').textContent = labels[typ]; var ta = document.getElementById('cisza-textarea'); ta.placeholder = placeholders[typ]; ta.focus(); }
   updateCiszaTitle(); renderCiszaList();
 }
 function ciszaCancelInput() { ciszaActiveType = null; ['sen','mysl','czucie'].forEach(function(t) { document.getElementById('ctype-' + t).classList.remove('filter-active'); }); ciszaResetInput(); updateCiszaTitle(); renderCiszaList(); }
@@ -1033,83 +1094,39 @@ function ciszaSearch(val) { ciszaSearchQuery = val.toLowerCase(); renderCiszaLis
 document.getElementById('cisza-textarea').addEventListener('keydown', function(e) { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) ciszaSave(); if (e.key === 'Escape') ciszaCancelInput(); });
 
 // ==================== MIKROFON EKRAN GŁÓWNY ====================
-var mainMicRecognition = null;
-var mainMicRecording = false;
-
-function toggleMainMic() {
-  var bar = document.getElementById('main-mic-bar');
-  if (bar.style.display === 'none') { bar.style.display = 'flex'; startMainMicRecording(); }
-  else { if (mainMicRecording) stopMainMicRecording(); else startMainMicRecording(); }
-}
+var mainMicRecognition = null; var mainMicRecording = false;
+function toggleMainMic() { var bar = document.getElementById('main-mic-bar'); if (bar.style.display === 'none') { bar.style.display = 'flex'; startMainMicRecording(); } else { if (mainMicRecording) stopMainMicRecording(); else startMainMicRecording(); } }
 function startMainMicRecording() {
   var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) { document.getElementById('main-mic-status').textContent = 'Przeglądarka nie obsługuje głosu — wpisz ręcznie.'; return; }
-  mainMicRecognition = new SpeechRecognition();
-  mainMicRecognition.lang = 'pl-PL'; mainMicRecognition.continuous = false; mainMicRecognition.interimResults = true;
+  mainMicRecognition = new SpeechRecognition(); mainMicRecognition.lang = 'pl-PL'; mainMicRecognition.continuous = false; mainMicRecognition.interimResults = true;
   mainMicRecognition.onstart = function() { mainMicRecording = true; document.getElementById('main-mic-dot').style.background = 'var(--red)'; document.getElementById('main-mic-label').textContent = '⏹ Stop'; document.getElementById('main-mic-status').textContent = '● Słucham…'; };
   mainMicRecognition.onend = function() { mainMicRecording = false; document.getElementById('main-mic-dot').style.background = 'var(--text-light)'; document.getElementById('main-mic-label').textContent = '🎙 Nagraj więcej'; document.getElementById('main-mic-status').textContent = 'Gotowe — sprawdź i zapisz.'; };
   mainMicRecognition.onerror = function(e) { mainMicRecording = false; document.getElementById('main-mic-dot').style.background = 'var(--text-light)'; document.getElementById('main-mic-label').textContent = '🎙 Mikrofon'; document.getElementById('main-mic-status').textContent = 'Błąd: ' + e.error + '. Wpisz ręcznie.'; };
-  mainMicRecognition.onresult = function(event) {
-    var finalText = '';
-    for (var i = event.resultIndex; i < event.results.length; i++) { if (event.results[i].isFinal) finalText += event.results[i][0].transcript; }
-    if (finalText) { var ta = document.getElementById('main-mic-text'); ta.value = ta.value ? ta.value + ' ' + finalText.trim() : finalText.trim(); }
-  };
+  mainMicRecognition.onresult = function(event) { var finalText = ''; for (var i = event.resultIndex; i < event.results.length; i++) { if (event.results[i].isFinal) finalText += event.results[i][0].transcript; } if (finalText) { var ta = document.getElementById('main-mic-text'); ta.value = ta.value ? ta.value + ' ' + finalText.trim() : finalText.trim(); } };
   try { mainMicRecognition.start(); } catch(e) { showToast('Błąd mikrofonu'); }
 }
 function stopMainMicRecording() { if (mainMicRecognition) mainMicRecognition.stop(); }
 function cancelMainMic() { stopMainMicRecording(); document.getElementById('main-mic-bar').style.display = 'none'; document.getElementById('main-mic-text').value = ''; document.getElementById('main-mic-label').textContent = '🎙 Mikrofon'; document.getElementById('main-mic-dot').style.background = 'var(--text-light)'; }
-
 async function saveMainMic() {
-  var tresc = document.getElementById('main-mic-text').value.trim();
-  if (!tresc) { showToast('Brak tekstu'); return; }
-  if (!currentNick) { showToast('Nie jesteś zalogowany'); return; }
+  var tresc = document.getElementById('main-mic-text').value.trim(); if (!tresc) { showToast('Brak tekstu'); return; } if (!currentNick) { showToast('Nie jesteś zalogowany'); return; }
   stopMainMicRecording();
-
-  // Najpierw zapytaj sort-notatka o sugestię
   var sugestia = { sekcja: 'notatka', due_date: null, typ: 'notatka', pewnosc: 'niska', opis: 'bez analizy' };
+  try { var sr = await fetch('https://kkxhqtfxvgxdqpnzaufu.supabase.co/functions/v1/sort-notatka', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ tresc: tresc }) }); if (sr.ok) sugestia = await sr.json(); } catch(e) { console.error('sort-notatka error:', e); }
   try {
-    var sr = await fetch('https://kkxhqtfxvgxdqpnzaufu.supabase.co/functions/v1/sort-notatka', {
-      method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tresc: tresc })
-    });
-    if (sr.ok) sugestia = await sr.json();
-  } catch(e) { console.error('sort-notatka error:', e); }
-
-  // Zapisz kamień z sugestią
-  try {
-    var r = await fetch(SUPABASE_URL + '/rest/v1/stones', {
-      method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-      body: JSON.stringify({
-        traveler_id: currentNick,
-        tresc: tresc,
-        typ: 'notatka',
-        status: 'aktywny',
-        due_date: null,
-        sugestia_sekcja: sugestia.sekcja,
-        sugestia_due_date: sugestia.due_date,
-        sugestia_status: 'oczekuje'
-      })
-    });
+    var r = await fetch(SUPABASE_URL + '/rest/v1/stones', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' }, body: JSON.stringify({ traveler_id: currentNick, tresc: tresc, typ: 'notatka', status: 'aktywny', due_date: null, sugestia_sekcja: sugestia.sekcja, sugestia_due_date: sugestia.due_date, sugestia_status: 'oczekuje' }) });
     if (!r.ok) { var err = await r.text(); showToast('Błąd: ' + err.substring(0,60)); return; }
     var pewnosc = sugestia.pewnosc === 'wysoka' ? '✓' : sugestia.pewnosc === 'srednia' ? '~' : '?';
     showToast('Zapisano · Serce: → ' + sugestia.sekcja + ' ' + pewnosc);
     cancelMainMic();
-    // Odśwież licznik notatnika
     var d = await fetch(SUPABASE_URL + '/rest/v1/stones?traveler_id=eq.' + encodeURIComponent(currentNick) + '&order=created_at.desc', { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } });
     stonesData = await d.json(); updateStats();
   } catch(e) { showToast('Błąd połączenia'); }
 }
 
 // ==================== GŁOS GAWĘDA ====================
-var gawedaRecognition = null;
-var gawedaRecording = false;
-
-function toggleGawedaVoice() {
-  var bar = document.getElementById('gaweda-dictate-bar');
-  if (!gawedaRecording) { bar.style.display = 'flex'; startGawedaRecording(); } else { stopGawedaRecording(); }
-}
+var gawedaRecognition = null; var gawedaRecording = false;
+function toggleGawedaVoice() { var bar = document.getElementById('gaweda-dictate-bar'); if (!gawedaRecording) { bar.style.display = 'flex'; startGawedaRecording(); } else { stopGawedaRecording(); } }
 function startGawedaRecording() {
   var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) { showToast('Przeglądarka nie obsługuje głosu'); return; }
@@ -1117,19 +1134,12 @@ function startGawedaRecording() {
   gawedaRecognition.onstart = function() { gawedaRecording = true; document.getElementById('voice-btn-gaweda').classList.add('recording'); document.getElementById('gaweda-voice-label').textContent = 'Słucham…'; };
   gawedaRecognition.onend = function() { gawedaRecording = false; document.getElementById('voice-btn-gaweda').classList.remove('recording'); document.getElementById('gaweda-voice-label').textContent = 'Głos'; };
   gawedaRecognition.onerror = function(e) { gawedaRecording = false; document.getElementById('voice-btn-gaweda').classList.remove('recording'); document.getElementById('gaweda-voice-label').textContent = 'Głos'; showToast('Błąd mikrofonu: ' + e.error); };
-  gawedaRecognition.onresult = function(event) {
-    var ta = document.getElementById('gaweda-dictate-text'); var finalText = '';
-    for (var i = event.resultIndex; i < event.results.length; i++) { if (event.results[i].isFinal) finalText += event.results[i][0].transcript; }
-    if (finalText) { ta.value = ta.value ? ta.value + ' ' + finalText.trim() : finalText.trim(); }
-  };
+  gawedaRecognition.onresult = function(event) { var ta = document.getElementById('gaweda-dictate-text'); var finalText = ''; for (var i = event.resultIndex; i < event.results.length; i++) { if (event.results[i].isFinal) finalText += event.results[i][0].transcript; } if (finalText) { ta.value = ta.value ? ta.value + ' ' + finalText.trim() : finalText.trim(); } };
   try { gawedaRecognition.start(); } catch(e) { showToast('Błąd startu mikrofonu'); }
 }
 function stopGawedaRecording() { if (gawedaRecognition) gawedaRecognition.stop(); }
 function clearGawedaDictate() { document.getElementById('gaweda-dictate-text').value = ''; }
-function copyGawedaDictate() {
-  var ta = document.getElementById('gaweda-dictate-text'); if (!ta.value.trim()) { showToast('Brak tekstu do skopiowania'); return; }
-  navigator.clipboard.writeText(ta.value.trim()).then(function() { showToast('Skopiowano — wklej do Serca poniżej'); }).catch(function() { ta.select(); document.execCommand('copy'); showToast('Skopiowano — wklej do Serca poniżej'); });
-}
+function copyGawedaDictate() { var ta = document.getElementById('gaweda-dictate-text'); if (!ta.value.trim()) { showToast('Brak tekstu do skopiowania'); return; } navigator.clipboard.writeText(ta.value.trim()).then(function() { showToast('Skopiowano — wklej do Serca poniżej'); }).catch(function() { ta.select(); document.execCommand('copy'); showToast('Skopiowano — wklej do Serca poniżej'); }); }
 
 // ==================== GŁOS (nakładka Ciszy) ====================
 function initSpeechRecognition() {
@@ -1147,12 +1157,7 @@ function initSpeechRecognition() {
   };
   return true;
 }
-function openVoiceOverlay() {
-  document.getElementById('voice-transcript').value = ''; document.getElementById('voice-status').textContent = 'Naciśnij mikrofon i mów…'; document.getElementById('voice-status').classList.remove('active');
-  document.getElementById('voice-overlay').classList.add('open');
-  var typ = ciszaActiveType || 'mysl'; vSetType(typ);
-  if (!recognition) initSpeechRecognition();
-}
+function openVoiceOverlay() { document.getElementById('voice-transcript').value = ''; document.getElementById('voice-status').textContent = 'Naciśnij mikrofon i mów…'; document.getElementById('voice-status').classList.remove('active'); document.getElementById('voice-overlay').classList.add('open'); var typ = ciszaActiveType || 'mysl'; vSetType(typ); if (!recognition) initSpeechRecognition(); }
 function closeVoiceOverlay() { if (isRecording && recognition) recognition.stop(); document.getElementById('voice-overlay').classList.remove('open'); }
 function toggleVoiceRecording() { if (isRecording) { if (recognition) recognition.stop(); return; } recognition = null; if (!initSpeechRecognition()) return; try { recognition.start(); } catch(e) { console.error(e); } }
 function vSetType(typ) { voiceType = typ; ['mysl','sen','czucie'].forEach(function(t) { document.getElementById('vtype-' + t).classList.remove('active'); }); document.getElementById('vtype-' + typ).classList.add('active'); }
@@ -1237,21 +1242,44 @@ function hSetTab(tab) {
   currentTab = tab;
   document.getElementById('htab-kal').classList.toggle('active', tab === 'kal');
   document.getElementById('htab-zad').classList.toggle('active', tab === 'zad');
-  // Lewa strona — filtr kalendarza zawsze widoczny
-  document.getElementById('h-filter-row').style.display = 'flex';
-  // Prawa strona — przełącz kontrolki
-  document.getElementById('view-chips-kal').style.display = tab === 'kal' ? 'flex' : 'none';
-  document.getElementById('view-chips-zad').style.display = tab === 'zad' ? 'flex' : 'none';
-  document.getElementById('add-btn-kal').style.display = tab === 'kal' ? '' : 'none';
-  document.getElementById('add-btn-zad').style.display = tab === 'zad' ? '' : 'none';
-  renderAll();
+
+  var barKal = document.getElementById('bar-kal');
+  var barZad = document.getElementById('bar-zad');
+  barKal.style.display = tab === 'kal' ? 'flex' : 'none';
+  barZad.style.display = tab === 'zad' ? 'flex' : 'none';
+
+  var body = document.getElementById('h-right-body');
+  if (tab === 'kal') {
+    body.classList.remove('tasks-mode');
+    body.innerHTML = '<div class="fc-wrap"><div id="fc-calendar"></div></div>';
+    initOrUpdateFC();
+  } else {
+    body.classList.add('tasks-mode');
+    // Zniszcz FC gdy przełączamy na zadania
+    if (fcCalendar) { fcCalendar.destroy(); fcCalendar = null; }
+    renderZadania();
+  }
 }
-function hSetView(view) { currentView = view; ['miesiac','tydzien','dzien'].forEach(function(v) { document.getElementById('vchip-' + v).classList.toggle('active', v === view); }); renderRight(); }
-function hSetFilter(f) { currentFilter = f; ['mies','wszystkie','hist'].forEach(function(x) { var el = document.getElementById('fchip-' + x); if (el) el.classList.remove('active'); }); document.getElementById('fchip-' + f).classList.add('active'); renderAll(); }
-function zSetTab(tab) { zadTab = tab; document.getElementById('ztab-aktywne').classList.toggle('active', tab === 'aktywne'); document.getElementById('ztab-historia').classList.toggle('active', tab === 'historia'); renderRight(); }
-function toggleSearch() { var inp = document.getElementById('search-input'); inp.classList.toggle('open'); if (inp.classList.contains('open')) inp.focus(); else { inp.value = ''; searchQuery = ''; renderAll(); } }
-function hSearch(val) { searchQuery = val.toLowerCase(); renderAll(); }
-function renderAll() { renderPreview(); renderRight(); }
+
+function hSetView(view) {
+  currentView = view;
+  ['miesiac','tydzien','dzien'].forEach(function(v) { document.getElementById('vchip-' + v).classList.toggle('active', v === view); });
+  if (fcCalendar) {
+    fcCalendar.changeView(getFCView());
+    updateFCTitle();
+  }
+}
+
+function hSetFilter(f) {
+  currentFilter = f;
+  ['mies','wszystkie','hist'].forEach(function(x) { var el = document.getElementById('fchip-' + x); if (el) el.classList.remove('active'); });
+  document.getElementById('fchip-' + f).classList.add('active');
+  renderPreview();
+}
+
+function zSetTab(tab) { zadTab = tab; document.getElementById('ztab-aktywne').classList.toggle('active', tab === 'aktywne'); document.getElementById('ztab-historia').classList.toggle('active', tab === 'historia'); renderZadania(); }
+function toggleSearch() { var inp = document.getElementById('search-input'); inp.classList.toggle('open'); if (inp.classList.contains('open')) inp.focus(); else { inp.value = ''; searchQuery = ''; renderZadania(); } }
+function hSearch(val) { searchQuery = val.toLowerCase(); if (currentTab === 'zad') renderZadania(); }
 
 function renderPreview() {
   var lista = document.getElementById('h-preview-list'); var now = new Date(); var prefM = parseInt(document.getElementById('mies-val').value) || 3;
@@ -1273,39 +1301,6 @@ function renderPreview() {
   });
 }
 
-function renderRight() { if (currentTab === 'kal') renderKalendarz(); else renderZadania(); }
-
-function renderKalendarz() {
-  var body = document.getElementById('h-right-body'); var now = new Date(); var prefM = parseInt(document.getElementById('mies-val').value) || 3;
-  var items = stonesData.filter(function(s) {
-    if (!s.due_date) return false;
-    if (searchQuery && !s.tresc.toLowerCase().includes(searchQuery)) return false;
-    var d = new Date(s.due_date);
-    if (currentFilter === 'hist') return d < now;
-    if (currentView === 'miesiac') { if (currentFilter === 'mies') { var cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() + prefM); return d >= now && d <= cutoff; } return d >= now; }
-    if (currentView === 'tydzien') { var startW = new Date(now); startW.setHours(0,0,0,0); var endW = new Date(startW); endW.setDate(endW.getDate() + 7); return d >= startW && d < endW; }
-    if (currentView === 'dzien') { var startD = new Date(now); startD.setHours(0,0,0,0); var endD = new Date(startD); endD.setDate(endD.getDate() + 1); return d >= startD && d < endD; }
-    return true;
-  }).sort(function(a, b) { return currentFilter === 'hist' ? new Date(b.due_date) - new Date(a.due_date) : new Date(a.due_date) - new Date(b.due_date); });
-  if (!items.length) { body.innerHTML = '<div class="empty-msg">Brak wpisów dla tego widoku</div>'; return; }
-  body.innerHTML = '';
-  var monthNames = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'];
-  if (currentView === 'dzien') { var wrap = document.createElement('div'); items.forEach(function(item) { wrap.appendChild(buildStoneEl(item)); }); body.appendChild(wrap); }
-  else {
-    var groups = {};
-    items.forEach(function(item) { var d = new Date(item.due_date); var key = d.getFullYear() + '-' + d.getMonth(); if (!groups[key]) groups[key] = { label: monthNames[d.getMonth()] + ' ' + d.getFullYear(), items: [] }; groups[key].items.push(item); });
-    Object.values(groups).forEach(function(g) { var sec = document.createElement('div'); sec.className = 'month-section'; sec.innerHTML = '<div class="month-header">' + g.label + '</div>'; g.items.forEach(function(item) { sec.appendChild(buildStoneEl(item)); }); body.appendChild(sec); });
-  }
-}
-
-function buildStoneEl(item) {
-  var now = new Date(); var d = new Date(item.due_date); var isPast = d < now; var kolor = getKolor(item.typ); var isAllDay = item.typ === 'calodniowe';
-  var div = document.createElement('div'); div.className = 'cal-stone' + (isAllDay ? ' allday' : '');
-  var actionsHtml = (isPast ? '<button class="stone-action-btn done" onclick="markDone(' + item.id + ')">✓</button>' : '') + '<button class="stone-action-btn" onclick="editStone(' + item.id + ')">✎</button><button class="stone-action-btn del" onclick="deleteStone(' + item.id + ')">✕</button>';
-  div.innerHTML = '<div class="stone-bar" style="background:' + kolor + '"></div><div class="stone-info"><div class="stone-name">' + escHtml(item.tresc) + (isAllDay ? ' <span class="stone-tag">cały dzień</span>' : '') + '</div><div class="stone-date' + (isPast ? ' overdue' : '') + '">' + formatDate(d) + '</div></div><div class="stone-actions">' + actionsHtml + '</div>';
-  return div;
-}
-
 function renderZadania() {
   var body = document.getElementById('h-right-body'); body.innerHTML = '';
   if (zadTab === 'aktywne') {
@@ -1322,8 +1317,8 @@ function renderZadania() {
     var histFilter = document.createElement('div'); histFilter.className = 'hist-filter';
     var allMonths = ['Sty','Lut','Mar','Kwi','Maj','Cze','Lip','Sie','Wrz','Paź','Lis','Gru'];
     var currentHistMonth = window._histMonth !== undefined ? window._histMonth : -1;
-    var allChip = document.createElement('div'); allChip.className = 'hist-chip' + (currentHistMonth === -1 ? ' active' : ''); allChip.textContent = 'Wszystkie'; allChip.onclick = function() { window._histMonth = -1; renderRight(); }; histFilter.appendChild(allChip);
-    allMonths.forEach(function(m, i) { var chip = document.createElement('div'); chip.className = 'hist-chip' + (currentHistMonth === i ? ' active' : ''); chip.textContent = m; chip.onclick = function() { window._histMonth = i; renderRight(); }; histFilter.appendChild(chip); }); body.appendChild(histFilter);
+    var allChip = document.createElement('div'); allChip.className = 'hist-chip' + (currentHistMonth === -1 ? ' active' : ''); allChip.textContent = 'Wszystkie'; allChip.onclick = function() { window._histMonth = -1; renderZadania(); }; histFilter.appendChild(allChip);
+    allMonths.forEach(function(m, i) { var chip = document.createElement('div'); chip.className = 'hist-chip' + (currentHistMonth === i ? ' active' : ''); chip.textContent = m; chip.onclick = function() { window._histMonth = i; renderZadania(); }; histFilter.appendChild(chip); }); body.appendChild(histFilter);
     var done = stonesData.filter(function(s) {
       if (s.typ !== 'zadanie' || s.due_date || s.status !== 'wykonany') return false;
       if (searchQuery && !s.tresc.toLowerCase().includes(searchQuery)) return false;
@@ -1348,7 +1343,7 @@ function setupDrag() {
   dl.addEventListener('dragover', function(e) { e.preventDefault(); var over = e.target.closest('.task-item'); if (over && over !== dragged) { var mid = over.getBoundingClientRect().top + over.getBoundingClientRect().height / 2; if (e.clientY < mid) dl.insertBefore(dragged, over); else dl.insertBefore(dragged, over.nextSibling); } });
 }
 
-// ==================== AKCJE HORYZONT ====================
+// ==================== AKCJE ====================
 async function markDone(id) { try { await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ status: 'wykonany' }) }); showToast('Wykonane ✓'); await reloadStones(); } catch(e) { console.error(e); } }
 async function deleteStone(id) { if (!confirm('Usunąć?')) return; try { await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + id, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }); showToast('Usunięto'); await reloadStones(); } catch(e) { console.error(e); } }
 function openAddStone(prefillDate) { editingStoneId = null; window._saveStoneFromNotatnik = null; document.getElementById('modal-sekcja-row').style.display = 'none'; document.getElementById('modal-stone-title').textContent = 'Nowy wpis w kalendarzu'; document.getElementById('modal-stone-tresc').value = ''; document.getElementById('modal-stone-typ').value = 'zadanie'; document.getElementById('modal-stone-date').value = prefillDate || todayStr(); document.getElementById('modal-stone-time').value = ''; document.getElementById('modal-stone').classList.add('open'); document.getElementById('modal-stone-tresc').focus(); }
@@ -1359,23 +1354,10 @@ async function saveStone() {
   var dateVal = document.getElementById('modal-stone-date').value;
   var timeVal = document.getElementById('modal-stone-time').value;
   var due_date = dateVal ? (timeVal ? dateVal + 'T' + timeVal + ':00' : dateVal + 'T09:00:00') : null;
-
-  // Gdy otwierany z Notatnika — użyj wybranej sekcji
   if (window._saveStoneFromNotatnik) {
     var sekcja = document.getElementById('modal-stone-sekcja').value;
-    // Cisza: due_date = null, typ zgodny z wyborem
-    // Horyzont: due_date musi być ustawiona
-    if (sekcja === 'cisza') {
-      due_date = null;
-      if (typ !== 'sen' && typ !== 'odczucie') typ = 'mysl';
-    } else {
-      // horyzont — jeśli typ=zadanie i brak daty → Zadania (bez due_date)
-      // jeśli jest data → Kalendarz
-      if (typ === 'sen' || typ === 'odczucie') typ = 'zadanie';
-      // due_date zostawiamy takie jakie jest (null = Zadania, wartość = Kalendarz)
-    }
+    if (sekcja === 'cisza') { due_date = null; if (typ !== 'sen' && typ !== 'odczucie') typ = 'mysl'; } else { if (typ === 'sen' || typ === 'odczucie') typ = 'zadanie'; }
   }
-
   var payload = { traveler_id: currentNick, tresc: tresc, typ: typ, status: 'aktywny', due_date: due_date };
   try {
     if (editingStoneId) {
@@ -1386,23 +1368,13 @@ async function saveStone() {
       showToast('Dodano');
     }
     closeModal('modal-stone');
-    // Jeśli zmiana notatki — zapisz trening i zaktualizuj status
     if (window._saveStoneFromNotatnik) {
-      var origId = window._saveStoneFromNotatnik;
-      window._saveStoneFromNotatnik = null;
+      var origId = window._saveStoneFromNotatnik; window._saveStoneFromNotatnik = null;
       var origItem = notatnikData.find(function(s) { return s.id === origId; });
       if (origItem) {
         var sekcjaWybrana = document.getElementById('modal-stone-sekcja') ? document.getElementById('modal-stone-sekcja').value : 'horyzont';
-        await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + origId, {
-          method: 'PATCH',
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-          body: JSON.stringify({ sugestia_status: 'zmieniona' })
-        });
-        await fetch(SUPABASE_URL + '/rest/v1/notatnik_trening', {
-          method: 'POST',
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-          body: JSON.stringify({ traveler_id: currentNick, kamien_id: origId, sugestia_sekcja: origItem.sugestia_sekcja, sugestia_due_date: origItem.sugestia_due_date, decyzja: 'zmiana', zmiana_sekcja: sekcjaWybrana, zmiana_due_date: due_date })
-        });
+        await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + origId, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ sugestia_status: 'zmieniona' }) });
+        await fetch(SUPABASE_URL + '/rest/v1/notatnik_trening', { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ traveler_id: currentNick, kamien_id: origId, sugestia_sekcja: origItem.sugestia_sekcja, sugestia_due_date: origItem.sugestia_due_date, decyzja: 'zmiana', zmiana_sekcja: sekcjaWybrana, zmiana_due_date: due_date }) });
         await loadNotatnikData();
       }
     }
@@ -1414,7 +1386,7 @@ function editTask(id) { var s = stonesData.find(function(x) { return x.id === id
 async function saveTaskEdit() { var tresc = document.getElementById('modal-task-tresc').value.trim(); if (!tresc || !editingTaskId) return; try { await fetch(SUPABASE_URL + '/rest/v1/stones?id=eq.' + editingTaskId, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ tresc: tresc }) }); showToast('Zaktualizowano'); closeModal('modal-task'); await reloadStones(); } catch(e) { console.error(e); } }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(function(overlay) { overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); }); });
-document.getElementById('mies-val').addEventListener('change', function() { localStorage.setItem('mana_mies', this.value); renderAll(); });
+document.getElementById('mies-val').addEventListener('change', function() { localStorage.setItem('mana_mies', this.value); renderPreview(); });
 
 // ==================== HELPERS ====================
 function todayStr() { var now = new Date(); return now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0'); }
