@@ -321,10 +321,10 @@ async function refreshAll() { await loadAll(); }
 
 async function loadStats() {
   // Podróżnicy
-  var travelers = await sb('travelers', 'select=id,nick,last_visit,visit_count&order=last_visit.desc');
+  var travelers = await sb('travels', 'select=id,nick,last_visit,visit_count&order=last_visit.desc');
   var tArr = Array.isArray(travelers) ? travelers : [];
   document.getElementById('s-travelers').textContent = tArr.length;
-  var lastVisit = tArr[0] ? new Date(tArr[0].last_visit).toLocaleDateString('pl') : '—';
+  var lastVisit = tArr[0] && tArr[0].last_visit ? new Date(tArr[0].last_visit).toLocaleDateString('pl') : '—';
   document.getElementById('s-travelers-sub').textContent = 'ostatnia: ' + lastVisit;
 
   // Rozmowy
@@ -373,7 +373,7 @@ async function loadStats() {
 }
 
 async function loadTravelers() {
-  var data = await sb('travelers', 'select=nick,traveler_id,last_visit,visit_count&order=last_visit.desc&limit=20');
+  var data = await sb('travels', 'select=nick,traveler_id,last_visit,visit_count&order=last_visit.desc&limit=20');
   var arr = Array.isArray(data) ? data : [];
   var el = document.getElementById('travelers-table');
   if (!arr.length) { el.innerHTML = '<div class="empty">Brak podróżników</div>'; return; }
@@ -405,9 +405,9 @@ async function loadNotes() {
 }
 
 async function loadKonstytucja() {
-  var data = await sb('prompts', 'select=tresc&nazwa=eq.serce_konstytucja&limit=1');
+  var data = await sb('prompts', 'select=tresc&limit=1');
   var el = document.getElementById('konst-box');
-  if (Array.isArray(data) && data[0]) {
+  if (Array.isArray(data) && data[0] && data[0].tresc) {
     el.textContent = data[0].tresc.slice(0, 2000) + (data[0].tresc.length > 2000 ? '\n\n[…ciąg dalszy w Supabase]' : '');
   } else {
     el.textContent = 'Nie znaleziono Konstytucji w tabeli prompts';
