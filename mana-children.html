@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f0f1a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>MANA Children</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --night-bg: #0f0f1e;
+      --night-card: #1c1c32;
+      --night-accent: #e8c97a;
+      --night-soft: #8baad6;
+      --night-text: #eae6f4;
+      --night-sub: #9490b0;
+      --day-bg: #fff9f2;
+      --day-card: #ffffff;
+      --day-accent: #f6a825;
+      --day-soft: #72c9a0;
+      --day-text: #2a2640;
+      --day-sub: #8a86a6;
+      --r: 22px;
+      --r-sm: 14px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;}
+    body{background:#0f0f1e;}
+
+    /* ===== SCREENS ===== */
+    .screen{position:fixed;inset:0;display:none;flex-direction:column;overflow:hidden;padding-bottom:env(safe-area-inset-bottom);}
+    .screen.active{display:flex;}
+    .fade-in{animation:fadeIn .4s ease;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ===== NIGHT (Spokojna Noc) ===== */
+    .night{background:var(--night-bg);color:var(--night-text);}
+    .night .stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+    .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) infinite var(--del,0s);}
+    @keyframes twinkle{0%,100%{opacity:.2}50%{opacity:.9}}
+    .night .content{position:relative;z-index:1;display:flex;flex-direction:column;flex:1;padding:24px 20px;overflow-y:auto;}
+
+    /* ===== DAY (Dobry Dzień) ===== */
+    .day{background:var(--day-bg);color:var(--day-text);}
+    .day .content{display:flex;flex-direction:column;flex:1;padding:24px 20px;overflow-y:auto;}
+
+    /* ===== SHARED COMPONENTS ===== */
+    h1{font-family:'Baloo 2',cursive;font-weight:800;line-height:1.2;}
+    h2{font-family:'Baloo 2',cursive;font-weight:600;}
+    .btn{display:block;width:100%;padding:18px 24px;border:none;border-radius:var(--r);font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;cursor:pointer;transition:transform .15s,opacity .15s;outline:none;text-align:center;}
+    .btn:active{transform:scale(.96);}
+    .btn-night{background:var(--night-accent);color:#1a1400;}
+    .btn-night-ghost{background:rgba(255,255,255,.08);color:var(--night-text);border:1.5px solid rgba(255,255,255,.15);}
+    .btn-day{background:var(--day-accent);color:#fff;}
+    .btn-day-ghost{background:rgba(0,0,0,.05);color:var(--day-text);border:1.5px solid rgba(0,0,0,.1);}
+    .btn-danger{background:#c0392b;color:#fff;}
+    .input-night{width:100%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:var(--r-sm);padding:16px;color:var(--night-text);font-family:'Nunito',sans-serif;font-size:17px;outline:none;resize:none;}
+    .input-night:focus{border-color:var(--night-accent);}
+    .input-night::placeholder{color:var(--night-sub);}
+    .input-day{width:100%;background:#fff;border:1.5px solid rgba(0,0,0,.1);border-radius:var(--r-sm);padding:16px;color:var(--day-text);font-family:'Nunito',sans-serif;font-size:17px;outline:none;resize:none;}
+    .input-day:focus{border-color:var(--day-accent);}
+    .input-day::placeholder{color:var(--day-sub);}
+    .back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:inherit;font-size:15px;font-family:'Nunito',sans-serif;cursor:pointer;opacity:.7;margin-bottom:12px;padding:4px 0;}
+    .back-btn:active{opacity:.5;}
+    .tag{display:inline-block;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:700;}
+
+    /* ===== SLEEP SCREEN ===== */
+    #sleep{background:var(--night-bg);justify-content:center;align-items:center;text-align:center;}
+    #sleep .moon{font-size:72px;animation:float 4s ease-in-out infinite;}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    #sleep h1{font-size:28px;color:var(--night-text);margin:24px 0 12px;}
+    #sleep p{color:var(--night-sub);font-size:16px;line-height:1.6;padding:0 32px;}
+
+    /* ===== ONBOARDING ===== */
+    #onboarding{background:var(--night-bg);justify-content:center;align-items:center;}
+    .onboard-card{background:var(--night-card);border-radius:var(--r);padding:32px 24px;width:calc(100% - 40px);max-width:380px;}
+    .onboard-logo{text-align:center;margin-bottom:24px;}
+    .onboard-logo span{font-family:'Baloo 2',cursive;font-size:32px;font-weight:800;color:var(--night-accent);}
+    .onboard-step{display:none;}
+    .onboard-step.active{display:block;}
+    .onboard-step h2{font-size:22px;color:var(--night-text);margin-bottom:8px;}
+    .onboard-step p{font-size:14px;color:var(--night-sub);margin-bottom:20px;line-height:1.5;}
+    .onboard-step input{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);border-radius:var(--r-sm);padding:16px;color:var(--night-text);font-family:'Nunito',sans-serif;font-size:20px;text-align:center;outline:none;margin-bottom:16px;}
+    .onboard-step input:focus{border-color:var(--night-accent);}
+
+    /* ===== HOME ===== */
+    #home{justify-content:flex-start;}
+    .home-header{padding:56px 24px 20px;position:relative;z-index:1;}
+    .home-header .greeting{font-size:15px;font-weight:600;opacity:.7;margin-bottom:4px;}
+    .home-header h1{font-size:32px;}
+    .home-modules{display:flex;flex-direction:column;gap:16px;padding:0 20px 32px;flex:1;justify-content:center;max-width:480px;margin:0 auto;width:100%;}
+    .module-card{border-radius:var(--r);padding:28px 24px;cursor:pointer;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden;min-height:160px;display:flex;flex-direction:column;justify-content:flex-end;}
+    .module-card:active{transform:scale(.97);}
+    .module-card .emoji{font-size:48px;display:block;margin-bottom:12px;}
+    .module-card h2{font-size:24px;line-height:1.2;margin-bottom:4px;}
+    .module-card p{font-size:14px;opacity:.8;line-height:1.4;}
+    .card-sn{background:linear-gradient(135deg,#1c1c3a 0%,#2d2b5e 100%);color:#eae6f4;box-shadow:0 8px 32px rgba(30,30,80,.4);}
+    .card-sn::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='20' cy='20' r='1' fill='white' opacity='.3'/%3E%3Ccircle cx='60' cy='15' r='1.5' fill='white' opacity='.4'/%3E%3Ccircle cx='80' cy='40' r='1' fill='white' opacity='.2'/%3E%3Ccircle cx='40' cy='70' r='1' fill='white' opacity='.3'/%3E%3Ccircle cx='90' cy='80' r='1.5' fill='white' opacity='.35'/%3E%3Ccircle cx='10' cy='85' r='1' fill='white' opacity='.25'/%3E%3C/svg%3E") repeat;}
+    .card-dd{background:linear-gradient(135deg,#fff5e0 0%,#ffe8b0 100%);color:#2a2640;box-shadow:0 8px 32px rgba(246,168,37,.2);}
+    .card-dd .emoji{filter:drop-shadow(0 4px 8px rgba(246,168,37,.4));}
+    .series-badge{position:absolute;top:16px;right:16px;background:var(--day-accent);color:#fff;padding:4px 10px;border-radius:999px;font-size:13px;font-weight:700;}
+
+    /* ===== SPOKOJNA NOC ===== */
+    #sn{padding:0;}
+    .sn-step{display:none;padding:24px 20px;flex:1;flex-direction:column;}
+    .sn-step.active{display:flex;}
+
+    /* Color picker */
+    .color-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0;}
+    .color-dot{width:100%;aspect-ratio:1;border-radius:50%;cursor:pointer;transition:transform .15s,box-shadow .15s;border:4px solid transparent;}
+    .color-dot.selected{border-color:rgba(255,255,255,.9);transform:scale(1.1);box-shadow:0 0 20px rgba(255,255,255,.3);}
+    .color-dot:active{transform:scale(.95);}
+
+    /* Jar */
+    .jar-container{display:flex;flex-direction:column;align-items:center;gap:16px;padding:16px 0;}
+    .jar-wrap{position:relative;width:140px;height:180px;}
+    .jar-fill{transition:height .6s cubic-bezier(.4,0,.2,1),y .6s cubic-bezier(.4,0,.2,1);}
+    .flying-note{position:fixed;border-radius:8px;z-index:1000;pointer-events:none;transition:all .9s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;padding:4px 8px;opacity:0;}
+    .flying-note.active{opacity:1;}
+
+    /* ===== DOBRY DZIEŃ ===== */
+    #dd{padding:0;}
+    .dd-step{display:none;padding:24px 20px;flex:1;flex-direction:column;}
+    .dd-step.active{display:flex;}
+
+    /* Puzzle */
+    .puzzle-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;}
+    .puzzle-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;width:min(80vw,280px);height:min(80vw,280px);border-radius:12px;overflow:hidden;}
+    .ptile{position:relative;overflow:hidden;cursor:default;}
+    .ptile-art{position:absolute;width:calc(min(80vw,280px));height:calc(min(80vw,280px));top:0;left:0;}
+    .ptile-overlay{position:absolute;inset:0;background:#1a1a2e;border-radius:2px;transition:opacity .7s ease;}
+    .ptile.revealed .ptile-overlay{opacity:0;}
+    .puzzle-progress{font-size:13px;color:var(--day-sub);font-weight:600;}
+
+    /* Serce response bubble */
+    .serce-bubble{background:rgba(255,255,255,.9);border-radius:var(--r-sm);padding:16px;margin:12px 0;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.08);}
+    .serce-bubble::before{content:'💛';font-size:20px;display:block;margin-bottom:8px;}
+    .serce-bubble p{font-size:16px;color:var(--day-text);line-height:1.5;}
+
+    /* Tile reveal animation */
+    @keyframes tileReveal{0%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.9)}100%{opacity:0;transform:scale(0)}}
+    .ptile.revealing .ptile-overlay{animation:tileReveal .7s forwards;}
+
+    /* Settings */
+    .settings-btn{position:fixed;top:16px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;opacity:.5;z-index:100;}
+    #settings-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;justify-content:center;align-items:flex-end;padding:16px;}
+    #settings-modal.open{display:flex;}
+    .settings-card{background:#1c1c32;border-radius:var(--r) var(--r) 12px 12px;padding:28px 24px;width:100%;max-width:480px;}
+    .settings-card h3{color:var(--night-text);font-size:20px;margin-bottom:6px;}
+    .settings-card p{color:var(--night-sub);font-size:13px;margin-bottom:16px;line-height:1.5;}
+    .settings-card input{width:100%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:var(--r-sm);padding:14px;color:var(--night-text);font-family:monospace;font-size:13px;outline:none;margin-bottom:12px;}
+    .settings-card input:focus{border-color:var(--night-accent);}
+    .close-settings{background:rgba(255,255,255,.1);color:var(--night-text);margin-top:8px;}
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:0;}
+    
+    /* Fullness modal */
+    .ritual-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:150;flex-direction:column;justify-content:flex-end;padding:20px;}
+    .ritual-modal.open{display:flex;}
+    .ritual-card{background:var(--night-card);border-radius:var(--r);padding:28px 24px;}
+    .ritual-card h2{color:var(--night-accent);font-size:22px;margin-bottom:8px;}
+    .ritual-card p{color:var(--night-sub);font-size:15px;margin-bottom:24px;line-height:1.5;}
+    .ritual-options{display:flex;flex-direction:column;gap:10px;}
+    .ritual-btn{padding:16px;border-radius:var(--r-sm);border:none;font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;}
+    .ritual-keep{background:rgba(255,255,255,.08);color:var(--night-text);}
+    .ritual-bury{background:rgba(139,90,43,.3);color:#c8a06a;}
+    .ritual-burn{background:rgba(192,57,43,.2);color:#e07060;}
+
+    /* Fire/bury animation */
+    @keyframes burnOut{0%{opacity:1;transform:scale(1) translateY(0)}100%{opacity:0;transform:scale(.3) translateY(-60px) rotate(15deg)}}
+    @keyframes bury{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(80px)}}
+    .burning{animation:burnOut .8s forwards;}
+    .burying{animation:bury .8s forwards;}
+
+    /* Success flash */
+    .success-flash{position:fixed;inset:0;background:rgba(114,201,160,.15);z-index:500;pointer-events:none;animation:flashFade .6s forwards;}
+    @keyframes flashFade{0%{opacity:1}100%{opacity:0}}
+  </style>
+</head>
+<body>
+
+<!-- SETTINGS BUTTON (always visible when not onboarding/sleep) -->
+<button class="settings-btn" id="settings-btn" style="display:none">⚙️</button>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal">
+  <div class="settings-card">
+    <h3>Klucz API Serca</h3>
+    <p>Aby Serce oceniało myśli w Dobrym Dniu, wpisz klucz Anthropic API. Przechowywany tylko na tym urządzeniu.</p>
+    <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off">
+    <button class="btn btn-night" onclick="saveApiKey()">Zapisz klucz</button>
+    <button class="btn close-settings" onclick="closeSettings()">Zamknij</button>
+  </div>
+</div>
+
+<!-- RITUAL MODAL -->
+<div class="ritual-modal" id="ritual-modal">
+  <div class="ritual-card">
+    <h2>Słoik jest pełny 🫙</h2>
+    <p>Twoje myśli mają swoje miejsce. Co chcesz z nimi zrobić?</p>
+    <div class="ritual-options">
+      <button class="ritual-btn ritual-keep" onclick="doRitual('keep')">🫙 Zostaw — niech dalej czekają</button>
+      <button class="ritual-btn ritual-bury" onclick="doRitual('bury')">🌱 Zakop — zamknij ten rozdział</button>
+      <button class="ritual-btn ritual-burn" onclick="doRitual('burn')">🔥 Spal — uwolnij i zacznij od nowa</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLEEP SCREEN ===== -->
+<div class="screen night" id="sleep">
+  <div class="stars" id="sleep-stars"></div>
+  <div style="text-align:center;padding:40px;position:relative;z-index:1;">
+    <div class="moon">🌙</div>
+    <h1 id="sleep-title">Dobranoc</h1>
+    <p id="sleep-msg">Słoik czeka na Ciebie jutro.</p>
+    <p style="margin-top:12px;font-size:14px;color:var(--night-sub)">Aplikacja czynna od 6:00 do 22:00.</p>
+  </div>
+</div>
+
+<!-- ===== ONBOARDING ===== -->
+<div class="screen night" id="onboarding">
+  <div style="display:flex;flex-direction:column;flex:1;justify-content:center;align-items:center;padding:24px;">
+    <div class="onboard-card fade-in">
+      <div class="onboard-logo"><span>MANA</span><br><span style="font-size:14px;color:var(--night-sub);font-weight:400;font-family:'Nunito'">Children</span></div>
+      
+      <div class="onboard-step active" id="ob-step-1">
+        <h2>Jak masz na imię?</h2>
+        <p>Tylko Twoje imię. Nikomu nie powiem. 🤫</p>
+        <input type="text" id="ob-name" placeholder="Gabrysia..." autocomplete="off" autocorrect="off" maxlength="20">
+        <button class="btn btn-night" onclick="obNext1()">Dalej →</button>
+      </div>
+      
+      <div class="onboard-step" id="ob-step-2">
+        <h2>W którym roku się urodziłeś/aś?</h2>
+        <p>To pomoże mi pokazać Ci odpowiednie rzeczy.</p>
+        <input type="number" id="ob-year" placeholder="np. 2015" min="2007" max="2020" inputmode="numeric">
+        <button class="btn btn-night" onclick="obFinish()">Zaczynamy! ✨</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HOME ===== -->
+<div class="screen" id="home">
+  <div class="home-header" id="home-header">
+    <div class="greeting" id="home-greeting">Dzień dobry</div>
+    <h1 id="home-nick">Cześć! 👋</h1>
+  </div>
+  <div class="home-modules">
+    <div class="module-card card-sn" onclick="openSN()">
+      <span class="emoji">🌙</span>
+      <h2>Spokojna Noc</h2>
+      <p>Wyrzuć myśl z głowy. Idź spać lżejszy.</p>
+    </div>
+    <div class="module-card card-dd" onclick="openDD()">
+      <span class="emoji">☀️</span>
+      <h2>Dobry Dzień</h2>
+      <p>Co było dziś dobre? Odkrywaj puzzle.</p>
+      <div class="series-badge" id="series-badge" style="display:none">🔥 <span id="series-count">0</span> dni</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SPOKOJNA NOC ===== -->
+<div class="screen night" id="sn">
+  <div class="stars" id="sn-stars"></div>
+
+  <!-- Step 1: color + text -->
+  <div class="sn-step active" id="sn-1">
+    <button class="back-btn" onclick="goHome()">← Wróć</button>
+    <h1 style="font-size:26px;margin-bottom:6px;">Spokojna Noc 🌙</h1>
+    <p style="color:var(--night-sub);font-size:15px;margin-bottom:24px;">Co chcesz dziś zostawić za sobą?</p>
+    
+    <p style="font-size:14px;font-weight:700;color:var(--night-soft);margin-bottom:12px;">Wybierz kolor karteczki:</p>
+    <div class="color-grid" id="color-grid"></div>
+    
+    <textarea class="input-night" id="sn-text" rows="4" placeholder="Napisz tu... cokolwiek. Tylko dla Ciebie."></textarea>
+    <div style="flex:1;min-height:12px;"></div>
+    <button class="btn btn-night" style="margin-top:16px;" onclick="snSubmit()">Wrzuć do słoika 🫙</button>
+  </div>
+
+  <!-- Step 2: jar animation -->
+  <div class="sn-step" id="sn-2">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;">
+      <p style="font-size:18px;font-weight:600;color:var(--night-soft);text-align:center;" id="sn-confirm-text">Twoja myśl jest już bezpieczna.</p>
+      <div class="jar-container">
+        <div class="jar-wrap" id="jar-wrap">
+          <svg viewBox="0 0 140 180" xmlns="http://www.w3.org/2000/svg" width="140" height="180">
+            <defs>
+              <clipPath id="jar-clip">
+                <path d="M28,50 Q20,60 18,90 L18,155 Q18,168 30,168 L110,168 Q122,168 122,155 L122,90 Q120,60 112,50 Z"/>
+              </clipPath>
+            </defs>
+            <!-- Jar body bg -->
+            <path d="M28,50 Q20,60 18,90 L18,155 Q18,168 30,168 L110,168 Q122,168 122,155 L122,90 Q120,60 112,50 Z" fill="rgba(100,120,200,.12)" stroke="rgba(140,160,240,.4)" stroke-width="2"/>
+            <!-- Fill -->
+            <rect id="jar-fill-rect" x="18" y="168" width="104" height="0" clip-path="url(#jar-clip)" fill="rgba(100,120,220,.25)" rx="0"/>
+            <!-- Lid -->
+            <rect x="24" y="38" width="92" height="16" rx="8" fill="rgba(140,160,240,.35)" stroke="rgba(140,160,240,.5)" stroke-width="1.5"/>
+            <rect x="50" y="28" width="40" height="14" rx="7" fill="rgba(140,160,240,.25)" stroke="rgba(140,160,240,.4)" stroke-width="1.5"/>
+            <!-- Shine -->
+            <path d="M30,65 Q28,100 28,130" stroke="rgba(255,255,255,.15)" stroke-width="4" stroke-linecap="round" fill="none"/>
+          </svg>
+          <!-- Flying note -->
+          <div class="flying-note" id="flying-note"></div>
+        </div>
+      </div>
+      <button class="btn btn-night" onclick="snNext()">Gotowe ✓</button>
+      <button class="btn btn-night-ghost" onclick="snAddAnother()">Dodaj kolejną myśl</button>
+    </div>
+  </div>
+
+  <!-- Step 3: jar full ritual prompt (shows when jar >= 7) -->
+</div>
+
+<!-- ===== DOBRY DZIEŃ ===== -->
+<div class="screen day" id="dd">
+
+  <!-- Step 1: puzzle view + input -->
+  <div class="dd-step active" id="dd-1">
+    <button class="back-btn" style="color:var(--day-sub)" onclick="goHome()">← Wróć</button>
+    <h1 style="font-size:26px;color:var(--day-text);margin-bottom:4px;">Dobry Dzień ☀️</h1>
+    <p style="color:var(--day-sub);font-size:14px;margin-bottom:20px;">Co było dziś naprawdę dobre?</p>
+    
+    <div class="puzzle-wrap">
+      <div class="puzzle-grid" id="puzzle-grid"></div>
+      <p class="puzzle-progress" id="puzzle-progress"></p>
+    </div>
+    
+    <div style="flex:1;min-height:16px;"></div>
+    
+    <div id="dd-input-area">
+      <div id="dd-today-info" style="font-size:13px;color:var(--day-sub);text-align:center;margin-bottom:12px;"></div>
+      <textarea class="input-day" id="dd-text" rows="3" placeholder="np. Zjadłam lody z mamą..."></textarea>
+      <button class="btn btn-day" style="margin-top:12px;" onclick="ddSubmit()">Wrzuć dobrą myśl ☀️</button>
+    </div>
+    
+    <div id="dd-done-today" style="display:none;text-align:center;padding:20px;background:rgba(246,168,37,.1);border-radius:var(--r-sm);margin-top:8px;">
+      <div style="font-size:32px;margin-bottom:8px;">🌟</div>
+      <p style="font-weight:700;color:var(--day-text);">Na dziś koniec — 3 myśli odłożone.</p>
+      <p style="font-size:14px;color:var(--day-sub);margin-top:4px;">Wróć jutro po kolejny puzzle.</p>
+    </div>
+  </div>
+
+  <!-- Step 2: serce response -->
+  <div class="dd-step" id="dd-2">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 4px;">
+      <div id="serce-thinking" style="text-align:center;padding:32px 0;">
+        <div style="font-size:40px;animation:float 2s infinite;">💛</div>
+        <p style="color:var(--day-sub);margin-top:12px;font-size:15px;">Serce słucha...</p>
+      </div>
+      <div id="serce-response-wrap" style="display:none;">
+        <div class="serce-bubble" id="serce-bubble"></div>
+        <div id="tile-reveal-msg" style="text-align:center;margin-top:16px;display:none;">
+          <div style="font-size:40px;">🧩</div>
+          <p style="font-weight:700;color:var(--day-text);margin-top:8px;">Puzzle odkryty!</p>
+        </div>
+        <div id="tile-invalid-msg" style="text-align:center;margin-top:16px;display:none;">
+          <p style="color:var(--day-sub);font-size:14px;">Spróbuj jeszcze raz z inną myślą.</p>
+        </div>
+        <button class="btn btn-day" style="margin-top:20px;" onclick="ddAfterSerce()">Dobra ☀️</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const S = {
+  nick: '',
+  birthYear: 0,
+  ageGroup: 1,
+  snColor: '#b8c9f8',
+  snItems: [],
+  ddTiles: Array(16).fill(false),
+  ddTodayDate: '',
+  ddTodayCount: 0,
+  ddSeries: 0,
+  ddLastDate: '',
+  ddPuzzleSet: 0,
+  apiKey: '',
+  lastThoughtValid: true,
+};
+
+const COLORS = ['#b8c9f8','#f9c6d5','#b8ecd6','#ffe8a0','#d4b8f8','#fac9a8'];
+const COLOR_NAMES = ['niebieski','różowy','zielony','żółty','fioletowy','pomarańczowy'];
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  loadState();
+  createStars('sleep-stars', 60);
+  createStars('sn-stars', 80);
+  renderColorGrid();
+  S.apiKey = localStorage.getItem('mana_apikey') || '';
+  if (S.apiKey) document.getElementById('api-key-input').value = S.apiKey;
+  checkAndRoute();
+});
+
+function loadState() {
+  const saved = localStorage.getItem('mana_children_state');
+  if (saved) {
+    const d = JSON.parse(saved);
+    Object.assign(S, d);
+    S.ddTiles = d.ddTiles || Array(16).fill(false);
+  }
+}
+
+function saveState() {
+  localStorage.setItem('mana_children_state', JSON.stringify(S));
+}
+
+function checkAndRoute() {
+  const h = new Date().getHours();
+  if (h < 6 || h >= 22) {
+    showSleepScreen();
+    return;
+  }
+  if (!S.nick || !S.birthYear) {
+    showScreen('onboarding');
+    return;
+  }
+  showHome();
+}
+
+// ============================================================
+// SCREENS
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  const showSettings = !['onboarding','sleep'].includes(id);
+  document.getElementById('settings-btn').style.display = showSettings ? 'block' : 'none';
+}
+
+function showSleepScreen() {
+  const nick = S.nick || '';
+  document.getElementById('sleep-title').textContent = nick ? `Dobranoc, ${nick} 🌙` : 'Dobranoc 🌙';
+  document.getElementById('sleep-msg').textContent = `Słoik czeka na Ciebie jutro.`;
+  showScreen('sleep');
+}
+
+function showHome() {
+  updateAgeGroup();
+  const h = new Date().getHours();
+  let greet = 'Dzień dobry';
+  if (h >= 17) greet = 'Dobry wieczór';
+  if (h >= 20) greet = 'Dobranoc';
+  document.getElementById('home-greeting').textContent = greet;
+  document.getElementById('home-nick').textContent = S.nick ? `${S.nick}! 👋` : 'Cześć! 👋';
+  
+  // Home background based on time
+  const home = document.getElementById('home');
+  if (h >= 17 || h < 6) {
+    home.className = 'screen night';
+    home.querySelector('.home-header').style.paddingTop = '56px';
+  } else {
+    home.className = 'screen day';
+  }
+
+  // Series badge
+  const badge = document.getElementById('series-badge');
+  const today = todayStr();
+  if (S.ddSeries > 0 && (S.ddLastDate === today || S.ddLastDate === yesterday())) {
+    badge.style.display = 'block';
+    document.getElementById('series-count').textContent = S.ddSeries;
+  } else {
+    if (S.ddLastDate && S.ddLastDate !== today && S.ddLastDate !== yesterday()) {
+      S.ddSeries = 0; saveState();
+    }
+    if (S.ddSeries > 0) {
+      badge.style.display = 'block';
+      document.getElementById('series-count').textContent = S.ddSeries;
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+  showScreen('home');
+}
+
+function goHome() {
+  // Reset SN steps
+  document.querySelectorAll('.sn-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('sn-1').classList.add('active');
+  document.getElementById('sn-text').value = '';
+  // Reset DD steps
+  document.querySelectorAll('.dd-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('dd-1').classList.add('active');
+  showHome();
+}
+
+// ============================================================
+// STARS
+// ============================================================
+function createStars(containerId, count) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + .5;
+    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--del:${Math.random()*4}s;opacity:${Math.random()*.7+.1}`;
+    container.appendChild(s);
+  }
+}
+
+// ============================================================
+// ONBOARDING
+// ============================================================
+function obNext1() {
+  const name = document.getElementById('ob-name').value.trim();
+  if (!name) { document.getElementById('ob-name').focus(); return; }
+  S.nick = name.charAt(0).toUpperCase() + name.slice(1);
+  document.getElementById('ob-step-1').classList.remove('active');
+  document.getElementById('ob-step-2').classList.add('active');
+  setTimeout(() => document.getElementById('ob-year').focus(), 100);
+}
+
+function obFinish() {
+  const year = parseInt(document.getElementById('ob-year').value);
+  if (!year || year < 2007 || year > 2020) {
+    document.getElementById('ob-year').focus();
+    document.getElementById('ob-year').style.borderColor = '#e07060';
+    return;
+  }
+  S.birthYear = year;
+  updateAgeGroup();
+  saveState();
+  showHome();
+}
+
+function updateAgeGroup() {
+  const age = new Date().getFullYear() - S.birthYear;
+  if (age <= 9) S.ageGroup = 1;
+  else if (age <= 13) S.ageGroup = 2;
+  else S.ageGroup = 3;
+  if (age > 17) {
+    // Redirect to adult MANA
+    S.ageGroup = 3;
+  }
+}
+
+// ============================================================
+// COLOR GRID
+// ============================================================
+function renderColorGrid() {
+  const grid = document.getElementById('color-grid');
+  grid.innerHTML = '';
+  COLORS.forEach((c, i) => {
+    const d = document.createElement('div');
+    d.className = 'color-dot' + (c === S.snColor ? ' selected' : '');
+    d.style.background = c;
+    d.onclick = () => {
+      S.snColor = c;
+      document.querySelectorAll('.color-dot').forEach(el => el.classList.remove('selected'));
+      d.classList.add('selected');
+    };
+    grid.appendChild(d);
+  });
+}
+
+// ============================================================
+// SPOKOJNA NOC
+// ============================================================
+function openSN() {
+  renderJar();
+  showScreen('sn');
+  document.getElementById('sn-text').focus();
+}
+
+function snSubmit() {
+  const text = document.getElementById('sn-text').value.trim();
+  if (!text) { document.getElementById('sn-text').focus(); return; }
+  
+  // Save item
+  S.snItems.push({ text, color: S.snColor, date: todayStr() });
+  saveState();
+  
+  // Show step 2
+  document.getElementById('sn-1').classList.remove('active');
+  document.getElementById('sn-2').classList.add('active');
+  document.getElementById('sn-confirm-text').textContent = randomConfirm();
+  
+  // Animate jar fill
+  renderJar();
+  flyToJar(text, S.snColor);
+  
+  // Check if jar full
+  if (S.snItems.length > 0 && S.snItems.length % 7 === 0) {
+    setTimeout(() => {
+      document.getElementById('ritual-modal').classList.add('open');
+    }, 1800);
+  }
+}
+
+function randomConfirm() {
+  const msgs = [
+    'Twoja myśl jest już bezpieczna. 🌙',
+    'Głowa wolna. Można spać.',
+    'Słoik przyjął. Możesz odpuścić.',
+    'Odłożone. Nie musisz tego nosić.',
+  ];
+  return msgs[Math.floor(Math.random() * msgs.length)];
+}
+
+function snNext() {
+  document.getElementById('sn-2').classList.remove('active');
+  document.getElementById('sn-1').classList.add('active');
+  document.getElementById('sn-text').value = '';
+  goHome();
+}
+
+function snAddAnother() {
+  document.getElementById('sn-2').classList.remove('active');
+  document.getElementById('sn-1').classList.add('active');
+  document.getElementById('sn-text').value = '';
+  setTimeout(() => document.getElementById('sn-text').focus(), 100);
+}
+
+function renderJar() {
+  const total = S.snItems.length;
+  const maxFill = 7;
+  const pct = Math.min(total % maxFill / maxFill, 1);
+  const fillH = Math.round(118 * pct); // jar inner height ~118px
+  const rect = document.getElementById('jar-fill-rect');
+  if (rect) {
+    rect.setAttribute('y', 168 - fillH);
+    rect.setAttribute('height', fillH);
+  }
+}
+
+function flyToJar(text, color) {
+  const note = document.getElementById('flying-note');
+  if (!note) return;
+  note.style.background = color;
+  note.style.width = '80px';
+  note.style.height = '48px';
+  note.style.left = '50%';
+  note.style.top = '20%';
+  note.style.transform = 'translateX(-50%)';
+  note.textContent = text.length > 12 ? text.slice(0, 12) + '…' : text;
+  note.style.transition = 'none';
+  note.style.opacity = '1';
+  
+  setTimeout(() => {
+    note.style.transition = 'all .9s cubic-bezier(.4,0,.2,1)';
+    note.style.top = '42%';
+    note.style.opacity = '0';
+    note.style.transform = 'translateX(-50%) scale(.3)';
+  }, 50);
+  
+  setTimeout(() => {
+    note.style.transition = 'none';
+    note.style.opacity = '0';
+  }, 1000);
+}
+
+function doRitual(type) {
+  document.getElementById('ritual-modal').classList.remove('open');
+  if (type === 'keep') {
+    flashSuccess();
+    return;
+  }
+  // Clear jar
+  const animation = type === 'burn' ? 'burning' : 'burying';
+  const jarWrap = document.getElementById('jar-wrap');
+  jarWrap.classList.add(animation);
+  setTimeout(() => {
+    S.snItems = [];
+    saveState();
+    jarWrap.classList.remove(animation);
+    renderJar();
+    flashSuccess();
+  }, 900);
+}
+
+// ============================================================
+// DOBRY DZIEŃ
+// ============================================================
+function openDD() {
+  const today = todayStr();
+  if (S.ddTodayDate !== today) {
+    S.ddTodayCount = 0;
+    S.ddTodayDate = today;
+    saveState();
+  }
+  renderPuzzle();
+  updateDDUI();
+  showScreen('dd');
+}
+
+function renderPuzzle() {
+  const grid = document.getElementById('puzzle-grid');
+  grid.innerHTML = '';
+  const puzzleSVG = getPuzzleSVG();
+  
+  for (let i = 0; i < 16; i++) {
+    const row = Math.floor(i / 4);
+    const col = i % 4;
+    const tile = document.createElement('div');
+    tile.className = 'ptile' + (S.ddTiles[i] ? ' revealed' : '');
+    tile.id = `ptile-${i}`;
+    tile.innerHTML = `
+      <svg class="ptile-art" viewBox="${col*80} ${row*80} 80 80" xmlns="http://www.w3.org/2000/svg">${puzzleSVG}</svg>
+      <div class="ptile-overlay"></div>
+    `;
+    grid.appendChild(tile);
+  }
+  
+  const revealed = S.ddTiles.filter(Boolean).length;
+  document.getElementById('puzzle-progress').textContent = `${revealed}/16 kafelków odkrytych`;
+}
+
+function getPuzzleSVG() {
+  // Age-appropriate artwork
+  if (S.ageGroup === 1) return svgBajkowy();
+  if (S.ageGroup === 2) return svgNatura();
+  return svgMerkaba();
+}
+
+function updateDDUI() {
+  const today = todayStr();
+  const left = 3 - S.ddTodayCount;
+  const inputArea = document.getElementById('dd-input-area');
+  const doneDiv = document.getElementById('dd-done-today');
+  const info = document.getElementById('dd-today-info');
+  
+  if (left <= 0) {
+    inputArea.style.display = 'none';
+    doneDiv.style.display = 'block';
+  } else {
+    inputArea.style.display = 'block';
+    doneDiv.style.display = 'none';
+    info.textContent = left === 3 ? 'Możesz dodać 3 myśli dziś.' : `Zostały Ci ${left} ${left === 1 ? 'myśl' : 'myśli'} na dziś.`;
+  }
+  
+  // Check puzzle complete
+  const revealed = S.ddTiles.filter(Boolean).length;
+  if (revealed >= 16) {
+    document.getElementById('puzzle-progress').textContent = '🎉 Puzzle ukończone! Nowe już czeka.';
+  }
+}
+
+async function ddSubmit() {
+  const text = document.getElementById('dd-text').value.trim();
+  if (!text) { document.getElementById('dd-text').focus(); return; }
+  if (text.length < 5) {
+    document.getElementById('dd-text').style.borderColor = '#f6a825';
+    return;
+  }
+  
+  // Show serce step
+  document.getElementById('dd-1').classList.remove('active');
+  document.getElementById('dd-2').classList.add('active');
+  document.getElementById('serce-thinking').style.display = 'block';
+  document.getElementById('serce-response-wrap').style.display = 'none';
+  document.getElementById('tile-reveal-msg').style.display = 'none';
+  document.getElementById('tile-invalid-msg').style.display = 'none';
+  
+  // Evaluate with Serce or heuristic
+  const result = await evaluateThought(text);
+  
+  // Show response
+  document.getElementById('serce-thinking').style.display = 'none';
+  document.getElementById('serce-response-wrap').style.display = 'block';
+  
+  const bubble = document.getElementById('serce-bubble');
+  bubble.innerHTML = `<p>${result.serce}</p>`;
+  
+  S.lastThoughtValid = result.valid;
+  
+  if (result.valid) {
+    // Reveal a tile
+    revealNextTile();
+    S.ddTodayCount++;
+    const today = todayStr();
+    // Update series
+    if (S.ddLastDate === yesterday()) {
+      S.ddSeries++;
+    } else if (S.ddLastDate !== today) {
+      S.ddSeries = 1;
+    }
+    S.ddLastDate = today;
+    saveState();
+    document.getElementById('tile-reveal-msg').style.display = 'block';
+  } else {
+    document.getElementById('tile-invalid-msg').style.display = 'block';
+  }
+}
+
+async function evaluateThought(text) {
+  // Try Anthropic API first
+  if (S.apiKey) {
+    try {
+      const age = new Date().getFullYear() - S.birthYear;
+      const sysPrompt = `Jesteś Sercem MANA Children. Oceniasz myśl dziecka (${age} lat) w module Dobry Dzień.\nZasady:\n- Reaguj JEDNYM ciepłym zdaniem po polsku\n- Jeśli myśl jest autentyczna pozytywna → valid: true\n- Jeśli to przekleństwo, nonsens, pusty tekst → valid: false, delikatnie poprowadź\n- Nigdy nie oceniaj dziecka, tylko myśl\nOdpowiadaj WYŁĄCZNIE JSON: {"valid":true/false,"serce":"twoja reakcja"}`;
+      
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': S.apiKey, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 150,
+          system: sysPrompt,
+          messages: [{ role: 'user', content: text }]
+        })
+      });
+      const data = await res.json();
+      if (data.content && data.content[0]) {
+        const raw = data.content[0].text.replace(/```json|```/g,'').trim();
+        return JSON.parse(raw);
+      }
+    } catch(e) {
+      console.log('Serce API error, using heuristic', e);
+    }
+  }
+  
+  // Heuristic fallback
+  return heuristicEval(text);
+}
+
+function heuristicEval(text) {
+  const bad = ['dupa','kupa','penis','seks','śmierć','nienawidzę','idiota'];
+  const lower = text.toLowerCase();
+  if (bad.some(w => lower.includes(w))) {
+    return { valid: false, serce: 'Hm, może coś innego — powiedz mi o czymś co naprawdę było dziś dobre? 🌸' };
+  }
+  if (text.length < 8) {
+    return { valid: false, serce: 'Prawie! Opowiedz mi trochę więcej — co dokładnie było fajne? 😊' };
+  }
+  const goodWords = ['mama','tata','przyjaciel','koleżanka','śmiałem','śmiałam','lody','pycha','fajnie','super','świetnie','udało','zjadłam','zjadłem','grałem','bawiłem','spotkałem','polubiłem','nauczyłem'];
+  const hasGood = goodWords.some(w => lower.includes(w));
+  
+  const responses = [
+    'To brzmi naprawdę pięknie! 🌟',
+    'Super, że to zauważyłeś/aś! ✨',
+    'Takie chwile są wyjątkowe. 💛',
+    'Cieszę się że podzieliłeś/aś się tym ze mną! 🌸',
+    'Widzę że miałeś/aś dziś coś dobrego — to ważne! ⭐',
+  ];
+  return {
+    valid: true,
+    serce: responses[Math.floor(Math.random() * responses.length)]
+  };
+}
+
+function revealNextTile() {
+  // Find first unrevealed tile
+  const idx = S.ddTiles.indexOf(false);
+  if (idx === -1) {
+    // All revealed — reset
+    S.ddTiles = Array(16).fill(false);
+    S.ddPuzzleSet = (S.ddPuzzleSet + 1) % 3;
+  }
+  const targetIdx = idx === -1 ? 0 : idx;
+  S.ddTiles[targetIdx] = true;
+  saveState();
+  
+  // Animate
+  const tile = document.getElementById(`ptile-${targetIdx}`);
+  if (tile) {
+    tile.classList.add('revealing');
+    setTimeout(() => {
+      tile.classList.remove('revealing');
+      tile.classList.add('revealed');
+    }, 700);
+  }
+}
+
+function ddAfterSerce() {
+  document.getElementById('dd-2').classList.remove('active');
+  document.getElementById('dd-1').classList.add('active');
+  document.getElementById('dd-text').value = '';
+  renderPuzzle();
+  updateDDUI();
+}
+
+// ============================================================
+// PUZZLE SVG ARTWORK
+// ============================================================
+function svgBajkowy() {
+  // 320x320 bajkowy krajobraz — tęcza, słońce, kwiatki
+  return `
+    <rect x="0" y="0" width="320" height="320" fill="#87ceeb"/>
+    <rect x="0" y="200" width="320" height="120" fill="#7ecf7e"/>
+    <circle cx="260" cy="60" r="40" fill="#ffe066" opacity=".9"/>
+    <path d="M80,180 Q160,60 240,180" fill="none" stroke="#ff6b9d" stroke-width="12" stroke-linecap="round" opacity=".8"/>
+    <path d="M70,190 Q160,75 250,190" fill="none" stroke="#ff9e2a" stroke-width="12" stroke-linecap="round" opacity=".8"/>
+    <path d="M60,200 Q160,90 260,200" fill="none" stroke="#ffe066" stroke-width="12" stroke-linecap="round" opacity=".8"/>
+    <path d="M50,210 Q160,105 270,210" fill="none" stroke="#6bcf6b" stroke-width="12" stroke-linecap="round" opacity=".8"/>
+    <path d="M40,218 Q160,118 280,218" fill="none" stroke="#6bb5ff" stroke-width="12" stroke-linecap="round" opacity=".8"/>
+    <circle cx="60" cy="240" r="15" fill="#ff6b9d"/>
+    <rect x="57" y="240" width="6" height="30" fill="#4a9b4a"/>
+    <circle cx="130" cy="225" r="18" fill="#ffe066"/>
+    <rect x="127" y="225" width="6" height="35" fill="#4a9b4a"/>
+    <circle cx="200" cy="235" r="14" fill="#c58aff"/>
+    <rect x="197" y="235" width="6" height="28" fill="#4a9b4a"/>
+    <circle cx="40" cy="100" r="12" fill="white" opacity=".8"/>
+    <circle cx="55" cy="95" r="16" fill="white" opacity=".8"/>
+    <circle cx="70" cy="100" r="12" fill="white" opacity=".8"/>
+    <circle cx="140" cy="80" r="10" fill="white" opacity=".6"/>
+    <circle cx="155" cy="74" r="14" fill="white" opacity=".6"/>
+    <circle cx="170" cy="80" r="10" fill="white" opacity=".6"/>
+  `;
+}
+
+function svgNatura() {
+  // 320x320 nocny krajobraz — góry, gwiazdy, jezioro
+  return `
+    <rect x="0" y="0" width="320" height="320" fill="#0a0a2e"/>
+    <rect x="0" y="240" width="320" height="80" fill="#1a3a6b" opacity=".6"/>
+    <polygon points="0,240 80,120 160,240" fill="#1a2a5e"/>
+    <polygon points="60,240 160,90 260,240" fill="#0f1f4a"/>
+    <polygon points="140,240 220,130 300,240" fill="#1a2a5e"/>
+    <polygon points="240,240 320,150 320,240" fill="#0f1f4a"/>
+    <rect x="0" y="240" width="320" height="80" fill="#0a2040" opacity=".8"/>
+    <path d="M0,260 Q80,250 160,265 Q240,280 320,260 L320,320 L0,320Z" fill="#0d2d5a" opacity=".7"/>
+    <circle cx="30" cy="40" r="2" fill="white" opacity=".9"/>
+    <circle cx="70" cy="20" r="1.5" fill="white" opacity=".8"/>
+    <circle cx="120" cy="35" r="2.5" fill="#ffe066" opacity=".9"/>
+    <circle cx="170" cy="15" r="1.5" fill="white" opacity=".7"/>
+    <circle cx="220" cy="50" r="2" fill="white" opacity=".8"/>
+    <circle cx="270" cy="25" r="3" fill="#ffd700" opacity=".9"/>
+    <circle cx="300" cy="45" r="1.5" fill="white" opacity=".7"/>
+    <circle cx="90" cy="60" r="1.5" fill="white" opacity=".6"/>
+    <circle cx="200" cy="70" r="2" fill="white" opacity=".7"/>
+    <circle cx="50" cy="80" r="1" fill="white" opacity=".5"/>
+    <circle cx="250" cy="80" r="1.5" fill="white" opacity=".6"/>
+    <circle cx="150" cy="55" r="1" fill="white" opacity=".5"/>
+    <circle cx="20" cy="160" r="25" fill="#d4e8ff" opacity=".15"/>
+    <circle cx="20" cy="160" r="18" fill="#d4e8ff" opacity=".2"/>
+    <path d="M0,265 Q80,255 160,270 Q240,285 320,265" fill="none" stroke="#4488cc" stroke-width="1.5" opacity=".4"/>
+    <circle cx="160" cy="300" r="8" fill="#ffe066" opacity=".3"/>
+  `;
+}
+
+function svgMerkaba() {
+  // 320x320 Merkaba / sacred geometry
+  return `
+    <rect x="0" y="0" width="320" height="320" fill="#0d0d1f"/>
+    <circle cx="160" cy="160" r="130" fill="none" stroke="#4455bb" stroke-width=".5" opacity=".4"/>
+    <circle cx="160" cy="160" r="90" fill="none" stroke="#5566cc" stroke-width=".7" opacity=".5"/>
+    <circle cx="160" cy="160" r="55" fill="none" stroke="#7788ee" stroke-width=".8" opacity=".6"/>
+    <polygon points="160,30 280,230 40,230" fill="none" stroke="#9988ee" stroke-width="2" opacity=".7"/>
+    <polygon points="160,290 40,90 280,90" fill="none" stroke="#aa99ff" stroke-width="2" opacity=".7"/>
+    <circle cx="160" cy="160" r="8" fill="#cc99ff" opacity=".8"/>
+    <circle cx="160" cy="160" r="4" fill="#ffffff" opacity=".9"/>
+    <line x1="160" y1="30" x2="160" y2="290" stroke="#7788ee" stroke-width=".5" opacity=".3"/>
+    <line x1="40" y1="90" x2="280" y2="230" stroke="#7788ee" stroke-width=".5" opacity=".3"/>
+    <line x1="280" y1="90" x2="40" y2="230" stroke="#7788ee" stroke-width=".5" opacity=".3"/>
+    <circle cx="160" cy="30" r="3" fill="#cc99ff" opacity=".9"/>
+    <circle cx="160" cy="290" r="3" fill="#cc99ff" opacity=".9"/>
+    <circle cx="40" cy="90" r="3" fill="#cc99ff" opacity=".9"/>
+    <circle cx="280" cy="90" r="3" fill="#cc99ff" opacity=".9"/>
+    <circle cx="40" cy="230" r="3" fill="#cc99ff" opacity=".9"/>
+    <circle cx="280" cy="230" r="3" fill="#cc99ff" opacity=".9"/>
+    <polygon points="160,90 220,190 100,190" fill="#cc99ff" opacity=".08"/>
+    <polygon points="160,230 220,130 100,130" fill="#9988ee" opacity=".08"/>
+    <circle cx="160" cy="160" r="130" fill="none" stroke="#7788ee" stroke-width=".4" opacity=".2" stroke-dasharray="8,12"/>
+  `;
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+document.getElementById('settings-btn').onclick = () => {
+  document.getElementById('settings-modal').classList.add('open');
+};
+
+function closeSettings() {
+  document.getElementById('settings-modal').classList.remove('open');
+}
+
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  S.apiKey = key;
+  localStorage.setItem('mana_apikey', key);
+  closeSettings();
+  flashSuccess();
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function todayStr() {
+  return new Date().toISOString().slice(0,10);
+}
+
+function yesterday() {
+  const d = new Date();
+  d.setDate(d.getDate()-1);
+  return d.toISOString().slice(0,10);
+}
+
+function flashSuccess() {
+  const flash = document.createElement('div');
+  flash.className = 'success-flash';
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 700);
+}
+
+// Close modals on backdrop click
+document.getElementById('settings-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('settings-modal')) closeSettings();
+});
+document.getElementById('ritual-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('ritual-modal')) {
+    document.getElementById('ritual-modal').classList.remove('open');
+  }
+});
+
+// Enter key in onboarding
+document.getElementById('ob-name').addEventListener('keydown', e => { if(e.key==='Enter') obNext1(); });
+document.getElementById('ob-year').addEventListener('keydown', e => { if(e.key==='Enter') obFinish(); });
+</script>
+</body>
+</html>
