@@ -133,9 +133,9 @@
     .fig4{bottom:-2%;right:2%;animation:sway4 3.6s ease-in-out infinite .8s;opacity:.78;}
     /* Onboarding card */
     .ob-card{background:rgba(18,6,38,.9);border:1.5px solid rgba(255,190,80,.32);border-radius:var(--r);padding:28px 22px;width:calc(100% - 40px);max-width:380px;position:relative;z-index:3;}
-    .fire-title{position:relative;z-index:3;text-align:center;margin-bottom:20px;}
-    .fire-title h1{font-family:'Baloo 2',cursive;font-size:38px;font-weight:800;color:#ffe8a0;text-shadow:0 0 30px rgba(255,180,40,.7),0 0 60px rgba(255,100,0,.35);letter-spacing:2px;}
-    .fire-title p{font-size:14px;color:#d4a8f8;opacity:.92;margin-top:4px;letter-spacing:.5px;}
+    .fire-title{position:relative;z-index:3;text-align:center;margin-bottom:12px;}
+    .fire-title h1{font-family:'Baloo 2',cursive;font-size:26px;font-weight:800;color:#ffe8a0;text-shadow:0 0 20px rgba(255,180,40,.7),0 0 40px rgba(255,100,0,.35);letter-spacing:2px;}
+    .fire-title p{font-size:12px;color:#d4a8f8;opacity:.88;margin-top:2px;letter-spacing:.5px;}
   </style>
 </head>
 <body>
@@ -244,7 +244,7 @@
       <path d="M58,94 Q68,100 72,95 Q64,88 58,88Z" fill="#120425"/>
     </svg>
   </div>
-  <div style="display:flex;flex:1;flex-direction:column;justify-content:flex-start;align-items:center;padding:40px 24px 24px;position:relative;z-index:3;">
+  <div style="display:flex;flex:1;flex-direction:column;justify-content:flex-start;align-items:center;padding:12px 24px 16px;position:relative;z-index:3;">
     <div class="fire-title">
       <h1>✦ Iskierka</h1>
       <p>Twoja przestrzeń. Tylko Twoja.</p>
@@ -413,10 +413,10 @@ function buildFireStars(){
   c.width=W; c.height=H;
   var ctx=c.getContext('2d');
   var particles=[], MAX=260;
-  var CX=W/2, FY=H*0.82;
+  var CX=W/2, FY=H*0.85;
   function rnd(a,b){return a+Math.random()*(b-a);}
   function spawn(){
-    var lm=rnd(55,125);
+    var lm=rnd(90,200);
     return {x:CX+rnd(-20,20),y:FY,vx:rnd(-0.9,0.9),vy:rnd(-3.8,-1.2),life:lm,lifeMax:lm,size:rnd(2,7.5),spark:Math.random()>.68};
   }
   for(var i=0;i<MAX;i++){var p=spawn();p.life=Math.random()*p.lifeMax;particles.push(p);}
@@ -458,20 +458,23 @@ function buildFireStars(){
       ctx.fillStyle=l[5];ctx.beginPath();ctx.ellipse(l[0],l[1],l[2],l[3],l[4],0,Math.PI*2);ctx.fill();
     });
     // particles
-    tt+=.025;
+    tt+=.008;
     var turb=Math.sin(tt)*.45;
     for(var i=particles.length-1;i>=0;i--){
       var p=particles[i];p.life-=1;
       if(p.life<=0){particles[i]=spawn();continue;}
-      p.vx+=turb*.08+rnd(-.06,.06);p.vy-=.04;p.vx*=.98;p.x+=p.vx;p.y+=p.vy;
+      p.vx+=turb*.02+rnd(-.015,.015);p.vy-=.02;p.vx*=.97;p.x+=p.vx;p.y+=p.vy;
       var t=p.life/p.lifeMax;
       var sz=p.size*(p.spark?t:Math.sin(t*Math.PI)*1.3+.15);
       if(sz<.25)continue;
       ctx.globalAlpha=p.spark?t*.92:Math.sin(t*Math.PI)*.78;
       ctx.fillStyle=col(p);
+      // Dignified flame teardrop — no sparks
+      var hw=sz*.5, ht=sz*1.5;
       ctx.beginPath();
-      if(p.spark){ctx.arc(p.x,p.y,sz,0,Math.PI*2);}
-      else{ctx.ellipse(p.x,p.y,sz*.55,sz,0,0,Math.PI*2);}
+      ctx.moveTo(p.x, p.y-ht);
+      ctx.bezierCurveTo(p.x+hw*1.1, p.y-ht*.3, p.x+hw, p.y+ht*.35, p.x, p.y+ht*.4);
+      ctx.bezierCurveTo(p.x-hw, p.y+ht*.35, p.x-hw*1.1, p.y-ht*.3, p.x, p.y-ht);
       ctx.fill();
     }
     ctx.globalAlpha=1;
