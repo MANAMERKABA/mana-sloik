@@ -740,9 +740,10 @@ function renderPuzzle() {
     tile.id = 'ptile-' + i;
     tile.style.width = tileSize + 'px';
     tile.style.height = tileSize + 'px';
+    // SVG viewBox shows the correct 80x80 portion, SVG sized to tile
     tile.innerHTML =
-      '<svg class="ptile-art" viewBox="' + (col*80) + ' ' + (row*80) + ' 80 80" xmlns="http://www.w3.org/2000/svg" width="' + gridSize + '" height="' + gridSize + '">' + puzzleSVG + '</svg>' +
-      '<div class="ptile-overlay"></div>';
+      '<svg class="ptile-art" viewBox="' + (col*80) + ' ' + (row*80) + ' 80 80" xmlns="http://www.w3.org/2000/svg" width="' + tileSize + '" height="' + tileSize + '" style="position:absolute;top:0;left:0;width:100%;height:100%;">' + puzzleSVG + '</svg>' +
+      '<div class="ptile-overlay" style="opacity:' + (S.ddTiles[i] ? '0' : '1') + ';transition:opacity .5s ease;"></div>';
     grid.appendChild(tile);
   }
   
