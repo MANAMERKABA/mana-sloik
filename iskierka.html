@@ -112,27 +112,65 @@
     .flash{position:fixed;inset:0;background:rgba(114,201,160,.18);z-index:500;pointer-events:none;animation:flashOut .6s forwards;}
     @keyframes flashOut{to{opacity:0}}
     ::-webkit-scrollbar{width:0;}
+    /* CODEPEN FIRE */
+    .fireplace{width:220px;height:220px;position:absolute;bottom:0;left:50%;transform:translateX(-50%);display:flex;justify-content:center;align-items:flex-end;z-index:0;}
+    .fireplace__flame,.fireplace__flame_big{height:190px;width:140px;background:linear-gradient(0deg,rgba(236,221,66,1) 10%,rgba(237,174,52,1) 15%,rgba(237,100,52,1) 50%,rgba(250,71,8,1) 59%);position:relative;margin-bottom:-15px;z-index:3;opacity:0.7;}
+    .fireplace__flame{width:260px;margin-left:10px;animation:burn 1.5s linear forwards infinite;}
+    .fireplace__flame_big{margin-bottom:-5px;z-index:-1;opacity:1;animation:burn_alt 2.5s linear forwards infinite;}
+    .fireplace__log{background:linear-gradient(#e66465,#5d5e55);height:75px;width:15px;position:absolute;bottom:0;border-radius:10px;transform-origin:bottom center;box-shadow:0 0 3px rgba(0,0,0,.5);list-style:none;}
+    .fireplace__log:after{content:"";display:block;background:#ff915b;width:100%;height:15px;border-radius:20px;transform-origin:top center;transform:scale(1,.5);}
+    .fireplace section:nth-of-type(1){left:52px;transform:rotateZ(45deg);}
+    .fireplace section:nth-of-type(2){left:75px;transform:rotateZ(25deg);}
+    .fireplace section:nth-of-type(3){left:105px;transform:rotateZ(5deg);}
+    .fireplace section:nth-of-type(4){left:105px;transform:rotateZ(-5deg);}
+    .fireplace section:nth-of-type(5){left:128px;transform:rotateZ(-15deg);}
+    .fireplace section:nth-of-type(6){left:150px;transform:rotateZ(-35deg);}
+    .fireplace section:nth-of-type(7){left:173px;transform:rotateZ(-45deg);}
+    .fireplace__spark{position:absolute;height:4px;width:4px;border-radius:1px;top:0;left:0;filter:blur(1px);background:yellow;z-index:10;opacity:0;}
+    .fireplace main:nth-of-type(1){animation:spark_1 1s forwards infinite;}
+    .fireplace main:nth-of-type(2){animation:spark_2 1s .75s forwards infinite;}
+    .fireplace main:nth-of-type(3){animation:spark_3 1s .25s forwards infinite;}
+    .fireplace main:nth-of-type(4){animation:spark_4 1s .5s forwards infinite;}
+    .fireplace__light{height:100%;width:100%;border-radius:50% 50% 30% 30%;transform:scale(1.1,1.2);filter:blur(40px);background:orange;position:absolute;top:30px;left:0;z-index:0;opacity:0.45;}
+    .fireplace .blur{filter:blur(1px);}
+    .fireplace .blur.fix{position:absolute;}
+    @keyframes burn{0%{clip-path:polygon(48% 97%,42% 97%,37% 93%,31% 92%,28% 88%,26% 81%,29% 84%,34% 84%,33% 79%,30% 74%,31% 67%,34% 57%,34% 65%,39% 71%,43% 65%,43% 55%,40% 45%,48% 59%,49% 69%,51% 76%,55% 71%,54% 65%,54% 58%,58% 64%,61% 72%,57% 92%,61% 97%,64% 98%,66% 95%,64% 93%,57% 96%,54% 93%,48% 97%)}25%{clip-path:polygon(49% 97%,41% 97%,35% 92%,33% 86%,34% 80%,30% 74%,34% 77%,38% 81%,38% 78%,36% 72%,35% 67%,37% 61%,37% 54%,39% 61%,39% 67%,43% 63%,43% 58%,45% 44%,44% 58%,48% 66%,51% 67%,51% 59%,54% 67%,56% 72%,57% 79%,59% 77%,60% 71%,61% 77%,61% 83%,60% 89%,61% 94%,57% 97%,52% 98%)}50%{clip-path:polygon(46% 97%,39% 96%,35% 89%,36% 84%,34% 77%,30% 73%,30% 65%,30% 70%,35% 75%,38% 68%,37% 61%,40% 53%,41% 42%,42% 56%,44% 65%,50% 67%,51% 57%,53% 68%,52% 74%,51% 81%,55% 78%,57% 72%,58% 79%,57% 85%,55% 88%,60% 87%,63% 82%,63% 89%,59% 94%,55% 98%,51% 92%,50% 99%,45% 96%)}75%{clip-path:polygon(45% 97%,38% 97%,33% 93%,31% 87%,31% 81%,29% 76%,25% 69%,29% 61%,30% 69%,35% 71%,35% 62%,34% 54%,38% 45%,38% 54%,43% 62%,47% 57%,48% 49%,44% 38%,50% 46%,53% 60%,54% 71%,53% 79%,59% 76%,60% 66%,64% 73%,63% 79%,59% 85%,64% 90%,68% 84%,68% 92%,60% 97%,53% 98%,48% 99%)}100%{clip-path:polygon(48% 97%,42% 97%,37% 93%,31% 92%,28% 88%,26% 81%,29% 84%,34% 84%,33% 79%,30% 74%,31% 67%,34% 57%,34% 65%,39% 71%,43% 65%,43% 55%,40% 45%,48% 59%,49% 69%,51% 76%,55% 71%,54% 65%,54% 58%,58% 64%,61% 72%,57% 92%,61% 97%,64% 98%,66% 95%,64% 93%,57% 96%,54% 93%,48% 97%)}}
+    @keyframes burn_alt{0%,100%{clip-path:polygon(48% 97%,43% 97%,38% 97%,34% 94%,33% 91%,32% 87%,29% 83%,26% 80%,21% 75%,20% 71%,20% 66%,20% 59%,20% 65%,24% 68%,28% 67%,28% 62%,25% 60%,21% 52%,21% 43%,24% 32%,23% 39%,24% 46%,28% 48%,33% 44%,33% 39%,31% 32%,28% 23%,30% 14%,31% 22%,35% 28%,39% 28%,41% 25%,40% 21%,39% 13%,41% 6%,42% 15%,45% 23%,49% 25%,52% 22%,51% 13%,54% 21%,56% 29%,53% 35%,50% 41%,53% 46%,58% 46%,60% 39%,60% 34%,64% 39%,65% 45%,63% 51%,61% 56%,64% 61%,68% 59%,71% 55%,73% 48%,73% 40%,76% 48%,77% 56%,76% 62%,74% 66%,69% 71%,71% 74%,75% 74%,79% 71%,81% 65%,82% 72%,81% 77%,77% 82%,73% 86%,73% 89%,78% 89%,82% 85%,81% 91%,78% 95%,72% 97%,65% 98%,59% 98%,53% 99%,47% 97%)}50%{clip-path:polygon(40% 99%,35% 99%,31% 98%,25% 95%,23% 92%,21% 88%,20% 83%,21% 80%,22% 76%,21% 70%,20% 68%,18% 64%,21% 68%,23% 71%,25% 75%,26% 79%,31% 84%,31% 79%,28% 69%,23% 60%,17% 53%,19% 41%,25% 31%,24% 24%,24% 19%,26% 24%,28% 30%,26% 37%,25% 44%,28% 49%,33% 50%,39% 48%,40% 43%,39% 35%,37% 29%,42% 34%,43% 40%,44% 47%,43% 53%,45% 59%,51% 60%,53% 56%,51% 49%,51% 44%,53% 36%,55% 32%,54% 22%,57% 29%,57% 44%,56% 50%,58% 56%,62% 59%,66% 59%,68% 53%,66% 45%,65% 38%,70% 44%,71% 50%,72% 55%,71% 62%,68% 66%,65% 70%,67% 74%,72% 74%,76% 71%,78% 65%,80% 68%,81% 73%,78% 81%,76% 89%,77% 93%,75% 97%,70% 98%,67% 98%,62% 98%,58% 98%,53% 99%,50% 99%,47% 99%,45% 99%)}}
+    @keyframes spark_1{0%{opacity:1;left:75px;top:158px}100%{top:45px;left:83px;opacity:0}}
+    @keyframes spark_2{0%{opacity:1;left:135px;top:158px}100%{top:15px;left:113px;opacity:0}}
+    @keyframes spark_3{0%{opacity:1;left:165px;top:158px}100%{top:23px;left:128px;opacity:0}}
+    @keyframes spark_4{0%{opacity:1;left:90px;top:158px}100%{top:23px;left:30px;opacity:0}}
 
     /* FIRE SCREEN */
-    #onboarding{background:#0a0218;}
-    .fire-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;}
-    #fire-bg{position:absolute;inset:0;width:100%;height:100%;}
+    #onboarding{background:radial-gradient(ellipse at 50% 110%,#3d1568 0%,#1e0840 40%,#0a0218 100%);}
+    .fire-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
     /* Stars */
     .fstar{position:absolute;border-radius:50%;animation:ftwinkle var(--d,3s) ease-in-out infinite var(--dl,0s);}
     @keyframes ftwinkle{0%,100%{opacity:.1;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
-    /* Figures */
-    @keyframes sway1{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
-    @keyframes sway2{0%,100%{transform:rotate(2deg)}50%{transform:rotate(-4deg)}}
-    @keyframes sway3{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
-    @keyframes sway4{0%,100%{transform:rotate(3deg)}50%{transform:rotate(-2deg)}}
-    @keyframes arms{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
-    .fig{position:absolute;z-index:2;transform-origin:50% 100%;}
-    .fig1{bottom:-2%;left:18%;animation:sway1 3.2s ease-in-out infinite;}
-    .fig2{bottom:-2%;left:3%;animation:sway2 4s ease-in-out infinite .5s;opacity:.8;}
-    .fig3{bottom:-2%;right:16%;animation:sway3 2.8s ease-in-out infinite .3s;}
-    .fig4{bottom:-2%;right:2%;animation:sway4 3.6s ease-in-out infinite .8s;opacity:.78;}
+    /* Horizon glow */
+    .hglow{position:absolute;bottom:20%;left:0;right:0;height:200px;background:radial-gradient(ellipse at 50% 90%,rgba(255,140,40,.65) 0%,rgba(220,80,10,.25) 45%,transparent 75%);animation:hgp 3s ease-in-out infinite;}
+    @keyframes hgp{0%,100%{opacity:.8}50%{opacity:1}}
+    /* Ground */
+    .fground{position:absolute;bottom:0;left:0;right:0;height:28%;background:linear-gradient(to top,#130420,#1e0c32 60%,transparent);}
+    .horizon-svg{position:absolute;bottom:26%;left:0;width:100%;overflow:visible;pointer-events:none;}
+    /* Campfire */
+    .campfire{position:absolute;bottom:24%;left:50%;transform:translateX(-50%);z-index:1;}
+    /* Flame tongues */
+    .ft{position:absolute;bottom:14px;left:50%;transform-origin:50% 100%;border-radius:50% 50% 20% 20%;}
+    .ft1{width:48px;height:96px;margin-left:-24px;background:linear-gradient(to top,#ff5500,#ff8800 45%,#ffcc00 78%,transparent);animation:fl1 3.5s ease-in-out infinite;}
+    .ft2{width:36px;height:76px;margin-left:-10px;background:linear-gradient(to top,#ff4400,#ff7700 45%,#ffaa00 75%,transparent);animation:fl2 4s ease-in-out infinite .6s;}
+    .ft3{width:36px;height:76px;margin-left:-26px;background:linear-gradient(to top,#ff4400,#ff7700 45%,#ffaa00 75%,transparent);animation:fl3 3.2s ease-in-out infinite .3s;}
+    .ft4{width:28px;height:58px;margin-left:-4px;background:linear-gradient(to top,#ff6600,#ffaa00 55%,#ffdd44 82%,transparent);animation:fl1 2.8s ease-in-out infinite .9s;}
+    .ft5{width:28px;height:58px;margin-left:-24px;background:linear-gradient(to top,#ff6600,#ffaa00 55%,#ffdd44 82%,transparent);animation:fl2 3.8s ease-in-out infinite .2s;}
+    .ft6{width:18px;height:42px;margin-left:-9px;background:linear-gradient(to top,#ffaa00,#ffdd44 55%,#fff5a0 88%,transparent);animation:fl3 2.5s ease-in-out infinite .5s;}
+    @keyframes fl1{0%,100%{transform:scaleX(1) scaleY(1) rotate(-3deg)}35%{transform:scaleX(.82) scaleY(1.1) rotate(3deg)}68%{transform:scaleX(1.08) scaleY(.95) rotate(-2deg)}}
+    @keyframes fl2{0%,100%{transform:scaleX(1) scaleY(1) rotate(2.5deg)}40%{transform:scaleX(.86) scaleY(1.08) rotate(-2.5deg)}72%{transform:scaleX(1.06) scaleY(.94) rotate(1.5deg)}}
+    @keyframes fl3{0%,100%{transform:scaleX(1) scaleY(1) rotate(-1.5deg)}45%{transform:scaleX(.78) scaleY(1.12) rotate(3.5deg)}78%{transform:scaleX(1.1) scaleY(.92) rotate(-1deg)}}
+    .ember{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:58px;height:10px;background:radial-gradient(ellipse,#ff9900,#ff5500 55%,transparent);animation:emb 2s ease-in-out infinite;}
+    @keyframes emb{0%,100%{opacity:.7}50%{opacity:1}}
+
     /* Onboarding card */
-    .ob-card{background:rgba(18,6,38,.9);border:1.5px solid rgba(255,190,80,.32);border-radius:var(--r);padding:28px 22px;width:calc(100% - 40px);max-width:380px;position:relative;z-index:3;}
+    .ob-card{background:rgba(18,6,38,.9);border:1.5px solid rgba(255,190,80,.32);border-radius:var(--r);padding:28px 22px;width:calc(100% - 40px);max-width:380px;position:relative;z-index:10;}
     .fire-title{position:relative;z-index:3;text-align:center;margin-bottom:12px;}
     .fire-title h1{font-family:'Baloo 2',cursive;font-size:26px;font-weight:800;color:#ffe8a0;text-shadow:0 0 20px rgba(255,180,40,.7),0 0 40px rgba(255,100,0,.35);letter-spacing:2px;}
     .fire-title p{font-size:12px;color:#d4a8f8;opacity:.88;margin-top:2px;letter-spacing:.5px;}
@@ -178,58 +216,34 @@
   </div>
 </div>
 <div class="screen" id="onboarding">
-  <div class="fire-canvas">
-    <canvas id="fire-bg"></canvas>
-  </div>
-  <!-- Fig 1: lewa blisko ognia — siedząca, pochylona do przodu -->
-  <div class="fig fig1">
-    <svg width="80" height="100" viewBox="0 0 80 100">
-      <!-- tułów -->
-      <path d="M28,95 Q18,75 20,55 Q18,40 26,30 Q32,20 40,18 Q48,16 54,24 Q62,35 58,52 Q60,68 58,95Z" fill="#1a0835"/>
-      <!-- głowa pochylona w przód -->
-      <ellipse cx="40" cy="16" rx="13" ry="14" fill="#1a0835"/>
-      <!-- włosy/kaptur -->
-      <path d="M27,18 Q25,6 32,2 Q40,-2 48,4 Q54,10 52,20Z" fill="#1a0835"/>
-      <!-- ręka wyciągnięta do ognia (prawa) -->
-      <path d="M56,50 Q68,42 75,38" fill="none" stroke="#1a0835" stroke-width="9" stroke-linecap="round"/>
-      <circle cx="75" cy="36" r="7" fill="#1a0835"/>
-      <!-- nogi skrzyżowane na ziemi -->
-      <path d="M28,95 Q16,100 5,96 Q14,90 26,88Z" fill="#1a0835"/>
-      <path d="M58,95 Q68,100 78,95 Q68,89 58,88Z" fill="#1a0835"/>
+  <div class="fire-canvas" id="fire-canvas">
+    <div class="fground"></div>
+    <div class="hglow"></div>
+    <svg class="horizon-svg" height="18" viewBox="0 0 400 18" style="bottom:22%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,10 C40,4 80,14 120,8 C160,2 200,12 240,7 C280,2 320,11 360,6 C380,4 390,8 400,6 L400,18 L0,18Z" fill="#1e0c32"/>
+      <path d="M0,10 C40,4 80,14 120,8 C160,2 200,12 240,7 C280,2 320,11 360,6 C380,4 390,8 400,6" fill="none" stroke="rgba(255,150,50,.6)" stroke-width="1.8"/>
+      <path d="M0,12 C40,7 80,16 120,10 C160,5 200,14 240,9 C280,4 320,13 360,8 C380,6 390,10 400,8" fill="none" stroke="rgba(255,100,20,.3)" stroke-width="1.2"/>
     </svg>
+    <div class="fireplace">
+      <div class="blur"><div class="fireplace__flame_big"></div></div>
+      <section class="fireplace__log"></section>
+      <section class="fireplace__log"></section>
+      <section class="fireplace__log"></section>
+      <section class="fireplace__log"></section>
+      <section class="fireplace__log"></section>
+      <section class="fireplace__log"></section>
+      <section class="fireplace__log"></section>
+      <main class="fireplace__spark"></main>
+      <main class="fireplace__spark"></main>
+      <main class="fireplace__spark"></main>
+      <main class="fireplace__spark"></main>
+      <div class="blur fix"><div class="fireplace__flame"></div></div>
+      <div class="fireplace__light"></div>
+    </div>
   </div>
-  <!-- Fig 2: lewa dalej — z peleryną, spokojna -->
-  <div class="fig fig2">
-    <svg width="70" height="88" viewBox="0 0 70 88">
-      <path d="M20,86 Q12,64 14,44 Q12,28 20,18 Q25,10 35,8 Q45,10 50,18 Q58,28 56,46 Q58,64 56,86Z" fill="#120425"/>
-      <ellipse cx="35" cy="7" rx="12" ry="13" fill="#120425"/>
-      <!-- kaptur -->
-      <path d="M23,14 Q20,2 28,-2 Q35,-5 42,2 Q48,8 46,18Z" fill="#120425"/>
-      <!-- peleryna lewa -->
-      <path d="M14,46 Q2,54 0,70 Q10,65 16,56Z" fill="#120425"/>
-      <!-- peleryna prawa -->
-      <path d="M56,46 Q68,55 70,72 Q60,66 54,56Z" fill="#120425"/>
-    </svg>
-  </div>
-  <!-- Fig 3: prawa blisko — ręce uniesione, w ekstazie -->
-  <div class="fig fig3">
-    <svg width="90" height="120" viewBox="0 0 90 120">
-      <path d="M28,112 Q20,88 22,64 Q20,46 28,34 Q34,22 45,20 Q56,18 62,28 Q70,40 66,60 Q68,80 66,112Z" fill="#1a0835"/>
-      <ellipse cx="45" cy="18" rx="14" ry="15" fill="#1a0835"/>
-      <!-- ręka lewa uniesiona — animowana -->
-      <g style="transform-origin:28px 60px;animation:arms 2s ease-in-out infinite;">
-        <path d="M28,60 Q14,42 6,26" fill="none" stroke="#1a0835" stroke-width="10" stroke-linecap="round"/>
-        <circle cx="4" cy="22" r="8" fill="#1a0835"/>
-      </g>
-      <!-- ręka prawa uniesiona -->
-      <g style="transform-origin:66px 60px;animation:arms 2s ease-in-out infinite .55s;">
-        <path d="M66,60 Q80,42 86,26" fill="none" stroke="#1a0835" stroke-width="10" stroke-linecap="round"/>
-        <circle cx="88" cy="22" r="8" fill="#1a0835"/>
-      </g>
-      <path d="M28,112 Q18,120 7,116 Q16,108 27,106Z" fill="#1a0835"/>
-      <path d="M66,112 Q76,120 86,115 Q77,107 66,106Z" fill="#1a0835"/>
-    </svg>
-  </div>
+
+
+
   <!-- Fig 4: prawa dalej — patrzy w ogień, ręka na kolanie -->
   <div class="fig fig4">
     <svg width="72" height="96" viewBox="0 0 72 96">
@@ -244,7 +258,7 @@
       <path d="M58,94 Q68,100 72,95 Q64,88 58,88Z" fill="#120425"/>
     </svg>
   </div>
-  <div style="display:flex;flex:1;flex-direction:column;justify-content:flex-start;align-items:center;padding:12px 24px 16px;position:relative;z-index:3;">
+  <div style="display:flex;flex:1;flex-direction:column;justify-content:flex-start;align-items:center;padding:32px 24px 16px;position:relative;z-index:10;">
     <div class="fire-title">
       <h1>✦ Iskierka</h1>
       <p>Twoja przestrzeń. Tylko Twoja.</p>
@@ -407,81 +421,15 @@ window.addEventListener('DOMContentLoaded',function(){
   buildJarGrid();buildColorRow();if(S.apiKey)document.getElementById('api-inp').value=S.apiKey;route();});
 
 function buildFireStars(){
-  var c=document.getElementById('fire-bg');
-  if(!c) return;
-  var W=window.innerWidth, H=window.innerHeight;
-  c.width=W; c.height=H;
-  var ctx=c.getContext('2d');
-  var particles=[], MAX=260;
-  var CX=W/2, FY=H*0.85;
-  function rnd(a,b){return a+Math.random()*(b-a);}
-  function spawn(){
-    var lm=rnd(90,200);
-    return {x:CX+rnd(-20,20),y:FY,vx:rnd(-0.9,0.9),vy:rnd(-3.8,-1.2),life:lm,lifeMax:lm,size:rnd(2,7.5),spark:Math.random()>.68};
+  var c=document.getElementById('fire-canvas'); if(!c) return;
+  var cols=['#ffe8a0','#ffd070','#ffffff','#ffe8a0','#ffffff'];
+  for(var i=0;i<65;i++){
+    var s=document.createElement('div'); s.className='fstar';
+    var sz=Math.random()*2.5+.5;
+    var col=cols[Math.floor(Math.random()*cols.length)];
+    s.style.cssText='width:'+sz+'px;height:'+sz+'px;background:'+col+';left:'+Math.random()*100+'%;top:'+(Math.random()*58)+'%;--d:'+(2+Math.random()*3.5)+'s;--dl:'+Math.random()*3+'s;opacity:'+(Math.random()*.7+.2)+';';
+    c.appendChild(s);
   }
-  for(var i=0;i<MAX;i++){var p=spawn();p.life=Math.random()*p.lifeMax;particles.push(p);}
-  function col(p){
-    var t=p.life/p.lifeMax;
-    if(p.spark) return 'rgba(255,'+(200+Math.floor(t*55))+','+Math.floor(t*60)+','+(t*.9+.1)+')';
-    if(t>.7) return 'rgba(255,240,'+Math.floor((t-.7)/.3*160)+','+(t*.85)+')';
-    if(t>.4) return 'rgba(255,'+Math.floor((t-.4)/.3*160+60)+',0,'+(t*.75)+')';
-    return 'rgba('+Math.floor(t/.4*180+55)+',0,0,'+(t*.5)+')';
-  }
-  var tt=0;
-  function frame(){
-    ctx.clearRect(0,0,W,H);
-    var sky=ctx.createRadialGradient(CX,H*.3,0,CX,H*.5,H*.75);
-    sky.addColorStop(0,'#3d1870');sky.addColorStop(.45,'#1e0840');sky.addColorStop(1,'#0a0218');
-    ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
-    // stars
-    [[.08,.06,1.8],[.19,.04,1.2],[.29,.1,2.2],[.38,.03,1.6],[.47,.02,2],[.57,.08,1.4],[.66,.04,2.8],[.76,.09,1.6],[.88,.06,2.2],[.95,.1,1.4],[.13,.16,1.4],[.23,.2,1.8],[.44,.18,1.2],[.55,.14,1.8],[.72,.18,1.2],[.83,.15,1.6],[.06,.12,1],[.35,.08,1.2],[.62,.13,1],[.91,.17,1.4]].forEach(function(s,i){
-      ctx.globalAlpha=(.55+.45*Math.sin(tt*1.8+i*1.3));
-      ctx.fillStyle='#ffe8a0';ctx.beginPath();ctx.arc(s[0]*W,s[1]*H,s[2],0,Math.PI*2);ctx.fill();
-    });
-    // horizon glow
-    var hg=ctx.createRadialGradient(CX,FY,0,CX,FY,W*.6);
-    hg.addColorStop(0,'rgba(255,110,20,'+(0.5+.12*Math.sin(tt))+')');
-    hg.addColorStop(.45,'rgba(255,60,0,.22)');hg.addColorStop(1,'rgba(255,30,0,0)');
-    ctx.fillStyle=hg;ctx.fillRect(0,0,W,H);
-    // ground
-    var grd=ctx.createLinearGradient(0,FY,0,H);
-    grd.addColorStop(0,'rgba(22,8,40,0)');grd.addColorStop(.3,'#160828');grd.addColorStop(1,'#0a0218');
-    ctx.fillStyle=grd;ctx.fillRect(0,FY,W,H-FY);
-    // horizon line
-    ctx.globalAlpha=.65+.12*Math.sin(tt*1.5);
-    var hl=ctx.createLinearGradient(0,0,W,0);
-    hl.addColorStop(0,'rgba(255,140,40,0)');hl.addColorStop(.3,'rgba(255,140,40,.7)');hl.addColorStop(.5,'rgba(255,100,20,.95)');hl.addColorStop(.7,'rgba(255,140,40,.7)');hl.addColorStop(1,'rgba(255,140,40,0)');
-    ctx.strokeStyle=hl;ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(0,FY);ctx.lineTo(W,FY);ctx.stroke();
-    // logs
-    ctx.globalAlpha=1;
-    [[CX-14,FY+8,38,7,-.22,'#3a1405'],[CX+14,FY+8,38,7,.22,'#2c1003'],[CX,FY+6,36,6,0,'#4a1e08']].forEach(function(l){
-      ctx.fillStyle=l[5];ctx.beginPath();ctx.ellipse(l[0],l[1],l[2],l[3],l[4],0,Math.PI*2);ctx.fill();
-    });
-    // particles
-    tt+=.008;
-    var turb=Math.sin(tt)*.45;
-    for(var i=particles.length-1;i>=0;i--){
-      var p=particles[i];p.life-=1;
-      if(p.life<=0){particles[i]=spawn();continue;}
-      p.vx+=turb*.02+rnd(-.015,.015);p.vy-=.02;p.vx*=.97;p.x+=p.vx;p.y+=p.vy;
-      var t=p.life/p.lifeMax;
-      var sz=p.size*(p.spark?t:Math.sin(t*Math.PI)*1.3+.15);
-      if(sz<.25)continue;
-      ctx.globalAlpha=p.spark?t*.92:Math.sin(t*Math.PI)*.78;
-      ctx.fillStyle=col(p);
-      // Dignified flame teardrop — no sparks
-      var hw=sz*.5, ht=sz*1.5;
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y-ht);
-      ctx.bezierCurveTo(p.x+hw*1.1, p.y-ht*.3, p.x+hw, p.y+ht*.35, p.x, p.y+ht*.4);
-      ctx.bezierCurveTo(p.x-hw, p.y+ht*.35, p.x-hw*1.1, p.y-ht*.3, p.x, p.y-ht);
-      ctx.fill();
-    }
-    ctx.globalAlpha=1;
-    while(particles.length<MAX)particles.push(spawn());
-    requestAnimationFrame(frame);
-  }
-  frame();
 }
 function route(){var h=new Date().getHours();if(h<6||h>=22){showSleep();return;}if(!S.nick||!S.birthYear){show('onboarding');return;}calcAge();showHome();}
 function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');document.getElementById('gear-btn').style.display=['onboarding','sleep'].includes(id)?'none':'block';}
