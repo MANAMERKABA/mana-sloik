@@ -112,37 +112,52 @@
     /* ═══ ONBOARDING SCREEN ═══ */
     #onboarding{
       background:radial-gradient(ellipse at 50% 110%,#3d1568 0%,#1e0840 40%,#0a0218 100%);
-      /* flex-direction:column + justify-content:flex-start — treść od góry */
+      flex-direction:column;
       justify-content:flex-start;
-      align-items:center;
+      align-items:stretch;
     }
+
+    /* Gwiazdy — pełny ekran za wszystkim */
     .fire-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
     .fstar{position:absolute;border-radius:50%;animation:ftwinkle var(--d,3s) ease-in-out infinite var(--dl,0s);}
     @keyframes ftwinkle{0%,100%{opacity:.1;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
 
-    /* Poświata i grunt — przesunięte wyżej */
+    /* Górna część — napis + karta */
+    .ob-top{
+      flex:0 0 auto;
+      display:flex;flex-direction:column;align-items:center;
+      padding:clamp(14px,5vh,52px) 20px 12px;
+      position:relative;z-index:10;
+    }
+
+    /* Dolna część — kontener ognia, rośnie do wypełnienia reszty */
+    .ob-fire{
+      flex:1;
+      position:relative;
+      overflow:hidden;
+      min-height:180px;
+    }
+
+    /* Wszystkie elementy ognia — absolutne względem .ob-fire */
     .hglow{
       position:absolute;
-      bottom:32%;   /* było 20% */
-      left:0;right:0;height:200px;
+      bottom:18%;left:0;right:0;height:200px;
       background:radial-gradient(ellipse at 50% 90%,rgba(255,140,40,.65) 0%,rgba(220,80,10,.25) 45%,transparent 75%);
       animation:hgp 3s ease-in-out infinite;
     }
     @keyframes hgp{0%,100%{opacity:.8}50%{opacity:1}}
-    .fground{position:absolute;bottom:0;left:0;right:0;height:28%;background:linear-gradient(to top,#130420,#1e0c32 60%,transparent);}
-
-    /* Horyzont — wyżej */
+    .fground{position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(to top,#130420,#1e0c32 60%,transparent);}
     .horizon-svg{
       position:absolute;
-      bottom:36%;   /* było 26% */
+      bottom:24%;
       left:0;width:100%;overflow:visible;pointer-events:none;
     }
 
-    /* OGNISKO — wyżej: bottom:22% zamiast 0 */
+    /* Ognisko — na dole kontenera ognia */
     .fireplace{
       width:220px;height:220px;
       position:absolute;
-      bottom:22%;
+      bottom:0;
       left:50%;transform:translateX(-50%);
       display:flex;justify-content:center;align-items:flex-end;
       z-index:2;
@@ -186,12 +201,10 @@
       z-index:10;
     }
 
-    /* Tytuł Iskierka — lekko poniżej safe area */
     .fire-title{
       position:relative;z-index:10;
       text-align:center;
       margin-bottom:10px;
-      padding-top:env(safe-area-inset-top,0px);
     }
     .fire-title h1{
       font-family:'Baloo 2',cursive;font-size:28px;font-weight:800;
@@ -242,36 +255,14 @@
   </div>
 </div>
 
-<!-- ONBOARDING — treść od góry, tło z ogniskiem w dolnej połowie -->
+<!-- ONBOARDING: góra=napis+karta, dół=ognisko — spójna kompozycja na każdym ekranie -->
 <div class="screen" id="onboarding">
-  <div class="fire-canvas" id="fire-canvas">
-    <div class="fground"></div>
-    <div class="hglow"></div>
-    <svg class="horizon-svg" height="18" viewBox="0 0 400 18" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,10 C40,4 80,14 120,8 C160,2 200,12 240,7 C280,2 320,11 360,6 C380,4 390,8 400,6 L400,18 L0,18Z" fill="#1e0c32"/>
-      <path d="M0,10 C40,4 80,14 120,8 C160,2 200,12 240,7 C280,2 320,11 360,6 C380,4 390,8 400,6" fill="none" stroke="rgba(255,150,50,.6)" stroke-width="1.8"/>
-      <path d="M0,12 C40,7 80,16 120,10 C160,5 200,14 240,9 C280,4 320,13 360,8 C380,6 390,10 400,8" fill="none" stroke="rgba(255,100,20,.3)" stroke-width="1.2"/>
-    </svg>
-    <div class="fireplace">
-      <div class="blur"><div class="fireplace__flame_big"></div></div>
-      <section class="fireplace__log"></section>
-      <section class="fireplace__log"></section>
-      <section class="fireplace__log"></section>
-      <section class="fireplace__log"></section>
-      <section class="fireplace__log"></section>
-      <section class="fireplace__log"></section>
-      <section class="fireplace__log"></section>
-      <main class="fireplace__spark"></main>
-      <main class="fireplace__spark"></main>
-      <main class="fireplace__spark"></main>
-      <main class="fireplace__spark"></main>
-      <div class="blur fix"><div class="fireplace__flame"></div></div>
-      <div class="fireplace__light"></div>
-    </div>
-  </div>
 
-  <!-- Napis i karta — od samej góry ekranu (tylko safe-area padding) -->
-  <div style="display:flex;flex-direction:column;align-items:center;width:100%;position:relative;z-index:10;padding:60px 20px 20px;">
+  <!-- Gwiazdy pełnoekranowe w tle -->
+  <div class="fire-canvas" id="fire-canvas"></div>
+
+  <!-- GÓRA: napis + karta -->
+  <div class="ob-top">
     <div class="fire-title">
       <h1>✦ Iskierka</h1>
       <p>Twoja przestrzeń. Tylko Twoja.</p>
@@ -297,6 +288,34 @@
       </div>
     </div>
   </div>
+
+  <!-- DÓŁ: kontener ognia — wypełnia resztę ekranu -->
+  <div class="ob-fire">
+    <div class="fground"></div>
+    <div class="hglow"></div>
+    <svg class="horizon-svg" height="18" viewBox="0 0 400 18" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,10 C40,4 80,14 120,8 C160,2 200,12 240,7 C280,2 320,11 360,6 C380,4 390,8 400,6 L400,18 L0,18Z" fill="#1e0c32"/>
+      <path d="M0,10 C40,4 80,14 120,8 C160,2 200,12 240,7 C280,2 320,11 360,6 C380,4 390,8 400,6" fill="none" stroke="rgba(255,150,50,.6)" stroke-width="1.8"/>
+      <path d="M0,12 C40,7 80,16 120,10 C160,5 200,14 240,9 C280,4 320,13 360,8 C380,6 390,10 400,8" fill="none" stroke="rgba(255,100,20,.3)" stroke-width="1.2"/>
+    </svg>
+    <div class="fireplace">
+      <div class="blur"><div class="fireplace__flame_big"></div></div>
+      <section class="fireplace__log"></section>
+      <section class="fireplace__log"></section>
+      <section class="fireplace__log"></section>
+      <section class="fireplace__log"></section>
+      <section class="fireplace__log"></section>
+      <section class="fireplace__log"></section>
+      <section class="fireplace__log"></section>
+      <main class="fireplace__spark"></main>
+      <main class="fireplace__spark"></main>
+      <main class="fireplace__spark"></main>
+      <main class="fireplace__spark"></main>
+      <div class="blur fix"><div class="fireplace__flame"></div></div>
+      <div class="fireplace__light"></div>
+    </div>
+  </div>
+
 </div>
 
 <div class="screen" id="home">
