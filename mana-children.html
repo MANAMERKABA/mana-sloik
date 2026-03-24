@@ -300,7 +300,9 @@
             <path d="M28,50 Q20,60 18,90 L18,155 Q18,168 30,168 L110,168 Q122,168 122,155 L122,90 Q120,60 112,50 Z" fill="rgba(100,120,200,.12)" stroke="rgba(140,160,240,.4)" stroke-width="2"/>
             <!-- Fill -->
             <rect id="jar-fill-rect" x="18" y="168" width="104" height="0" clip-path="url(#jar-clip)" fill="rgba(100,120,220,.25)" rx="0"/>
-            <!-- Lid -->
+            <!-- Colored notes inside jar -->
+            <g id="jar-notes" clip-path="url(#jar-clip)"></g>
+            <!-- Lid (on top of notes) -->
             <rect x="24" y="38" width="92" height="16" rx="8" fill="rgba(140,160,240,.35)" stroke="rgba(140,160,240,.5)" stroke-width="1.5"/>
             <rect x="50" y="28" width="40" height="14" rx="7" fill="rgba(140,160,240,.25)" stroke="rgba(140,160,240,.4)" stroke-width="1.5"/>
             <!-- Shine -->
@@ -628,15 +630,36 @@ function snAddAnother() {
 }
 
 function renderJar() {
-  const total = S.snItems.length;
   const maxFill = 7;
-  const pct = Math.min(total % maxFill / maxFill, 1);
-  const fillH = Math.round(118 * pct); // jar inner height ~118px
+  const cycleItems = S.snItems.slice(-maxFill);
+  const pct = Math.min(cycleItems.length / maxFill, 1);
+  const fillH = Math.round(118 * pct);
   const rect = document.getElementById('jar-fill-rect');
   if (rect) {
     rect.setAttribute('y', 168 - fillH);
     rect.setAttribute('height', fillH);
   }
+  const notesGroup = document.getElementById('jar-notes');
+  if (!notesGroup) return;
+  notesGroup.innerHTML = '';
+  const positions = [
+    {x:55,y:155},{x:35,y:148},{x:80,y:150},
+    {x:45,y:135},{x:75,y:133},{x:60,y:122},
+    {x:40,y:112}
+  ];
+  cycleItems.forEach(function(item, i) {
+    if (i >= positions.length) return;
+    var p = positions[i];
+    var r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('x', p.x - 13);
+    r.setAttribute('y', p.y - 7);
+    r.setAttribute('width', '26');
+    r.setAttribute('height', '14');
+    r.setAttribute('rx', '4');
+    r.setAttribute('fill', item.color);
+    r.setAttribute('opacity', '0.9');
+    notesGroup.appendChild(r);
+  });
 }
 
 function flyToJar(text, color) {
@@ -865,26 +888,16 @@ function heuristicEval(text) {
 }
 
 function revealNextTile() {
-  // Find first unrevealed tile
-  const idx = S.ddTiles.indexOf(false);
+  var idx = S.ddTiles.indexOf(false);
   if (idx === -1) {
-    // All revealed — reset
     S.ddTiles = Array(16).fill(false);
     S.ddPuzzleSet = (S.ddPuzzleSet + 1) % 3;
+    idx = 0;
   }
-  const targetIdx = idx === -1 ? 0 : idx;
-  S.ddTiles[targetIdx] = true;
+  S.ddTiles[idx] = true;
   saveState();
-  
-  // Animate
-  const tile = document.getElementById(`ptile-${targetIdx}`);
-  if (tile) {
-    tile.classList.add('revealing');
-    setTimeout(() => {
-      tile.classList.remove('revealing');
-      tile.classList.add('revealed');
-    }, 700);
-  }
+  // Store which tile was just revealed for highlight on return
+  S._lastRevealedTile = idx;
 }
 
 function ddAfterSerce() {
@@ -893,6 +906,17 @@ function ddAfterSerce() {
   document.getElementById('dd-text').value = '';
   renderPuzzle();
   updateDDUI();
+  // Highlight newly revealed tile
+  if (S._lastRevealedTile !== undefined && S.lastThoughtValid) {
+    var tile = document.getElementById('ptile-' + S._lastRevealedTile);
+    if (tile) {
+      tile.style.boxShadow = '0 0 0 3px #f6a825, 0 0 16px rgba(246,168,37,.5)';
+      setTimeout(function() {
+        if (tile) tile.style.boxShadow = '';
+      }, 1500);
+    }
+    S._lastRevealedTile = undefined;
+  }
 }
 
 // ============================================================
