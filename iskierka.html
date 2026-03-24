@@ -324,7 +324,77 @@ function snDone(){goHome();}
 function snMore(){rstSN();document.getElementById('sn1').classList.add('active');document.getElementById('sn-txt').value='';setTimeout(function(){document.getElementById('sn-txt').focus();},100);}
 function renderJar(){var max=7,items=S.snItems.slice(-max),pct=Math.min(items.length/max,1),fillH=Math.round(120*pct);var fr=document.getElementById('jfill');if(fr){fr.setAttribute('y',164-fillH);fr.setAttribute('height',fillH);}var ng=document.getElementById('jnotes');if(ng){ng.innerHTML='';var pos=[{x:65,y:155},{x:38,y:148},{x:92,y:150},{x:50,y:135},{x:82,y:133},{x:65,y:120},{x:40,y:110}];items.forEach(function(item,i){if(i>=pos.length)return;var p=pos[i];var r=document.createElementNS('http://www.w3.org/2000/svg','rect');r.setAttribute('x',p.x-14);r.setAttribute('y',p.y-8);r.setAttribute('width','28');r.setAttribute('height','16');r.setAttribute('rx','5');r.setAttribute('fill',item.color);r.setAttribute('opacity','1');ng.appendChild(r);var sh=document.createElementNS('http://www.w3.org/2000/svg','rect');sh.setAttribute('x',p.x-11);sh.setAttribute('y',p.y-6);sh.setAttribute('width','11');sh.setAttribute('height','4');sh.setAttribute('rx','2');sh.setAttribute('fill','rgba(255,255,255,.4)');ng.appendChild(sh);});}var jc=document.getElementById('jar-char');if(jc){jc.innerHTML='';if(S.jarType!=='classic'){var jar=JARS.find(function(j){return j.id===S.jarType;});if(jar){var t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x','70');t.setAttribute('y','100');t.setAttribute('text-anchor','middle');t.setAttribute('font-size','24');t.setAttribute('opacity','0.2');t.textContent=jar.emoji;jc.appendChild(t);}}}}
 function flyNote(txt,color){var n=document.getElementById('fly-note');if(!n)return;n.style.cssText='background:'+color+';box-shadow:0 4px 18px '+color+'99;width:82px;height:46px;left:50%;top:15%;transform:translateX(-50%);border-radius:8px;opacity:1;transition:none;position:fixed;z-index:1000;pointer-events:none;font-size:11px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:4px;text-align:center;';n.textContent=txt.length>10?txt.slice(0,10)+'…':txt;setTimeout(function(){n.style.transition='all 1s cubic-bezier(.4,0,.2,1)';n.style.top='47%';n.style.opacity='0';n.style.transform='translateX(-50%) scale(.2)';},60);setTimeout(function(){n.style.cssText='opacity:0;position:fixed;';},1100);}
-function doRitual(type){document.getElementById('ritual-ov').classList.remove('open');if(type==='keep'){flash();return;}var jw=document.getElementById('jar-wrap');jw.style.animation=(type==='burn'?'burnOut':'buryAnim')+' .85s forwards';setTimeout(function(){S.snItems=[];saveS();jw.style.animation='';renderJar();flash();},900);}
+function doRitual(type){
+  document.getElementById('ritual-ov').classList.remove('open');
+  if(type==='keep'){flash();return;}
+
+  var items=S.snItems.slice(-7);
+  if(items.length===0){S.snItems=[];saveS();renderJar();flash();return;}
+
+  // Show fullscreen ritual animation overlay
+  var ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;';
+  ov.style.background=type==='burn'?'rgba(20,5,0,.92)':'rgba(5,15,5,.92)';
+  document.body.appendChild(ov);
+
+  // Emoji backdrop
+  var emoji=document.createElement('div');
+  emoji.style.cssText='font-size:80px;margin-bottom:16px;animation:float 1.5s ease-in-out infinite;';
+  emoji.textContent=type==='burn'?'🔥':'🌱';
+  ov.appendChild(emoji);
+
+  var msg=document.createElement('div');
+  msg.style.cssText='color:rgba(255,255,255,.7);font-family:Nunito,sans-serif;font-size:16px;font-weight:600;margin-bottom:32px;';
+  msg.textContent=type==='burn'?'Wszystko co było — idzie w ogień...':'Wracają do ziemi...';
+  ov.appendChild(msg);
+
+  // Animate notes flying out one by one
+  var delay=0;
+  items.forEach(function(item,i){
+    setTimeout(function(){
+      var note=document.createElement('div');
+      var startX=(Math.random()*120-60);
+      note.style.cssText='position:fixed;width:52px;height:28px;border-radius:6px;background:'+item.color+';'
+        +'box-shadow:0 4px 16px '+item.color+'88;'
+        +'font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:3px;text-align:center;'
+        +'left:calc(50% + '+startX+'px);'
+        +(type==='burn'?'bottom:45%;':'top:45%;')
+        +'transform:translateX(-50%);'
+        +'transition:none;z-index:501;pointer-events:none;';
+      note.textContent=item.text.slice(0,8)+(item.text.length>8?'…':'');
+      document.body.appendChild(note);
+
+      setTimeout(function(){
+        if(type==='burn'){
+          note.style.transition='all 1s cubic-bezier(.4,0,.8,1)';
+          note.style.bottom='52%';
+          note.style.opacity='0';
+          note.style.transform='translateX(-50%) scale(.1) rotate('+(Math.random()*60-30)+'deg)';
+          note.style.filter='brightness(3)';
+        } else {
+          note.style.transition='all 1.1s cubic-bezier(.2,.8,.4,1)';
+          note.style.top='80%';
+          note.style.opacity='0';
+          note.style.transform='translateX(-50%) scale(.3) rotate('+(Math.random()*30-15)+'deg)';
+        }
+        setTimeout(function(){note.remove();},1200);
+      },80);
+    },delay);
+    delay+=220;
+  });
+
+  // After all notes gone — clear and close
+  setTimeout(function(){
+    // Flash effect
+    ov.style.transition='opacity .6s';
+    ov.style.opacity='0';
+    setTimeout(function(){
+      ov.remove();
+      S.snItems=[];saveS();renderJar();
+      flash();
+    },600);
+  },delay+600);
+}
 function openDD(){var today=todayStr();if(S.ddDate!==today){S.ddDone=0;S.ddDate=today;saveS();}initTiles();renderPuzzle();updateDDUI();rstDD();document.getElementById('dd1').classList.add('active');show('dd');}
 function rstDD(){document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.remove('active');}
 function initTiles(){var tot=totalTiles();if(!S.ddTiles||S.ddTiles.length!==tot){S.ddTiles=Array(tot).fill(false);S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));saveS();}}
