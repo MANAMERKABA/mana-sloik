@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f0f1e">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Iskierka</title>
+  <title>Magic Jar</title>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{--nb:#1a0f2e;--nc:#2a1f42;--na:#f0c060;--ns:#c4a0e8;--nt:#f0eafa;--nu:#a090c0;--db:#fff9f2;--da:#f6a825;--dt:#2a2640;--du:#8a86a6;--r:22px;--rs:14px;}
@@ -250,7 +250,7 @@
   <div style="position:relative;z-index:1;text-align:center;padding:40px 32px;">
     <div style="font-size:72px;animation:float 4s ease-in-out infinite;">🌙</div>
     <h1 id="sleep-h" style="font-size:26px;margin:20px 0 10px;">Dobranoc</h1>
-    <p id="sleep-p" style="color:var(--nu);font-size:15px;line-height:1.6;">Iskierka czeka na Ciebie jutro.</p>
+    <p id="sleep-p" style="color:var(--nu);font-size:15px;line-height:1.6;">Magic Jar czeka na Ciebie jutro.</p>
     <p style="color:var(--nu);font-size:13px;margin-top:8px;">Aplikacja czynna 6:00 – 22:00.</p>
   </div>
 </div>
@@ -264,7 +264,7 @@
   <!-- GÓRA: napis + karta -->
   <div class="ob-top">
     <div class="fire-title">
-      <h1>✦ Iskierka</h1>
+      <h1>✦ Magic Jar</h1>
       <p>Twoja przestrzeń. Tylko Twoja.</p>
     </div>
     <div class="ob-card">
@@ -322,6 +322,7 @@
   <div class="home-inner">
     <div class="home-greet" id="h-greet"></div>
     <h1 class="home-name" id="h-name"></h1>
+    <div id="cosmic-bar" style="font-size:12px;margin-bottom:20px;letter-spacing:0.04em;"></div>
     <div class="mod-card card-sn" onclick="openSN()">
       <span class="ico">🌙</span>
       <h2>Spokojna Noc</h2>
@@ -432,10 +433,97 @@ function loadS(){['mana_children_state','iskierka_v2'].forEach(function(k){if(lo
 function saveS(){localStorage.setItem('iskierka_v3',JSON.stringify(S));}
 window.addEventListener('DOMContentLoaded',function(){loadS();mkStars('sleep-stars',60);mkStars('sn-stars',90);buildFireStars();buildJarGrid();buildColorRow();if(S.apiKey)document.getElementById('api-inp').value=S.apiKey;route();});
 function buildFireStars(){var c=document.getElementById('fire-canvas');if(!c)return;var cols=['#ffe8a0','#ffd070','#ffffff','#ffe8a0','#ffffff'];for(var i=0;i<65;i++){var s=document.createElement('div');s.className='fstar';var sz=Math.random()*2.5+.5;var col=cols[Math.floor(Math.random()*cols.length)];s.style.cssText='width:'+sz+'px;height:'+sz+'px;background:'+col+';left:'+Math.random()*100+'%;top:'+(Math.random()*55)+'%;--d:'+(2+Math.random()*3.5)+'s;--dl:'+Math.random()*3+'s;opacity:'+(Math.random()*.7+.2)+';';c.appendChild(s);}}
-function route(){var h=new Date().getHours();if(!S.nick||!S.birthYear){show('onboarding');return;}calcAge();showHome();}
+function route(){
+  var h=new Date().getHours();
+  if(!S.nick||!S.birthYear){show('onboarding');return;}
+  calcAge();
+  var age=S.birthYear?new Date().getFullYear()-S.birthYear:99;
+  if(age<=13&&(h<6||h>=22)){showSleep();return;}  // 6-13 lat: blokada 22:00-6:00
+  if(age<=15&&h<6){showSleep();return;}            // 14-15 lat: blokada 0:00-6:00
+  // 16+ brak blokady
+  showHome();
+}
 function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');document.getElementById('gear-btn').style.display=['onboarding','sleep'].includes(id)?'none':'block';}
-function showSleep(){var n=S.nick||'';document.getElementById('sleep-h').textContent=n?'Dobranoc, '+n+' 🌙':'Dobranoc 🌙';show('sleep');}
-function showHome(){calcAge();var h=new Date().getHours();var g=h>=20?'Dobranoc':h>=17?'Dobry wieczór':'Dzień dobry';document.getElementById('h-greet').textContent=g;document.getElementById('h-name').textContent=(S.nick||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';show('home');}
+function showSleep(){
+  var n=S.nick||'';
+  var h=new Date().getHours();
+  var msg = h>=22 ? 'Dobranoc' : 'Za wcześnie';
+  var sub = h>=22
+    ? 'Magic Jar czeka na Ciebie jutro. Aplikacja czynna 6:00–22:00.'
+    : 'Magic Jar budzi się o 6:00. Do zobaczenia!';
+  document.getElementById('sleep-h').textContent=n ? msg+', '+n+' 🌙' : msg+' 🌙';
+  document.getElementById('sleep-p').textContent=sub;
+  show('sleep');
+}
+function timeGreeting(h){
+  if(h>=5&&h<9)  return  'Dzień się zaczyna';
+  if(h>=9&&h<12) return  'Dobry ranek';
+  if(h>=12&&h<14)return  'Dobrego dnia';
+  if(h>=14&&h<17)return  'Piękne popołudnie';
+  if(h>=17&&h<20)return  'Dobry wieczór';
+  if(h>=20&&h<22)return  'Dobranoc';
+  return 'Dobranoc';
+}
+function showHome(){calcAge();var h=new Date().getHours();var g=timeGreeting(h);document.getElementById('h-greet').textContent=g;document.getElementById('h-name').textContent=(S.nick||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';renderCosmicBar();show('home');}
+
+function moonPhase(date){
+  var known=new Date(2000,0,6);// nów 6 sty 2000
+  var diff=(date-known)/(1000*60*60*24);
+  var cycle=diff%29.53059;
+  if(cycle<0)cycle+=29.53059;
+  return cycle;
+}
+function moonEmoji(date){
+  var c=moonPhase(date);
+  if(c<1.85)return{e:'🌑',n:'Nów'};
+  if(c<7.38)return{e:'🌒',n:'Przybywający sierp'};
+  if(c<11.07)return{e:'🌓',n:'Pierwsza kwadra'};
+  if(c<14.77)return{e:'🌔',n:'Przybywający garb'};
+  if(c<18.46)return{e:'🌕',n:'Pełnia'};
+  if(c<22.15)return{e:'🌖',n:'Ubywający garb'};
+  if(c<25.84)return{e:'🌗',n:'Ostatnia kwadra'};
+  if(c<29.53)return{e:'🌘',n:'Ubywający sierp'};
+  return{e:'🌑',n:'Nów'};
+}
+function zodiacSign(date){
+  var m=date.getMonth()+1,d=date.getDate();
+  var signs=[
+    {s:'Koziorożec',e:'♑',el:'ziemia',from:[12,22],to:[1,19]},
+    {s:'Wodnik',e:'♒',el:'powietrze',from:[1,20],to:[2,18]},
+    {s:'Ryby',e:'♓',el:'woda',from:[2,19],to:[3,20]},
+    {s:'Baran',e:'♈',el:'ogień',from:[3,21],to:[4,19]},
+    {s:'Byk',e:'♉',el:'ziemia',from:[4,20],to:[5,20]},
+    {s:'Bliźnięta',e:'♊',el:'powietrze',from:[5,21],to:[6,20]},
+    {s:'Rak',e:'♋',el:'woda',from:[6,21],to:[7,22]},
+    {s:'Lew',e:'♌',el:'ogień',from:[7,23],to:[8,22]},
+    {s:'Panna',e:'♍',el:'ziemia',from:[8,23],to:[9,22]},
+    {s:'Waga',e:'♎',el:'powietrze',from:[9,23],to:[10,22]},
+    {s:'Skorpion',e:'♏',el:'woda',from:[10,23],to:[11,21]},
+    {s:'Strzelec',e:'♐',el:'ogień',from:[11,22],to:[12,21]}
+  ];
+  for(var i=0;i<signs.length;i++){
+    var sg=signs[i];
+    var fm=sg.from[0],fd=sg.from[1],tm=sg.to[0],td=sg.to[1];
+    if(fm<=tm){if((m===fm&&d>=fd)||(m===tm&&d<=td)||(m>fm&&m<tm))return sg;}
+    else{if((m===fm&&d>=fd)||m>fm||(m===tm&&d<=td)||m<tm)return sg;}
+  }
+  return signs[0];
+}
+function elementEmoji(el){
+  var map={ogień:'🜂',ziemia:'🜃',powietrze:'🜁',woda:'🜄'};
+  return map[el]||'';
+}
+function renderCosmicBar(){
+  var el=document.getElementById('cosmic-bar');
+  if(!el)return;
+  var now=new Date();
+  var moon=moonEmoji(now);
+  var zod=zodiacSign(now);
+  var h=now.getHours();
+  var isNight=h>=18||h<6;
+  el.style.color=isNight?'rgba(240,234,250,0.55)':'rgba(107,92,69,0.6)';
+  el.innerHTML=moon.e+' <span title="'+moon.n+'">'+moon.n+'</span> &nbsp;·&nbsp; '+zod.e+' <span title="'+zod.s+'">'+zod.s+'</span> &nbsp;·&nbsp; '+elementEmoji(zod.el)+' <span title="'+zod.el+'">'+zod.el+'</span>';
+}
 function goHome(){rstSN();rstDD();showHome();}
 function mkStars(id,n){var c=document.getElementById(id);if(!c)return;for(var i=0;i<n;i++){var s=document.createElement('div');var gold=Math.random()>.65;s.className='star '+(gold?'star-g':'star-w');var sz=Math.random()*(gold?3:2)+.5;s.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;--d:'+(2+Math.random()*4)+'s;--del:'+Math.random()*4+'s;opacity:'+(Math.random()*.6+.12);c.appendChild(s);}}
 function calcAge(){if(!S.birthYear){S.ageGroup=4;return;}var age=new Date().getFullYear()-S.birthYear;S.ageGroup=age<=9?1:age<=13?2:age<=17?3:4;}
