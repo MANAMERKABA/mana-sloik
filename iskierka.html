@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f0f1e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Iskierka</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--nb:#0f0f1e;--nc:#1c1c32;--na:#e8c97a;--ns:#8baad6;--nt:#eae6f4;--nu:#9490b0;--db:#fff9f2;--da:#f6a825;--dt:#2a2640;--du:#8a86a6;--r:22px;--rs:14px;}
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;}
+    body{background:var(--nb);}
+    h1{font-family:'Baloo 2',cursive;font-weight:800;line-height:1.2;}
+    h2{font-family:'Baloo 2',cursive;font-weight:600;}
+    .screen{position:fixed;inset:0;display:none;flex-direction:column;overflow:hidden;padding-bottom:env(safe-area-inset-bottom);}
+    .screen.active{display:flex;}
+    .night{background:var(--nb);color:var(--nt);}
+    .day{background:var(--db);color:var(--dt);}
+    .stars-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+    .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) infinite var(--del,0s);}
+    @keyframes twinkle{0%,100%{opacity:.1}50%{opacity:.88}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    .btn{display:block;width:100%;padding:17px 24px;border:none;border-radius:var(--r);font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;cursor:pointer;transition:transform .15s;outline:none;text-align:center;margin-top:10px;}
+    .btn:active{transform:scale(.96);}
+    .btn-gold{background:var(--na);color:#1a1400;}
+    .btn-ghost{background:rgba(255,255,255,.09);color:var(--nt);border:1.5px solid rgba(255,255,255,.14);}
+    .btn-sun{background:var(--da);color:#fff;}
+    .inp-n{width:100%;background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.15);border-radius:var(--rs);padding:15px;color:var(--nt);font-family:'Nunito',sans-serif;font-size:17px;outline:none;resize:none;}
+    .inp-n:focus{border-color:var(--na);}
+    .inp-n::placeholder{color:var(--nu);}
+    .inp-d{width:100%;background:#fff;border:1.5px solid rgba(0,0,0,.1);border-radius:var(--rs);padding:15px;color:var(--dt);font-family:'Nunito',sans-serif;font-size:17px;outline:none;resize:none;}
+    .inp-d:focus{border-color:var(--da);}
+    .inp-d::placeholder{color:var(--du);}
+    .step{display:none;padding:20px 20px 48px;flex:1;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;max-width:480px;margin:0 auto;width:100%;}
+    .step.active{display:flex;}
+    .back{display:inline-flex;align-items:center;gap:6px;background:none;border:none;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;margin-bottom:14px;opacity:.6;}
+    .back:active{opacity:.4;}
+    .back-n{color:var(--nt);}
+    .back-d{color:var(--dt);}
+    #sleep{background:var(--nb);justify-content:center;align-items:center;text-align:center;}
+    #onboarding{background:var(--nb);justify-content:center;align-items:center;}
+    .ob-card{background:var(--nc);border-radius:var(--r);padding:28px 22px;width:calc(100% - 40px);max-width:380px;}
+    .ob-step{display:none;}
+    .ob-step.active{display:block;}
+    .ob-step h2{font-size:21px;color:var(--nt);margin-bottom:6px;}
+    .ob-step p{font-size:14px;color:var(--nu);margin-bottom:18px;line-height:1.5;}
+    .ob-inp{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.14);border-radius:var(--rs);padding:15px;color:var(--nt);font-family:'Nunito',sans-serif;font-size:20px;text-align:center;outline:none;margin-bottom:14px;}
+    .ob-inp:focus{border-color:var(--na);}
+    .jar-grid{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0 20px;}
+    .jar-opt{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding:10px 12px;border-radius:var(--rs);border:2px solid transparent;transition:all .15s;background:rgba(255,255,255,.05);}
+    .jar-opt.sel{border-color:var(--na);background:rgba(232,201,122,.14);}
+    .jar-opt span{font-size:34px;}
+    .jar-opt small{font-size:11px;color:var(--nu);font-weight:700;}
+    #home{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+    .home-inner{max-width:480px;margin:0 auto;padding:52px 20px 40px;width:100%;}
+    .home-greet{font-size:14px;font-weight:700;opacity:.6;margin-bottom:3px;}
+    .home-name{font-size:30px;margin-bottom:28px;}
+    .mod-card{border-radius:var(--r);padding:26px 22px;cursor:pointer;transition:transform .18s;position:relative;overflow:hidden;min-height:148px;display:flex;flex-direction:column;justify-content:flex-end;margin-bottom:16px;}
+    .mod-card:active{transform:scale(.97);}
+    .mod-card .ico{font-size:44px;display:block;margin-bottom:10px;}
+    .mod-card h2{font-size:22px;line-height:1.2;margin-bottom:3px;}
+    .mod-card p{font-size:13px;opacity:.8;}
+    .card-sn{background:linear-gradient(135deg,#1c1c3a,#2d2b5e);color:var(--nt);box-shadow:0 8px 32px rgba(20,20,70,.5);}
+    .card-sn::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Ccircle cx='15' cy='15' r='1' fill='white' opacity='.3'/%3E%3Ccircle cx='50' cy='10' r='1.5' fill='white' opacity='.4'/%3E%3Ccircle cx='70' cy='38' r='1' fill='white' opacity='.2'/%3E%3C/svg%3E") repeat;}
+    .card-dd{background:linear-gradient(135deg,#fff5e0,#fde8a0);color:var(--dt);box-shadow:0 8px 32px rgba(246,168,37,.25);}
+    .series-badge{position:absolute;top:14px;right:14px;background:var(--da);color:#fff;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;}
+    .color-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 16px;}
+    .cdot{width:44px;height:44px;border-radius:50%;cursor:pointer;transition:transform .15s,box-shadow .15s;border:3px solid transparent;flex-shrink:0;}
+    .cdot.sel{border-color:rgba(255,255,255,.95);transform:scale(1.15);}
+    .jar-wrap{position:relative;width:140px;height:178px;margin:0 auto;}
+    .fly-note{position:fixed;border-radius:8px;z-index:1000;pointer-events:none;font-size:11px;font-weight:700;color:#fff;padding:5px 10px;display:flex;align-items:center;justify-content:center;opacity:0;text-align:center;}
+    .ritual-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:150;flex-direction:column;justify-content:flex-end;padding:20px;}
+    .ritual-ov.open{display:flex;}
+    .ritual-card{background:var(--nc);border-radius:var(--r);padding:26px 22px;}
+    .ritual-card h2{color:var(--na);font-size:21px;margin-bottom:6px;}
+    .ritual-card p{color:var(--nu);font-size:14px;margin-bottom:20px;line-height:1.5;}
+    .ritual-opts{display:flex;flex-direction:column;gap:10px;}
+    .r-btn{padding:15px;border-radius:var(--rs);border:none;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;}
+    .r-keep{background:rgba(255,255,255,.09);color:var(--nt);}
+    .r-bury{background:rgba(139,90,43,.35);color:#d4aa78;}
+    .r-burn{background:rgba(192,57,43,.25);color:#e88070;}
+    @keyframes burnOut{to{opacity:0;transform:scale(.15) translateY(-100px) rotate(25deg)}}
+    @keyframes buryAnim{to{opacity:0;transform:translateY(120px)}}
+    #dd{padding:0;}
+    .pz-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:14px;}
+    .pz-container{position:relative;border-radius:14px;overflow:hidden;flex-shrink:0;box-shadow:0 8px 32px rgba(0,0,0,.2);transition:box-shadow .3s;}
+    .serce-bub{background:rgba(255,255,255,.94);border-radius:var(--rs);padding:16px;margin:10px 0;box-shadow:0 4px 16px rgba(0,0,0,.09);}
+    .serce-bub::before{content:'💛';font-size:18px;display:block;margin-bottom:6px;}
+    .serce-bub p{font-size:16px;color:var(--dt);line-height:1.5;}
+    .gear-btn{position:fixed;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;opacity:.4;z-index:100;display:none;}
+    .set-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;justify-content:center;align-items:flex-end;padding:16px;}
+    .set-ov.open{display:flex;}
+    .set-card{background:var(--nc);border-radius:var(--r) var(--r) 14px 14px;padding:26px 22px;width:100%;max-width:480px;}
+    .set-card h3{color:var(--nt);font-size:19px;margin-bottom:6px;}
+    .set-card p{color:var(--nu);font-size:13px;margin-bottom:14px;line-height:1.5;}
+    .set-inp{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.14);border-radius:var(--rs);padding:13px;color:var(--nt);font-family:monospace;font-size:13px;outline:none;margin-bottom:10px;}
+    .set-inp:focus{border-color:var(--na);}
+    .set-sep{border:none;border-top:1px solid rgba(255,255,255,.08);margin:16px 0;}
+    .set-danger{color:#e07060;font-size:14px;font-weight:700;background:rgba(192,57,43,.15);border:1.5px solid rgba(192,57,43,.25);border-radius:var(--rs);padding:13px;width:100%;font-family:'Nunito',sans-serif;cursor:pointer;margin-top:4px;}
+    .flash{position:fixed;inset:0;background:rgba(114,201,160,.18);z-index:500;pointer-events:none;animation:flashOut .6s forwards;}
+    @keyframes flashOut{to{opacity:0}}
+    ::-webkit-scrollbar{width:0;}
+  </style>
+</head>
+<body>
+<button class="gear-btn" id="gear-btn">⚙️</button>
+<div class="set-ov" id="set-ov">
+  <div class="set-card">
+    <h3>Ustawienia</h3>
+    <p>Klucz Anthropic API — Serce ocenia myśli. Przechowywany tylko na tym urządzeniu.</p>
+    <input class="set-inp" type="password" id="api-inp" placeholder="sk-ant-..." autocomplete="off">
+    <button class="btn btn-gold" onclick="saveKey()">Zapisz klucz</button>
+    <hr class="set-sep">
+    <button class="set-danger" onclick="switchUser()">🔄 Zmień użytkownika</button>
+    <button class="btn btn-ghost" onclick="closeSet()" style="margin-top:8px;">Zamknij</button>
+  </div>
+</div>
+<div class="ritual-ov" id="ritual-ov">
+  <div class="ritual-card">
+    <h2>Słoik jest pełny 🫙</h2>
+    <p>Twoje myśli mają swoje miejsce. Co chcesz z nimi zrobić?</p>
+    <div class="ritual-opts">
+      <button class="r-btn r-keep" onclick="doRitual('keep')">🫙 Zostaw — niech dalej czekają</button>
+      <button class="r-btn r-bury" onclick="doRitual('bury')">🌱 Zakop — zamknij ten rozdział</button>
+      <button class="r-btn r-burn" onclick="doRitual('burn')">🔥 Spal — uwolnij i zacznij od nowa</button>
+    </div>
+  </div>
+</div>
+<div class="screen night" id="sleep">
+  <div class="stars-bg" id="sleep-stars"></div>
+  <div style="position:relative;z-index:1;text-align:center;padding:40px 32px;">
+    <div style="font-size:72px;animation:float 4s ease-in-out infinite;">🌙</div>
+    <h1 id="sleep-h" style="font-size:26px;margin:20px 0 10px;">Dobranoc</h1>
+    <p id="sleep-p" style="color:var(--nu);font-size:15px;line-height:1.6;">Iskierka czeka na Ciebie jutro.</p>
+    <p style="color:var(--nu);font-size:13px;margin-top:8px;">Aplikacja czynna 6:00 – 22:00.</p>
+  </div>
+</div>
+<div class="screen night" id="onboarding">
+  <div style="display:flex;flex:1;justify-content:center;align-items:center;padding:24px;">
+    <div class="ob-card">
+      <div style="text-align:center;margin-bottom:22px;">
+        <div style="font-family:'Baloo 2',cursive;font-size:30px;font-weight:800;color:var(--na);">✨ Iskierka</div>
+        <div style="font-size:13px;color:var(--nu);margin-top:2px;">Twoja przestrzeń. Tylko Twoja.</div>
+      </div>
+      <div class="ob-step active" id="ob1">
+        <h2>Jak masz na imię?</h2>
+        <p>Tylko Twoje imię. Nikomu nie powiem.</p>
+        <input class="ob-inp" type="text" id="ob-name" placeholder="np. Gabrysia..." maxlength="20" autocorrect="off" autocapitalize="words">
+        <button class="btn btn-gold" onclick="obS1()">Dalej →</button>
+      </div>
+      <div class="ob-step" id="ob2">
+        <h2>W którym roku się urodziłeś/aś?</h2>
+        <p>Dopasuje Iskierkę do Ciebie.</p>
+        <input class="ob-inp" type="number" id="ob-year" placeholder="np. 1990" min="1950" max="2020" inputmode="numeric">
+        <button class="btn btn-gold" onclick="obS2()">Dalej →</button>
+      </div>
+      <div class="ob-step" id="ob3">
+        <h2>Wybierz swój słoik 🫙</h2>
+        <p>To Twoja osobista przestrzeń na myśli.</p>
+        <div class="jar-grid" id="jar-grid"></div>
+        <button class="btn btn-gold" onclick="obS3()">Zaczynamy! ✨</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="screen" id="home">
+  <div class="home-inner">
+    <div class="home-greet" id="h-greet"></div>
+    <h1 class="home-name" id="h-name"></h1>
+    <div class="mod-card card-sn" onclick="openSN()">
+      <span class="ico">🌙</span>
+      <h2>Spokojna Noc</h2>
+      <p>Wyrzuć myśl z głowy. Idź spać lżejszy.</p>
+    </div>
+    <div class="mod-card card-dd" onclick="openDD()">
+      <span class="ico">☀️</span>
+      <h2>Dobry Dzień</h2>
+      <p>Co było dziś dobre? Odkrywaj puzzle.</p>
+      <div class="series-badge" id="ser-badge" style="display:none;">🔥 <span id="ser-n">0</span> dni</div>
+    </div>
+  </div>
+</div>
+<div class="screen night" id="sn">
+  <div class="stars-bg" id="sn-stars"></div>
+  <div class="step" id="sn1" style="position:relative;z-index:1;">
+    <button class="back back-n" onclick="goHome()">← Wróć</button>
+    <h1 style="font-size:24px;margin-bottom:4px;">Spokojna Noc 🌙</h1>
+    <p style="color:var(--nu);font-size:14px;margin-bottom:18px;">Co chcesz dziś zostawić za sobą?</p>
+    <p style="font-size:13px;font-weight:700;color:var(--ns);margin-bottom:8px;">Kolor karteczki:</p>
+    <div class="color-row" id="color-row"></div>
+    <textarea class="inp-n" id="sn-txt" rows="5" placeholder="Napisz tu... cokolwiek. Tylko dla Ciebie."></textarea>
+    <button class="btn btn-gold" style="margin-top:16px;" onclick="snSubmit()">Wrzuć do słoika 🫙</button>
+  </div>
+  <div class="step" id="sn2" style="position:relative;z-index:1;">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
+      <p style="font-size:17px;font-weight:600;color:var(--ns);text-align:center;line-height:1.5;" id="sn-confirm"></p>
+      <div class="jar-wrap" id="jar-wrap">
+        <svg id="jar-svg" viewBox="0 0 140 178" xmlns="http://www.w3.org/2000/svg" width="140" height="178">
+          <defs>
+            <clipPath id="jclip">
+              <path d="M22,44 Q14,55 12,86 L12,150 Q12,164 27,164 L113,164 Q128,164 128,150 L128,86 Q126,55 118,44 Z"/>
+            </clipPath>
+          </defs>
+          <path d="M22,44 Q14,55 12,86 L12,150 Q12,164 27,164 L113,164 Q128,164 128,150 L128,86 Q126,55 118,44 Z" fill="rgba(160,180,255,.2)" stroke="rgba(180,200,255,.65)" stroke-width="2.5"/>
+          <rect id="jfill" x="12" y="164" width="116" height="0" clip-path="url(#jclip)" fill="rgba(130,150,255,.5)" rx="0"/>
+          <g id="jnotes" clip-path="url(#jclip)"></g>
+          <g id="jar-char"></g>
+          <path d="M26,60 Q23,98 23,132" stroke="rgba(255,255,255,.28)" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M32,56 Q30,80 30,100" stroke="rgba(255,255,255,.14)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <rect x="18" y="32" width="104" height="16" rx="8" fill="rgba(180,200,255,.45)" stroke="rgba(200,215,255,.65)" stroke-width="1.5"/>
+          <rect x="48" y="20" width="44" height="15" rx="7" fill="rgba(160,180,255,.32)" stroke="rgba(180,200,255,.55)" stroke-width="1.5"/>
+        </svg>
+        <div class="fly-note" id="fly-note"></div>
+      </div>
+      <button class="btn btn-gold" onclick="snDone()">Gotowe ✓</button>
+      <button class="btn btn-ghost" onclick="snMore()">Dodaj kolejną myśl</button>
+    </div>
+  </div>
+</div>
+<div class="screen day" id="dd">
+  <div class="step" id="dd1">
+    <button class="back back-d" onclick="goHome()">← Wróć</button>
+    <h1 style="font-size:24px;color:var(--dt);margin-bottom:3px;">Dobry Dzień ☀️</h1>
+    <p style="color:var(--du);font-size:14px;margin-bottom:14px;">Co było dziś naprawdę dobre?</p>
+    <div class="pz-wrap">
+      <div class="pz-container" id="pz-cont">
+        <svg id="pz-art" xmlns="http://www.w3.org/2000/svg" style="display:block;"></svg>
+        <svg id="pz-ov" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0;"></svg>
+      </div>
+      <p style="font-size:13px;color:var(--du);font-weight:600;" id="pz-prog"></p>
+    </div>
+    <div id="dd-input">
+      <p style="font-size:13px;color:var(--du);text-align:center;margin-bottom:8px;" id="dd-info"></p>
+      <textarea class="inp-d" id="dd-txt" rows="3" placeholder="np. Zjadłam lody z mamą..."></textarea>
+      <button class="btn btn-sun" style="margin-top:12px;" onclick="ddSubmit()">Wrzuć dobrą myśl ☀️</button>
+    </div>
+    <div id="dd-done-msg" style="display:none;text-align:center;padding:20px;background:rgba(246,168,37,.1);border-radius:var(--rs);margin-top:8px;">
+      <div style="font-size:30px;margin-bottom:8px;">🌟</div>
+      <p style="font-weight:700;color:var(--dt);">Na dziś koniec!</p>
+      <p style="font-size:13px;color:var(--du);margin-top:4px;">Wróć jutro po kolejny puzzle.</p>
+    </div>
+  </div>
+  <div class="step" id="dd2">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div id="dd-think" style="text-align:center;padding:32px 0;">
+        <div style="font-size:44px;animation:float 2s ease-in-out infinite;">💛</div>
+        <p style="color:var(--du);margin-top:12px;font-size:15px;">Serce słucha...</p>
+      </div>
+      <div id="dd-resp" style="display:none;">
+        <div class="serce-bub" id="dd-bub"></div>
+        <div id="dd-rev-msg" style="display:none;text-align:center;margin-top:14px;">
+          <div style="font-size:38px;">🧩</div>
+          <p style="font-weight:700;color:var(--dt);margin-top:6px;" id="dd-rev-txt">Puzzle odkryty!</p>
+        </div>
+        <div id="dd-inv-msg" style="display:none;text-align:center;margin-top:14px;">
+          <p style="color:var(--du);font-size:14px;">Spróbuj jeszcze raz z inną myślą.</p>
+        </div>
+        <button class="btn btn-sun" style="margin-top:20px;" onclick="ddBack()">Dobra ☀️</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+var JARS=[{id:'classic',emoji:'🫙',label:'Klasyczny'},{id:'heart',emoji:'❤️',label:'Serce'},{id:'balloon',emoji:'🎈',label:'Balonik'},{id:'star',emoji:'⭐',label:'Gwiazda'},{id:'moon',emoji:'🌙',label:'Księżyc'}];
+var COLORS=['#ff6b9d','#ff9f43','#ffd32a','#0be881','#48dbfb','#c56cf0'];
+var S={nick:'',birthYear:0,ageGroup:0,jarType:'classic',snColor:'#ff9f43',snItems:[],ddTiles:[],ddOrder:[],ddDone:0,ddDate:'',ddSeries:0,ddLastDate:'',ddSet:0,apiKey:'',_lastTile:-1,lastValid:true};
+function loadS(){try{var d=localStorage.getItem('iskierka_v3');if(d)Object.assign(S,JSON.parse(d));}catch(e){}S.apiKey=localStorage.getItem('iskierka_key')||'';}
+function saveS(){localStorage.setItem('iskierka_v3',JSON.stringify(S));}
+window.addEventListener('DOMContentLoaded',function(){loadS();mkStars('sleep-stars',60);mkStars('sn-stars',90);buildJarGrid();buildColorRow();if(S.apiKey)document.getElementById('api-inp').value=S.apiKey;route();});
+function route(){var h=new Date().getHours();if(h<6||h>=22){showSleep();return;}if(!S.nick||!S.birthYear){show('onboarding');return;}calcAge();showHome();}
+function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');document.getElementById('gear-btn').style.display=['onboarding','sleep'].includes(id)?'none':'block';}
+function showSleep(){var n=S.nick||'';document.getElementById('sleep-h').textContent=n?'Dobranoc, '+n+' 🌙':'Dobranoc 🌙';show('sleep');}
+function showHome(){calcAge();var h=new Date().getHours();var g=h>=20?'Dobranoc':h>=17?'Dobry wieczór':'Dzień dobry';document.getElementById('h-greet').textContent=g;document.getElementById('h-name').textContent=(S.nick||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';show('home');}
+function goHome(){rstSN();rstDD();showHome();}
+function mkStars(id,n){var c=document.getElementById(id);if(!c)return;for(var i=0;i<n;i++){var s=document.createElement('div');s.className='star';var sz=Math.random()*2.5+.4;s.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;--d:'+(2+Math.random()*4)+'s;--del:'+Math.random()*4+'s;opacity:'+(Math.random()*.55+.1);c.appendChild(s);}}
+function calcAge(){if(!S.birthYear){S.ageGroup=4;return;}var age=new Date().getFullYear()-S.birthYear;S.ageGroup=age<=9?1:age<=13?2:age<=17?3:4;}
+function gridN(){return S.ageGroup===1?3:S.ageGroup===3?5:4;}
+function maxDaily(){return S.ageGroup===3?4:3;}
+function totalTiles(){var g=gridN();return g*g;}
+function buildJarGrid(){var g=document.getElementById('jar-grid');g.innerHTML='';JARS.forEach(function(j){var d=document.createElement('div');d.className='jar-opt'+(S.jarType===j.id?' sel':'');d.innerHTML='<span>'+j.emoji+'</span><small>'+j.label+'</small>';d.onclick=function(){S.jarType=j.id;document.querySelectorAll('.jar-opt').forEach(function(x){x.classList.remove('sel');});d.classList.add('sel');};g.appendChild(d);});}
+function obS1(){var n=document.getElementById('ob-name').value.trim();if(!n){document.getElementById('ob-name').focus();return;}S.nick=n.charAt(0).toUpperCase()+n.slice(1);document.getElementById('ob1').classList.remove('active');document.getElementById('ob2').classList.add('active');setTimeout(function(){document.getElementById('ob-year').focus();},100);}
+function obS2(){var y=parseInt(document.getElementById('ob-year').value);if(!y||y<1950||y>2020){document.getElementById('ob-year').style.borderColor='#e07060';return;}S.birthYear=y;calcAge();document.getElementById('ob2').classList.remove('active');document.getElementById('ob3').classList.add('active');}
+function obS3(){saveS();showHome();}
+document.getElementById('ob-name').addEventListener('keydown',function(e){if(e.key==='Enter')obS1();});
+document.getElementById('ob-year').addEventListener('keydown',function(e){if(e.key==='Enter')obS2();});
+function buildColorRow(){var row=document.getElementById('color-row');row.innerHTML='';COLORS.forEach(function(c){var d=document.createElement('div');d.className='cdot'+(c===S.snColor?' sel':'');d.style.background=c;d.style.boxShadow='0 3px 12px '+c+'99';d.onclick=function(){S.snColor=c;document.querySelectorAll('.cdot').forEach(function(x){x.classList.remove('sel');});d.classList.add('sel');};row.appendChild(d);});}
+function openSN(){rstSN();renderJar();document.getElementById('sn1').classList.add('active');show('sn');document.getElementById('sn-txt').value='';setTimeout(function(){document.getElementById('sn-txt').focus();},200);}
+function rstSN(){document.getElementById('sn1').classList.remove('active');document.getElementById('sn2').classList.remove('active');}
+function snSubmit(){var txt=document.getElementById('sn-txt').value.trim();if(!txt){document.getElementById('sn-txt').focus();return;}S.snItems.push({text:txt,color:S.snColor,date:todayStr()});saveS();document.getElementById('sn-confirm').textContent=randConfirm();rstSN();document.getElementById('sn2').classList.add('active');renderJar();flyNote(txt,S.snColor);if(S.snItems.length%7===0){setTimeout(function(){document.getElementById('ritual-ov').classList.add('open');},1800);}}
+function randConfirm(){var m=['Twoja myśl jest już bezpieczna. 🌙','Głowa wolna. Można spać.','Słoik przyjął. Możesz odpuścić.','Odłożone. Nie musisz tego nosić.','Dobrze że to powiedziałeś/aś. 🌙'];return m[Math.floor(Math.random()*m.length)];}
+function snDone(){goHome();}
+function snMore(){rstSN();document.getElementById('sn1').classList.add('active');document.getElementById('sn-txt').value='';setTimeout(function(){document.getElementById('sn-txt').focus();},100);}
+function renderJar(){var max=7,items=S.snItems.slice(-max),pct=Math.min(items.length/max,1),fillH=Math.round(120*pct);var fr=document.getElementById('jfill');if(fr){fr.setAttribute('y',164-fillH);fr.setAttribute('height',fillH);}var ng=document.getElementById('jnotes');if(ng){ng.innerHTML='';var pos=[{x:65,y:155},{x:38,y:148},{x:92,y:150},{x:50,y:135},{x:82,y:133},{x:65,y:120},{x:40,y:110}];items.forEach(function(item,i){if(i>=pos.length)return;var p=pos[i];var r=document.createElementNS('http://www.w3.org/2000/svg','rect');r.setAttribute('x',p.x-14);r.setAttribute('y',p.y-8);r.setAttribute('width','28');r.setAttribute('height','16');r.setAttribute('rx','5');r.setAttribute('fill',item.color);r.setAttribute('opacity','1');ng.appendChild(r);var sh=document.createElementNS('http://www.w3.org/2000/svg','rect');sh.setAttribute('x',p.x-11);sh.setAttribute('y',p.y-6);sh.setAttribute('width','11');sh.setAttribute('height','4');sh.setAttribute('rx','2');sh.setAttribute('fill','rgba(255,255,255,.4)');ng.appendChild(sh);});}var jc=document.getElementById('jar-char');if(jc){jc.innerHTML='';if(S.jarType!=='classic'){var jar=JARS.find(function(j){return j.id===S.jarType;});if(jar){var t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x','70');t.setAttribute('y','100');t.setAttribute('text-anchor','middle');t.setAttribute('font-size','24');t.setAttribute('opacity','0.2');t.textContent=jar.emoji;jc.appendChild(t);}}}}
+function flyNote(txt,color){var n=document.getElementById('fly-note');if(!n)return;n.style.cssText='background:'+color+';box-shadow:0 4px 18px '+color+'99;width:82px;height:46px;left:50%;top:15%;transform:translateX(-50%);border-radius:8px;opacity:1;transition:none;position:fixed;z-index:1000;pointer-events:none;font-size:11px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:4px;text-align:center;';n.textContent=txt.length>10?txt.slice(0,10)+'…':txt;setTimeout(function(){n.style.transition='all 1s cubic-bezier(.4,0,.2,1)';n.style.top='47%';n.style.opacity='0';n.style.transform='translateX(-50%) scale(.2)';},60);setTimeout(function(){n.style.cssText='opacity:0;position:fixed;';},1100);}
+function doRitual(type){document.getElementById('ritual-ov').classList.remove('open');if(type==='keep'){flash();return;}var jw=document.getElementById('jar-wrap');jw.style.animation=(type==='burn'?'burnOut':'buryAnim')+' .85s forwards';setTimeout(function(){S.snItems=[];saveS();jw.style.animation='';renderJar();flash();},900);}
+function openDD(){var today=todayStr();if(S.ddDate!==today){S.ddDone=0;S.ddDate=today;saveS();}initTiles();renderPuzzle();updateDDUI();rstDD();document.getElementById('dd1').classList.add('active');show('dd');}
+function rstDD(){document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.remove('active');}
+function initTiles(){var tot=totalTiles();if(!S.ddTiles||S.ddTiles.length!==tot){S.ddTiles=Array(tot).fill(false);S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));saveS();}}
+function shuffle(arr){for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr;}
+function renderPuzzle(){var gs=gridN(),size=Math.min(Math.floor(window.innerWidth*0.85),300);size=Math.floor(size/gs)*gs;var cont=document.getElementById('pz-cont');cont.style.width=size+'px';cont.style.height=size+'px';var art=document.getElementById('pz-art');art.setAttribute('width',size);art.setAttribute('height',size);art.setAttribute('viewBox','0 0 320 320');art.innerHTML=getArtwork();var ov=document.getElementById('pz-ov');ov.setAttribute('width',size);ov.setAttribute('height',size);ov.setAttribute('viewBox','0 0 '+size+' '+size);ov.innerHTML='';var defs=document.createElementNS('http://www.w3.org/2000/svg','defs');ov.appendChild(defs);var tw=size/gs,th=size/gs,revealed=0;for(var i=0;i<gs*gs;i++){if(S.ddTiles[i]){revealed++;continue;}var row=Math.floor(i/gs),col=i%gs,x=col*tw,y=row*th,path=piecePath(x,y,tw,th,row,col,gs);var cp=document.createElementNS('http://www.w3.org/2000/svg','clipPath');cp.setAttribute('id','c'+i);var pp=document.createElementNS('http://www.w3.org/2000/svg','path');pp.setAttribute('d',path);cp.appendChild(pp);defs.appendChild(cp);var r=document.createElementNS('http://www.w3.org/2000/svg','rect');r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',tw);r.setAttribute('height',th);r.setAttribute('fill','#1a1a2e');r.setAttribute('clip-path','url(#c'+i+')');r.id='ptile-'+i;ov.appendChild(r);var b=document.createElementNS('http://www.w3.org/2000/svg','path');b.setAttribute('d',path);b.setAttribute('fill','none');b.setAttribute('stroke','rgba(255,255,255,.05)');b.setAttribute('stroke-width','1');ov.appendChild(b);}var tot=totalTiles();document.getElementById('pz-prog').textContent=revealed>=tot?'🎉 Puzzle ukończone! Nowe czeka.':revealed+'/'+tot+' odkrytych';}
+function piecePath(x,y,w,h,row,col,gs){var tab=Math.min(w,h)*0.22;function det(a,b){return(((a*100+b)*9301+(b+1)*49297+233)%1000)/1000;}var top=row===0?0:(det(row,col)>.5?1:-1);var right=col===gs-1?0:(det(col,row+50)>.5?1:-1);var bottom=row===gs-1?0:(det(row+50,col)>.5?1:-1);var left=col===0?0:(det(col+50,row)>.5?1:-1);if(col>0)left=-(det(col-1+50,row)>.5?1:-1);if(row>0)top=-(det(row-1,col)>.5?1:-1);var mx=x+w/2,my=y+h/2,d='M '+x+' '+y+' ';if(top===0){d+='L '+(x+w)+' '+y+' ';}else{d+='L '+(mx-tab*.7)+' '+y+' C '+(mx-tab*.7)+' '+(y-top*tab)+' '+(mx+tab*.7)+' '+(y-top*tab)+' '+(mx+tab*.7)+' '+y+' L '+(x+w)+' '+y+' ';}var rmy=y+h/2;if(right===0){d+='L '+(x+w)+' '+(y+h)+' ';}else{d+='L '+(x+w)+' '+(rmy-tab*.7)+' C '+(x+w+right*tab)+' '+(rmy-tab*.7)+' '+(x+w+right*tab)+' '+(rmy+tab*.7)+' '+(x+w)+' '+(rmy+tab*.7)+' L '+(x+w)+' '+(y+h)+' ';}var bmx=x+w/2;if(bottom===0){d+='L '+x+' '+(y+h)+' ';}else{d+='L '+(bmx+tab*.7)+' '+(y+h)+' C '+(bmx+tab*.7)+' '+(y+h+bottom*tab)+' '+(bmx-tab*.7)+' '+(y+h+bottom*tab)+' '+(bmx-tab*.7)+' '+(y+h)+' L '+x+' '+(y+h)+' ';}var lmy=y+h/2;if(left===0){d+='L '+x+' '+y+' ';}else{d+='L '+x+' '+(lmy+tab*.7)+' C '+(x-left*tab)+' '+(lmy+tab*.7)+' '+(x-left*tab)+' '+(lmy-tab*.7)+' '+x+' '+(lmy-tab*.7)+' L '+x+' '+y+' ';}return d+'Z';}
+function updateDDUI(){var left=maxDaily()-S.ddDone,ia=document.getElementById('dd-input'),dm=document.getElementById('dd-done-msg'),info=document.getElementById('dd-info');if(left<=0){ia.style.display='none';dm.style.display='block';}else{ia.style.display='block';dm.style.display='none';info.textContent=left===maxDaily()?'Możesz dodać '+maxDaily()+' myśli dziś.':'Zostało Ci '+left+(left===1?' myśl':' myśli')+' na dziś.';}}
+async function ddSubmit(){var txt=document.getElementById('dd-txt').value.trim();if(!txt){document.getElementById('dd-txt').focus();return;}if(txt.length<5){document.getElementById('dd-txt').style.borderColor='#f6a825';return;}rstDD();document.getElementById('dd2').classList.add('active');document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';var res=await evalThought(txt);document.getElementById('dd-think').style.display='none';document.getElementById('dd-resp').style.display='block';document.getElementById('dd-bub').innerHTML='<p>'+res.serce+'</p>';document.getElementById('dd-rev-msg').style.display='none';document.getElementById('dd-inv-msg').style.display='none';S.lastValid=res.valid;if(res.valid){revealTile();S.ddDone++;var today=todayStr();if(S.ddLastDate===yest())S.ddSeries++;else if(S.ddLastDate!==today)S.ddSeries=1;S.ddLastDate=today;saveS();var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;document.getElementById('dd-rev-txt').textContent=rev>=tot?'🎉 Puzzle ukończone!':'🧩 Puzzle odkryty!';document.getElementById('dd-rev-msg').style.display='block';}else{document.getElementById('dd-inv-msg').style.display='block';}}
+function revealTile(){var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;if(rev>=tot){S.ddTiles=Array(tot).fill(false);S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));S.ddSet=(S.ddSet||0)+1;saveS();return;}for(var i=0;i<S.ddOrder.length;i++){var idx=S.ddOrder[i];if(!S.ddTiles[idx]){S.ddTiles[idx]=true;S._lastTile=idx;saveS();return;}}}
+function ddBack(){rstDD();document.getElementById('dd1').classList.add('active');document.getElementById('dd-txt').value='';renderPuzzle();updateDDUI();if(S._lastTile>=0&&S.lastValid){var cont=document.getElementById('pz-cont');cont.style.boxShadow='0 0 0 4px #f6a825, 0 0 28px rgba(246,168,37,.55)';setTimeout(function(){cont.style.boxShadow='0 8px 32px rgba(0,0,0,.2)';},1600);S._lastTile=-1;}}
+function getArtwork(){if(S.ageGroup===1)return artBajkowy();if(S.ageGroup===2)return artNatura();if(S.ageGroup===3)return artMerkaba();return artDorosly();}
+function artBajkowy(){return '<rect width="320" height="320" fill="#5ba4d4"/><rect y="215" width="320" height="105" fill="#5cb85c"/><circle cx="262" cy="52" r="44" fill="#ffe33a" opacity=".95"/><circle cx="262" cy="52" r="32" fill="#ffed70"/><path d="M18,205 Q160,38 302,205" fill="none" stroke="#ff6b9d" stroke-width="15" stroke-linecap="round" opacity=".8"/><path d="M8,216 Q160,55 312,216" fill="none" stroke="#ff9e2a" stroke-width="15" stroke-linecap="round" opacity=".8"/><path d="M0,226 Q160,72 320,226" fill="none" stroke="#ffe33a" stroke-width="15" stroke-linecap="round" opacity=".8"/><path d="M0,236 Q160,90 320,236" fill="none" stroke="#6bcf6b" stroke-width="15" stroke-linecap="round" opacity=".8"/><path d="M0,245 Q160,108 320,245" fill="none" stroke="#6bb5ff" stroke-width="13" stroke-linecap="round" opacity=".8"/><circle cx="48" cy="240" r="17" fill="#ff6b9d"/><line x1="48" y1="257" x2="48" y2="285" stroke="#2d7a2d" stroke-width="6"/><circle cx="115" cy="226" r="20" fill="#ffe33a"/><line x1="115" y1="246" x2="115" y2="285" stroke="#2d7a2d" stroke-width="6"/><circle cx="188" cy="234" r="16" fill="#c058f0"/><line x1="188" y1="250" x2="188" y2="285" stroke="#2d7a2d" stroke-width="6"/><circle cx="256" cy="228" r="18" fill="#ff9e2a"/><line x1="256" y1="246" x2="256" y2="285" stroke="#2d7a2d" stroke-width="6"/><ellipse cx="58" cy="92" rx="30" ry="20" fill="white" opacity=".9"/><ellipse cx="85" cy="84" rx="24" ry="17" fill="white" opacity=".9"/><ellipse cx="112" cy="92" rx="22" ry="15" fill="white" opacity=".9"/><ellipse cx="175" cy="68" rx="26" ry="17" fill="white" opacity=".75"/><ellipse cx="200" cy="62" rx="20" ry="14" fill="white" opacity=".75"/>';}
+function artNatura(){return '<rect width="320" height="320" fill="#060618"/><circle cx="28" cy="38" r="2.2" fill="white" opacity=".9"/><circle cx="74" cy="18" r="1.6" fill="white" opacity=".85"/><circle cx="122" cy="34" r="2.8" fill="#ffe33a" opacity=".95"/><circle cx="178" cy="12" r="1.6" fill="white" opacity=".75"/><circle cx="228" cy="46" r="2.2" fill="white" opacity=".85"/><circle cx="278" cy="20" r="3.2" fill="#ffd700" opacity=".95"/><circle cx="302" cy="52" r="1.6" fill="white" opacity=".75"/><circle cx="95" cy="64" r="1.6" fill="white" opacity=".65"/><circle cx="208" cy="74" r="2.2" fill="white" opacity=".75"/><circle cx="32" cy="155" r="30" fill="#c4dff8" opacity=".22"/><circle cx="32" cy="155" r="22" fill="#c4dff8" opacity=".28"/><polygon points="0,252 92,108 184,252" fill="#162450"/><polygon points="72,252 178,88 284,252" fill="#0e1c40"/><polygon points="152,252 244,128 322,252" fill="#162450"/><polygon points="252,252 322,158 322,252" fill="#0e1c40"/><rect y="252" width="320" height="68" fill="#09183a"/><path d="M0,268 Q80,256 160,272 Q240,288 320,268 L320,320 L0,320Z" fill="#0b2650" opacity=".85"/><path d="M0,278 Q80,266 160,280 Q240,294 320,278" fill="none" stroke="#3a7acc" stroke-width="1.8" opacity=".38"/><circle cx="160" cy="308" r="11" fill="#ffe33a" opacity=".28"/>';}
+function artMerkaba(){return '<rect width="320" height="320" fill="#0a0a1e"/><circle cx="160" cy="160" r="148" fill="none" stroke="#3344aa" stroke-width=".5" opacity=".3"/><circle cx="160" cy="160" r="108" fill="none" stroke="#4455bb" stroke-width=".6" opacity=".4"/><circle cx="160" cy="160" r="68" fill="none" stroke="#6677dd" stroke-width=".8" opacity=".5"/><circle cx="160" cy="160" r="32" fill="none" stroke="#8899ee" stroke-width="1" opacity=".55"/><polygon points="160,18 298,248 22,248" fill="none" stroke="#aa99ff" stroke-width="2.2" opacity=".72"/><polygon points="160,302 22,72 298,72" fill="none" stroke="#9988ee" stroke-width="2.2" opacity=".72"/><line x1="160" y1="18" x2="160" y2="302" stroke="#6677dd" stroke-width=".5" opacity=".22"/><line x1="22" y1="72" x2="298" y2="248" stroke="#6677dd" stroke-width=".5" opacity=".22"/><line x1="298" y1="72" x2="22" y2="248" stroke="#6677dd" stroke-width=".5" opacity=".22"/><circle cx="160" cy="160" r="12" fill="#cc99ff" opacity=".72"/><circle cx="160" cy="160" r="6" fill="#fff" opacity=".92"/><circle cx="160" cy="18" r="5" fill="#cc99ff"/><circle cx="160" cy="302" r="5" fill="#cc99ff"/><circle cx="22" cy="72" r="5" fill="#cc99ff"/><circle cx="298" cy="72" r="5" fill="#cc99ff"/><circle cx="22" cy="248" r="5" fill="#cc99ff"/><circle cx="298" cy="248" r="5" fill="#cc99ff"/><polygon points="160,88 218,198 102,198" fill="#cc99ff" opacity=".08"/><polygon points="160,232 218,122 102,122" fill="#9988ee" opacity=".08"/>';}
+function artDorosly(){return '<rect width="320" height="320" fill="#0d0818"/><radialGradient id="dg" cx="50%" cy="75%" r="50%"><stop offset="0%" stop-color="#e8a030" stop-opacity=".35"/><stop offset="100%" stop-color="#0d0818" stop-opacity="0"/></radialGradient><rect width="320" height="320" fill="url(#dg)"/><path d="M0,220 Q80,195 160,210 Q240,225 320,200 L320,320 L0,320Z" fill="#1a0e2e"/><path d="M0,232 Q80,210 160,222 Q240,235 320,215" fill="none" stroke="#e8a030" stroke-width="1.5" opacity=".55"/><circle cx="160" cy="222" r="45" fill="#e8a030" opacity=".18"/><circle cx="160" cy="222" r="28" fill="#e8c060" opacity=".28"/><circle cx="160" cy="222" r="14" fill="#ffe080" opacity=".6"/><line x1="160" y1="174" x2="160" y2="158" stroke="#e8c060" stroke-width="1.8" opacity=".5"/><line x1="196" y1="187" x2="207" y2="176" stroke="#e8c060" stroke-width="1.8" opacity=".45"/><line x1="124" y1="187" x2="113" y2="176" stroke="#e8c060" stroke-width="1.8" opacity=".45"/><line x1="210" y1="214" x2="224" y2="210" stroke="#e8c060" stroke-width="1.5" opacity=".4"/><line x1="110" y1="214" x2="96" y2="210" stroke="#e8c060" stroke-width="1.5" opacity=".4"/><circle cx="40" cy="45" r="2" fill="white" opacity=".8"/><circle cx="95" cy="28" r="1.5" fill="white" opacity=".7"/><circle cx="200" cy="38" r="2" fill="white" opacity=".75"/><circle cx="270" cy="55" r="1.5" fill="white" opacity=".65"/><circle cx="312" cy="30" r="2.5" fill="#ffe080" opacity=".8"/><circle cx="55" cy="82" r="1.2" fill="white" opacity=".55"/><circle cx="148" cy="62" r="1.5" fill="white" opacity=".6"/><circle cx="235" cy="75" r="1.2" fill="white" opacity=".5"/><path d="M100,260 Q160,250 220,262" fill="none" stroke="#e8c060" stroke-width="1.2" opacity=".3"/><path d="M120,275 Q160,268 200,276" fill="none" stroke="#e8c060" stroke-width=".8" opacity=".2"/>';}
+async function evalThought(text){if(S.apiKey){try{var age=S.birthYear?new Date().getFullYear()-S.birthYear:30;var sys='Jesteś Sercem Iskierki. Oceniasz myśl osoby ('+age+' lat) w module Dobry Dzień. Reaguj JEDNYM ciepłym zdaniem po polsku. Autentyczna pozytywna myśl: valid:true. Żart/przekleństwo/nonsens: valid:false. Odpowiadaj TYLKO JSON: {"valid":true/false,"serce":"reakcja"}';var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':S.apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:150,system:sys,messages:[{role:'user',content:text}]})});var data=await res.json();if(data.content&&data.content[0]){var raw=data.content[0].text.replace(/```json|```/g,'').trim();return JSON.parse(raw);}}catch(e){console.log('serce err',e);}}return heuristic(text);}
+function heuristic(text){var bad=['dupa','kupa','penis','seks','idiota','nienawidzę'];if(bad.some(function(w){return text.toLowerCase().includes(w);}))return{valid:false,serce:'Hm, może coś innego — powiedz mi o czymś co naprawdę było dziś dobre? 🌸'};if(text.length<8)return{valid:false,serce:'Prawie! Powiedz mi trochę więcej — co dokładnie? 😊'};var r=['To brzmi naprawdę pięknie! 🌟','Super, że to zauważyłeś/aś! ✨','Takie chwile są wyjątkowe. 💛','Cieszę się, że mi o tym powiedziałeś/aś! 🌸','Widzę że masz dobry dzień — to ważne! ⭐','Piękna chwila. 🌿'];return{valid:true,serce:r[Math.floor(Math.random()*r.length)]};}
+document.getElementById('gear-btn').onclick=function(){document.getElementById('set-ov').classList.add('open');};
+function closeSet(){document.getElementById('set-ov').classList.remove('open');}
+function saveKey(){var k=document.getElementById('api-inp').value.trim();S.apiKey=k;localStorage.setItem('iskierka_key',k);closeSet();flash();}
+function switchUser(){if(!confirm('Wylogować się? Twoje myśli na tym urządzeniu zostaną usunięte lokalnie.'))return;localStorage.removeItem('iskierka_v3');localStorage.removeItem('iskierka_key');location.reload();}
+document.getElementById('set-ov').addEventListener('click',function(e){if(e.target===this)closeSet();});
+document.getElementById('ritual-ov').addEventListener('click',function(e){if(e.target===this)document.getElementById('ritual-ov').classList.remove('open');});
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function yest(){var d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);}
+function flash(){var f=document.createElement('div');f.className='flash';document.body.appendChild(f);setTimeout(function(){f.remove();},700);}
+</script>
+</body>
+</html>
