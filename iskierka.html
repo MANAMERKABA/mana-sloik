@@ -115,7 +115,7 @@
 
     /* FIRE SCREEN */
     #onboarding{background:#0a0218;}
-    .fire-canvas{position:absolute;inset:0;z-index:0;}
+    .fire-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;}
     #fire-bg{position:absolute;inset:0;width:100%;height:100%;}
     /* Stars */
     .fstar{position:absolute;border-radius:50%;animation:ftwinkle var(--d,3s) ease-in-out infinite var(--dl,0s);}
@@ -125,12 +125,12 @@
     @keyframes sway2{0%,100%{transform:rotate(2deg)}50%{transform:rotate(-4deg)}}
     @keyframes sway3{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
     @keyframes sway4{0%,100%{transform:rotate(3deg)}50%{transform:rotate(-2deg)}}
-    @keyframes arms{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
-    .fig{position:absolute;bottom:0;z-index:2;transform-origin:50% 100%;}
-    .fig1{left:14%;animation:sway1 3.2s ease-in-out infinite;}
-    .fig2{left:3%;bottom:2%;animation:sway2 4s ease-in-out infinite .5s;opacity:.75;}
-    .fig3{right:14%;animation:sway3 2.8s ease-in-out infinite .3s;}
-    .fig4{right:3%;bottom:2%;animation:sway4 3.6s ease-in-out infinite .8s;opacity:.72;}
+    @keyframes arms{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+    .fig{position:absolute;z-index:2;transform-origin:50% 100%;}
+    .fig1{bottom:-2%;left:18%;animation:sway1 3.2s ease-in-out infinite;}
+    .fig2{bottom:-2%;left:3%;animation:sway2 4s ease-in-out infinite .5s;opacity:.8;}
+    .fig3{bottom:-2%;right:16%;animation:sway3 2.8s ease-in-out infinite .3s;}
+    .fig4{bottom:-2%;right:2%;animation:sway4 3.6s ease-in-out infinite .8s;opacity:.78;}
     /* Onboarding card */
     .ob-card{background:rgba(18,6,38,.9);border:1.5px solid rgba(255,190,80,.32);border-radius:var(--r);padding:28px 22px;width:calc(100% - 40px);max-width:380px;position:relative;z-index:3;}
     .fire-title{position:relative;z-index:3;text-align:center;margin-bottom:20px;}
@@ -181,51 +181,67 @@
   <div class="fire-canvas">
     <canvas id="fire-bg"></canvas>
   </div>
-  <!-- Fig 1: siedząca, ręka do ognia -->
+  <!-- Fig 1: lewa blisko ognia — siedząca, pochylona do przodu -->
   <div class="fig fig1">
-    <svg width="58" height="105" viewBox="0 0 58 105">
-      <path d="M18,100 Q12,78 14,58 Q12,42 18,32 Q22,22 29,20 Q36,18 40,26 Q46,36 42,54 Q44,70 42,100Z" fill="#1a0835"/>
-      <ellipse cx="29" cy="18" rx="11" ry="12" fill="#1a0835"/>
-      <path d="M18,28 Q16,16 22,12 Q29,8 36,14 Q40,20 38,28Z" fill="#1a0835"/>
-      <path d="M40,52 Q50,46 56,44" fill="none" stroke="#1a0835" stroke-width="7" stroke-linecap="round"/>
-      <path d="M18,100 Q10,108 2,105 Q8,98 17,96Z" fill="#1a0835"/>
-      <path d="M42,100 Q50,107 57,103 Q51,97 43,95Z" fill="#1a0835"/>
+    <svg width="80" height="100" viewBox="0 0 80 100">
+      <!-- tułów -->
+      <path d="M28,95 Q18,75 20,55 Q18,40 26,30 Q32,20 40,18 Q48,16 54,24 Q62,35 58,52 Q60,68 58,95Z" fill="#1a0835"/>
+      <!-- głowa pochylona w przód -->
+      <ellipse cx="40" cy="16" rx="13" ry="14" fill="#1a0835"/>
+      <!-- włosy/kaptur -->
+      <path d="M27,18 Q25,6 32,2 Q40,-2 48,4 Q54,10 52,20Z" fill="#1a0835"/>
+      <!-- ręka wyciągnięta do ognia (prawa) -->
+      <path d="M56,50 Q68,42 75,38" fill="none" stroke="#1a0835" stroke-width="9" stroke-linecap="round"/>
+      <circle cx="75" cy="36" r="7" fill="#1a0835"/>
+      <!-- nogi skrzyżowane na ziemi -->
+      <path d="M28,95 Q16,100 5,96 Q14,90 26,88Z" fill="#1a0835"/>
+      <path d="M58,95 Q68,100 78,95 Q68,89 58,88Z" fill="#1a0835"/>
     </svg>
   </div>
-  <!-- Fig 2: z peleryną -->
+  <!-- Fig 2: lewa dalej — z peleryną, spokojna -->
   <div class="fig fig2">
-    <svg width="48" height="88" viewBox="0 0 48 88">
-      <path d="M14,86 Q8,64 10,44 Q8,28 14,18 Q18,10 24,8 Q30,10 34,18 Q40,28 38,46 Q40,64 38,86Z" fill="#120425"/>
-      <ellipse cx="24" cy="7" rx="10" ry="11" fill="#120425"/>
-      <path d="M10,46 Q0,52 0,66 Q8,62 12,54Z" fill="#120425"/>
-      <path d="M38,46 Q48,53 48,68 Q40,63 36,54Z" fill="#120425"/>
-      <path d="M12,22 Q10,12 16,8 Q22,4 30,10 Q34,16 32,24Z" fill="#120425"/>
+    <svg width="70" height="88" viewBox="0 0 70 88">
+      <path d="M20,86 Q12,64 14,44 Q12,28 20,18 Q25,10 35,8 Q45,10 50,18 Q58,28 56,46 Q58,64 56,86Z" fill="#120425"/>
+      <ellipse cx="35" cy="7" rx="12" ry="13" fill="#120425"/>
+      <!-- kaptur -->
+      <path d="M23,14 Q20,2 28,-2 Q35,-5 42,2 Q48,8 46,18Z" fill="#120425"/>
+      <!-- peleryna lewa -->
+      <path d="M14,46 Q2,54 0,70 Q10,65 16,56Z" fill="#120425"/>
+      <!-- peleryna prawa -->
+      <path d="M56,46 Q68,55 70,72 Q60,66 54,56Z" fill="#120425"/>
     </svg>
   </div>
-  <!-- Fig 3: ręce uniesione -->
+  <!-- Fig 3: prawa blisko — ręce uniesione, w ekstazie -->
   <div class="fig fig3">
-    <svg width="72" height="118" viewBox="0 0 72 118">
-      <path d="M22,110 Q16,86 18,62 Q16,46 22,34 Q26,24 36,21 Q46,19 50,28 Q56,40 52,58 Q54,78 52,110Z" fill="#1a0835"/>
-      <ellipse cx="36" cy="19" rx="12" ry="13" fill="#1a0835"/>
-      <g style="transform-origin:22px 52px;animation:arms 2.2s ease-in-out infinite;">
-        <path d="M22,52 Q10,36 4,22" fill="none" stroke="#1a0835" stroke-width="8" stroke-linecap="round"/>
-        <circle cx="3" cy="19" r="6" fill="#1a0835"/>
+    <svg width="90" height="120" viewBox="0 0 90 120">
+      <path d="M28,112 Q20,88 22,64 Q20,46 28,34 Q34,22 45,20 Q56,18 62,28 Q70,40 66,60 Q68,80 66,112Z" fill="#1a0835"/>
+      <ellipse cx="45" cy="18" rx="14" ry="15" fill="#1a0835"/>
+      <!-- ręka lewa uniesiona — animowana -->
+      <g style="transform-origin:28px 60px;animation:arms 2s ease-in-out infinite;">
+        <path d="M28,60 Q14,42 6,26" fill="none" stroke="#1a0835" stroke-width="10" stroke-linecap="round"/>
+        <circle cx="4" cy="22" r="8" fill="#1a0835"/>
       </g>
-      <g style="transform-origin:52px 52px;animation:arms 2.2s ease-in-out infinite .5s;">
-        <path d="M52,52 Q64,36 68,22" fill="none" stroke="#1a0835" stroke-width="8" stroke-linecap="round"/>
-        <circle cx="69" cy="19" r="6" fill="#1a0835"/>
+      <!-- ręka prawa uniesiona -->
+      <g style="transform-origin:66px 60px;animation:arms 2s ease-in-out infinite .55s;">
+        <path d="M66,60 Q80,42 86,26" fill="none" stroke="#1a0835" stroke-width="10" stroke-linecap="round"/>
+        <circle cx="88" cy="22" r="8" fill="#1a0835"/>
       </g>
-      <path d="M22,110 Q14,118 5,115 Q12,108 22,106Z" fill="#1a0835"/>
-      <path d="M52,110 Q60,118 69,114 Q62,107 52,106Z" fill="#1a0835"/>
+      <path d="M28,112 Q18,120 7,116 Q16,108 27,106Z" fill="#1a0835"/>
+      <path d="M66,112 Q76,120 86,115 Q77,107 66,106Z" fill="#1a0835"/>
     </svg>
   </div>
-  <!-- Fig 4: głowa odchylona -->
+  <!-- Fig 4: prawa dalej — patrzy w ogień, ręka na kolanie -->
   <div class="fig fig4">
-    <svg width="50" height="92" viewBox="0 0 50 92">
-      <path d="M16,90 Q10,66 12,46 Q10,30 16,20 Q20,12 25,10 Q30,12 34,20 Q40,30 38,48 Q40,68 38,90Z" fill="#120425"/>
-      <ellipse cx="25" cy="8" rx="10" ry="11" fill="#120425"/>
-      <path d="M15,12 Q13,2 19,-1 Q25,-4 31,2 Q35,8 33,16Z" fill="#120425"/>
-      <path d="M36,42 Q44,36 48,28" fill="none" stroke="#120425" stroke-width="6" stroke-linecap="round"/>
+    <svg width="72" height="96" viewBox="0 0 72 96">
+      <path d="M20,94 Q12,70 14,50 Q12,34 20,22 Q26,12 36,10 Q46,8 52,18 Q60,28 58,48 Q60,68 58,94Z" fill="#120425"/>
+      <ellipse cx="36" cy="8" rx="13" ry="14" fill="#120425"/>
+      <!-- głowa odchylona lekko do tyłu -->
+      <path d="M23,12 Q21,0 28,-4 Q36,-7 44,0 Q50,6 48,14Z" fill="#120425"/>
+      <!-- ręka na kolanie -->
+      <path d="M52,50 Q62,44 68,36" fill="none" stroke="#120425" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="68" cy="33" r="6" fill="#120425"/>
+      <path d="M20,94 Q10,100 2,96 Q10,89 20,88Z" fill="#120425"/>
+      <path d="M58,94 Q68,100 72,95 Q64,88 58,88Z" fill="#120425"/>
     </svg>
   </div>
   <div style="display:flex;flex:1;flex-direction:column;justify-content:flex-start;align-items:center;padding:40px 24px 24px;position:relative;z-index:3;">
@@ -397,7 +413,7 @@ function buildFireStars(){
   c.width=W; c.height=H;
   var ctx=c.getContext('2d');
   var particles=[], MAX=260;
-  var CX=W/2, FY=H*0.72;
+  var CX=W/2, FY=H*0.82;
   function rnd(a,b){return a+Math.random()*(b-a);}
   function spawn(){
     var lm=rnd(55,125);
