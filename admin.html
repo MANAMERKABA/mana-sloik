@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MANA · Wejdź</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sand:#F5F0E8;--sand-dark:#EDE7D8;
+  --brown:#8B7355;--brown-light:#A0845C;--brown-deep:#5C4A35;
+  --text:#2C2418;--text-mid:#6B5C45;--text-light:#9B8C78;
+  --border:rgba(139,115,85,0.2);--border-strong:rgba(139,115,85,0.4);
+  --white:#FFFDF8;--green:#6B8F71;--purple:#9B7EBD;--red:#C0392B;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+
+/* ═══ LOGIN ═══ */
+#screen-login{flex:1;display:flex;align-items:center;justify-content:center;}
+.login-card{background:var(--white);border:1px solid var(--border);border-radius:24px;padding:52px 44px;width:340px;text-align:center;box-shadow:0 4px 32px rgba(44,36,24,0.08);}
+.mana-logo{font-family:'Crimson Pro',serif;font-size:52px;font-weight:300;color:var(--brown);letter-spacing:0.1em;margin-bottom:4px;}
+.mana-sub{font-size:11px;color:var(--text-light);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:40px;}
+.login-label{font-size:12px;color:var(--text-mid);margin-bottom:8px;text-align:left;}
+.login-input{width:100%;padding:13px 16px;border:1px solid var(--border-strong);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;background:var(--sand);color:var(--text);outline:none;transition:border-color 0.2s;margin-bottom:16px;}
+.login-input:focus{border-color:var(--brown);}
+.login-btn{width:100%;padding:13px;background:var(--brown);color:var(--white);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background 0.2s;}
+.login-btn:hover{background:var(--brown-deep);}
+.login-note{font-size:11px;color:var(--text-light);margin-top:14px;font-style:italic;}
+.login-checking{font-size:12px;color:var(--text-light);margin-top:10px;display:none;}
+
+/* ═══ ADMIN PANEL ═══ */
+#screen-admin{flex:1;display:none;flex-direction:column;}
+.top-bar{padding:14px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--white);flex-shrink:0;}
+.top-logo{font-family:'Crimson Pro',serif;font-size:24px;font-weight:300;color:var(--brown);letter-spacing:0.06em;}
+.top-badge{font-size:10px;color:var(--brown-deep);background:rgba(139,115,85,0.12);padding:3px 10px;border-radius:20px;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;margin-left:10px;}
+.top-right{display:flex;align-items:center;gap:12px;}
+.top-nick{font-size:12px;color:var(--text-light);}
+.top-logout{font-size:11px;color:var(--text-light);cursor:pointer;padding:4px 10px;border:1px solid var(--border);border-radius:6px;}
+.top-logout:hover{color:var(--text);border-color:var(--border-strong);}
+
+.admin-body{flex:1;overflow-y:auto;padding:28px 32px;}
+
+/* Sekcje */
+.section{margin-bottom:32px;}
+.section-title{font-family:'Crimson Pro',serif;font-size:22px;font-weight:300;color:var(--text);margin-bottom:4px;}
+.section-sub{font-size:12px;color:var(--text-light);margin-bottom:16px;}
+
+/* Kafelki statystyk */
+.stats-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 22px;flex:1;min-width:130px;}
+.stat-num{font-family:'Crimson Pro',serif;font-size:36px;font-weight:300;color:var(--brown);line-height:1;}
+.stat-label{font-size:11px;color:var(--text-light);margin-top:4px;}
+.stat-sub{font-size:10px;color:var(--text-light);margin-top:2px;font-style:italic;}
+
+/* Kafelki narzędzi */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.tool-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block;}
+.tool-card:hover{border-color:var(--border-strong);box-shadow:0 4px 16px rgba(44,36,24,0.08);}
+.tool-icon{font-size:28px;margin-bottom:8px;}
+.tool-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.tool-desc{font-size:11px;color:var(--text-light);}
+.tool-status{display:inline-block;margin-top:8px;font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;}
+.status-live{background:rgba(107,143,113,0.15);color:var(--green);}
+.status-beta{background:rgba(139,115,85,0.12);color:var(--brown);}
+.status-todo{background:rgba(192,57,43,0.08);color:var(--red);}
+
+/* Tabela */
+.data-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.data-table th{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);font-weight:500;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);background:var(--sand);}
+.data-table td{font-size:12px;color:var(--text);padding:10px 14px;border-bottom:1px solid var(--border);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:rgba(139,115,85,0.03);}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;}
+.badge-green{background:rgba(107,143,113,0.15);color:var(--green);}
+.badge-brown{background:rgba(139,115,85,0.12);color:var(--brown);}
+.badge-purple{background:rgba(155,126,189,0.15);color:var(--purple);}
+.badge-red{background:rgba(192,57,43,0.08);color:var(--red);}
+
+/* Konstytucja */
+.konst-box{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 24px;font-size:12px;color:var(--text-mid);line-height:1.8;max-height:300px;overflow-y:auto;white-space:pre-wrap;}
+.konst-actions{display:flex;gap:8px;margin-top:10px;}
+.konst-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--border-strong);background:var(--white);color:var(--brown);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
+.konst-btn:hover{background:var(--brown);color:var(--white);border-color:var(--brown);}
+
+/* Trainer notes */
+.note-item{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px;}
+.note-meta{font-size:10px;color:var(--text-light);margin-bottom:4px;}
+.note-text{font-size:12px;color:var(--text);line-height:1.6;}
+.note-trener{font-size:11px;color:var(--purple);font-weight:500;margin-top:4px;}
+
+.loading{font-size:12px;color:var(--text-light);font-style:italic;padding:12px 0;}
+.empty{font-size:12px;color:var(--text-light);font-style:italic;text-align:center;padding:20px 0;}
+
+.refresh-btn{font-size:11px;color:var(--text-light);cursor:pointer;padding:4px 10px;border:1px solid var(--border);border-radius:6px;margin-left:8px;}
+.refresh-btn:hover{border-color:var(--brown);color:var(--brown);}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn 0.3s ease both;}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="screen-login">
+  <div class="login-card">
+    <div class="mana-logo">MANA</div>
+    <div class="mana-sub">Ekosystem · Merkaba</div>
+    <div class="login-label">Twój nick</div>
+    <input class="login-input" type="text" id="login-nick" placeholder="wpisz nick…" autocomplete="off">
+    <button class="login-btn" onclick="doLogin()">Wejdź →</button>
+    <div class="login-note">MANA rozpozna kim jesteś</div>
+    <div class="login-checking" id="login-checking">Sprawdzam…</div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN PANEL ═══ -->
+<div id="screen-admin">
+  <div class="top-bar">
+    <div style="display:flex;align-items:center;">
+      <div class="top-logo">MANA</div>
+      <span class="top-badge">Administrator</span>
+    </div>
+    <div class="top-right">
+      <div class="top-nick" id="admin-nick"></div>
+      <div class="top-logout" onclick="doLogout()">wyloguj</div>
+    </div>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- STATYSTYKI -->
+    <div class="section">
+      <div class="section-title">Stan ekosystemu <span class="refresh-btn" onclick="refreshAll()">↻ odśwież</span></div>
+      <div class="section-sub">Dane na żywo z Supabase</div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num" id="s-travelers">—</div>
+          <div class="stat-label">Podróżnicy</div>
+          <div class="stat-sub" id="s-travelers-sub">ładuję…</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="s-conversations">—</div>
+          <div class="stat-label">Rozmowy z Sercem</div>
+          <div class="stat-sub" id="s-conv-sub">ładuję…</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="s-stones">—</div>
+          <div class="stat-label">Kamienie w Słoiku</div>
+          <div class="stat-sub" id="s-stones-sub">ładuję…</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="s-rag">—</div>
+          <div class="stat-label">Wpisy RAG</div>
+          <div class="stat-sub">baza wiedzy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="s-notes">—</div>
+          <div class="stat-label">Uwagi trenerów</div>
+          <div class="stat-sub" id="s-notes-sub">ładuję…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NARZĘDZIA EKOSYSTEMU -->
+    <div class="section">
+      <div class="section-title">Narzędzia MANA</div>
+      <div class="section-sub">Kliknij żeby otworzyć</div>
+      <div class="tools-grid">
+        <a class="tool-card" href="https://typebot.co/serce-mana-2-cc5udq3" target="_blank">
+          <div class="tool-icon">🤍</div>
+          <div class="tool-name">Serce MANA (Gawęda)</div>
+          <div class="tool-desc">Typebot · Rozmowa z podróżnikiem</div>
+          <span class="tool-status status-live">✓ działa</span>
+        </a>
+        <a class="tool-card" href="iskierka.html" target="_blank">
+          <div class="tool-icon">✨</div>
+          <div class="tool-name">Iskierka</div>
+          <div class="tool-desc">Spokojna Noc + Dobry Dzień</div>
+          <span class="tool-status status-live">✓ działa</span>
+        </a>
+        <a class="tool-card" href="terapeuta.html" target="_blank">
+          <div class="tool-icon">🌿</div>
+          <div class="tool-name">Panel Terapeuty</div>
+          <div class="tool-desc">Kalendarz · Zalecenia · Notatki</div>
+          <span class="tool-status status-beta">beta</span>
+        </a>
+        <a class="tool-card" href="https://kkxhqtfxvgxdqpnzaufu.supabase.co" target="_blank">
+          <div class="tool-icon">🗄️</div>
+          <div class="tool-name">Supabase</div>
+          <div class="tool-desc">Baza danych · Edge Functions</div>
+          <span class="tool-status status-live">✓ działa</span>
+        </a>
+        <div class="tool-card" style="cursor:default;opacity:0.6;">
+          <div class="tool-icon">📅</div>
+          <div class="tool-name">Cal.com</div>
+          <div class="tool-desc">Rezerwacje wizyt · Webhook → Horyzont</div>
+          <span class="tool-status status-todo">do integracji</span>
+        </div>
+        <div class="tool-card" style="cursor:default;opacity:0.6;">
+          <div class="tool-icon">📱</div>
+          <div class="tool-name">PWA</div>
+          <div class="tool-desc">Iskierka jako aplikacja na telefon</div>
+          <span class="tool-status status-todo">do zrobienia</span>
+        </div>
+        <div class="tool-card" style="cursor:default;opacity:0.6;">
+          <div class="tool-icon">🔐</div>
+          <div class="tool-name">Logowanie email</div>
+          <div class="tool-desc">Supabase Auth · Nick → email</div>
+          <span class="tool-status status-todo">do zrobienia</span>
+        </div>
+        <div class="tool-card" style="cursor:default;opacity:0.6;">
+          <div class="tool-icon">🌐</div>
+          <div class="tool-name">mana.pl</div>
+          <div class="tool-desc">Strona główna · Logo</div>
+          <span class="tool-status status-todo">do zrobienia</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PODRÓŻNICY -->
+    <div class="section">
+      <div class="section-title">Podróżnicy</div>
+      <div id="travelers-table"><div class="loading">Ładuję…</div></div>
+    </div>
+
+    <!-- UWAGI TRENERÓW -->
+    <div class="section">
+      <div class="section-title">Uwagi trenerów</div>
+      <div class="section-sub">Niezasosowane · do analizy</div>
+      <div id="notes-list"><div class="loading">Ładuję…</div></div>
+    </div>
+
+    <!-- KONSTYTUCJA SERCA -->
+    <div class="section">
+      <div class="section-title">Konstytucja Serca</div>
+      <div class="section-sub">Aktywna wersja w Supabase → tabela prompts</div>
+      <div class="konst-box" id="konst-box">Ładuję…</div>
+      <div class="konst-actions">
+        <a class="konst-btn" href="https://kkxhqtfxvgxdqpnzaufu.supabase.co/dashboard/project/kkxhqtfxvgxdqpnzaufu/editor" target="_blank">Edytuj w Supabase →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SB = 'https://kkxhqtfxvgxdqpnzaufu.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtreGhxdGZ4dmd4ZHFwbnphdWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1NzI5ODMsImV4cCI6MjA1NjE0ODk4M30.IHoVFJBEjDHIqO7S5UkXjlFBuHbXr4RLwCfEJ7-GLSY';
+
+// Administratorzy — sprawdzani lokalnie (szybkie, bezpieczne)
+const ADMINS = ['MANA_ADMIN_55'];
+
+let currentNick = '';
+
+async function sb(table, query) {
+  try {
+    var r = await fetch(SB + '/rest/v1/' + table + '?' + (query||''), {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
+    });
+    return await r.json();
+  } catch(e) { return []; }
+}
+
+async function doLogin() {
+  var nick = document.getElementById('login-nick').value.trim();
+  if (!nick) return;
+
+  document.getElementById('login-checking').style.display = 'block';
+  document.getElementById('login-checking').textContent = 'Sprawdzam…';
+
+  // Czy administrator?
+  if (ADMINS.includes(nick)) {
+    currentNick = nick;
+    localStorage.setItem('mana_nick', nick);
+    localStorage.setItem('mana_rola', 'admin');
+    showAdmin();
+    return;
+  }
+
+  // Czy terapeuta?
+  var trainers = await sb('trainers', 'nick=ilike.' + encodeURIComponent(nick));
+  if (Array.isArray(trainers) && trainers.length) {
+    localStorage.setItem('mana_nick', nick);
+    localStorage.setItem('mana_rola', 'terapeuta');
+    window.location.href = 'terapeuta.html?nick=' + encodeURIComponent(nick);
+    return;
+  }
+
+  // Podróżnik
+  localStorage.setItem('mana_nick', nick);
+  localStorage.setItem('mana_rola', 'podroznik');
+  window.location.href = 'index_sloik.html?nick=' + encodeURIComponent(nick);
+}
+
+function doLogout() {
+  localStorage.removeItem('mana_nick');
+  localStorage.removeItem('mana_rola');
+  currentNick = '';
+  document.getElementById('screen-admin').style.display = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+  document.getElementById('login-nick').value = '';
+  document.getElementById('login-checking').style.display = 'none';
+}
+
+function showAdmin() {
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-admin').style.display = 'flex';
+  document.getElementById('admin-nick').textContent = currentNick;
+  loadAll();
+}
+
+async function loadAll() {
+  loadStats();
+  loadTravelers();
+  loadNotes();
+  loadKonstytucja();
+}
+
+async function refreshAll() { await loadAll(); }
+
+async function loadStats() {
+  // Podróżnicy
+  var travelers = await sb('travelers', 'select=id,nick,last_visit,visit_count&order=last_visit.desc');
+  var tArr = Array.isArray(travelers) ? travelers : [];
+  document.getElementById('s-travelers').textContent = tArr.length;
+  var lastVisit = tArr[0] ? new Date(tArr[0].last_visit).toLocaleDateString('pl') : '—';
+  document.getElementById('s-travelers-sub').textContent = 'ostatnia: ' + lastVisit;
+
+  // Rozmowy
+  var convs = await sb('conversations', 'select=id&limit=1&order=created_at.desc');
+  // Supabase nie zwraca count tak łatwo — robimy HEAD request
+  try {
+    var cr = await fetch(SB + '/rest/v1/conversations?select=id', {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Prefer': 'count=exact', 'Range': '0-0' }
+    });
+    var range = cr.headers.get('content-range');
+    var count = range ? range.split('/')[1] : '?';
+    document.getElementById('s-conversations').textContent = count;
+  } catch(e) { document.getElementById('s-conversations').textContent = '?'; }
+  document.getElementById('s-conv-sub').textContent = 'wszystkie sesje';
+
+  // Stones
+  try {
+    var sr = await fetch(SB + '/rest/v1/stones?select=id', {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Prefer': 'count=exact', 'Range': '0-0' }
+    });
+    var srange = sr.headers.get('content-range');
+    var scount = srange ? srange.split('/')[1] : '?';
+    document.getElementById('s-stones').textContent = scount;
+    document.getElementById('s-stones-sub').textContent = 'kamienie podróżników';
+  } catch(e) {}
+
+  // RAG
+  try {
+    var rr = await fetch(SB + '/rest/v1/knowledge?select=id', {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Prefer': 'count=exact', 'Range': '0-0' }
+    });
+    var rrange = rr.headers.get('content-range');
+    document.getElementById('s-rag').textContent = rrange ? rrange.split('/')[1] : '?';
+  } catch(e) {}
+
+  // Trainer notes
+  try {
+    var nr = await fetch(SB + '/rest/v1/trainer_notes?select=id&zastosowana=eq.false', {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Prefer': 'count=exact', 'Range': '0-0' }
+    });
+    var nrange = nr.headers.get('content-range');
+    var ncount = nrange ? nrange.split('/')[1] : '?';
+    document.getElementById('s-notes').textContent = ncount;
+    document.getElementById('s-notes-sub').textContent = 'niezasosowane';
+  } catch(e) {}
+}
+
+async function loadTravelers() {
+  var data = await sb('travelers', 'select=nick,traveler_id,last_visit,visit_count&order=last_visit.desc&limit=20');
+  var arr = Array.isArray(data) ? data : [];
+  var el = document.getElementById('travelers-table');
+  if (!arr.length) { el.innerHTML = '<div class="empty">Brak podróżników</div>'; return; }
+  el.innerHTML = '<table class="data-table fade-in">' +
+    '<thead><tr><th>Nick</th><th>ID</th><th>Wizyty</th><th>Ostatnia aktywność</th></tr></thead>' +
+    '<tbody>' + arr.map(function(t) {
+      var lastVisit = t.last_visit ? new Date(t.last_visit).toLocaleDateString('pl') : '—';
+      return '<tr><td><strong>' + esc(t.nick) + '</strong></td>' +
+        '<td style="color:var(--text-light);font-size:11px;">' + esc(t.traveler_id||'') + '</td>' +
+        '<td>' + (t.visit_count||0) + '</td>' +
+        '<td>' + lastVisit + '</td></tr>';
+    }).join('') + '</tbody></table>';
+}
+
+async function loadNotes() {
+  var data = await sb('trainer_notes', 'select=id,tresc,trener_id,created_at,zastosowana&order=created_at.desc&limit=20');
+  var arr = Array.isArray(data) ? data : [];
+  var el = document.getElementById('notes-list');
+  if (!arr.length) { el.innerHTML = '<div class="empty">Brak uwag trenerów</div>'; return; }
+  el.innerHTML = arr.map(function(n) {
+    var date = new Date(n.created_at).toLocaleDateString('pl');
+    var badge = n.zastosowana ? '<span class="badge badge-green">zastosowana</span>' : '<span class="badge badge-brown">oczekuje</span>';
+    return '<div class="note-item fade-in">' +
+      '<div class="note-meta">' + date + ' &nbsp;' + badge + '</div>' +
+      '<div class="note-text">' + esc(n.tresc||'') + '</div>' +
+      '<div class="note-trener">trener: ' + esc(n.trener_id||'') + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+async function loadKonstytucja() {
+  var data = await sb('prompts', 'select=tresc&nazwa=eq.serce_konstytucja&limit=1');
+  var el = document.getElementById('konst-box');
+  if (Array.isArray(data) && data[0]) {
+    el.textContent = data[0].tresc.slice(0, 2000) + (data[0].tresc.length > 2000 ? '\n\n[…ciąg dalszy w Supabase]' : '');
+  } else {
+    el.textContent = 'Nie znaleziono Konstytucji w tabeli prompts';
+  }
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Enter w polu logowania
+document.getElementById('login-nick').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+
+// Boot — sprawdź czy już zalogowany
+window.addEventListener('load', function() {
+  var nick = localStorage.getItem('mana_nick');
+  var rola = localStorage.getItem('mana_rola');
+  if (nick && rola === 'admin' && ADMINS.includes(nick)) {
+    currentNick = nick;
+    showAdmin();
+  }
+});
+</script>
+</body>
+</html>
