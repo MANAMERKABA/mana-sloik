@@ -330,7 +330,12 @@
     <p style="color:var(--day-sub);font-size:14px;margin-bottom:20px;">Co było dziś naprawdę dobre?</p>
     
     <div class="puzzle-wrap">
-      <div class="puzzle-grid" id="puzzle-grid"></div>
+      <div style="position:relative;display:inline-block;border-radius:12px;overflow:hidden;" id="puzzle-container">
+        <!-- Full artwork behind -->
+        <svg id="puzzle-art-svg" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:12px;"></svg>
+        <!-- Overlay grid on top -->
+        <div id="puzzle-grid" style="position:absolute;top:0;left:0;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;"></div>
+      </div>
       <p class="puzzle-progress" id="puzzle-progress"></p>
     </div>
     
@@ -723,36 +728,34 @@ function openDD() {
 }
 
 function renderPuzzle() {
-  const grid = document.getElementById('puzzle-grid');
-  grid.innerHTML = '';
-  const puzzleSVG = getPuzzleSVG();
-  
-  const gridSize = Math.min(Math.floor(window.innerWidth * 0.8), 280);
-  const tileSize = Math.floor((gridSize - 9) / 4);
+  var gridSize = Math.min(Math.floor(window.innerWidth * 0.82), 300);
+  var tileSize = Math.floor((gridSize - 6) / 4);
+  gridSize = tileSize * 4 + 6;
+
+  var container = document.getElementById('puzzle-container');
+  container.style.width = gridSize + 'px';
+  container.style.height = gridSize + 'px';
+
+  var artSvg = document.getElementById('puzzle-art-svg');
+  artSvg.setAttribute('width', gridSize);
+  artSvg.setAttribute('height', gridSize);
+  artSvg.setAttribute('viewBox', '0 0 320 320');
+  artSvg.innerHTML = getPuzzleSVG();
+
+  var grid = document.getElementById('puzzle-grid');
   grid.style.width = gridSize + 'px';
   grid.style.height = gridSize + 'px';
-  
-  for (let i = 0; i < 16; i++) {
-    const row = Math.floor(i / 4);
-    const col = i % 4;
-    const tile = document.createElement('div');
-    tile.className = 'ptile' + (S.ddTiles[i] ? ' revealed' : '');
+  grid.innerHTML = '';
+
+  for (var i = 0; i < 16; i++) {
+    var tile = document.createElement('div');
     tile.id = 'ptile-' + i;
-    tile.style.width = tileSize + 'px';
-    tile.style.height = tileSize + 'px';
-    // SVG viewBox shows the correct 80x80 portion, SVG sized to tile
-    tile.innerHTML =
-      '<svg class="ptile-art" viewBox="' + (col*80) + ' ' + (row*80) + ' 80 80" xmlns="http://www.w3.org/2000/svg" width="' + tileSize + '" height="' + tileSize + '" style="position:absolute;top:0;left:0;width:100%;height:100%;">' + puzzleSVG + '</svg>' +
-      '<div class="ptile-overlay" style="opacity:' + (S.ddTiles[i] ? '0' : '1') + ';transition:opacity .5s ease;"></div>';
+    tile.style.cssText = 'width:' + tileSize + 'px;height:' + tileSize + 'px;background:#1a1a2e;border-radius:2px;transition:opacity .6s ease;opacity:' + (S.ddTiles[i] ? '0' : '1') + ';';
     grid.appendChild(tile);
   }
-  
-  const revealed = S.ddTiles.filter(Boolean).length;
-  if (revealed >= 16) {
-    document.getElementById('puzzle-progress').textContent = '🎉 Puzzle ukończone! Nowe już czeka.';
-  } else {
-    document.getElementById('puzzle-progress').textContent = revealed + '/16 kafelków odkrytych';
-  }
+
+  var revealed = S.ddTiles.filter(Boolean).length;
+  document.getElementById('puzzle-progress').textContent = revealed >= 16 ? '🎉 Puzzle ukończone! Nowe już czeka.' : revealed + '/16 kafelków odkrytych';
 }
 
 function getPuzzleSVG() {
@@ -907,15 +910,16 @@ function ddAfterSerce() {
   document.getElementById('dd-text').value = '';
   renderPuzzle();
   updateDDUI();
-  // Highlight newly revealed tile
+  // Flash highlight on newly revealed tile
   if (S._lastRevealedTile !== undefined && S.lastThoughtValid) {
-    var tile = document.getElementById('ptile-' + S._lastRevealedTile);
-    if (tile) {
-      tile.style.boxShadow = '0 0 0 3px #f6a825, 0 0 16px rgba(246,168,37,.5)';
-      setTimeout(function() {
-        if (tile) tile.style.boxShadow = '';
-      }, 1500);
-    }
+    var idx = S._lastRevealedTile;
+    setTimeout(function() {
+      var tile = document.getElementById('ptile-' + idx);
+      if (tile) {
+        tile.style.boxShadow = '0 0 0 3px #f6a825, 0 0 20px rgba(246,168,37,.6)';
+        setTimeout(function() { if (tile) tile.style.boxShadow = ''; }, 1500);
+      }
+    }, 100);
     S._lastRevealedTile = undefined;
   }
 }
