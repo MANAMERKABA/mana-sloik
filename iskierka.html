@@ -76,49 +76,78 @@
     padding:0 18px 16px;
   }
 
-  /* Kolor karteczki */
-  .color-row{
-    display:flex;gap:10px;margin-bottom:14px;justify-content:center;
+  /* ═══ COLOR STRIPS — stan domyślny ═══ */
+  .color-tiles{
+    display:flex;
+    flex-direction:row;
+    gap:8px;
+    margin-bottom:0;
   }
-  .cdot{
-    width:36px;height:36px;border-radius:50%;cursor:pointer;
-    transition:transform .15s,box-shadow .15s;
-    border:2.5px solid transparent;flex-shrink:0;
+  .ctile{
+    flex:1;
+    border-radius:14px;
+    height:52px;
+    cursor:pointer;
+    transition:transform .15s, box-shadow .15s;
+    border:none;
+    position:relative;overflow:hidden;
+    user-select:none;
   }
-  .cdot.sel{border-color:rgba(255,255,255,0.9);transform:scale(1.18);}
+  .ctile::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(255,255,255,0.15) 0%,transparent 60%);
+    pointer-events:none;
+    border-radius:14px;
+  }
+  .ctile:active{transform:scale(.94);}
 
-  /* Pole tekstowe */
-  .txt-wrap{position:relative;margin-bottom:12px;}
+  /* ═══ WRITE MODE ═══ */
+  .write-panel{
+    display:none;
+    flex-direction:column;gap:12px;
+    animation:slideUp .3s cubic-bezier(.4,0,.2,1);
+  }
+  .write-panel.visible{display:flex;}
+  @keyframes slideUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+  .write-header{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:2px;
+  }
+  .write-color-dot{
+    width:20px;height:20px;border-radius:50%;flex-shrink:0;
+    transition:background .2s, box-shadow .2s;
+  }
+  .write-label{ display:none; }
+  .write-back{
+    background:none;border:none;
+    color:rgba(255,255,255,0.3);
+    font-size:13px;font-weight:700;
+    font-family:'Nunito',sans-serif;
+    cursor:pointer;padding:4px 0;letter-spacing:.5px;
+  }
+  .write-back:active{opacity:.6;}
+
   .sn-textarea{
     width:100%;
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.12);
-    border-radius:18px;
+    background:rgba(255,255,255,0.05);
+    border-radius:16px;
     padding:16px 18px;
     color:#f0eafa;
     font-family:'Nunito',sans-serif;font-size:16px;
-    outline:none;resize:none;
-    line-height:1.5;
+    outline:none;resize:none;line-height:1.6;
     transition:border-color .2s,background .2s;
     backdrop-filter:blur(12px);
     -webkit-backdrop-filter:blur(12px);
   }
-  .sn-textarea:focus{
-    border-color:rgba(180,140,255,0.4);
-    background:rgba(255,255,255,0.08);
-  }
-  .sn-textarea::placeholder{color:rgba(200,190,230,0.35);}
+  .sn-textarea::placeholder{color:rgba(200,190,230,0.3);}
 
-  /* Przycisk */
   .send-btn{
-    width:100%;padding:16px;border:none;border-radius:18px;
-    background:linear-gradient(135deg,rgba(120,60,220,0.7),rgba(80,40,160,0.8));
-    border:1px solid rgba(180,120,255,0.25);
-    color:#f0eafa;font-family:'Nunito',sans-serif;
-    font-size:16px;font-weight:700;cursor:pointer;
-    transition:all .2s;
-    backdrop-filter:blur(8px);
-    box-shadow:0 4px 20px rgba(100,40,200,0.3);
+    width:100%;padding:15px;border:none;border-radius:16px;
+    color:#fff;font-family:'Nunito',sans-serif;
+    font-size:15px;font-weight:800;cursor:pointer;
+    transition:all .18s;letter-spacing:.5px;
+    border:1px solid rgba(255,255,255,0.15);
   }
   .send-btn:active{transform:scale(.97);}
 
@@ -245,12 +274,16 @@
   <div class="sky-space"></div>
 
   <div class="bottom-panel">
-    <div class="color-row" id="color-row"></div>
-    <div class="txt-wrap">
+    <div class="color-tiles" id="color-tiles"></div>
+    <div class="write-panel" id="write-panel">
+      <div class="write-header">
+        <div class="write-color-dot" id="write-dot"></div>
+        <button class="write-back" onclick="closeWrite()">zmień kolor</button>
+      </div>
       <textarea class="sn-textarea" id="sn-txt" rows="3"
-        placeholder="Co chcesz zostawić za sobą tej nocy..."></textarea>
+        placeholder="Zostaw za sobą co Ci ciąży..."></textarea>
+      <button class="send-btn" id="send-btn" onclick="submitNote()">Wrzuć do słoika 🫙</button>
     </div>
-    <button class="send-btn" onclick="submitNote()">Wrzuć do słoika 🫙</button>
   </div>
 </div>
 
@@ -595,23 +628,54 @@ document.getElementById('const-svg').addEventListener('click', () => {
 /* ═══════════════════════════════════
    KOLORY KARTECZEK
 ═══════════════════════════════════ */
-const COLORS = ['#9b59b6','#3498db','#2ecc71','#e67e22','#e74c3c','#f1c40f'];
-let selectedColor = COLORS[0];
+/* ═══════════════════════════════════
+   KAFELKI KOLORÓW
+═══════════════════════════════════ */
+const COLORS = [
+  {hex:'#7c4dff'},
+  {hex:'#2196f3'},
+  {hex:'#26a69a'},
+  {hex:'#ef6c00'},
+  {hex:'#c62828'},
+  {hex:'#f9a825'},
+];
+let selectedColor = COLORS[0].hex;
 
-function buildColors() {
-  const row = document.getElementById('color-row');
+function buildColorTiles() {
+  const grid = document.getElementById('color-tiles');
+  grid.innerHTML = '';
   COLORS.forEach(c => {
-    const d = document.createElement('div');
-    d.className = 'cdot' + (c === selectedColor ? ' sel' : '');
-    d.style.background = c;
-    d.style.boxShadow = '0 2px 10px ' + c + '66';
-    d.onclick = () => {
-      selectedColor = c;
-      document.querySelectorAll('.cdot').forEach(x => x.classList.remove('sel'));
-      d.classList.add('sel');
-    };
-    row.appendChild(d);
+    const tile = document.createElement('div');
+    tile.className = 'ctile';
+    tile.style.background = c.hex;
+    tile.style.boxShadow = `0 3px 14px ${c.hex}55`;
+    tile.onclick = () => openWrite(c);
+    grid.appendChild(tile);
   });
+}
+
+function openWrite(colorObj) {
+  selectedColor = colorObj.hex;
+
+  document.getElementById('write-dot').style.background = colorObj.hex;
+  document.getElementById('write-dot').style.boxShadow = `0 0 10px ${colorObj.hex}99`;
+
+  const btn = document.getElementById('send-btn');
+  btn.style.background = colorObj.hex;
+  btn.style.boxShadow = `0 4px 20px ${colorObj.hex}55`;
+
+  const ta = document.getElementById('sn-txt');
+  ta.style.borderColor = colorObj.hex + '55';
+
+  document.getElementById('color-tiles').style.display = 'none';
+  document.getElementById('write-panel').classList.add('visible');
+  setTimeout(() => ta.focus(), 150);
+}
+
+function closeWrite() {
+  document.getElementById('write-panel').classList.remove('visible');
+  document.getElementById('sn-txt').value = '';
+  document.getElementById('color-tiles').style.display = 'grid';
 }
 
 /* ═══════════════════════════════════
@@ -655,6 +719,8 @@ function submitNote() {
 function resetForm() {
   document.getElementById('sn-txt').value = '';
   document.getElementById('confirm-screen').classList.remove('visible');
+  document.getElementById('write-panel').classList.remove('visible');
+  document.getElementById('color-tiles').style.display = 'grid';
 }
 
 /* ═══════════════════════════════════
@@ -675,8 +741,8 @@ window.addEventListener('DOMContentLoaded', () => {
   // Rotacja
   startRotation();
 
-  // Kolory
-  buildColors();
+  // Kafelki kolorów
+  buildColorTiles();
 
   // Schowaj hint po 4s
   setTimeout(() => {
