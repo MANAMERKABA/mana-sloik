@@ -3,759 +3,695 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Spokojna Noc — MANA</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#020810">
+<title>Spokojna Noc</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-  /* ═══ SKY ═══ */
-  #sky{
-    position:fixed;inset:0;
-    background:radial-gradient(ellipse at 50% 0%, #0d1b2a 0%, #060d18 40%, #020508 100%);
-    overflow:hidden;
-  }
+html, body {
+  width:100%; height:100%;
+  overflow:hidden;
+  font-family:'Nunito', sans-serif;
+  background:#020810;
+}
 
-  /* Atmosferyczna poświata na horyzoncie */
-  #sky::after{
-    content:'';position:absolute;bottom:0;left:0;right:0;height:35%;
-    background:linear-gradient(to top, rgba(15,25,50,0.6) 0%, transparent 100%);
-    pointer-events:none;
-  }
+/* ══════════════════════════════
+   NIEBO
+══════════════════════════════ */
+#sky {
+  position:fixed; inset:0; z-index:0;
+  background: radial-gradient(ellipse at 50% 0%,
+    #0d1b2a 0%, #060d18 45%, #020508 100%);
+}
+.nb {
+  position:absolute; border-radius:50%;
+  pointer-events:none; filter:blur(70px); mix-blend-mode:screen;
+}
+.nb1 { width:60vw; height:50vw; top:0; left:-5%;
+  background:radial-gradient(circle, rgba(25,40,100,0.22) 0%, transparent 70%); }
+.nb2 { width:45vw; height:40vw; top:15%; right:0%;
+  background:radial-gradient(circle, rgba(55,18,85,0.14) 0%, transparent 70%); }
+.nb3 { width:35vw; height:30vw; top:45%; left:35%;
+  background:radial-gradient(circle, rgba(10,50,70,0.12) 0%, transparent 70%); }
 
-  /* Mgławica — subtelna, nieruchoma */
-  .nebula{
-    position:absolute;border-radius:50%;pointer-events:none;
-    filter:blur(60px);mix-blend-mode:screen;
-  }
-  .nb1{width:55vw;height:40vw;top:5%;left:10%;
-    background:radial-gradient(circle,rgba(30,50,120,0.18) 0%,transparent 70%);}
-  .nb2{width:40vw;height:35vw;top:20%;right:5%;
-    background:radial-gradient(circle,rgba(60,20,100,0.12) 0%,transparent 70%);}
-  .nb3{width:30vw;height:25vw;top:50%;left:40%;
-    background:radial-gradient(circle,rgba(20,60,80,0.1) 0%,transparent 70%);}
+#star-canvas { position:fixed; inset:0; z-index:1; pointer-events:none; }
+#const-svg   { position:fixed; inset:0; z-index:2; }
 
-  /* ═══ CANVAS GWIAZD ═══ */
-  #star-canvas{position:fixed;inset:0;pointer-events:none;}
-  #const-svg{position:fixed;inset:0;}
+/* ══════════════════════════════
+   LAYOUT — mobile first, max 430px
+══════════════════════════════ */
+#app {
+  position:fixed; inset:0; z-index:10;
+  display:flex; flex-direction:column;
+  max-width:430px; margin:0 auto;
+  /* Na komputerze: wyśrodkowany jak telefon */
+}
 
-  /* ═══ UI ═══ */
-  #ui{
-    position:fixed;inset:0;
-    display:flex;flex-direction:column;
-    padding:env(safe-area-inset-top,20px) 0 env(safe-area-inset-bottom,20px);
-  }
+/* TOP BAR */
+.top-bar {
+  flex-shrink:0;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:
+    max(env(safe-area-inset-top), 16px)
+    20px
+    12px;
+}
+.btn-back {
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px; padding:8px 16px;
+  color:rgba(255,255,255,0.55);
+  font-family:'Nunito',sans-serif; font-size:13px; font-weight:700;
+  cursor:pointer;
+}
+.btn-back:active { opacity:.6; }
+.top-title {
+  font-family:'Cinzel', serif; font-size:12px; letter-spacing:3px;
+  color:rgba(255,255,255,0.28);
+}
+.moon-icon {
+  font-size:22px;
+  filter:drop-shadow(0 0 6px rgba(200,220,255,0.35));
+}
 
-  /* Górny pasek */
-  .top-bar{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:16px 22px 0;
-    flex-shrink:0;
-  }
-  .back-btn{
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.1);
-    border-radius:12px;padding:8px 14px;
-    color:rgba(255,255,255,0.6);
-    font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;
-    cursor:pointer;transition:all .2s;
-  }
-  .back-btn:active{transform:scale(.95);}
-  .top-title{
-    font-family:'Cinzel',serif;font-size:13px;
-    color:rgba(255,255,255,0.35);letter-spacing:3px;
-  }
-  .moon-phase{font-size:22px;filter:drop-shadow(0 0 8px rgba(200,220,255,0.4));}
+/* Środek — przestrzeń na niebo */
+.sky-gap { flex:1; min-height:0; }
 
-  /* Środek — przewijalne niebo (spacer) */
-  .sky-space{flex:1;}
+/* HINT */
+#hint {
+  position:fixed; top:40%; left:50%; transform:translateX(-50%);
+  z-index:20; pointer-events:none; text-align:center;
+  animation:hintAnim 5s ease forwards;
+}
+@keyframes hintAnim {
+  0%   { opacity:0; }
+  15%  { opacity:1; }
+  75%  { opacity:1; }
+  100% { opacity:0; }
+}
+.hint-txt {
+  font-size:11px; font-weight:700; letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:rgba(200,215,255,0.38);
+}
 
-  /* Panel dolny — formularz */
-  .bottom-panel{
-    flex-shrink:0;
-    padding:0 18px 16px;
-  }
+/* ══════════════════════════════
+   BOTTOM PANEL
+══════════════════════════════ */
+.bottom-panel {
+  flex-shrink:0;
+  padding:0 16px max(env(safe-area-inset-bottom), 20px);
+}
 
-  /* ═══ COLOR STRIPS — stan domyślny ═══ */
-  .color-tiles{
-    display:flex;
-    flex-direction:row;
-    gap:8px;
-    margin-bottom:0;
-  }
-  .ctile{
-    flex:1;
-    border-radius:14px;
-    height:52px;
-    cursor:pointer;
-    transition:transform .15s, box-shadow .15s;
-    border:none;
-    position:relative;overflow:hidden;
-    user-select:none;
-  }
-  .ctile::after{
-    content:'';position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(255,255,255,0.15) 0%,transparent 60%);
-    pointer-events:none;
-    border-radius:14px;
-  }
-  .ctile:active{transform:scale(.94);}
+/* --- STAN 1: paski kolorów --- */
+.color-strips {
+  display:flex; gap:8px; height:54px;
+}
+.cstrip {
+  flex:1; border-radius:14px; cursor:pointer;
+  border:none; outline:none;
+  transition:transform .14s, opacity .14s;
+  position:relative; overflow:hidden;
+}
+.cstrip::after {
+  content:''; position:absolute; inset:0; border-radius:14px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 55%);
+  pointer-events:none;
+}
+.cstrip:active { transform:scale(.92); opacity:.85; }
 
-  /* ═══ WRITE MODE ═══ */
-  .write-panel{
-    display:none;
-    flex-direction:column;gap:12px;
-    animation:slideUp .3s cubic-bezier(.4,0,.2,1);
-  }
-  .write-panel.visible{display:flex;}
-  @keyframes slideUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+/* --- STAN 2: pisanie --- */
+.write-area {
+  display:none; flex-direction:column; gap:10px;
+  animation:slideUp .28s cubic-bezier(.4,0,.2,1);
+}
+.write-area.on { display:flex; }
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.write-top {
+  display:flex; align-items:center; justify-content:space-between;
+}
+.chosen-dot {
+  width:18px; height:18px; border-radius:50%;
+  transition:background .2s, box-shadow .2s;
+}
+.btn-change {
+  background:none; border:none;
+  font-family:'Nunito',sans-serif; font-size:12px; font-weight:700;
+  letter-spacing:.5px; color:rgba(255,255,255,0.28);
+  cursor:pointer; padding:4px 0;
+}
+.btn-change:active { opacity:.5; }
+.note-input {
+  width:100%; background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:16px; padding:14px 16px;
+  color:#eeeaff; font-family:'Nunito',sans-serif;
+  font-size:16px; line-height:1.6;
+  outline:none; resize:none;
+  transition:border-color .2s;
+  -webkit-appearance:none;
+}
+.note-input::placeholder { color:rgba(200,195,230,0.3); }
+.note-input:focus { border-color:rgba(200,180,255,0.3); }
+.btn-submit {
+  width:100%; padding:15px; border:none; border-radius:16px;
+  font-family:'Nunito',sans-serif; font-size:15px; font-weight:800;
+  color:#fff; cursor:pointer; letter-spacing:.3px;
+  transition:transform .15s, opacity .15s;
+  border:1px solid rgba(255,255,255,0.12);
+}
+.btn-submit:active { transform:scale(.97); opacity:.88; }
 
-  .write-header{
-    display:flex;align-items:center;justify-content:space-between;
-    margin-bottom:2px;
-  }
-  .write-color-dot{
-    width:20px;height:20px;border-radius:50%;flex-shrink:0;
-    transition:background .2s, box-shadow .2s;
-  }
-  .write-label{ display:none; }
-  .write-back{
-    background:none;border:none;
-    color:rgba(255,255,255,0.3);
-    font-size:13px;font-weight:700;
-    font-family:'Nunito',sans-serif;
-    cursor:pointer;padding:4px 0;letter-spacing:.5px;
-  }
-  .write-back:active{opacity:.6;}
+/* ══════════════════════════════
+   POPUP KONSTELACJI
+══════════════════════════════ */
+#popup {
+  display:none; position:fixed; z-index:100;
+  width:min(280px, 88vw);
+  background:rgba(6,12,28,0.93);
+  border:1px solid rgba(160,185,255,0.12);
+  border-radius:18px; padding:18px 20px;
+  backdrop-filter:blur(22px);
+  box-shadow:0 10px 40px rgba(0,0,8,0.85);
+  animation:popIn .22s ease;
+}
+#popup.on { display:block; }
+@keyframes popIn {
+  from { opacity:0; transform:scale(.88) translateY(6px); }
+  to   { opacity:1; transform:scale(1)  translateY(0); }
+}
+.popup-x {
+  position:absolute; top:12px; right:16px;
+  background:none; border:none; font-size:20px; line-height:1;
+  color:rgba(255,255,255,0.25); cursor:pointer; font-family:'Nunito',sans-serif;
+}
+.popup-x:active { opacity:.5; }
+.pop-name {
+  font-family:'Cinzel', serif; font-size:14px; font-weight:600;
+  color:#c8d8ff; letter-spacing:1.5px; margin-bottom:2px;
+}
+.pop-latin {
+  font-size:10px; font-style:italic;
+  color:rgba(180,200,255,0.35); letter-spacing:.5px; margin-bottom:10px;
+}
+.pop-star {
+  font-size:11px; color:rgba(210,220,255,0.5);
+  margin-bottom:8px; line-height:1.4;
+}
+.pop-desc {
+  font-size:13px; color:rgba(220,225,245,0.72);
+  line-height:1.65; margin-bottom:10px;
+}
+.pop-tip {
+  font-size:11px; font-style:italic;
+  color:rgba(180,195,230,0.42); line-height:1.5;
+  border-top:1px solid rgba(255,255,255,0.06);
+  padding-top:10px;
+}
 
-  .sn-textarea{
-    width:100%;
-    background:rgba(255,255,255,0.05);
-    border-radius:16px;
-    padding:16px 18px;
-    color:#f0eafa;
-    font-family:'Nunito',sans-serif;font-size:16px;
-    outline:none;resize:none;line-height:1.6;
-    transition:border-color .2s,background .2s;
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
-  }
-  .sn-textarea::placeholder{color:rgba(200,190,230,0.3);}
+/* ══════════════════════════════
+   POTWIERDZENIE
+══════════════════════════════ */
+#confirm {
+  display:none; position:fixed; inset:0; z-index:50;
+  flex-direction:column; align-items:center; justify-content:center;
+  padding:40px; text-align:center;
+}
+#confirm.on { display:flex; }
+.conf-msg {
+  font-size:18px; font-weight:600;
+  color:rgba(225,220,250,0.88); line-height:1.7;
+  max-width:280px; margin-bottom:32px;
+}
+.btn-conf {
+  padding:13px 32px; border-radius:40px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.6);
+  font-family:'Nunito',sans-serif; font-size:15px; font-weight:700;
+  cursor:pointer; letter-spacing:.5px;
+}
+.btn-conf:active { opacity:.6; }
 
-  .send-btn{
-    width:100%;padding:15px;border:none;border-radius:16px;
-    color:#fff;font-family:'Nunito',sans-serif;
-    font-size:15px;font-weight:800;cursor:pointer;
-    transition:all .18s;letter-spacing:.5px;
-    border:1px solid rgba(255,255,255,0.15);
-  }
-  .send-btn:active{transform:scale(.97);}
+/* ══════════════════════════════
+   KARTECZKA — animacja
+══════════════════════════════ */
+.fly {
+  position:fixed; z-index:200; pointer-events:none;
+  border-radius:10px; padding:6px 14px;
+  font-family:'Nunito',sans-serif; font-size:12px; font-weight:700;
+  color:#fff; max-width:180px; text-align:center;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
 
-  /* ═══ POPUP KONSTELACJI ═══ */
-  #const-popup{
-    display:none;
-    position:fixed;
-    background:rgba(8,14,30,0.92);
-    border:1px solid rgba(180,200,255,0.15);
-    border-radius:20px;
-    padding:18px 20px;
-    max-width:260px;
-    z-index:200;
-    backdrop-filter:blur(20px);
-    box-shadow:0 8px 40px rgba(0,0,10,0.8);
-    animation:popIn .25s ease;
+/* ══════════════════════════════
+   DESKTOP FRAME (symulacja telefonu)
+══════════════════════════════ */
+@media (min-width:500px) {
+  #app {
+    left:50%; transform:translateX(-50%);
+    width:390px; right:auto;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.06),
+               0 30px 80px rgba(0,0,0,0.8);
   }
-  @keyframes popIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
-  #const-popup.visible{display:block;}
-  .popup-close{
-    position:absolute;top:10px;right:14px;
-    background:none;border:none;color:rgba(255,255,255,0.3);
-    font-size:18px;cursor:pointer;line-height:1;
-    font-family:'Nunito',sans-serif;
+  #star-canvas, #const-svg, #sky {
+    left:50%; transform:translateX(-50%);
+    width:390px; right:auto;
   }
-  .popup-name{
-    font-family:'Cinzel',serif;font-size:15px;
-    color:#c8d8ff;letter-spacing:1.5px;margin-bottom:3px;
-  }
-  .popup-latin{
-    font-size:10px;color:rgba(180,200,255,0.4);
-    letter-spacing:1px;margin-bottom:10px;font-style:italic;
-  }
-  .popup-stars{font-size:11px;color:rgba(200,210,255,0.5);margin-bottom:8px;}
-  .popup-desc{
-    font-size:13px;color:rgba(220,225,245,0.75);
-    line-height:1.6;
-  }
-  .popup-tip{
-    margin-top:10px;padding-top:10px;
-    border-top:1px solid rgba(255,255,255,0.07);
-    font-size:11px;color:rgba(180,190,230,0.45);
-    font-style:italic;
-  }
-
-  /* ═══ HINT ═══ */
-  #sky-hint{
-    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-    text-align:center;pointer-events:none;
-    animation:hintFade 4s ease forwards;
-    z-index:50;
-  }
-  @keyframes hintFade{0%{opacity:0;}15%{opacity:1;}70%{opacity:1;}100%{opacity:0;}}
-  .hint-text{
-    font-size:12px;font-weight:700;letter-spacing:2px;
-    color:rgba(200,210,255,0.45);text-transform:uppercase;
-  }
-
-  /* ═══ POTWIERDZENIE ═══ */
-  #confirm-screen{
-    display:none;position:fixed;inset:0;z-index:300;
-    flex-direction:column;align-items:center;justify-content:center;
-    text-align:center;padding:40px;
-  }
-  #confirm-screen.visible{display:flex;}
-  .confirm-msg{
-    font-size:18px;font-weight:600;color:rgba(220,215,250,0.9);
-    line-height:1.6;margin-bottom:32px;max-width:280px;
-  }
-  .confirm-btn{
-    padding:14px 32px;border-radius:40px;border:none;
-    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
-    color:rgba(255,255,255,0.7);font-family:'Nunito',sans-serif;
-    font-size:15px;font-weight:700;cursor:pointer;
-  }
-
-  /* ═══ ANIMACJA KARTECZKI ═══ */
-  .fly-note{
-    position:fixed;border-radius:8px;z-index:400;pointer-events:none;
-    font-size:11px;font-weight:700;color:#fff;
-    padding:6px 12px;display:flex;align-items:center;justify-content:center;
-    text-align:center;
-  }
+  body { background:#000308; }
+}
 </style>
 </head>
 <body>
 
-<!-- TŁO NIEBA -->
+<!-- NIEBO -->
 <div id="sky">
-  <div class="nebula nb1"></div>
-  <div class="nebula nb2"></div>
-  <div class="nebula nb3"></div>
+  <div class="nb nb1"></div>
+  <div class="nb nb2"></div>
+  <div class="nb nb3"></div>
 </div>
-
-<!-- CANVAS GWIAZD (tło — losowe) -->
 <canvas id="star-canvas"></canvas>
-
-<!-- SVG KONSTELACJI (interaktywne) -->
 <svg id="const-svg" xmlns="http://www.w3.org/2000/svg"></svg>
 
 <!-- POPUP KONSTELACJI -->
-<div id="const-popup">
-  <button class="popup-close" onclick="closePopup()">×</button>
-  <div class="popup-name" id="p-name"></div>
-  <div class="popup-latin" id="p-latin"></div>
-  <div class="popup-stars" id="p-stars"></div>
-  <div class="popup-desc" id="p-desc"></div>
-  <div class="popup-tip" id="p-tip"></div>
+<div id="popup">
+  <button class="popup-x" onclick="closePopup()">×</button>
+  <div class="pop-name"  id="p-name"></div>
+  <div class="pop-latin" id="p-latin"></div>
+  <div class="pop-star"  id="p-star"></div>
+  <div class="pop-desc"  id="p-desc"></div>
+  <div class="pop-tip"   id="p-tip"></div>
 </div>
 
 <!-- HINT -->
-<div id="sky-hint">
-  <div class="hint-text">dotknij konstelację</div>
-</div>
+<div id="hint"><div class="hint-txt">dotknij gwiazdozbiór</div></div>
 
-<!-- UI -->
-<div id="ui">
+<!-- GŁÓWNY WIDOK -->
+<div id="app">
+
   <div class="top-bar">
-    <button class="back-btn" onclick="history.back()">← Wróć</button>
+    <button class="btn-back">← Wróć</button>
     <div class="top-title">SPOKOJNA NOC</div>
-    <div class="moon-phase" id="moon-em">🌔</div>
+    <div class="moon-icon" id="moon-em">🌔</div>
   </div>
 
-  <div class="sky-space"></div>
+  <div class="sky-gap"></div>
 
   <div class="bottom-panel">
-    <div class="color-tiles" id="color-tiles"></div>
-    <div class="write-panel" id="write-panel">
-      <div class="write-header">
-        <div class="write-color-dot" id="write-dot"></div>
-        <button class="write-back" onclick="closeWrite()">zmień kolor</button>
+
+    <!-- STAN 1: paski -->
+    <div class="color-strips" id="strips"></div>
+
+    <!-- STAN 2: pisanie -->
+    <div class="write-area" id="writer">
+      <div class="write-top">
+        <div class="chosen-dot" id="chosen-dot"></div>
+        <button class="btn-change" onclick="backToStrips()">zmień kolor</button>
       </div>
-      <textarea class="sn-textarea" id="sn-txt" rows="3"
+      <textarea class="note-input" id="note-input" rows="3"
         placeholder="Zostaw za sobą co Ci ciąży..."></textarea>
-      <button class="send-btn" id="send-btn" onclick="submitNote()">Wrzuć do słoika 🫙</button>
+      <button class="btn-submit" id="btn-submit" onclick="submit()">
+        Wrzuć do słoika 🫙
+      </button>
     </div>
+
   </div>
 </div>
 
 <!-- POTWIERDZENIE -->
-<div id="confirm-screen">
-  <div class="confirm-msg" id="confirm-msg">Twoja myśl jest już bezpieczna. 🌙</div>
-  <button class="confirm-btn" onclick="resetForm()">Dobranoc ✦</button>
+<div id="confirm">
+  <div class="conf-msg" id="conf-msg">Twoja myśl jest już bezpieczna. 🌙</div>
+  <button class="btn-conf" onclick="backToStrips()">Dobranoc ✦</button>
 </div>
 
 <script>
-/* ═══════════════════════════════════
-   DANE KONSTELACJI
-   (pozycje w % ekranu — responsywne)
-═══════════════════════════════════ */
-const CONSTELLATIONS = [
-  {
-    id:'orion', name:'Orion', latin:'Orion', season:'zima',
-    stars:[
-      {x:28,y:18,r:2.8,name:'Betelgeza'},{x:38,y:16,r:2.2},{x:32,y:22,r:1.8},
-      {x:26,y:26,r:2.0},{x:34,y:26,r:1.9},{x:30,y:30,r:1.5},
-      {x:25,y:34,r:2.4,name:'Rigel'},{x:36,y:32,r:1.7}
-    ],
-    lines:[[0,2],[1,2],[2,3],[2,4],[3,5],[4,5],[5,6],[5,7]],
-    desc:'Myśliwy z mitologii greckiej — jeden z gigantów, syn Posejdona. Widoczny zimą nad południowym horyzontem. Trzy gwiazdy w pasie to "Pas Oriona" — znany każdemu kto raz go zobaczy.',
-    tip:'Szukaj trzech gwiazd w równej linii — to Pas Oriona. Od niego wszystko inne jest łatwe.',
-    mainStar:'Betelgeza (pomarańczowy nadolbrzym) i Rigel (niebiesko-biały olbrzym)'
-  },
-  {
-    id:'ursamajor', name:'Wielka Niedźwiedzica', latin:'Ursa Major', season:'cały rok',
-    stars:[
-      {x:58,y:14,r:2.2},{x:64,y:12,r:2.0},{x:70,y:14,r:2.1},{x:74,y:18,r:2.3},
-      {x:68,y:22,r:1.8},{x:66,y:28,r:1.9},{x:72,y:30,r:1.7}
-    ],
-    lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[4,3]],
-    desc:'Siedem jasnych gwiazd tworzących "Wielki Wóz" — najłatwiejsza do znalezienia konstelacja na polskim niebie. Widoczna przez cały rok. Dwie skrajne gwiazdy "kubka" wskazują zawsze na Gwiazdę Polarną.',
-    tip:'Przedłuż linię przez dwie prawe gwiazdy kubka — pięć razy ich odległość i jesteś na Gwiazdzie Polarnej (Północ).',
-    mainStar:'Dubhe i Merak — "wskazówki" prowadzące do Gwiazdy Polarnej'
-  },
-  {
-    id:'cassiopeia', name:'Kasjopeja', latin:'Cassiopeia', season:'cały rok',
-    stars:[
-      {x:72,y:42,r:2.0},{x:78,y:38,r:2.3},{x:84,y:40,r:2.5},{x:90,y:37,r:2.1},{x:96,y:40,r:1.9}
-    ],
-    lines:[[0,1],[1,2],[2,3],[3,4]],
-    desc:'Królowa Etiopii z mitologii greckiej — zarozumiała piękność zamieniona w konstelację jako kara. Kształt litery W lub M zależnie od pory roku. Leży po drugiej stronie Gwiazdy Polarnej niż Wielki Wóz.',
-    tip:'Kasjopeja i Wielki Wóz kręcą się wokół Gwiazdy Polarnej jak wskazówki zegara. Gdy jeden jest wysoko, drugi jest nisko.',
-    mainStar:'Schedar — serce królowej, pomarańczowy olbrzym'
-  },
-  {
-    id:'cygnus', name:'Łabędź', latin:'Cygnus', season:'lato/jesień',
-    stars:[
-      {x:48,y:45,r:2.8,name:'Deneb'},{x:52,y:52,r:1.8},{x:56,y:58,r:2.0},{x:60,y:64,r:2.4,name:'Albireo'},
-      {x:48,y:57,r:1.7},{x:64,y:57,r:1.7}
-    ],
-    lines:[[0,1],[1,2],[2,3],[1,4],[1,5]],
-    desc:'Łabędź w locie — jego jasna linia tworzy "Krzyż Północny". Deneb, najjaśniejsza gwiazda, jest jedną z najodleglejszych gwiazd widocznych gołym okiem — leży ok. 2600 lat świetlnych od nas.',
-    tip:'Albireo (dziób łabędzia) to jedna z najpiękniejszych gwiazd podwójnych — w teleskopie widać złotą i niebieską razem.',
-    mainStar:'Deneb — odległy nadolbrzym, jeden z najjaśniejszych obiektów Drogi Mlecznej'
-  },
-  {
-    id:'scorpius', name:'Skorpion', latin:'Scorpius', season:'lato',
-    stars:[
-      {x:20,y:62,r:2.8,name:'Antares'},{x:24,y:58,r:1.8},{x:18,y:58,r:1.7},
-      {x:28,y:64,r:1.9},{x:30,y:70,r:1.8},{x:26,y:76,r:2.0},{x:22,y:80,r:1.7},{x:18,y:76,r:1.8}
-    ],
-    lines:[[0,1],[0,2],[0,3],[3,4],[4,5],[5,6],[6,7]],
-    desc:'Skorpion z mitologii — wysłany przez Artemidę by zabić Oriona. Dlatego Orion zachodzi gdy Skorpion wschodzi — nigdy nie są razem na niebie. Antares to czerwony nadolbrzym, jeden z największych znanych obiektów.',
-    tip:'Antares (z greckiego "rywal Aresa") świeci czerwono-pomarańczowo. Gdyby zastąpił nasze Słońce, jego powierzchnia sięgałaby Marsa.',
-    mainStar:'Antares — czerwony nadolbrzym, ok. 700 razy większy od Słońca'
-  },
-  {
-    id:'leo', name:'Lew', latin:'Leo', season:'wiosna',
-    stars:[
-      {x:44,y:32,r:2.8,name:'Regulus'},{x:48,y:26,r:2.0},{x:54,y:24,r:1.9},{x:58,y:28,r:1.8},
-      {x:60,y:34,r:1.7},{x:56,y:38,r:2.1,name:'Denebola'},{x:50,y:36,r:1.6}
-    ],
-    lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,0],[6,4]],
-    desc:'Lew Nemejski z mitologii — potwór którego jako pierwszy zadanie pokonał Herakles. Regulus leży prawie dokładnie na ekliptyce — Słońce, Księżyc i planety przechodzą blisko niego.',
-    tip:'Szukaj "sierpu" lub "znaku zapytania" na niebie wiosną — to głowa Lwa. Regulus (serce) to jasna gwiazda na dole.',
-    mainStar:'Regulus — niebiesko-biała gwiazda, obraca się tak szybko że jest spłaszczona'
-  },
-  {
-    id:'lyra', name:'Lutnia', latin:'Lyra', season:'lato',
-    stars:[
-      {x:76,y:55,r:2.9,name:'Wega'},{x:80,y:60,r:1.8},{x:84,y:58,r:1.7},
-      {x:84,y:64,r:1.6},{x:80,y:66,r:1.7}
-    ],
-    lines:[[0,1],[0,2],[1,2],[1,3],[2,4],[3,4]],
-    desc:'Lutnia Orfeusza — najpiękniejszego muzyka starożytności. Wega to jedna z trzech gwiazd "Trójkąta Letniego" i piąta najjaśniejsza gwiazda na niebie. Za ok. 12 000 lat Wega zastąpi Gwiazdę Polarną jako punkt północy.',
-    tip:'Wega jest łatwa do znalezienia — najjaśniejsza gwiazda wysoko na letnim niebie. Świeci niebiesko-biało.',
-    mainStar:'Wega — symbol muzyki i poezji, niebieskawa, ok. 25 lat świetlnych od Ziemi'
-  },
-  {
-    id:'perseus', name:'Perseusz', latin:'Perseus', season:'zima/jesień',
-    stars:[
-      {x:36,y:48,r:2.3,name:'Mirfak'},{x:30,y:44,r:1.9},{x:28,y:50,r:1.8},
-      {x:34,y:54,r:2.1,name:'Algol'},{x:40,y:52,r:1.7},{x:42,y:46,r:1.8}
-    ],
-    lines:[[0,1],[1,2],[0,3],[0,4],[4,5],[5,0]],
-    desc:'Bohater grecki który uratował Andromedę i zabił Meduzę. Algol ("Gwiazda Demona") to gwiazda zmienna — co 2,87 dnia jej jasność spada na kilka godzin gdy zakrywa ją ciemniejszy towarzysz.',
-    tip:'Algol zmienia jasność widoczną gołym okiem — obserwuj ją przez kilka nocy a zobaczysz różnicę. To gwiazda zaćmieniowa.',
-    mainStar:'Algol — "Gwiazda Demona", pierwsza odkryta gwiazda zaćmieniowa (1667)'
-  }
+/* ══════════════════════════════════════
+   DANE
+══════════════════════════════════════ */
+
+// Pastelowe kolory — spokojne, nie krzykliwe
+const COLORS = [
+  '#a78bca', // lawenda
+  '#7eaed4', // błękit
+  '#6dbdaa', // szałwia
+  '#d4956b', // terakota
+  '#c47b8a', // róż
+  '#c4b45a', // złoto
 ];
 
-/* ═══════════════════════════════════
-   MOON
-═══════════════════════════════════ */
-function getMoon() {
+const CONSTELLATIONS = [
+  {
+    name:'Orion', latin:'Orion · zima',
+    star:'Betelgeza i Rigel',
+    desc:'Myśliwy z mitologii greckiej, syn Posejdona. Trzy równe gwiazdy w środku to "Pas Oriona" — najłatwiejszy punkt orientacji na zimowym niebie.',
+    tip:'👁 Znajdź trzy gwiazdy w linii — od nich wszystko inne jest proste.',
+    sx:[28,38,32,26,34,30,25,36], sy:[18,16,22,26,26,30,34,32],
+    sr:[2.8,2.2,1.8,2.0,1.9,1.5,2.4,1.7],
+    lines:[[0,2],[1,2],[2,3],[2,4],[3,5],[4,5],[5,6],[5,7]]
+  },
+  {
+    name:'Wielka Niedźwiedzica', latin:'Ursa Major · cały rok',
+    star:'Dubhe i Merak — wskazują Gwiazdę Polarną',
+    desc:'Siedem gwiazd tworzących "Wielki Wóz". Widoczna przez cały rok na polskim niebie. Dwie gwiazdy prawej ściany kubka zawsze wskazują północ.',
+    tip:'👁 Przedłuż linię przez dwie prawe gwiazdy × 5 — jesteś na Gwieździe Polarnej.',
+    sx:[58,64,70,74,68,66,72], sy:[14,12,14,18,22,28,30],
+    sr:[2.2,2.0,2.1,2.3,1.8,1.9,1.7],
+    lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]]
+  },
+  {
+    name:'Kasjopeja', latin:'Cassiopeia · cały rok',
+    star:'Schedar — serce królowej',
+    desc:'Kształt litery W (lub M). Królowa Etiopii z mitologii — zarozumiała piękność zamieniona w konstelację. Leży po drugiej stronie Gwiazdy Polarnej niż Wielki Wóz.',
+    tip:'👁 Kasjopeja i Wielki Wóz kręcą się wokół Gwiazdy Polarnej jak wskazówki zegara.',
+    sx:[72,78,84,90,96], sy:[42,38,40,37,40],
+    sr:[2.0,2.3,2.5,2.1,1.9],
+    lines:[[0,1],[1,2],[2,3],[3,4]]
+  },
+  {
+    name:'Łabędź', latin:'Cygnus · lato',
+    star:'Deneb — jeden z najodleglejszych gołym okiem',
+    desc:'Łabędź w locie, zwany też Krzyżem Północnym. Deneb leży ok. 2600 lat świetlnych od nas — i tak jest jedną z najjaśniejszych gwiazd na niebie.',
+    tip:'👁 Albireo (dziób) to w teleskopie złota i niebieska gwiazda razem — wyjątkowy widok.',
+    sx:[48,52,56,60,44,64], sy:[45,52,58,64,57,57],
+    sr:[2.8,1.8,2.0,2.4,1.7,1.7],
+    lines:[[0,1],[1,2],[2,3],[1,4],[1,5]]
+  },
+  {
+    name:'Lew', latin:'Leo · wiosna',
+    star:'Regulus — prawie dokładnie na ekliptyce',
+    desc:'Lew Nemejski z mitologii — pierwszy wyczyn Heraklesa. Wiosną łatwy do znalezienia po kształcie sierpa lub znaku zapytania tworzącym głowę lwa.',
+    tip:'👁 Szukaj odwróconego znaku zapytania — to głowa Lwa. Regulus na dole.',
+    sx:[44,48,54,58,60,56,50], sy:[32,26,24,28,34,38,36],
+    sr:[2.8,2.0,1.9,1.8,1.7,2.1,1.6],
+    lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,0]]
+  },
+  {
+    name:'Lutnia', latin:'Lyra · lato',
+    star:'Wega — piąta najjaśniejsza gwiazda nieba',
+    desc:'Lutnia Orfeusza, najpiękniejszego muzyka starożytności. Wega świeci niebiesko-biało i za 12 000 lat zastąpi Gwiazdę Polarną jako punkt północy.',
+    tip:'👁 Wega — najjaśniejsza gwiazda wysoko na letnim niebie. Prosto nad głową.',
+    sx:[76,80,84,84,80], sy:[55,60,58,64,66],
+    sr:[2.9,1.8,1.7,1.6,1.7],
+    lines:[[0,1],[0,2],[1,2],[1,3],[2,4],[3,4]]
+  },
+  {
+    name:'Perseusz', latin:'Perseus · zima/jesień',
+    star:'Algol — Gwiazda Demona (zmienna co 2,87 dnia)',
+    desc:'Bohater który uratował Andromedę i pokonał Meduzę. Algol co 2,87 dnia zmienia jasność widoczną gołym okiem — bo zasłania ją ciemniejszy towarzysz.',
+    tip:'👁 Obserwuj Algol przez kilka nocy — zobaczysz jak zmienia jasność bez teleskopu.',
+    sx:[36,30,28,34,40,42], sy:[48,44,50,54,52,46],
+    sr:[2.3,1.9,1.8,2.1,1.7,1.8],
+    lines:[[0,1],[1,2],[0,3],[0,4],[4,5],[5,0]]
+  },
+];
+
+/* ══════════════════════════════════════
+   KSIĘŻYC
+══════════════════════════════════════ */
+function getMoonEmoji() {
   const known = new Date(2000,0,6);
-  const diff = (new Date() - known) / (1000*60*60*24);
-  const c = ((diff % 29.53059) + 29.53059) % 29.53059;
-  if(c<1.85) return{e:'🌑',n:'Nów'};
-  if(c<7.38) return{e:'🌒',n:'Przybywający sierp'};
-  if(c<11.07) return{e:'🌓',n:'Pierwsza kwadra'};
-  if(c<14.77) return{e:'🌔',n:'Przybywający garb'};
-  if(c<18.46) return{e:'🌕',n:'Pełnia'};
-  if(c<22.15) return{e:'🌖',n:'Ubywający garb'};
-  if(c<25.84) return{e:'🌗',n:'Ostatnia kwadra'};
-  return{e:'🌘',n:'Ubywający sierp'};
+  const c = (((new Date()-known)/(864e5)) % 29.53059 + 29.53059) % 29.53059;
+  return c<1.85?'🌑':c<7.38?'🌒':c<11.07?'🌓':c<14.77?'🌔':
+         c<18.46?'🌕':c<22.15?'🌖':c<25.84?'🌗':'🌘';
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════
    GWIAZDY TŁA
-═══════════════════════════════════ */
-function drawBackgroundStars() {
-  const canvas = document.getElementById('star-canvas');
-  const W = window.innerWidth, H = window.innerHeight;
-  canvas.width = W; canvas.height = H;
-  const ctx = canvas.getContext('2d');
+══════════════════════════════════════ */
+function drawBg() {
+  const cv = document.getElementById('star-canvas');
+  const W = cv.width  = window.innerWidth > 430 ? 390 : window.innerWidth;
+  const H = cv.height = window.innerHeight;
+  const ctx = cv.getContext('2d');
 
-  // Losowe gwiazdy tła
-  const count = Math.floor((W * H) / 2800);
-  for(let i = 0; i < count; i++) {
-    const x = Math.random() * W;
-    const y = Math.random() * H * 0.75; // Tylko górna część
-    const r = Math.random() * 1.2 + 0.2;
-    const alpha = Math.random() * 0.6 + 0.15;
-
+  const N = Math.floor(W * H / 2600);
+  for(let i=0; i<N; i++) {
+    const x = Math.random()*W;
+    const y = Math.random()*H*0.78;
+    const r = Math.random()*1.3+0.2;
+    const a = Math.random()*0.55+0.12;
+    const cols = [
+      `rgba(195,210,255,${a})`,
+      `rgba(255,255,245,${a})`,
+      `rgba(255,240,210,${a*0.8})`,
+      `rgba(210,225,255,${a})`,
+    ];
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI*2);
-
-    // Kolory gwiazd — różne temperatury
-    const colors = [
-      `rgba(200,215,255,${alpha})`,   // niebiesko-biała
-      `rgba(255,255,240,${alpha})`,   // biała
-      `rgba(255,235,200,${alpha})`,   // żółto-biała
-      `rgba(255,200,150,${alpha*0.7})`, // pomarańczowa (rzadsza)
-    ];
-    ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+    ctx.fillStyle = cols[Math.floor(Math.random()*cols.length)];
     ctx.fill();
-
-    // Migotanie — różne opacities
-    if(Math.random() > 0.7) {
+    if(Math.random()>.72) {
       ctx.beginPath();
-      ctx.arc(x, y, r * 2.5, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(200,215,255,${alpha * 0.08})`;
+      ctx.arc(x, y, r*2.8, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(200,215,255,${a*0.07})`;
       ctx.fill();
     }
   }
-
-  // Droga Mleczna — subtelny obłok
-  const gradient = ctx.createLinearGradient(W*0.3, 0, W*0.7, H*0.6);
-  gradient.addColorStop(0, 'rgba(120,140,200,0)');
-  gradient.addColorStop(0.3, 'rgba(120,140,200,0.04)');
-  gradient.addColorStop(0.5, 'rgba(150,160,220,0.06)');
-  gradient.addColorStop(0.7, 'rgba(120,140,200,0.04)');
-  gradient.addColorStop(1, 'rgba(120,140,200,0)');
-
-  ctx.save();
-  ctx.rotate(-0.3);
-  ctx.translate(-W*0.1, -H*0.05);
-  ctx.fillStyle = gradient;
-  ctx.fillRect(-W, -H, W*3, H*2);
+  // Droga Mleczna
+  const grd = ctx.createLinearGradient(W*.25,0,W*.75,H*.65);
+  grd.addColorStop(0,'rgba(110,130,190,0)');
+  grd.addColorStop(.4,'rgba(120,135,200,0.05)');
+  grd.addColorStop(.6,'rgba(130,145,210,0.055)');
+  grd.addColorStop(1,'rgba(110,130,190,0)');
+  ctx.save(); ctx.rotate(-.28); ctx.translate(-W*.08,-H*.04);
+  ctx.fillStyle = grd; ctx.fillRect(-W,-H,W*3,H*2);
   ctx.restore();
 }
 
-/* ═══════════════════════════════════
-   KONSTELACJE SVG
-═══════════════════════════════════ */
-let rotationAngle = 0; // stopnie — bardzo wolna rotacja
+/* ══════════════════════════════════════
+   KONSTELACJE
+══════════════════════════════════════ */
+let rot = 0;
+let constTimer = null;
 
-function drawConstellations() {
+function getW() { return window.innerWidth > 430 ? 390 : window.innerWidth; }
+
+function drawConst() {
   const svg = document.getElementById('const-svg');
-  const W = window.innerWidth, H = window.innerHeight;
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const W = getW(), H = window.innerHeight;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
   svg.innerHTML = '';
 
-  // Defs — filtry
+  // defs
   const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
   defs.innerHTML = `
-    <filter id="starGlow">
-      <feGaussianBlur stdDeviation="2.5" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <filter id="lineGlow">
-      <feGaussianBlur stdDeviation="1"/>
-    </filter>
-  `;
+    <filter id="sg"><feGaussianBlur stdDeviation="2.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>`;
   svg.appendChild(defs);
+
+  const CX = W/2, CY = H*0.36, RAD = rot*Math.PI/180;
 
   CONSTELLATIONS.forEach(con => {
     const g = document.createElementNS('http://www.w3.org/2000/svg','g');
     g.style.cursor = 'pointer';
 
-    // Konwertuj % → px z uwzględnieniem rotacji
-    const pts = con.stars.map(s => {
-      const px = (s.x / 100) * W;
-      const py = (s.y / 100) * (H * 0.72); // Konstelacje w górnych 72% ekranu
-      // Subtelna rotacja wokół centrum
-      const cx = W/2, cy = H*0.35;
-      const rad = rotationAngle * Math.PI / 180;
-      const rx = cx + (px-cx)*Math.cos(rad) - (py-cy)*Math.sin(rad);
-      const ry = cy + (px-cx)*Math.sin(rad) + (py-cy)*Math.cos(rad);
-      return {x:rx, y:ry, r:s.r||1.8, name:s.name};
+    // oblicz punkty z rotacją
+    const pts = con.sx.map((sx,i) => {
+      const px = sx/100*W;
+      const py = con.sy[i]/100*(H*0.74);
+      const dx = px-CX, dy = py-CY;
+      return {
+        x: CX + dx*Math.cos(RAD) - dy*Math.sin(RAD),
+        y: CY + dx*Math.sin(RAD) + dy*Math.cos(RAD),
+        r: con.sr[i]
+      };
     });
 
-    // Linie między gwiazdami
+    // linie
     con.lines.forEach(([a,b]) => {
-      // Glow
-      const glow = document.createElementNS('http://www.w3.org/2000/svg','line');
-      glow.setAttribute('x1', pts[a].x); glow.setAttribute('y1', pts[a].y);
-      glow.setAttribute('x2', pts[b].x); glow.setAttribute('y2', pts[b].y);
-      glow.setAttribute('stroke', 'rgba(160,180,255,0.06)');
-      glow.setAttribute('stroke-width', '3');
-      glow.setAttribute('filter', 'url(#lineGlow)');
-      g.appendChild(glow);
+      const gl = document.createElementNS('http://www.w3.org/2000/svg','line');
+      gl.setAttribute('x1',pts[a].x); gl.setAttribute('y1',pts[a].y);
+      gl.setAttribute('x2',pts[b].x); gl.setAttribute('y2',pts[b].y);
+      gl.setAttribute('stroke','rgba(150,175,255,0.07)');
+      gl.setAttribute('stroke-width','3');
+      g.appendChild(gl);
 
-      // Linia
-      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-      line.setAttribute('x1', pts[a].x); line.setAttribute('y1', pts[a].y);
-      line.setAttribute('x2', pts[b].x); line.setAttribute('y2', pts[b].y);
-      line.setAttribute('stroke', 'rgba(160,180,255,0.18)');
-      line.setAttribute('stroke-width', '0.8');
-      line.setAttribute('stroke-dasharray', '3 4');
-      g.appendChild(line);
+      const ln = document.createElementNS('http://www.w3.org/2000/svg','line');
+      ln.setAttribute('x1',pts[a].x); ln.setAttribute('y1',pts[a].y);
+      ln.setAttribute('x2',pts[b].x); ln.setAttribute('y2',pts[b].y);
+      ln.setAttribute('stroke','rgba(160,185,255,0.17)');
+      ln.setAttribute('stroke-width','0.75');
+      ln.setAttribute('stroke-dasharray','3 4');
+      g.appendChild(ln);
     });
 
-    // Gwiazdy
+    // gwiazdy
     pts.forEach(pt => {
-      // Poświata
       const glow = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      glow.setAttribute('cx', pt.x); glow.setAttribute('cy', pt.y);
-      glow.setAttribute('r', pt.r * 3);
-      glow.setAttribute('fill', 'rgba(200,215,255,0.06)');
+      glow.setAttribute('cx',pt.x); glow.setAttribute('cy',pt.y);
+      glow.setAttribute('r',pt.r*3.2);
+      glow.setAttribute('fill','rgba(200,215,255,0.055)');
       g.appendChild(glow);
 
-      // Gwiazda
-      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      circle.setAttribute('cx', pt.x); circle.setAttribute('cy', pt.y);
-      circle.setAttribute('r', pt.r);
-      circle.setAttribute('fill', 'rgba(230,238,255,0.92)');
-      circle.setAttribute('filter', 'url(#starGlow)');
-      g.appendChild(circle);
+      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx',pt.x); c.setAttribute('cy',pt.y);
+      c.setAttribute('r',pt.r);
+      c.setAttribute('fill','rgba(232,240,255,0.9)');
+      c.setAttribute('filter','url(#sg)');
+      g.appendChild(c);
     });
 
-    // Niewidoczna strefa dotyku (większa)
-    const centerX = pts.reduce((s,p)=>s+p.x,0)/pts.length;
-    const centerY = pts.reduce((s,p)=>s+p.y,0)/pts.length;
-    const touchZone = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    touchZone.setAttribute('cx', centerX); touchZone.setAttribute('cy', centerY);
-    touchZone.setAttribute('r', '38');
-    touchZone.setAttribute('fill', 'transparent');
-    g.appendChild(touchZone);
+    // centrum + label + zona dotyku
+    const mx = pts.reduce((s,p)=>s+p.x,0)/pts.length;
+    const my = pts.reduce((s,p)=>s+p.y,0)/pts.length;
 
-    // Etykieta (bardzo subtelna)
-    const label = document.createElementNS('http://www.w3.org/2000/svg','text');
-    label.setAttribute('x', centerX); label.setAttribute('y', centerY + 28);
-    label.setAttribute('text-anchor', 'middle');
-    label.setAttribute('fill', 'rgba(180,200,255,0.22)');
-    label.setAttribute('font-size', '9');
-    label.setAttribute('font-family', 'Cinzel, serif');
-    label.setAttribute('letter-spacing', '1.5');
-    label.textContent = con.name.toUpperCase();
-    g.appendChild(label);
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+    lbl.setAttribute('x',mx); lbl.setAttribute('y',my+26);
+    lbl.setAttribute('text-anchor','middle');
+    lbl.setAttribute('fill','rgba(170,195,255,0.2)');
+    lbl.setAttribute('font-size','8');
+    lbl.setAttribute('font-family','Cinzel,serif');
+    lbl.setAttribute('letter-spacing','1.8');
+    lbl.textContent = con.name.toUpperCase();
+    g.appendChild(lbl);
 
-    // Klik/tap
-    g.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showPopup(con, centerX, centerY);
-    });
+    const tz = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    tz.setAttribute('cx',mx); tz.setAttribute('cy',my);
+    tz.setAttribute('r','42'); tz.setAttribute('fill','transparent');
+    g.appendChild(tz);
 
+    g.addEventListener('click', e => { e.stopPropagation(); showPopup(con, mx, my); });
     svg.appendChild(g);
   });
 }
 
-/* ═══════════════════════════════════
-   ROTACJA NIEBA
-═══════════════════════════════════ */
-let rotationTimer = null;
-
 function startRotation() {
-  // 1 pełna rotacja = 24 godziny = 86400000ms
-  // Ale dla celów demo: 1 obrót = 4 minuty (żeby widać było ruch)
-  // Prawdziwa prędkość: 360 / 86400 = 0.00417 stopni/sekundę
-  // Demo: 360 / 240 = 1.5 stopnia/sekundę → za szybko
-  // Kompromis: 1 obrót = 20 minut → 0.03 stopnia/sekundę
-  const ROTATION_SPEED = 0.008; // stopni na sekundę (ok. 8° na minutę — ledwo widoczne)
-
-  rotationTimer = setInterval(() => {
-    rotationAngle += ROTATION_SPEED * (1/10);
-    if(rotationAngle >= 360) rotationAngle = 0;
-    drawConstellations();
-  }, 100); // co 100ms
+  constTimer = setInterval(() => {
+    rot += 0.006; // ~6° na minutę — niemal niedostrzegalne
+    if(rot>=360) rot=0;
+    drawConst();
+  }, 100);
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════
    POPUP
-═══════════════════════════════════ */
+══════════════════════════════════════ */
 function showPopup(con, cx, cy) {
-  const popup = document.getElementById('const-popup');
-  document.getElementById('p-name').textContent = con.name;
-  document.getElementById('p-latin').textContent = con.latin + ' · najlepiej widoczna: ' + con.season;
-  document.getElementById('p-stars').textContent = '✦ ' + con.mainStar;
-  document.getElementById('p-desc').textContent = con.desc;
-  document.getElementById('p-tip').textContent = '👁 ' + con.tip;
+  const pp = document.getElementById('popup');
+  document.getElementById('p-name').textContent  = con.name;
+  document.getElementById('p-latin').textContent = con.latin;
+  document.getElementById('p-star').textContent  = '✦ '+con.star;
+  document.getElementById('p-desc').textContent  = con.desc;
+  document.getElementById('p-tip').textContent   = con.tip;
 
-  // Pozycja popupu
-  const W = window.innerWidth, H = window.innerHeight;
-  const popW = 260, popH = 200;
-  let left = cx - popW/2;
-  let top = cy + 30;
+  const W = getW(), H = window.innerHeight;
+  const pw = Math.min(280, W*0.88);
+  let left = cx - pw/2;
+  let top  = cy + 28;
+  left = Math.max(10, Math.min(left, W-pw-10));
+  top  = Math.max(70, Math.min(top, H-260));
 
-  // Nie wychodź poza ekran
-  left = Math.max(10, Math.min(left, W - popW - 10));
-  top = Math.max(70, Math.min(top, H - popH - 120));
-
-  popup.style.left = left + 'px';
-  popup.style.top = top + 'px';
-  popup.classList.add('visible');
+  pp.style.width = pw+'px';
+  pp.style.left  = (window.innerWidth>430 ? (window.innerWidth-390)/2 : 0) + left + 'px';
+  pp.style.top   = top+'px';
+  pp.classList.add('on');
 }
+function closePopup() { document.getElementById('popup').classList.remove('on'); }
+document.getElementById('const-svg').addEventListener('click', closePopup);
 
-function closePopup() {
-  document.getElementById('const-popup').classList.remove('visible');
-}
+/* ══════════════════════════════════════
+   PASKI KOLORÓW
+══════════════════════════════════════ */
+let chosenColor = COLORS[0];
 
-// Klik poza popup = zamknij
-document.getElementById('const-svg').addEventListener('click', () => {
-  closePopup();
-});
-
-/* ═══════════════════════════════════
-   KOLORY KARTECZEK
-═══════════════════════════════════ */
-/* ═══════════════════════════════════
-   KAFELKI KOLORÓW
-═══════════════════════════════════ */
-const COLORS = [
-  {hex:'#7c4dff'},
-  {hex:'#2196f3'},
-  {hex:'#26a69a'},
-  {hex:'#ef6c00'},
-  {hex:'#c62828'},
-  {hex:'#f9a825'},
-];
-let selectedColor = COLORS[0].hex;
-
-function buildColorTiles() {
-  const grid = document.getElementById('color-tiles');
-  grid.innerHTML = '';
-  COLORS.forEach(c => {
-    const tile = document.createElement('div');
-    tile.className = 'ctile';
-    tile.style.background = c.hex;
-    tile.style.boxShadow = `0 3px 14px ${c.hex}55`;
-    tile.onclick = () => openWrite(c);
-    grid.appendChild(tile);
+function buildStrips() {
+  const wrap = document.getElementById('strips');
+  wrap.innerHTML = '';
+  COLORS.forEach(hex => {
+    const b = document.createElement('button');
+    b.className = 'cstrip';
+    b.style.background = hex;
+    b.style.opacity = '0.72';
+    b.onclick = () => openWriter(hex);
+    wrap.appendChild(b);
   });
 }
 
-function openWrite(colorObj) {
-  selectedColor = colorObj.hex;
+function openWriter(hex) {
+  chosenColor = hex;
+  const dot = document.getElementById('chosen-dot');
+  dot.style.background = hex;
+  dot.style.boxShadow  = `0 0 10px ${hex}88`;
 
-  document.getElementById('write-dot').style.background = colorObj.hex;
-  document.getElementById('write-dot').style.boxShadow = `0 0 10px ${colorObj.hex}99`;
+  const btn = document.getElementById('btn-submit');
+  btn.style.background = hex;
+  btn.style.opacity    = '0.82';
 
-  const btn = document.getElementById('send-btn');
-  btn.style.background = colorObj.hex;
-  btn.style.boxShadow = `0 4px 20px ${colorObj.hex}55`;
+  const inp = document.getElementById('note-input');
+  inp.style.borderColor = hex+'44';
 
-  const ta = document.getElementById('sn-txt');
-  ta.style.borderColor = colorObj.hex + '55';
-
-  document.getElementById('color-tiles').style.display = 'none';
-  document.getElementById('write-panel').classList.add('visible');
-  setTimeout(() => ta.focus(), 150);
+  document.getElementById('strips').style.display  = 'none';
+  document.getElementById('writer').classList.add('on');
+  setTimeout(() => inp.focus(), 160);
 }
 
-function closeWrite() {
-  document.getElementById('write-panel').classList.remove('visible');
-  document.getElementById('sn-txt').value = '';
-  document.getElementById('color-tiles').style.display = 'grid';
+function backToStrips() {
+  document.getElementById('note-input').value = '';
+  document.getElementById('writer').classList.remove('on');
+  document.getElementById('confirm').classList.remove('on');
+  document.getElementById('strips').style.display = 'flex';
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════
    SUBMIT
-═══════════════════════════════════ */
-const CONFIRMS = [
+══════════════════════════════════════ */
+const MSGS = [
   'Twoja myśl jest już bezpieczna. 🌙',
   'Głowa wolna. Można spać.',
   'Słoik przyjął. Możesz odpuścić.',
   'Odłożone. Nie musisz tego nosić.',
-  'Dobrze, że to powiedziałeś. 🌙'
+  'Dobrze, że to powiedziałeś. 🌙',
 ];
 
-function submitNote() {
-  const txt = document.getElementById('sn-txt').value.trim();
-  if(!txt) { document.getElementById('sn-txt').focus(); return; }
+function submit() {
+  const txt = document.getElementById('note-input').value.trim();
+  if(!txt) { document.getElementById('note-input').focus(); return; }
 
   // Animacja karteczki
-  const note = document.createElement('div');
-  note.className = 'fly-note';
-  note.style.cssText = `background:${selectedColor};left:50%;bottom:120px;transform:translateX(-50%);opacity:1;transition:none;max-width:180px;`;
-  note.textContent = txt.length > 20 ? txt.slice(0,20)+'…' : txt;
-  document.body.appendChild(note);
+  const fly = document.createElement('div');
+  fly.className = 'fly';
+  fly.style.cssText = `background:${chosenColor};opacity:0.9;
+    left:50%;bottom:140px;transform:translateX(-50%);`;
+  fly.textContent = txt.length>22 ? txt.slice(0,22)+'…' : txt;
+  document.body.appendChild(fly);
 
-  setTimeout(() => {
-    note.style.transition = 'all 1.2s cubic-bezier(.4,0,.2,1)';
-    note.style.bottom = '85%';
-    note.style.opacity = '0';
-    note.style.transform = 'translateX(-50%) scale(.15)';
-  }, 50);
-  setTimeout(() => { note.remove(); }, 1300);
+  setTimeout(()=>{
+    fly.style.transition = 'all 1.1s cubic-bezier(.3,0,.2,1)';
+    fly.style.bottom = '80%';
+    fly.style.opacity = '0';
+    fly.style.transform = 'translateX(-50%) scale(.1)';
+  }, 40);
+  setTimeout(()=>fly.remove(), 1200);
 
   // Potwierdzenie
-  setTimeout(() => {
-    const msg = CONFIRMS[Math.floor(Math.random()*CONFIRMS.length)];
-    document.getElementById('confirm-msg').textContent = msg;
-    document.getElementById('confirm-screen').classList.add('visible');
-  }, 900);
+  setTimeout(()=>{
+    document.getElementById('conf-msg').textContent =
+      MSGS[Math.floor(Math.random()*MSGS.length)];
+    document.getElementById('writer').classList.remove('on');
+    document.getElementById('confirm').classList.add('on');
+  }, 800);
 }
 
-function resetForm() {
-  document.getElementById('sn-txt').value = '';
-  document.getElementById('confirm-screen').classList.remove('visible');
-  document.getElementById('write-panel').classList.remove('visible');
-  document.getElementById('color-tiles').style.display = 'grid';
-}
-
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════
    INIT
-═══════════════════════════════════ */
+══════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', () => {
-  // Księżyc
-  const moon = getMoon();
-  document.getElementById('moon-em').textContent = moon.e;
-  document.getElementById('moon-em').title = moon.n;
-
-  // Gwiazdy tła
-  drawBackgroundStars();
-
-  // Konstelacje
-  drawConstellations();
-
-  // Rotacja
+  document.getElementById('moon-em').textContent = getMoonEmoji();
+  drawBg();
+  drawConst();
   startRotation();
-
-  // Kafelki kolorów
-  buildColorTiles();
-
-  // Schowaj hint po 4s
-  setTimeout(() => {
-    const hint = document.getElementById('sky-hint');
-    if(hint) hint.style.display = 'none';
-  }, 4500);
+  buildStrips();
+  setTimeout(()=>{ document.getElementById('hint').style.display='none'; }, 5200);
 });
 
-// Resize
-window.addEventListener('resize', () => {
-  drawBackgroundStars();
-  drawConstellations();
-});
+window.addEventListener('resize', ()=>{ drawBg(); drawConst(); });
 </script>
 </body>
 </html>
