@@ -16,10 +16,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#020508;}
 .q svg{position:absolute;inset:0;width:100%;height:100%;}
 
 /* Quadrant base colors */
-.q-wind {background:#030c1a;}
-.q-water{background:#010d1a;}
-.q-fire {background:#080202;}
-.q-earth{background:#020a02;}
+.q-wind {background:#071428;}
+.q-water{background:#020e20;}
+.q-fire {background:#130404;}
+.q-earth{background:#050f04;}
 
 /* Center radial vignette — darkens where quadrants meet, frames the parchment */
 .vignette{
@@ -248,83 +248,88 @@ html,body{width:100%;height:100%;overflow:hidden;background:#020508;}
     <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="wSky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#020810"/>
-          <stop offset="100%" stop-color="#0b2038"/>
+          <stop offset="0%" stop-color="#0a1830"/>
+          <stop offset="100%" stop-color="#1a3a5c"/>
         </linearGradient>
-        <filter id="wSoft"><feGaussianBlur stdDeviation="0.5"/></filter>
       </defs>
       <rect width="200" height="200" fill="url(#wSky)"/>
 
-      <!-- Stars -->
-      <circle cx="18" cy="12" r=".7" fill="white" style="animation:twinkle 3.1s infinite .1s"/>
-      <circle cx="52" cy="7" r="1" fill="#cce4ff" style="animation:twinkle 4s infinite .6s"/>
-      <circle cx="94" cy="19" r=".6" fill="white" style="animation:twinkle 2.6s infinite 1.1s"/>
-      <circle cx="141" cy="9" r=".8" fill="white" style="animation:twinkle 3.6s infinite .35s"/>
-      <circle cx="174" cy="24" r=".6" fill="#cce4ff" style="animation:twinkle 4.2s infinite 1.6s"/>
-      <circle cx="28" cy="36" r=".5" fill="white" style="animation:twinkle 5s infinite 2s"/>
-      <circle cx="118" cy="31" r=".7" fill="white" style="animation:twinkle 3.2s infinite .8s"/>
-      <circle cx="72" cy="46" r=".5" fill="white" style="animation:twinkle 4.6s infinite 1.3s"/>
-      <circle cx="165" cy="42" r=".6" fill="#cce4ff" style="animation:twinkle 3.8s infinite .4s"/>
+      <!-- Stars — bright -->
+      <circle cx="18" cy="12" r="1.2" fill="white" opacity=".9" style="animation:twinkle 3.1s infinite .1s"/>
+      <circle cx="52" cy="7" r="1.6" fill="#cce4ff" opacity=".95" style="animation:twinkle 4s infinite .6s"/>
+      <circle cx="94" cy="19" r="1" fill="white" opacity=".85" style="animation:twinkle 2.6s infinite 1.1s"/>
+      <circle cx="141" cy="9" r="1.4" fill="white" opacity=".9" style="animation:twinkle 3.6s infinite .35s"/>
+      <circle cx="174" cy="24" r="1" fill="#cce4ff" opacity=".88" style="animation:twinkle 4.2s infinite 1.6s"/>
+      <circle cx="28" cy="36" r=".9" fill="white" opacity=".75" style="animation:twinkle 5s infinite 2s"/>
+      <circle cx="118" cy="31" r="1.1" fill="white" opacity=".82" style="animation:twinkle 3.2s infinite .8s"/>
+      <circle cx="72" cy="46" r=".8" fill="white" opacity=".7" style="animation:twinkle 4.6s infinite 1.3s"/>
+      <circle cx="165" cy="42" r="1" fill="#cce4ff" opacity=".88" style="animation:twinkle 3.8s infinite .4s"/>
 
-      <!-- Wind flow lines -->
-      <path d="M-8,58 C22,46 55,66 95,53 C132,40 162,59 208,49"
-            fill="none" stroke="rgba(175,215,255,0.38)" stroke-width="1.4" stroke-linecap="round"
+      <!-- Wind flow lines — bright and visible -->
+      <path d="M-8,55 C22,43 55,63 95,50 C132,37 162,56 208,46"
+            fill="none" stroke="rgba(200,230,255,0.7)" stroke-width="1.8" stroke-linecap="round"
             stroke-dasharray="500" stroke-dashoffset="500"
             style="animation:windLine 3.2s ease-in-out infinite 0s"/>
-      <path d="M-8,80 C28,68 62,90 102,76 C142,62 170,82 208,72"
-            fill="none" stroke="rgba(175,215,255,0.24)" stroke-width=".9" stroke-linecap="round"
+      <path d="M-8,78 C28,66 62,88 102,74 C142,60 170,80 208,70"
+            fill="none" stroke="rgba(180,220,255,0.55)" stroke-width="1.3" stroke-linecap="round"
             stroke-dasharray="500" stroke-dashoffset="500"
             style="animation:windLine 3.8s ease-in-out infinite .9s"/>
-      <path d="M-8,102 C32,90 68,110 110,96 C150,82 175,102 208,92"
-            fill="none" stroke="rgba(195,228,255,0.3)" stroke-width="1.1" stroke-linecap="round"
+      <path d="M-8,100 C32,88 68,108 110,94 C150,80 175,100 208,90"
+            fill="none" stroke="rgba(210,235,255,0.6)" stroke-width="1.5" stroke-linecap="round"
             stroke-dasharray="500" stroke-dashoffset="500"
             style="animation:windLine 4.4s ease-in-out infinite 1.8s"/>
-      <path d="M-8,122 C26,112 70,130 112,116 C154,102 176,120 208,110"
-            fill="none" stroke="rgba(175,215,255,0.18)" stroke-width=".7" stroke-linecap="round"
+      <path d="M-8,120 C26,110 70,128 112,114 C154,100 176,118 208,108"
+            fill="none" stroke="rgba(180,220,255,0.4)" stroke-width="1" stroke-linecap="round"
             stroke-dasharray="500" stroke-dashoffset="500"
             style="animation:windLine 5s ease-in-out infinite 2.8s"/>
 
-      <!-- Floating leaves -->
+      <!-- Floating leaves — bright green -->
       <g style="animation:leafDrift1 5.5s linear infinite 0s">
-        <path d="M22,92 C24,86 31,87 29,93 C27,98 20,97 22,92Z" fill="#3a7a4a"/>
+        <path d="M22,90 C25,83 34,84 32,91 C29,98 18,96 22,90Z" fill="#52c46a"/>
+        <line x1="22" y1="90" x2="32" y2="91" stroke="#3a9a4e" stroke-width=".8"/>
       </g>
       <g style="animation:leafDrift2 6.2s linear infinite 1.8s">
-        <path d="M12,108 C15,101 23,103 20,109 C18,115 10,113 12,108Z" fill="#4a8c5a"/>
+        <path d="M12,107 C15,99 25,101 22,108 C19,115 8,113 12,107Z" fill="#62d47a"/>
+        <line x1="12" y1="107" x2="22" y2="108" stroke="#48aa5a" stroke-width=".8"/>
       </g>
       <g style="animation:leafDrift3 4.8s linear infinite 3.2s">
-        <path d="M6,76 C8,70 15,72 13,77 C11,82 4,80 6,76Z" fill="#2d6a3a"/>
+        <path d="M6,75 C9,68 18,70 16,76 C13,82 3,80 6,75Z" fill="#48b85e"/>
+        <line x1="6" y1="75" x2="16" y2="76" stroke="#359048" stroke-width=".8"/>
       </g>
 
-      <!-- Distant mountains (dark blue-gray) -->
-      <path d="M-5,148 L22,108 L48,128 L78,82 L110,105 L136,66 L162,88 L186,58 L208,76 L208,200 L-5,200Z"
-            fill="#07101e"/>
+      <!-- Mountain silhouette — visible blue-gray -->
+      <path d="M-5,145 L25,102 L52,125 L82,78 L114,102 L140,62 L166,85 L190,55 L208,72 L208,200 L-5,200Z"
+            fill="#0f1f35" opacity=".95"/>
+      <!-- Mid ground -->
+      <path d="M-5,165 L50,148 L100,158 L155,142 L208,152 L208,200 L-5,200Z"
+            fill="#0a1825"/>
+      <!-- Foreground -->
+      <path d="M-5,182 L55,172 L110,178 L165,168 L208,172 L208,200 L-5,200Z"
+            fill="#081420"/>
 
-      <!-- Foreground hill -->
-      <path d="M-5,178 L45,162 L95,170 L148,158 L192,165 L208,162 L208,200 L-5,200Z"
-            fill="#050e1a"/>
-
-      <!-- Lone pine — bent right by wind -->
-      <g transform="translate(158,200)">
-        <path d="M0,0 C-2,-18 -5,-38 -1,-62 C2,-78 -3,-94 -7,-110"
-              stroke="#0a1828" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-        <!-- Branches bent hard right -->
-        <path d="M-5,-62 C6,-57 20,-59 28,-55" stroke="#0a1828" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <path d="M-3,-78 C8,-73 22,-75 30,-70" stroke="#0a1828" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <path d="M-6,-92 C4,-90 14,-92 20,-90" stroke="#0a1828" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <!-- Top -->
-        <path d="M-8,-102 C-2,-98 4,-100 10,-98 C6,-94 -4,-96 -8,-102Z" fill="#0c1e2e"/>
+      <!-- Lone pine — visible! -->
+      <g transform="translate(162,182)">
+        <path d="M0,0 C-2,-16 -4,-35 -1,-58 C2,-74 -3,-88 -8,-105"
+              stroke="#1a3550" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M-4,-58 C8,-52 24,-55 34,-50" stroke="#1a3550" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M-2,-74 C10,-68 26,-71 35,-66" stroke="#1a3550" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M-6,-88 C5,-85 18,-88 26,-84" stroke="#1a3550" stroke-width="2.5" fill="none" stroke-linecap="round"/>
       </g>
 
-      <!-- Goryczka flower (sacred wind flower) -->
-      <g transform="translate(20,172)">
-        <line x1="0" y1="0" x2="-2" y2="-18" stroke="#1a4a28" stroke-width="1.2"/>
-        <circle cx="-2" cy="-18" r="3.5" fill="#2244aa" opacity=".7"/>
-        <circle cx="-2" cy="-18" r="1.5" fill="#8899ff" opacity=".9"/>
+      <!-- Goryczka (sacred wind flower) — bright blue -->
+      <g transform="translate(22,174)">
+        <line x1="0" y1="0" x2="-2" y2="-22" stroke="#2a8040" stroke-width="1.8"/>
+        <circle cx="-2" cy="-22" r="5" fill="#3366dd" opacity=".85"/>
+        <circle cx="-2" cy="-22" r="2.5" fill="#99aaff" opacity=".95"/>
+      </g>
+      <g transform="translate(38,178)">
+        <line x1="0" y1="0" x2="1" y2="-16" stroke="#2a8040" stroke-width="1.5"/>
+        <circle cx="1" cy="-16" r="3.5" fill="#4477ee" opacity=".75"/>
+        <circle cx="1" cy="-16" r="1.8" fill="#aabbff" opacity=".9"/>
       </g>
 
-      <!-- Label -->
-      <text x="10" y="194" font-family="Georgia,serif" font-size="8.5"
-            fill="rgba(175,215,255,0.3)" letter-spacing="2.5">WIATR</text>
+      <text x="8" y="196" font-family="Georgia,serif" font-size="9"
+            fill="rgba(180,220,255,0.55)" letter-spacing="3">WIATR</text>
     </svg>
   </div>
 
@@ -333,84 +338,82 @@ html,body{width:100%;height:100%;overflow:hidden;background:#020508;}
     <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="waSky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#01080e"/>
-          <stop offset="100%" stop-color="#072438"/>
+          <stop offset="0%" stop-color="#040c18"/>
+          <stop offset="100%" stop-color="#0c2d45"/>
         </linearGradient>
         <radialGradient id="moonHalo" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="rgba(200,225,255,0.18)"/>
+          <stop offset="0%" stop-color="rgba(200,225,255,0.35)"/>
           <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
         </radialGradient>
         <radialGradient id="moonFace" cx="40%" cy="38%" r="60%">
-          <stop offset="0%" stop-color="#e4eeff"/>
-          <stop offset="70%" stop-color="#b8d0f0"/>
-          <stop offset="100%" stop-color="#90b8e0"/>
+          <stop offset="0%" stop-color="#e8f2ff"/>
+          <stop offset="70%" stop-color="#c0d8f8"/>
+          <stop offset="100%" stop-color="#9abce0"/>
         </radialGradient>
         <filter id="mistBlur"><feGaussianBlur stdDeviation="5"/></filter>
-        <filter id="moonGlowF"><feGaussianBlur stdDeviation="4"/></filter>
-        <clipPath id="waterFall">
-          <rect x="108" y="35" width="18" height="200"/>
-        </clipPath>
+        <filter id="moonGlowF"><feGaussianBlur stdDeviation="6"/></filter>
       </defs>
       <rect width="200" height="200" fill="url(#waSky)"/>
 
       <!-- Stars -->
-      <circle cx="22" cy="11" r=".8" fill="white" style="animation:twinkle 3.6s infinite .2s"/>
-      <circle cx="78" cy="5" r=".6" fill="#c4dcff" style="animation:twinkle 4.1s infinite 1s"/>
-      <circle cx="128" cy="16" r="1" fill="white" style="animation:twinkle 3s infinite .7s"/>
-      <circle cx="172" cy="9" r=".7" fill="white" style="animation:twinkle 5.2s infinite 0s"/>
-      <circle cx="48" cy="26" r=".5" fill="white" style="animation:twinkle 4.4s infinite 1.8s"/>
-      <circle cx="102" cy="21" r=".6" fill="#c4dcff" style="animation:twinkle 3.3s infinite .95s"/>
-      <circle cx="155" cy="28" r=".5" fill="white" style="animation:twinkle 2.8s infinite 1.4s"/>
+      <circle cx="22" cy="11" r="1.2" fill="white" opacity=".92" style="animation:twinkle 3.6s infinite .2s"/>
+      <circle cx="78" cy="5" r="1" fill="#c4dcff" opacity=".88" style="animation:twinkle 4.1s infinite 1s"/>
+      <circle cx="128" cy="16" r="1.5" fill="white" opacity=".95" style="animation:twinkle 3s infinite .7s"/>
+      <circle cx="172" cy="9" r="1.1" fill="white" opacity=".88" style="animation:twinkle 5.2s infinite 0s"/>
+      <circle cx="48" cy="26" r=".9" fill="white" opacity=".78" style="animation:twinkle 4.4s infinite 1.8s"/>
+      <circle cx="102" cy="21" r="1" fill="#c4dcff" opacity=".85" style="animation:twinkle 3.3s infinite .95s"/>
+      <circle cx="155" cy="28" r=".8" fill="white" opacity=".7" style="animation:twinkle 2.8s infinite 1.4s"/>
+      <circle cx="32" cy="38" r=".7" fill="white" opacity=".65" style="animation:twinkle 3.5s infinite 2.2s"/>
 
+      <!-- Moon outer glow -->
+      <circle cx="148" cy="38" r="35" fill="rgba(180,215,255,0.12)" filter="url(#moonGlowF)"/>
       <!-- Moon halo -->
-      <circle cx="152" cy="40" r="28" fill="url(#moonHalo)" filter="url(#moonGlowF)"/>
-      <!-- Moon -->
-      <circle cx="152" cy="40" r="15" fill="url(#moonFace)"
-              style="animation:moonPulse 4.5s ease-in-out infinite"/>
-      <!-- Moon surface detail -->
-      <circle cx="147" cy="36" r="2.8" fill="rgba(140,175,215,0.28)"/>
-      <circle cx="158" cy="43" r="1.8" fill="rgba(140,175,215,0.22)"/>
-      <circle cx="149" cy="45" r="2" fill="rgba(140,175,215,0.18)"/>
-      <!-- Moon rim light -->
-      <circle cx="152" cy="40" r="15" fill="none" stroke="rgba(200,225,255,0.35)" stroke-width="1.2"/>
+      <circle cx="148" cy="38" r="22" fill="url(#moonHalo)"/>
+      <!-- Moon body -->
+      <circle cx="148" cy="38" r="16" fill="url(#moonFace)" style="animation:moonPulse 4.5s ease-in-out infinite"/>
+      <!-- Moon craters -->
+      <circle cx="143" cy="33" r="3.5" fill="rgba(140,175,215,0.32)"/>
+      <circle cx="155" cy="42" r="2.5" fill="rgba(140,175,215,0.26)"/>
+      <circle cx="146" cy="46" r="2.8" fill="rgba(140,175,215,0.22)"/>
+      <!-- Rim -->
+      <circle cx="148" cy="38" r="16" fill="none" stroke="rgba(220,240,255,0.5)" stroke-width="1.5"/>
 
-      <!-- Mountain peaks -->
-      <path d="M-5,118 L18,72 L40,92 L68,45 L92,72 L118,30 L145,68 L168,42 L195,72 L208,62 L208,200 L-5,200Z"
-            fill="#04111e"/>
+      <!-- Mountain peaks — visible dark blue -->
+      <path d="M-5,120 L22,74 L44,95 L72,48 L96,74 L122,32 L148,70 L172,44 L200,74 L208,64 L208,200 L-5,200Z"
+            fill="#061828"/>
 
-      <!-- Waterfall — main band -->
-      <path d="M115,33 C112,65 110,98 113,138 C114,158 110,178 109,200"
-            stroke="rgba(130,195,235,0.5)" stroke-width="7" fill="none" stroke-linecap="round"
+      <!-- Waterfall — bright! -->
+      <path d="M113,30 C110,62 108,96 112,138 C113,160 110,180 109,200"
+            stroke="rgba(140,210,255,0.75)" stroke-width="9" fill="none" stroke-linecap="round"
             style="animation:wfall 1.8s ease-in-out infinite"/>
-      <path d="M118,36 C116,68 115,100 117,142 C118,162 115,180 114,200"
-            stroke="rgba(155,215,255,0.3)" stroke-width="4" fill="none" stroke-linecap="round"
+      <path d="M117,33 C115,65 114,98 116,142 C117,164 115,182 114,200"
+            stroke="rgba(175,230,255,0.55)" stroke-width="5" fill="none" stroke-linecap="round"
             style="animation:wfall 1.8s ease-in-out infinite .5s"/>
-      <path d="M112,31 C108,62 106,96 110,136 C111,156 108,176 107,200"
-            stroke="rgba(110,175,215,0.22)" stroke-width="2.5" fill="none" stroke-linecap="round"
+      <path d="M110,28 C106,60 104,94 108,136 C109,158 107,178 106,200"
+            stroke="rgba(120,190,230,0.4)" stroke-width="3" fill="none" stroke-linecap="round"
             style="animation:wfall 1.8s ease-in-out infinite 1s"/>
-
-      <!-- Mist at base -->
-      <ellipse cx="113" cy="196" rx="28" ry="10" fill="rgba(190,225,255,0.18)" filter="url(#mistBlur)"/>
+      <!-- Mist -->
+      <ellipse cx="112" cy="196" rx="30" ry="12" fill="rgba(180,228,255,0.28)" filter="url(#mistBlur)"/>
 
       <!-- Ripples -->
-      <ellipse cx="113" cy="192" rx="9" ry="3.5" fill="none"
-               stroke="rgba(130,195,235,0.45)" stroke-width=".9"
+      <ellipse cx="112" cy="193" rx="10" ry="4" fill="none"
+               stroke="rgba(140,210,255,0.65)" stroke-width="1.3"
                style="animation:rippleOut 2.2s ease-out infinite 0s;transform-box:fill-box;transform-origin:center"/>
-      <ellipse cx="113" cy="192" rx="9" ry="3.5" fill="none"
-               stroke="rgba(130,195,235,0.3)" stroke-width=".7"
+      <ellipse cx="112" cy="193" rx="10" ry="4" fill="none"
+               stroke="rgba(140,210,255,0.45)" stroke-width="1"
                style="animation:rippleOut 2.2s ease-out infinite .75s;transform-box:fill-box;transform-origin:center"/>
-      <ellipse cx="113" cy="192" rx="9" ry="3.5" fill="none"
-               stroke="rgba(130,195,235,0.18)" stroke-width=".5"
+      <ellipse cx="112" cy="193" rx="10" ry="4" fill="none"
+               stroke="rgba(140,210,255,0.28)" stroke-width=".7"
                style="animation:rippleOut 2.2s ease-out infinite 1.5s;transform-box:fill-box;transform-origin:center"/>
 
-      <!-- Water pool / moonlit surface at bottom -->
-      <path d="M20,200 Q113,184 195,200Z" fill="rgba(22,65,105,0.45)"/>
-      <!-- Moonlight reflection on water -->
-      <path d="M55,188 C80,184 125,188 150,185" stroke="rgba(175,215,255,0.22)" stroke-width="1.5" fill="none"/>
-      <path d="M68,193 C90,190 128,193 148,191" stroke="rgba(175,215,255,0.14)" stroke-width="1" fill="none"/>
+      <!-- Water pool -->
+      <path d="M15,200 Q112,182 200,200Z" fill="rgba(18,62,105,0.6)"/>
+      <!-- Moonlight reflection -->
+      <path d="M50,188 C82,182 130,188 158,184" stroke="rgba(180,225,255,0.38)" stroke-width="2" fill="none"/>
+      <path d="M68,194 C95,190 132,194 152,192" stroke="rgba(180,225,255,0.22)" stroke-width="1.3" fill="none"/>
 
-      <text x="10" y="194" font-family="Georgia,serif" font-size="8.5"
-            fill="rgba(130,195,235,0.3)" letter-spacing="2.5">WODA</text>
+      <text x="8" y="196" font-family="Georgia,serif" font-size="9"
+            fill="rgba(140,210,255,0.55)" letter-spacing="3">WODA</text>
     </svg>
   </div>
 
@@ -419,91 +422,91 @@ html,body{width:100%;height:100%;overflow:hidden;background:#020508;}
     <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="fSky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#040101"/>
-          <stop offset="65%" stop-color="#100404"/>
-          <stop offset="100%" stop-color="#1c0707"/>
+          <stop offset="0%" stop-color="#0c0202"/>
+          <stop offset="55%" stop-color="#1c0606"/>
+          <stop offset="100%" stop-color="#2a0c08"/>
         </linearGradient>
-        <radialGradient id="fGlow" cx="50%" cy="90%" r="55%">
-          <stop offset="0%" stop-color="rgba(250,95,15,0.55)"/>
-          <stop offset="60%" stop-color="rgba(200,40,5,0.2)"/>
+        <radialGradient id="fGlow" cx="50%" cy="85%" r="60%">
+          <stop offset="0%" stop-color="rgba(255,110,20,0.75)"/>
+          <stop offset="45%" stop-color="rgba(220,55,8,0.38)"/>
           <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
         </radialGradient>
-        <filter id="fBlur"><feGaussianBlur stdDeviation="4"/></filter>
-        <filter id="fSpark"><feGaussianBlur stdDeviation=".6"/></filter>
+        <filter id="fBlur"><feGaussianBlur stdDeviation="6"/></filter>
+        <filter id="fSpark"><feGaussianBlur stdDeviation=".8"/></filter>
       </defs>
 
       <rect width="200" height="200" fill="url(#fSky)"/>
 
-      <!-- Underglow -->
-      <ellipse cx="100" cy="170" rx="80" ry="40" fill="url(#fGlow)" filter="url(#fBlur)"/>
+      <!-- Strong underglow -->
+      <ellipse cx="100" cy="168" rx="90" ry="50" fill="url(#fGlow)" filter="url(#fBlur)"/>
+      <!-- Extra orange wash on ground -->
+      <rect x="0" y="155" width="200" height="45" fill="rgba(200,55,10,0.22)"/>
 
-      <!-- Forest — pine silhouettes -->
-      <!-- Tree 1 (far left) -->
-      <path d="M12,200 L12,148 L1,148 L14,122 L4,122 L18,94 L8,94 L23,66 L38,94 L28,94 L42,122 L32,122 L45,148 L33,148 L33,200Z"
-            fill="#0a0202"/>
-      <!-- Tree 2 -->
-      <path d="M44,200 L44,155 L34,155 L46,130 L36,130 L50,103 L40,103 L55,76 L70,103 L60,103 L74,130 L64,130 L76,155 L62,155 L62,200Z"
-            fill="#080101"/>
-      <!-- Tree 3 (tallest, center) -->
-      <path d="M76,200 L76,140 L63,140 L77,112 L65,112 L82,78 L68,78 L86,44 L104,78 L90,78 L107,112 L95,112 L109,140 L96,140 L96,200Z"
-            fill="#090303"/>
-      <!-- Tree 4 -->
-      <path d="M112,200 L112,152 L100,152 L113,127 L103,127 L117,100 L107,100 L122,74 L137,100 L127,100 L140,127 L130,127 L143,152 L131,152 L131,200Z"
-            fill="#080202"/>
-      <!-- Tree 5 -->
-      <path d="M148,200 L148,148 L137,148 L150,122 L140,122 L154,95 L144,95 L158,68 L172,95 L162,95 L175,122 L165,122 L178,148 L166,148 L166,200Z"
-            fill="#090202"/>
-      <!-- Tree 6 (right) -->
-      <path d="M176,200 L176,158 L167,158 L178,136 L169,136 L181,112 L173,112 L184,88 L196,112 L188,112 L200,136 L191,136 L208,158 L191,158 L191,200Z"
-            fill="#080101"/>
+      <!-- Forest pines — visible dark red-brown -->
+      <path d="M8,200 L8,145 L-4,145 L10,118 L0,118 L15,90 L4,90 L20,62 L36,90 L25,90 L40,118 L30,118 L44,145 L30,145 L30,200Z"
+            fill="#1e0805"/>
+      <path d="M40,200 L40,152 L28,152 L42,126 L30,126 L46,98 L34,98 L50,70 L66,98 L54,98 L70,126 L58,126 L72,152 L58,152 L58,200Z"
+            fill="#180604"/>
+      <path d="M72,200 L72,138 L58,138 L74,108 L60,108 L78,74 L62,74 L82,40 L102,74 L86,74 L104,108 L90,108 L106,138 L92,138 L92,200Z"
+            fill="#1c0705"/>
+      <path d="M108,200 L108,145 L94,145 L110,118 L98,118 L114,90 L102,90 L118,64 L134,90 L122,90 L138,118 L126,118 L142,145 L128,145 L128,200Z"
+            fill="#180604"/>
+      <path d="M146,200 L146,148 L134,148 L148,122 L136,122 L152,95 L140,95 L156,68 L172,95 L160,95 L175,122 L163,122 L178,148 L164,148 L164,200Z"
+            fill="#1e0805"/>
+      <path d="M176,200 L176,155 L165,155 L178,132 L168,132 L182,108 L172,108 L186,84 L200,108 L190,108 L208,132 L196,132 L212,155 L192,155 L192,200Z"
+            fill="#180604"/>
 
-      <!-- Flames — cluster 1 (between trees 3 & 4) -->
-      <g transform="translate(93,152)" style="animation:flicker 1.3s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom">
-        <path d="M12,36 C9,25 2,18 5,7 C7,1 12,0 12,0 C12,0 17,1 19,7 C22,18 15,25 12,36Z"
-              fill="#ff5c0a" opacity=".92"/>
-        <path d="M12,36 C10,28 4,22 7,13 C9,8 12,5 12,5 C12,5 15,8 17,13 C20,22 14,28 12,36Z"
-              fill="#ffa020"/>
-        <path d="M12,36 C11,31 7,27 9,20 C10,16 12,14 12,14 C12,14 14,16 15,20 C17,27 13,31 12,36Z"
-              fill="#ffe05a"/>
+      <!-- FLAMES — BIG AND BRIGHT -->
+      <!-- Main flame cluster (center) -->
+      <g transform="translate(82,145)" style="animation:flicker 1.3s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom">
+        <path d="M18,48 C14,34 4,24 8,10 C11,1 18,0 18,0 C18,0 25,1 28,10 C32,24 22,34 18,48Z"
+              fill="#ff5500" opacity=".98"/>
+        <path d="M18,48 C15,37 7,29 11,18 C13,11 18,8 18,8 C18,8 23,11 25,18 C29,29 21,37 18,48Z"
+              fill="#ff9020"/>
+        <path d="M18,48 C16,40 10,34 13,24 C15,19 18,17 18,17 C18,17 21,19 23,24 C26,34 20,40 18,48Z"
+              fill="#ffcc44"/>
+        <path d="M18,48 C17,43 13,40 15,32 C16,27 18,25 18,25 C18,25 20,27 21,32 C23,40 19,43 18,48Z"
+              fill="#fff088"/>
       </g>
-      <!-- Flames — cluster 2 -->
-      <g transform="translate(74,158)" style="animation:flicker 1.7s ease-in-out infinite .35s;transform-box:fill-box;transform-origin:center bottom">
-        <path d="M9,28 C7,20 1,14 3,6 C5,1 9,0 9,0 C9,0 13,1 15,6 C17,14 11,20 9,28Z"
-              fill="#ff4800" opacity=".85"/>
-        <path d="M9,28 C8,22 3,18 5,11 C7,7 9,5 9,5 C9,5 11,7 13,11 C15,18 10,22 9,28Z"
-              fill="#ff9018"/>
-        <path d="M9,28 C8,23 5,21 7,15 C7,12 9,10 9,10 C9,10 11,12 11,15 C13,21 10,23 9,28Z"
-              fill="#ffce48"/>
+      <!-- Left flame -->
+      <g transform="translate(60,153)" style="animation:flicker 1.7s ease-in-out infinite .35s;transform-box:fill-box;transform-origin:center bottom">
+        <path d="M13,36 C10,26 2,18 5,8 C7,2 13,0 13,0 C13,0 19,2 21,8 C24,18 16,26 13,36Z"
+              fill="#ff4800" opacity=".95"/>
+        <path d="M13,36 C11,28 5,22 8,14 C10,9 13,7 13,7 C13,7 16,9 18,14 C21,22 15,28 13,36Z"
+              fill="#ff8c18"/>
+        <path d="M13,36 C12,30 7,26 10,18 C11,14 13,12 13,12 C13,12 15,14 16,18 C19,26 14,30 13,36Z"
+              fill="#ffbe3c"/>
       </g>
-      <!-- Flames — cluster 3 -->
-      <g transform="translate(110,155)" style="animation:flicker 1.5s ease-in-out infinite .7s;transform-box:fill-box;transform-origin:center bottom">
-        <path d="M10,30 C8,22 2,16 4,7 C6,2 10,0 10,0 C10,0 14,2 16,7 C18,16 12,22 10,30Z"
-              fill="#ff5010" opacity=".88"/>
-        <path d="M10,30 C8,24 4,20 6,12 C8,8 10,6 10,6 C10,6 12,8 14,12 C16,20 12,24 10,30Z"
-              fill="#ff9c1c"/>
-        <path d="M10,30 C9,26 6,23 8,17 C9,13 10,11 10,11 C10,11 11,13 12,17 C14,23 11,26 10,30Z"
-              fill="#ffd050"/>
+      <!-- Right flame -->
+      <g transform="translate(110,150)" style="animation:flicker 1.5s ease-in-out infinite .7s;transform-box:fill-box;transform-origin:center bottom">
+        <path d="M14,38 C11,28 3,20 6,9 C8,3 14,0 14,0 C14,0 20,3 22,9 C25,20 17,28 14,38Z"
+              fill="#ff5200" opacity=".96"/>
+        <path d="M14,38 C12,29 5,23 8,14 C10,9 14,7 14,7 C14,7 18,9 20,14 C23,23 16,29 14,38Z"
+              fill="#ff9820"/>
+        <path d="M14,38 C13,32 8,28 11,20 C12,15 14,13 14,13 C14,13 16,15 17,20 C20,28 15,32 14,38Z"
+              fill="#ffcc50"/>
       </g>
 
-      <!-- Sparks -->
-      <circle cx="95" cy="150" r="1.2" fill="#ff9020" filter="url(#fSpark)"
+      <!-- Sparks — many and bright -->
+      <circle cx="93" cy="142" r="2" fill="#ffaa30" filter="url(#fSpark)"
               style="animation:sparksA 1.9s ease-out infinite .1s"/>
-      <circle cx="88" cy="154" r="1" fill="#ffb828" filter="url(#fSpark)"
+      <circle cx="84" cy="147" r="1.7" fill="#ffcc50" filter="url(#fSpark)"
               style="animation:sparksB 2.3s ease-out infinite .6s"/>
-      <circle cx="104" cy="148" r=".9" fill="#ff8010" filter="url(#fSpark)"
+      <circle cx="106" cy="140" r="1.5" fill="#ff9020" filter="url(#fSpark)"
               style="animation:sparksC 1.7s ease-out infinite 1.1s"/>
-      <circle cx="78" cy="152" r="1.1" fill="#ffaa20" filter="url(#fSpark)"
+      <circle cx="72" cy="148" r="1.8" fill="#ffbb30" filter="url(#fSpark)"
               style="animation:sparksD 2.1s ease-out infinite .85s"/>
-      <circle cx="112" cy="150" r="1" fill="#ffcc40" filter="url(#fSpark)"
+      <circle cx="118" cy="144" r="1.6" fill="#ffdd55" filter="url(#fSpark)"
               style="animation:sparksE 1.6s ease-out infinite 1.5s"/>
-      <circle cx="70" cy="146" r=".8" fill="#ff9020" filter="url(#fSpark)"
+      <circle cx="64" cy="140" r="1.4" fill="#ffaa30" filter="url(#fSpark)"
               style="animation:sparksF 2.6s ease-out infinite .3s"/>
+      <circle cx="125" cy="138" r="1.5" fill="#ffcc44" filter="url(#fSpark)"
+              style="animation:sparksA 2.0s ease-out infinite 1.8s"/>
+      <circle cx="78" cy="135" r="1.3" fill="#ff9020" filter="url(#fSpark)"
+              style="animation:sparksC 2.4s ease-out infinite 2.2s"/>
 
-      <!-- Ember glow on ground -->
-      <rect x="0" y="180" width="200" height="20" fill="rgba(195,45,8,0.12)"/>
-
-      <text x="10" y="18" font-family="Georgia,serif" font-size="8.5"
-            fill="rgba(255,115,25,0.38)" letter-spacing="2.5">OGIEŃ</text>
+      <text x="8" y="18" font-family="Georgia,serif" font-size="9"
+            fill="rgba(255,130,30,0.65)" letter-spacing="3">OGIEŃ</text>
     </svg>
   </div>
 
@@ -512,140 +515,131 @@ html,body{width:100%;height:100%;overflow:hidden;background:#020508;}
     <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="eSky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#010801"/>
-          <stop offset="100%" stop-color="#081f06"/>
+          <stop offset="0%" stop-color="#020d02"/>
+          <stop offset="100%" stop-color="#082808"/>
         </linearGradient>
-        <radialGradient id="eGlow" cx="50%" cy="75%" r="55%">
-          <stop offset="0%" stop-color="rgba(50,155,35,0.22)"/>
+        <radialGradient id="eGlow" cx="50%" cy="72%" r="58%">
+          <stop offset="0%" stop-color="rgba(55,175,40,0.32)"/>
+          <stop offset="55%" stop-color="rgba(20,100,15,0.12)"/>
           <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
         </radialGradient>
-        <filter id="eBlur"><feGaussianBlur stdDeviation="3"/></filter>
-        <filter id="ffBlur"><feGaussianBlur stdDeviation="1.5"/></filter>
+        <filter id="eBlur"><feGaussianBlur stdDeviation="4"/></filter>
       </defs>
 
       <rect width="200" height="200" fill="url(#eSky)"/>
+      <!-- Stars — few, dim, nature night -->
+      <circle cx="25" cy="14" r=".9" fill="white" opacity=".7" style="animation:twinkle 4.2s infinite 0s"/>
+      <circle cx="72" cy="8" r=".7" fill="white" opacity=".6" style="animation:twinkle 5s infinite 1.3s"/>
+      <circle cx="138" cy="12" r="1" fill="white" opacity=".72" style="animation:twinkle 3.8s infinite .7s"/>
+      <circle cx="175" cy="20" r=".7" fill="white" opacity=".58" style="animation:twinkle 4.5s infinite 1.9s"/>
 
-      <!-- Subtle earth light from below -->
-      <ellipse cx="100" cy="155" rx="95" ry="55" fill="url(#eGlow)" filter="url(#eBlur)"/>
+      <!-- Earth glow -->
+      <ellipse cx="100" cy="152" rx="100" ry="62" fill="url(#eGlow)" filter="url(#eBlur)"/>
 
-      <!-- Distant tree line -->
-      <path d="M-5,130 L10,105 L22,118 L35,98 L50,112 L65,90 L80,106 L95,85 L112,102 L128,80 L145,95 L162,75 L178,90 L195,70 L210,82 L210,200 L-5,200Z"
-            fill="#061208"/>
+      <!-- Far tree line -->
+      <path d="M-5,132 L12,108 L26,120 L40,100 L56,114 L72,92 L88,108 L104,86 L122,104 L140,82 L158,96 L174,76 L190,90 L208,72 L208,200 L-5,200Z"
+            fill="#0c2408"/>
+      <!-- Rolling meadow -->
+      <path d="M-5,155 Q40,136 80,145 Q120,154 160,136 Q185,124 208,132 L208,200 L-5,200Z"
+            fill="#10320c"/>
+      <!-- Mid ground -->
+      <path d="M-5,170 Q45,156 92,164 Q140,172 185,157 Q200,153 208,155 L208,200 L-5,200Z"
+            fill="#123a0e"/>
+      <!-- Ground -->
+      <rect x="-5" y="184" width="215" height="20" fill="#0e3010"/>
 
-      <!-- Rolling meadow hills -->
-      <path d="M-5,152 Q35,132 75,142 Q115,152 155,135 Q180,123 210,132 L210,200 L-5,200Z"
-            fill="#0c2a09"/>
-      <path d="M-5,168 Q40,154 88,162 Q135,170 180,156 Q195,152 210,154 L210,200 L-5,200Z"
-            fill="#0e3210"/>
-
-      <!-- Ground floor -->
-      <rect x="-5" y="182" width="215" height="22" fill="#0a2808"/>
-
-      <!-- Roots (base of parchment/tree) -->
-      <path d="M85,200 C80,190 70,184 58,188 C50,191 43,198 40,200"
-            stroke="#16090200" stroke-width="0" fill="none"/>
-      <path d="M85,200 C82,192 72,186 60,190 C50,193 43,199 40,200"
-            stroke="#180a02" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-      <path d="M85,200 C84,194 88,187 96,190 C104,193 108,199 110,200"
-            stroke="#160902" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <path d="M85,200 C84,192 90,184 100,186 C110,188 115,198 118,200"
-            stroke="#140802" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <rect x="82" y="190" width="7" height="10" rx="3" fill="#180a02"/>
-
-      <!-- Flower 1 — deep red (centifolia) -->
+      <!-- Flowers with bright colors -->
+      <!-- Red rose -->
       <g style="animation:sway1 3.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom"
-         transform="translate(28,148)">
-        <line x1="0" y1="0" x2="-1" y2="-24" stroke="#1c5e12" stroke-width="1.5"/>
-        <!-- Petals -->
-        <circle cx="-6" cy="-24" r="3.2" fill="#c01838" opacity=".75"/>
-        <circle cx="4" cy="-24" r="3.2" fill="#c01838" opacity=".75"/>
-        <circle cx="-1" cy="-29" r="3.2" fill="#dd2248" opacity=".75"/>
-        <circle cx="-1" cy="-19" r="3.2" fill="#dd2248" opacity=".75"/>
-        <circle cx="-1" cy="-24" r="5" fill="#e8284e" opacity=".88"/>
-        <circle cx="-1" cy="-24" r="2.2" fill="#ffe8c0" opacity=".9"/>
+         transform="translate(28,150)">
+        <line x1="0" y1="0" x2="-1" y2="-28" stroke="#22a028" stroke-width="2"/>
+        <circle cx="-6" cy="-28" r="4" fill="#e81c42" opacity=".88"/>
+        <circle cx="4" cy="-28" r="4" fill="#e81c42" opacity=".88"/>
+        <circle cx="-1" cy="-34" r="4" fill="#ff2855" opacity=".88"/>
+        <circle cx="-1" cy="-22" r="4" fill="#ff2855" opacity=".88"/>
+        <circle cx="-1" cy="-28" r="6" fill="#ff3060" opacity=".95"/>
+        <circle cx="-1" cy="-28" r="2.5" fill="#ffe8c8" opacity=".95"/>
       </g>
-
-      <!-- Flower 2 — violet -->
+      <!-- Violet -->
       <g style="animation:sway2 3.8s ease-in-out infinite .5s;transform-box:fill-box;transform-origin:center bottom"
-         transform="translate(58,142)">
-        <line x1="0" y1="0" x2="1" y2="-20" stroke="#1c5e12" stroke-width="1.4"/>
-        <circle cx="-5" cy="-20" r="2.8" fill="#8820cc" opacity=".72"/>
-        <circle cx="7" cy="-20" r="2.8" fill="#8820cc" opacity=".72"/>
-        <circle cx="1" cy="-25" r="2.8" fill="#9930dd" opacity=".72"/>
-        <circle cx="1" cy="-15" r="2.8" fill="#9930dd" opacity=".72"/>
-        <circle cx="1" cy="-20" r="4.5" fill="#aa38ee" opacity=".85"/>
-        <circle cx="1" cy="-20" r="1.8" fill="#ffeebb" opacity=".92"/>
+         transform="translate(58,143)">
+        <line x1="0" y1="0" x2="1" y2="-24" stroke="#22a028" stroke-width="1.8"/>
+        <circle cx="-5" cy="-24" r="3.5" fill="#9922ee" opacity=".85"/>
+        <circle cx="7" cy="-24" r="3.5" fill="#9922ee" opacity=".85"/>
+        <circle cx="1" cy="-30" r="3.5" fill="#aa38ff" opacity=".85"/>
+        <circle cx="1" cy="-18" r="3.5" fill="#aa38ff" opacity=".85"/>
+        <circle cx="1" cy="-24" r="5.5" fill="#bb44ff" opacity=".92"/>
+        <circle cx="1" cy="-24" r="2.2" fill="#ffeecc" opacity=".95"/>
       </g>
-
-      <!-- Flower 3 — pale blue/white moonflower -->
+      <!-- White moonflower -->
       <g style="animation:sway3 4.1s ease-in-out infinite 1.1s;transform-box:fill-box;transform-origin:center bottom"
-         transform="translate(148,134)">
-        <line x1="0" y1="0" x2="-1" y2="-28" stroke="#1c5e12" stroke-width="1.5"/>
-        <circle cx="-6.5" cy="-28" r="3.5" fill="rgba(210,235,255,0.65)"/>
-        <circle cx="4.5" cy="-28" r="3.5" fill="rgba(210,235,255,0.65)"/>
-        <circle cx="-1" cy="-34" r="3.5" fill="rgba(220,240,255,0.65)"/>
-        <circle cx="-1" cy="-22" r="3.5" fill="rgba(220,240,255,0.65)"/>
-        <circle cx="-1" cy="-28" r="5.5" fill="rgba(225,242,255,0.82)"/>
-        <circle cx="-1" cy="-28" r="2.4" fill="#fff8d0" opacity=".95"/>
+         transform="translate(148,135)">
+        <line x1="0" y1="0" x2="-1" y2="-32" stroke="#22a028" stroke-width="2"/>
+        <circle cx="-7" cy="-32" r="4.2" fill="rgba(225,242,255,0.82)"/>
+        <circle cx="5" cy="-32" r="4.2" fill="rgba(225,242,255,0.82)"/>
+        <circle cx="-1" cy="-38" r="4.2" fill="rgba(235,248,255,0.85)"/>
+        <circle cx="-1" cy="-26" r="4.2" fill="rgba(235,248,255,0.85)"/>
+        <circle cx="-1" cy="-32" r="6.5" fill="rgba(245,252,255,0.92)"/>
+        <circle cx="-1" cy="-32" r="2.8" fill="#fff8d8" opacity=".98"/>
       </g>
-
-      <!-- Flower 4 — yellow -->
+      <!-- Yellow daisy -->
       <g style="animation:sway1 2.9s ease-in-out infinite .3s;transform-box:fill-box;transform-origin:center bottom"
-         transform="translate(112,140)">
-        <line x1="0" y1="0" x2="0" y2="-17" stroke="#1c5e12" stroke-width="1.3"/>
-        <circle cx="-4.5" cy="-17" r="2.6" fill="#cc9900" opacity=".7"/>
-        <circle cx="4.5" cy="-17" r="2.6" fill="#cc9900" opacity=".7"/>
-        <circle cx="0" cy="-21.5" r="2.6" fill="#ddaa00" opacity=".7"/>
-        <circle cx="0" cy="-12.5" r="2.6" fill="#ddaa00" opacity=".7"/>
-        <circle cx="0" cy="-17" r="4" fill="#eebb10" opacity=".88"/>
-        <circle cx="0" cy="-17" r="1.7" fill="#fff5a0" opacity=".95"/>
+         transform="translate(112,142)">
+        <line x1="0" y1="0" x2="0" y2="-20" stroke="#22a028" stroke-width="1.8"/>
+        <circle cx="-5" cy="-20" r="3.2" fill="#ddaa00" opacity=".85"/>
+        <circle cx="5" cy="-20" r="3.2" fill="#ddaa00" opacity=".85"/>
+        <circle cx="0" cy="-25" r="3.2" fill="#eebb00" opacity=".85"/>
+        <circle cx="0" cy="-15" r="3.2" fill="#eebb00" opacity=".85"/>
+        <circle cx="0" cy="-20" r="5" fill="#ffcc10" opacity=".92"/>
+        <circle cx="0" cy="-20" r="2.2" fill="#fff5a8" opacity=".98"/>
       </g>
-
-      <!-- Flower 5 — pink (right) -->
+      <!-- Pink -->
       <g style="animation:sway2 3.5s ease-in-out infinite 1.6s;transform-box:fill-box;transform-origin:center bottom"
-         transform="translate(172,142)">
-        <line x1="0" y1="0" x2="-1" y2="-22" stroke="#1c5e12" stroke-width="1.4"/>
-        <circle cx="-5.5" cy="-22" r="3" fill="#ff6899" opacity=".72"/>
-        <circle cx="3.5" cy="-22" r="3" fill="#ff6899" opacity=".72"/>
-        <circle cx="-1" cy="-27" r="3" fill="#ff80aa" opacity=".72"/>
-        <circle cx="-1" cy="-17" r="3" fill="#ff80aa" opacity=".72"/>
-        <circle cx="-1" cy="-22" r="4.8" fill="#ff88aa" opacity=".86"/>
-        <circle cx="-1" cy="-22" r="2" fill="#ffe8c8" opacity=".9"/>
+         transform="translate(175,143)">
+        <line x1="0" y1="0" x2="-1" y2="-26" stroke="#22a028" stroke-width="1.8"/>
+        <circle cx="-6" cy="-26" r="3.8" fill="#ff5599" opacity=".85"/>
+        <circle cx="4" cy="-26" r="3.8" fill="#ff5599" opacity=".85"/>
+        <circle cx="-1" cy="-32" r="3.8" fill="#ff6aaa" opacity=".85"/>
+        <circle cx="-1" cy="-20" r="3.8" fill="#ff6aaa" opacity=".85"/>
+        <circle cx="-1" cy="-26" r="6" fill="#ff78b8" opacity=".92"/>
+        <circle cx="-1" cy="-26" r="2.5" fill="#ffead8" opacity=".95"/>
       </g>
 
-      <!-- Mushroom cluster -->
-      <g transform="translate(88,154)">
-        <rect x="-1.5" y="-9" width="3" height="9" rx="1" fill="#8a5a35"/>
-        <ellipse cx="0" cy="-9" rx="7" ry="3.8" fill="#c83a1e"/>
-        <circle cx="-2.5" cy="-10" r=".9" fill="rgba(255,255,255,0.55)"/>
-        <circle cx="2" cy="-8.5" r=".7" fill="rgba(255,255,255,0.45)"/>
+      <!-- Mushrooms -->
+      <g transform="translate(90,158)">
+        <rect x="-2" y="-11" width="4" height="11" rx="1.5" fill="#aa7040"/>
+        <ellipse cx="0" cy="-11" rx="9" ry="4.5" fill="#ee3818"/>
+        <circle cx="-3" cy="-13" r="1.3" fill="rgba(255,255,255,0.7)"/>
+        <circle cx="2.5" cy="-11" r="1" fill="rgba(255,255,255,0.6)"/>
+        <circle cx="-1" cy="-10" r=".8" fill="rgba(255,255,255,0.5)"/>
       </g>
-      <g transform="translate(99,156)">
-        <rect x="-1" y="-6" width="2.5" height="6" rx="1" fill="#7a5030"/>
-        <ellipse cx=".2" cy="-6" rx="5" ry="2.8" fill="#b83518"/>
-        <circle cx="-1.5" cy="-6.8" r=".7" fill="rgba(255,255,255,0.5)"/>
+      <g transform="translate(103,160)">
+        <rect x="-1.5" y="-8" width="3" height="8" rx="1.2" fill="#906030"/>
+        <ellipse cx=".5" cy="-8" rx="6.5" ry="3.5" fill="#dd3015"/>
+        <circle cx="-2" cy="-9" r="1" fill="rgba(255,255,255,0.65)"/>
+        <circle cx="2" cy="-8" r=".8" fill="rgba(255,255,255,0.55)"/>
       </g>
 
       <!-- Grass blades -->
-      <path d="M18,160 C16,152 20,145 18,140" stroke="#1a5a10" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-      <path d="M23,162 C22,154 25,147 24,142" stroke="#1c6212" stroke-width="1" fill="none" stroke-linecap="round"/>
-      <path d="M185,155 C183,148 187,141 185,136" stroke="#1a5a10" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-      <path d="M190,157 C189,150 192,143 191,138" stroke="#1c6212" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <path d="M15,162 C13,152 18,143 16,138" stroke="#2a8822" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M21,164 C20,154 24,145 23,140" stroke="#32a028" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <path d="M186,158 C184,148 189,139 187,134" stroke="#2a8822" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M192,160 C191,150 195,141 194,136" stroke="#32a028" stroke-width="1.2" fill="none" stroke-linecap="round"/>
 
-      <!-- Fireflies -->
-      <circle cx="38" cy="122" r="1.6" fill="#aeff44"
+      <!-- Fireflies — bright green -->
+      <circle cx="38" cy="124" r="2.2" fill="#88ff22"
               style="animation:firefly 2.6s ease-in-out infinite 0s;transform-box:fill-box;transform-origin:center"/>
-      <circle cx="122" cy="112" r="1.3" fill="#bbff55"
+      <circle cx="124" cy="114" r="1.8" fill="#aaff44"
               style="animation:firefly 3.1s ease-in-out infinite 1.1s;transform-box:fill-box;transform-origin:center"/>
-      <circle cx="168" cy="120" r="1.5" fill="#aaff44"
+      <circle cx="170" cy="122" r="2" fill="#88ff22"
               style="animation:firefly 2.3s ease-in-out infinite .55s;transform-box:fill-box;transform-origin:center"/>
-      <circle cx="72" cy="118" r="1.1" fill="#ccff66"
+      <circle cx="72" cy="120" r="1.6" fill="#ccff55"
               style="animation:firefly 3.6s ease-in-out infinite 1.5s;transform-box:fill-box;transform-origin:center"/>
-      <circle cx="155" cy="108" r="1.4" fill="#aaff44"
+      <circle cx="155" cy="110" r="1.9" fill="#88ff22"
               style="animation:firefly 2.9s ease-in-out infinite 2.1s;transform-box:fill-box;transform-origin:center"/>
 
-      <text x="10" y="18" font-family="Georgia,serif" font-size="8.5"
-            fill="rgba(55,165,40,0.38)" letter-spacing="2.5">ZIEMIA</text>
+      <text x="8" y="18" font-family="Georgia,serif" font-size="9"
+            fill="rgba(60,180,45,0.55)" letter-spacing="3">ZIEMIA</text>
     </svg>
   </div>
 
