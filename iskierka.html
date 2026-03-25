@@ -324,7 +324,11 @@
     <h1 class="home-name" id="h-name"></h1>
     <div id="cosmic-bar" style="font-size:12px;margin-bottom:20px;letter-spacing:0.04em;"></div>
     <div class="mod-card card-sn" onclick="openSN()">
-      <span class="ico">🌙</span>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span class="ico" id="sn-moon" style="margin-bottom:0;">🌙</span>
+        <span id="sn-zod" style="font-size:32px;opacity:.8;"></span>
+        <span id="sn-el" style="font-size:28px;opacity:.7;"></span>
+      </div>
       <h2>Spokojna Noc</h2>
       <p>Wyrzuć myśl z głowy. Idź spać lżejszy.</p>
     </div>
@@ -332,6 +336,7 @@
       <span class="ico">☀️</span>
       <h2>Dobry Dzień</h2>
       <p>Co było dziś dobre? Odkrywaj puzzle.</p>
+      <div id="dd-date-info" style="font-size:11px;opacity:.65;margin-top:6px;font-weight:600;"></div>
       <div class="series-badge" id="ser-badge" style="display:none;">🔥 <span id="ser-n">0</span> dni</div>
     </div>
     <button onclick="switchUser()" style="background:none;border:none;color:var(--nu);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;padding:8px 0;opacity:.6;display:block;width:100%;text-align:center;margin-top:4px;">🔄 Zmień użytkownika</button>
@@ -464,7 +469,7 @@ function timeGreeting(h){
   if(h>=20&&h<22)return  'Dobranoc';
   return 'Dobranoc';
 }
-function showHome(){calcAge();var h=new Date().getHours();var g=timeGreeting(h);document.getElementById('h-greet').textContent=g;document.getElementById('h-name').textContent=(S.nick||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';renderCosmicBar();show('home');}
+function showHome(){calcAge();var h=new Date().getHours();var g=timeGreeting(h);document.getElementById('h-greet').textContent=g;document.getElementById('h-name').textContent=(S.nick||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';renderCosmicBar();renderCardExtras();show('home');}
 
 function moonPhase(date){
   var known=new Date(2000,0,6);// nów 6 sty 2000
@@ -513,16 +518,77 @@ function elementEmoji(el){
   var map={ogień:'🜂',ziemia:'🜃',powietrze:'🜁',woda:'🜄'};
   return map[el]||'';
 }
+function polishHoliday(date){
+  var m=date.getMonth()+1,d=date.getDate();
+  var h={'1-1':'🎆 Nowy Rok','1-6':'⭐ Trzech Króli','2-14':'💝 Walentynki','3-8':'🌹 Dzień Kobiet','3-21':'🌱 Pierwszy dzień wiosny','4-23':'📚 Dzień Książki','5-1':'🌼 Święto Pracy','5-2':'🇵🇱 Dzień Flagi','5-3':'🇵🇱 Święto Konstytucji','5-26':'👩 Dzień Matki','6-1':'🧒 Dzień Dziecka','6-21':'☀️ Pierwszy dzień lata','6-23':'👨 Dzień Ojca','9-30':'🎀 Dzień Chłopca','10-14':'🎓 Dzień Nauczyciela','10-16':'👵 Dzień Babci','10-21':'👴 Dzień Dziadka','11-1':'🕯️ Wszystkich Świętych','11-11':'🇵🇱 Święto Niepodległości','12-6':'🎅 Mikołajki','12-21':'❄️ Pierwszy dzień zimy','12-24':'🎄 Wigilia','12-25':'🎄 Boże Narodzenie','12-26':'🎄 Drugi dzień świąt','12-31':'🎆 Sylwester'};
+  return h[m+'-'+d]||null;
+}
+function renderCardExtras(){
+  var now=new Date();
+  var moon=moonEmoji(now);
+  var zod=zodiacSign(now);
+  var moonEl=document.getElementById('sn-moon');
+  var zodEl=document.getElementById('sn-zod');
+  var elEl=document.getElementById('sn-el');
+  if(moonEl)moonEl.textContent=moon.e;
+  if(zodEl)zodEl.textContent=zod.e;
+  if(elEl)elEl.textContent=elementEmoji(zod.el);
+  var dateEl=document.getElementById('dd-date-info');
+  if(dateEl){
+    var days=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
+    var months=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+    var holiday=polishHoliday(now);
+    dateEl.textContent=holiday||(now.getDate()+' '+months[now.getMonth()]+' · '+days[now.getDay()]);
+  }
+}
+function specialDay(date){
+  var m=date.getMonth()+1,d=date.getDate();
+  var days={
+    '1-1':'🎆 Nowy Rok','1-21':'👵 Dzień Babci','1-22':'👴 Dzień Dziadka',
+    '2-14':'💝 Walentynki','3-8':'🌸 Dzień Kobiet','3-20':'🌱 Pierwszy dzień wiosny',
+    '3-21':'🌍 Dzień Ziemi','4-23':'📚 Dzień Książki','5-1':'🌼 Święto Pracy',
+    '5-2':'🇵🇱 Dzień Flagi','5-26':'👩 Dzień Matki','6-1':'🧒 Dzień Dziecka',
+    '6-21':'☀️ Najdłuższy dzień','9-23':'🍂 Pierwszy dzień jesieni',
+    '10-14':'👨‍🏫 Dzień Nauczyciela','11-11':'🇵🇱 Święto Niepodległości',
+    '12-6':'🎅 Mikołajki','12-21':'⛄ Najkrótszy dzień','12-24':'🎄 Wigilia',
+    '12-25':'🎄 Boże Narodzenie','12-31':'🎆 Sylwester'
+  };
+  return days[m+'-'+d]||null;
+}
 function renderCosmicBar(){
-  var el=document.getElementById('cosmic-bar');
-  if(!el)return;
   var now=new Date();
   var moon=moonEmoji(now);
   var zod=zodiacSign(now);
   var h=now.getHours();
   var isNight=h>=18||h<6;
-  el.style.color=isNight?'rgba(240,234,250,0.55)':'rgba(107,92,69,0.6)';
-  el.innerHTML=moon.e+' <span title="'+moon.n+'">'+moon.n+'</span> &nbsp;·&nbsp; '+zod.e+' <span title="'+zod.s+'">'+zod.s+'</span> &nbsp;·&nbsp; '+elementEmoji(zod.el)+' <span title="'+zod.el+'">'+zod.el+'</span>';
+
+  // Górny pasek
+  var bar=document.getElementById('cosmic-bar');
+  if(bar){
+    bar.style.color=isNight?'rgba(240,234,250,0.55)':'rgba(107,92,69,0.6)';
+    bar.innerHTML=moon.e+' <span>'+moon.n+'</span> &nbsp;·&nbsp; '+zod.e+' <span>'+zod.s+'</span> &nbsp;·&nbsp; '+elementEmoji(zod.el)+' <span>'+zod.el+'</span>';
+  }
+
+  // Kafelek Spokojna Noc — faza księżyca jako ikona
+  var snMoon=document.getElementById('sn-moon');
+  if(snMoon) snMoon.textContent=moon.e;
+  var snZod=document.getElementById('sn-zod');
+  if(snZod) snZod.textContent=zod.e;
+  var snEl=document.getElementById('sn-el');
+  if(snEl) snEl.textContent=elementEmoji(zod.el);
+
+  // Kafelek Dobry Dzień — data + święto
+  var ddInfo=document.getElementById('dd-date-info');
+  if(ddInfo){
+    var days=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
+    var months=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+    var special=specialDay(now);
+    if(special){
+      ddInfo.textContent=special;
+    } else {
+      ddInfo.textContent=now.getDate()+' '+months[now.getMonth()]+' · '+days[now.getDay()];
+    }
+  }
 }
 function goHome(){rstSN();rstDD();showHome();}
 function mkStars(id,n){var c=document.getElementById(id);if(!c)return;for(var i=0;i<n;i++){var s=document.createElement('div');var gold=Math.random()>.65;s.className='star '+(gold?'star-g':'star-w');var sz=Math.random()*(gold?3:2)+.5;s.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;--d:'+(2+Math.random()*4)+'s;--del:'+Math.random()*4+'s;opacity:'+(Math.random()*.6+.12);c.appendChild(s);}}
