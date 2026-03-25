@@ -10,272 +10,178 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { width:100%; height:100%; overflow:hidden; font-family:'Nunito',sans-serif; background:#020810; }
 
-html, body {
-  width:100%; height:100%;
-  overflow:hidden;
-  font-family:'Nunito', sans-serif;
-  background:#020810;
-}
-
-/* ══════════════════════════════
-   NIEBO
-══════════════════════════════ */
+/* ══ NIEBO ══ */
 #sky {
   position:fixed; inset:0; z-index:0;
-  background: radial-gradient(ellipse at 50% 0%,
-    #0d1b2a 0%, #060d18 45%, #020508 100%);
+  background: radial-gradient(ellipse at 50% 30%,
+    #0d1b2a 0%, #060d18 50%, #020508 100%);
 }
-.nb {
-  position:absolute; border-radius:50%;
-  pointer-events:none; filter:blur(70px); mix-blend-mode:screen;
-}
-.nb1 { width:60vw; height:50vw; top:0; left:-5%;
-  background:radial-gradient(circle, rgba(25,40,100,0.22) 0%, transparent 70%); }
-.nb2 { width:45vw; height:40vw; top:15%; right:0%;
-  background:radial-gradient(circle, rgba(55,18,85,0.14) 0%, transparent 70%); }
-.nb3 { width:35vw; height:30vw; top:45%; left:35%;
-  background:radial-gradient(circle, rgba(10,50,70,0.12) 0%, transparent 70%); }
+.nb { position:absolute; border-radius:50%; pointer-events:none; filter:blur(70px); mix-blend-mode:screen; }
+.nb1 { width:65vw; height:55vw; top:2%; left:-5%;  background:radial-gradient(circle,rgba(25,40,100,0.2) 0%,transparent 70%); }
+.nb2 { width:50vw; height:42vw; top:10%; right:0%;  background:radial-gradient(circle,rgba(60,20,80,0.13) 0%,transparent 70%); }
+.nb3 { width:40vw; height:35vw; top:50%; left:30%;  background:radial-gradient(circle,rgba(10,50,70,0.1) 0%,transparent 70%); }
 
 #star-canvas { position:fixed; inset:0; z-index:1; pointer-events:none; }
 #const-svg   { position:fixed; inset:0; z-index:2; }
 
-/* ══════════════════════════════
-   LAYOUT — mobile first, max 430px
-══════════════════════════════ */
+/* ══ LAYOUT ══ */
 #app {
   position:fixed; inset:0; z-index:10;
   display:flex; flex-direction:column;
   max-width:430px; margin:0 auto;
-  /* Na komputerze: wyśrodkowany jak telefon */
 }
 
 /* TOP BAR */
 .top-bar {
   flex-shrink:0;
   display:flex; align-items:center; justify-content:space-between;
-  padding:
-    max(env(safe-area-inset-top), 16px)
-    20px
-    12px;
+  padding: max(env(safe-area-inset-top),16px) 20px 10px;
 }
 .btn-back {
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
   border-radius:12px; padding:8px 16px;
   color:rgba(255,255,255,0.55);
-  font-family:'Nunito',sans-serif; font-size:13px; font-weight:700;
-  cursor:pointer;
+  font-family:'Nunito',sans-serif; font-size:13px; font-weight:700; cursor:pointer;
 }
 .btn-back:active { opacity:.6; }
-.top-title {
-  font-family:'Cinzel', serif; font-size:12px; letter-spacing:3px;
-  color:rgba(255,255,255,0.28);
-}
-.moon-icon {
-  font-size:22px;
-  filter:drop-shadow(0 0 6px rgba(200,220,255,0.35));
-}
-
-/* Środek — przestrzeń na niebo */
-.sky-gap { flex:1; min-height:0; }
+.top-title { font-family:'Cinzel',serif; font-size:12px; letter-spacing:3px; color:rgba(255,255,255,0.28); }
+.moon-icon { font-size:22px; filter:drop-shadow(0 0 6px rgba(200,220,255,0.35)); }
 
 /* HINT */
 #hint {
-  position:fixed; top:40%; left:50%; transform:translateX(-50%);
+  position:fixed; bottom:185px; left:50%; transform:translateX(-50%);
   z-index:20; pointer-events:none; text-align:center;
   animation:hintAnim 5s ease forwards;
 }
-@keyframes hintAnim {
-  0%   { opacity:0; }
-  15%  { opacity:1; }
-  75%  { opacity:1; }
-  100% { opacity:0; }
-}
-.hint-txt {
-  font-size:11px; font-weight:700; letter-spacing:2.5px;
-  text-transform:uppercase;
-  color:rgba(200,215,255,0.38);
-}
+@keyframes hintAnim { 0%{opacity:0;} 15%{opacity:1;} 75%{opacity:1;} 100%{opacity:0;} }
+.hint-txt { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(200,215,255,0.35); }
 
-/* ══════════════════════════════
-   BOTTOM PANEL
-══════════════════════════════ */
+/* ══ BOTTOM PANEL ══ */
 .bottom-panel {
-  flex-shrink:0;
-  padding:0 16px max(env(safe-area-inset-bottom), 20px);
+  flex-shrink:0; margin-top:auto;
+  padding:0 16px max(env(safe-area-inset-bottom),20px);
 }
 
-/* --- STAN 1: paski kolorów --- */
-.color-strips {
-  display:flex; gap:8px; height:54px;
-}
+/* STAN 1 — paski */
+.color-strips { display:flex; gap:8px; height:56px; }
 .cstrip {
-  flex:1; border-radius:14px; cursor:pointer;
-  border:none; outline:none;
-  transition:transform .14s, opacity .14s;
-  position:relative; overflow:hidden;
+  flex:1; border-radius:14px; cursor:pointer; border:none; outline:none;
+  transition:transform .14s, opacity .15s; position:relative; overflow:hidden;
 }
 .cstrip::after {
   content:''; position:absolute; inset:0; border-radius:14px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 55%);
+  background:linear-gradient(180deg,rgba(255,255,255,0.22) 0%,transparent 55%);
   pointer-events:none;
 }
-.cstrip:active { transform:scale(.92); opacity:.85; }
+.cstrip:active { transform:scale(.92); }
 
-/* --- STAN 2: pisanie --- */
-.write-area {
-  display:none; flex-direction:column; gap:10px;
-  animation:slideUp .28s cubic-bezier(.4,0,.2,1);
-}
+/* STAN 2 — pisanie */
+.write-area { display:none; flex-direction:column; gap:10px; animation:slideUp .28s ease; }
 .write-area.on { display:flex; }
-@keyframes slideUp {
-  from { opacity:0; transform:translateY(12px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-.write-top {
-  display:flex; align-items:center; justify-content:space-between;
-}
-.chosen-dot {
-  width:18px; height:18px; border-radius:50%;
-  transition:background .2s, box-shadow .2s;
-}
+@keyframes slideUp { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+.write-top { display:flex; align-items:center; justify-content:space-between; }
+.chosen-dot { width:18px; height:18px; border-radius:50%; transition:background .2s, box-shadow .2s; }
 .btn-change {
-  background:none; border:none;
-  font-family:'Nunito',sans-serif; font-size:12px; font-weight:700;
-  letter-spacing:.5px; color:rgba(255,255,255,0.28);
-  cursor:pointer; padding:4px 0;
+  background:none; border:none; font-family:'Nunito',sans-serif;
+  font-size:12px; font-weight:700; color:rgba(255,255,255,0.28); cursor:pointer; padding:4px 0;
 }
-.btn-change:active { opacity:.5; }
 .note-input {
   width:100%; background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:16px; padding:14px 16px;
-  color:#eeeaff; font-family:'Nunito',sans-serif;
-  font-size:16px; line-height:1.6;
-  outline:none; resize:none;
+  border:1px solid rgba(255,255,255,0.1); border-radius:16px;
+  padding:14px 16px; color:#eeeaff;
+  font-family:'Nunito',sans-serif; font-size:16px; line-height:1.6;
+  outline:none; resize:none; -webkit-appearance:none;
   transition:border-color .2s;
-  -webkit-appearance:none;
 }
-.note-input::placeholder { color:rgba(200,195,230,0.3); }
-.note-input:focus { border-color:rgba(200,180,255,0.3); }
+.note-input::placeholder { color:rgba(210,200,235,0.3); }
+.note-input:focus { border-color:rgba(220,190,255,0.3); }
 .btn-submit {
   width:100%; padding:15px; border:none; border-radius:16px;
   font-family:'Nunito',sans-serif; font-size:15px; font-weight:800;
   color:#fff; cursor:pointer; letter-spacing:.3px;
   transition:transform .15s, opacity .15s;
-  border:1px solid rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.15);
 }
-.btn-submit:active { transform:scale(.97); opacity:.88; }
+.btn-submit:active { transform:scale(.97); }
 
-/* ══════════════════════════════
-   POPUP KONSTELACJI
-══════════════════════════════ */
+/* ══ EKRAN SŁOIKA ══ */
+#jar-screen {
+  display:none; position:fixed; inset:0; z-index:40;
+  flex-direction:column; align-items:center; justify-content:center;
+  padding:40px 24px max(env(safe-area-inset-bottom),32px);
+}
+#jar-screen.on { display:flex; }
+
+.jar-confirm-msg {
+  font-size:17px; font-weight:600; color:rgba(225,220,250,0.88);
+  line-height:1.7; text-align:center; max-width:280px; margin-bottom:28px;
+}
+
+/* Słoik SVG */
+.jar-wrap { position:relative; width:130px; height:165px; margin-bottom:28px; }
+
+.jar-action-row { display:flex; flex-direction:column; gap:10px; width:100%; max-width:320px; }
+.btn-more {
+  padding:14px; border-radius:16px; border:none;
+  font-family:'Nunito',sans-serif; font-size:15px; font-weight:800;
+  color:#fff; cursor:pointer; letter-spacing:.3px;
+  border:1px solid rgba(255,255,255,0.15);
+}
+.btn-more:active { opacity:.7; }
+.btn-done {
+  padding:13px; border-radius:16px; border:none;
+  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.55);
+  font-family:'Nunito',sans-serif; font-size:14px; font-weight:700;
+  cursor:pointer; letter-spacing:.3px;
+}
+.btn-done:active { opacity:.6; }
+
+/* ══ POPUP KONSTELACJI ══ */
 #popup {
   display:none; position:fixed; z-index:100;
-  width:min(280px, 88vw);
-  background:rgba(6,12,28,0.93);
-  border:1px solid rgba(160,185,255,0.12);
+  width:min(280px,88vw);
+  background:rgba(6,12,28,0.94);
+  border:1px solid rgba(160,185,255,0.11);
   border-radius:18px; padding:18px 20px;
   backdrop-filter:blur(22px);
   box-shadow:0 10px 40px rgba(0,0,8,0.85);
   animation:popIn .22s ease;
 }
 #popup.on { display:block; }
-@keyframes popIn {
-  from { opacity:0; transform:scale(.88) translateY(6px); }
-  to   { opacity:1; transform:scale(1)  translateY(0); }
-}
+@keyframes popIn { from{opacity:0;transform:scale(.88);} to{opacity:1;transform:scale(1);} }
 .popup-x {
   position:absolute; top:12px; right:16px;
   background:none; border:none; font-size:20px; line-height:1;
   color:rgba(255,255,255,0.25); cursor:pointer; font-family:'Nunito',sans-serif;
 }
-.popup-x:active { opacity:.5; }
-.pop-name {
-  font-family:'Cinzel', serif; font-size:14px; font-weight:600;
-  color:#c8d8ff; letter-spacing:1.5px; margin-bottom:2px;
-}
-.pop-latin {
-  font-size:10px; font-style:italic;
-  color:rgba(180,200,255,0.35); letter-spacing:.5px; margin-bottom:10px;
-}
-.pop-star {
-  font-size:11px; color:rgba(210,220,255,0.5);
-  margin-bottom:8px; line-height:1.4;
-}
-.pop-desc {
-  font-size:13px; color:rgba(220,225,245,0.72);
-  line-height:1.65; margin-bottom:10px;
-}
-.pop-tip {
-  font-size:11px; font-style:italic;
-  color:rgba(180,195,230,0.42); line-height:1.5;
-  border-top:1px solid rgba(255,255,255,0.06);
-  padding-top:10px;
-}
+.pop-name  { font-family:'Cinzel',serif; font-size:14px; font-weight:600; color:#c8d8ff; letter-spacing:1.5px; margin-bottom:2px; }
+.pop-latin { font-size:10px; font-style:italic; color:rgba(180,200,255,0.35); margin-bottom:10px; }
+.pop-star  { font-size:11px; color:rgba(210,220,255,0.5); margin-bottom:8px; line-height:1.4; }
+.pop-desc  { font-size:13px; color:rgba(220,225,245,0.72); line-height:1.65; margin-bottom:10px; }
+.pop-tip   { font-size:11px; font-style:italic; color:rgba(180,195,230,0.42); line-height:1.5; border-top:1px solid rgba(255,255,255,0.06); padding-top:10px; }
 
-/* ══════════════════════════════
-   POTWIERDZENIE
-══════════════════════════════ */
-#confirm {
-  display:none; position:fixed; inset:0; z-index:50;
-  flex-direction:column; align-items:center; justify-content:center;
-  padding:40px; text-align:center;
-}
-#confirm.on { display:flex; }
-.conf-msg {
-  font-size:18px; font-weight:600;
-  color:rgba(225,220,250,0.88); line-height:1.7;
-  max-width:280px; margin-bottom:32px;
-}
-.btn-conf {
-  padding:13px 32px; border-radius:40px;
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.1);
-  color:rgba(255,255,255,0.6);
-  font-family:'Nunito',sans-serif; font-size:15px; font-weight:700;
-  cursor:pointer; letter-spacing:.5px;
-}
-.btn-conf:active { opacity:.6; }
-
-/* ══════════════════════════════
-   KARTECZKA — animacja
-══════════════════════════════ */
+/* ══ KARTECZKA LECĄCA ══ */
 .fly {
-  position:fixed; z-index:200; pointer-events:none;
-  border-radius:10px; padding:6px 14px;
-  font-family:'Nunito',sans-serif; font-size:12px; font-weight:700;
-  color:#fff; max-width:180px; text-align:center;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  position:fixed; z-index:200; pointer-events:none; border-radius:10px;
+  padding:6px 14px; font-family:'Nunito',sans-serif; font-size:12px; font-weight:700;
+  color:#fff; max-width:180px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 
-/* ══════════════════════════════
-   DESKTOP FRAME (symulacja telefonu)
-══════════════════════════════ */
+/* ══ DESKTOP — symulacja telefonu ══ */
 @media (min-width:500px) {
-  #app {
-    left:50%; transform:translateX(-50%);
-    width:390px; right:auto;
-    box-shadow:0 0 0 1px rgba(255,255,255,0.06),
-               0 30px 80px rgba(0,0,0,0.8);
-  }
-  #star-canvas, #const-svg, #sky {
-    left:50%; transform:translateX(-50%);
-    width:390px; right:auto;
-  }
+  #app { left:50%; transform:translateX(-50%); width:390px; right:auto;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.05), 0 30px 80px rgba(0,0,0,0.8); }
+  #star-canvas, #const-svg, #sky { left:50%; transform:translateX(-50%); width:390px; right:auto; }
   body { background:#000308; }
 }
 </style>
 </head>
 <body>
 
-<!-- NIEBO -->
-<div id="sky">
-  <div class="nb nb1"></div>
-  <div class="nb nb2"></div>
-  <div class="nb nb3"></div>
-</div>
+<div id="sky"><div class="nb nb1"></div><div class="nb nb2"></div><div class="nb nb3"></div></div>
 <canvas id="star-canvas"></canvas>
 <svg id="const-svg" xmlns="http://www.w3.org/2000/svg"></svg>
 
@@ -294,21 +200,20 @@ html, body {
 
 <!-- GŁÓWNY WIDOK -->
 <div id="app">
-
   <div class="top-bar">
     <button class="btn-back">← Wróć</button>
     <div class="top-title">SPOKOJNA NOC</div>
     <div class="moon-icon" id="moon-em">🌔</div>
   </div>
 
-  <div class="sky-gap"></div>
+  <!-- Przestrzeń na niebo — konstelacje TUTAJ -->
+  <div style="flex:1;min-height:0;"></div>
 
   <div class="bottom-panel">
-
-    <!-- STAN 1: paski -->
+    <!-- STAN 1: paski kolorów -->
     <div class="color-strips" id="strips"></div>
 
-    <!-- STAN 2: pisanie -->
+    <!-- STAN 2: pole pisania -->
     <div class="write-area" id="writer">
       <div class="write-top">
         <div class="chosen-dot" id="chosen-dot"></div>
@@ -316,107 +221,166 @@ html, body {
       </div>
       <textarea class="note-input" id="note-input" rows="3"
         placeholder="Zostaw za sobą co Ci ciąży..."></textarea>
-      <button class="btn-submit" id="btn-submit" onclick="submit()">
-        Wrzuć do słoika 🫙
-      </button>
+      <button class="btn-submit" id="btn-submit" onclick="submit()">Wrzuć do słoika 🫙</button>
     </div>
-
   </div>
 </div>
 
-<!-- POTWIERDZENIE -->
-<div id="confirm">
-  <div class="conf-msg" id="conf-msg">Twoja myśl jest już bezpieczna. 🌙</div>
-  <button class="btn-conf" onclick="backToStrips()">Dobranoc ✦</button>
+<!-- EKRAN SŁOIKA — po wrzuceniu -->
+<div id="jar-screen">
+  <div class="jar-confirm-msg" id="conf-msg">Twoja myśl jest już bezpieczna. 🌙</div>
+
+  <!-- Słoik SVG -->
+  <div class="jar-wrap">
+    <svg id="jar-svg" viewBox="0 0 130 165" xmlns="http://www.w3.org/2000/svg" width="130" height="165">
+      <defs>
+        <clipPath id="jclip">
+          <path d="M20,40 Q12,52 10,80 L10,138 Q10,152 24,152 L106,152 Q120,152 120,138 L120,80 Q118,52 110,40 Z"/>
+        </clipPath>
+        <radialGradient id="jglow" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ffe8a0" stop-opacity=".3"/>
+          <stop offset="100%" stop-color="#c87820" stop-opacity=".04"/>
+        </radialGradient>
+      </defs>
+      <!-- Poświata -->
+      <ellipse cx="65" cy="98" rx="55" ry="66" fill="rgba(255,180,60,.07)"/>
+      <!-- Korpus słoika -->
+      <path d="M20,40 Q12,52 10,80 L10,138 Q10,152 24,152 L106,152 Q120,152 120,138 L120,80 Q118,52 110,40 Z"
+        fill="rgba(255,200,100,.12)" stroke="rgba(255,210,120,.6)" stroke-width="2"/>
+      <!-- Wypełnienie (dynamiczne) -->
+      <rect id="jfill" x="10" y="152" width="110" height="0"
+        clip-path="url(#jclip)" fill="rgba(255,160,40,.32)"/>
+      <!-- Połysk słoika -->
+      <path d="M20,40 Q12,52 10,80 L10,138 Q10,152 24,152 L106,152 Q120,152 120,138 L120,80 Q118,52 110,40 Z"
+        fill="url(#jglow)"/>
+      <!-- Karteczki w słoiku -->
+      <g id="jnotes" clip-path="url(#jclip)"></g>
+      <!-- Odbłysk -->
+      <path d="M24,55 Q21,90 21,122" stroke="rgba(255,240,180,.4)" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <!-- Nakrętka -->
+      <rect x="16" y="30" width="98" height="14" rx="7"
+        fill="rgba(255,200,100,.45)" stroke="rgba(255,220,140,.7)" stroke-width="1.5"/>
+      <!-- Szyjka -->
+      <rect x="44" y="18" width="42" height="14" rx="6"
+        fill="rgba(255,190,80,.32)" stroke="rgba(255,210,120,.55)" stroke-width="1.2"/>
+    </svg>
+  </div>
+
+  <div class="jar-action-row">
+    <button class="btn-more" id="btn-more" onclick="addMore()">Dopisz kolejną myśl</button>
+    <button class="btn-done" onclick="backToStrips()">Dobranoc ✦</button>
+  </div>
 </div>
 
 <script>
 /* ══════════════════════════════════════
-   DANE
+   KOLORY — ciepłe pastele
 ══════════════════════════════════════ */
-
-// Pastelowe kolory — spokojne, nie krzykliwe
 const COLORS = [
-  '#a78bca', // lawenda
-  '#7eaed4', // błękit
-  '#6dbdaa', // szałwia
-  '#d4956b', // terakota
-  '#c47b8a', // róż
-  '#c4b45a', // złoto
+  '#c9a0dc', // liliowy
+  '#a8c5e0', // jasnoniebieski
+  '#8ecfb8', // miętowy
+  '#e8b48a', // morelowy
+  '#e0959f', // różany
+  '#d4c46a', // złocisty
 ];
 
+/* ══════════════════════════════════════
+   KONSTELACJE
+══════════════════════════════════════ */
 const CONSTELLATIONS = [
   {
     name:'Orion', latin:'Orion · zima',
     star:'Betelgeza i Rigel',
     desc:'Myśliwy z mitologii greckiej, syn Posejdona. Trzy równe gwiazdy w środku to "Pas Oriona" — najłatwiejszy punkt orientacji na zimowym niebie.',
     tip:'👁 Znajdź trzy gwiazdy w linii — od nich wszystko inne jest proste.',
-    sx:[28,38,32,26,34,30,25,36], sy:[18,16,22,26,26,30,34,32],
+    sx:[22,34,28,20,30,25,18,30], sy:[20,18,25,29,29,34,38,36],
     sr:[2.8,2.2,1.8,2.0,1.9,1.5,2.4,1.7],
     lines:[[0,2],[1,2],[2,3],[2,4],[3,5],[4,5],[5,6],[5,7]]
   },
   {
     name:'Wielka Niedźwiedzica', latin:'Ursa Major · cały rok',
     star:'Dubhe i Merak — wskazują Gwiazdę Polarną',
-    desc:'Siedem gwiazd tworzących "Wielki Wóz". Widoczna przez cały rok na polskim niebie. Dwie gwiazdy prawej ściany kubka zawsze wskazują północ.',
+    desc:'Siedem gwiazd tworzących "Wielki Wóz". Widoczna przez cały rok. Dwie gwiazdy prawej ściany kubka zawsze wskazują północ.',
     tip:'👁 Przedłuż linię przez dwie prawe gwiazdy × 5 — jesteś na Gwieździe Polarnej.',
-    sx:[58,64,70,74,68,66,72], sy:[14,12,14,18,22,28,30],
+    sx:[55,62,68,72,65,63,70], sy:[16,14,16,20,24,30,32],
     sr:[2.2,2.0,2.1,2.3,1.8,1.9,1.7],
     lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]]
   },
   {
     name:'Kasjopeja', latin:'Cassiopeia · cały rok',
     star:'Schedar — serce królowej',
-    desc:'Kształt litery W (lub M). Królowa Etiopii z mitologii — zarozumiała piękność zamieniona w konstelację. Leży po drugiej stronie Gwiazdy Polarnej niż Wielki Wóz.',
+    desc:'Kształt litery W (lub M). Królowa Etiopii z mitologii. Leży po drugiej stronie Gwiazdy Polarnej niż Wielki Wóz.',
     tip:'👁 Kasjopeja i Wielki Wóz kręcą się wokół Gwiazdy Polarnej jak wskazówki zegara.',
-    sx:[72,78,84,90,96], sy:[42,38,40,37,40],
+    sx:[68,75,82,88,94], sy:[44,40,42,39,42],
     sr:[2.0,2.3,2.5,2.1,1.9],
     lines:[[0,1],[1,2],[2,3],[3,4]]
   },
   {
     name:'Łabędź', latin:'Cygnus · lato',
-    star:'Deneb — jeden z najodleglejszych gołym okiem',
-    desc:'Łabędź w locie, zwany też Krzyżem Północnym. Deneb leży ok. 2600 lat świetlnych od nas — i tak jest jedną z najjaśniejszych gwiazd na niebie.',
-    tip:'👁 Albireo (dziób) to w teleskopie złota i niebieska gwiazda razem — wyjątkowy widok.',
-    sx:[48,52,56,60,44,64], sy:[45,52,58,64,57,57],
+    star:'Deneb — ok. 2600 lat świetlnych od Ziemi',
+    desc:'Łabędź w locie, zwany też Krzyżem Północnym. Deneb to jeden z najodleglejszych obiektów widocznych gołym okiem.',
+    tip:'👁 Albireo (dziób) to w teleskopie złota i niebieska gwiazda razem.',
+    sx:[46,50,54,58,42,62], sy:[48,55,61,67,60,60],
     sr:[2.8,1.8,2.0,2.4,1.7,1.7],
     lines:[[0,1],[1,2],[2,3],[1,4],[1,5]]
   },
   {
     name:'Lew', latin:'Leo · wiosna',
     star:'Regulus — prawie dokładnie na ekliptyce',
-    desc:'Lew Nemejski z mitologii — pierwszy wyczyn Heraklesa. Wiosną łatwy do znalezienia po kształcie sierpa lub znaku zapytania tworzącym głowę lwa.',
-    tip:'👁 Szukaj odwróconego znaku zapytania — to głowa Lwa. Regulus na dole.',
-    sx:[44,48,54,58,60,56,50], sy:[32,26,24,28,34,38,36],
+    desc:'Lew Nemejski — pierwszy wyczyn Heraklesa. Regulus leży niemal dokładnie na ekliptyce — Księżyc i planety przechodzą blisko niego.',
+    tip:'👁 Szukaj odwróconego znaku zapytania na wiosennym niebie — to głowa Lwa.',
+    sx:[32,36,42,46,48,44,38], sy:[35,29,27,31,37,41,39],
     sr:[2.8,2.0,1.9,1.8,1.7,2.1,1.6],
     lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,0]]
   },
   {
     name:'Lutnia', latin:'Lyra · lato',
     star:'Wega — piąta najjaśniejsza gwiazda nieba',
-    desc:'Lutnia Orfeusza, najpiękniejszego muzyka starożytności. Wega świeci niebiesko-biało i za 12 000 lat zastąpi Gwiazdę Polarną jako punkt północy.',
-    tip:'👁 Wega — najjaśniejsza gwiazda wysoko na letnim niebie. Prosto nad głową.',
-    sx:[76,80,84,84,80], sy:[55,60,58,64,66],
+    desc:'Lutnia Orfeusza. Wega świeci niebiesko-biało i za 12 000 lat zastąpi Gwiazdę Polarną jako punkt północy.',
+    tip:'👁 Wega — najjaśniejsza gwiazda wysoko na letnim niebie.',
+    sx:[76,80,84,84,80], sy:[58,63,61,67,69],
     sr:[2.9,1.8,1.7,1.6,1.7],
     lines:[[0,1],[0,2],[1,2],[1,3],[2,4],[3,4]]
   },
-  {
-    name:'Perseusz', latin:'Perseus · zima/jesień',
-    star:'Algol — Gwiazda Demona (zmienna co 2,87 dnia)',
-    desc:'Bohater który uratował Andromedę i pokonał Meduzę. Algol co 2,87 dnia zmienia jasność widoczną gołym okiem — bo zasłania ją ciemniejszy towarzysz.',
-    tip:'👁 Obserwuj Algol przez kilka nocy — zobaczysz jak zmienia jasność bez teleskopu.',
-    sx:[36,30,28,34,40,42], sy:[48,44,50,54,52,46],
-    sr:[2.3,1.9,1.8,2.1,1.7,1.8],
-    lines:[[0,1],[1,2],[0,3],[0,4],[4,5],[5,0]]
-  },
 ];
+
+/* ══════════════════════════════════════
+   STAN SŁOIKA
+══════════════════════════════════════ */
+let jarItems = [];
+
+function renderJar() {
+  const max = 7;
+  const pct = Math.min(jarItems.length / max, 1);
+  const fillH = Math.round(112 * pct);
+  const fr = document.getElementById('jfill');
+  if(fr) { fr.setAttribute('y', 152 - fillH); fr.setAttribute('height', fillH); }
+
+  const ng = document.getElementById('jnotes');
+  if(!ng) return;
+  ng.innerHTML = '';
+  const pos = [
+    {x:60,y:143},{x:36,y:137},{x:84,y:139},
+    {x:48,y:125},{x:76,y:123},{x:60,y:112},{x:38,y:103}
+  ];
+  jarItems.slice(-max).forEach((item, i) => {
+    if(i >= pos.length) return;
+    const p = pos[i];
+    const r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('x', p.x-13); r.setAttribute('y', p.y-7);
+    r.setAttribute('width','26'); r.setAttribute('height','14');
+    r.setAttribute('rx','4'); r.setAttribute('fill', item.color);
+    r.setAttribute('opacity','0.85');
+    ng.appendChild(r);
+  });
+}
 
 /* ══════════════════════════════════════
    KSIĘŻYC
 ══════════════════════════════════════ */
 function getMoonEmoji() {
-  const known = new Date(2000,0,6);
-  const c = (((new Date()-known)/(864e5)) % 29.53059 + 29.53059) % 29.53059;
+  const c = (((new Date()-new Date(2000,0,6))/864e5) % 29.53059 + 29.53059) % 29.53059;
   return c<1.85?'🌑':c<7.38?'🌒':c<11.07?'🌓':c<14.77?'🌔':
          c<18.46?'🌕':c<22.15?'🌖':c<25.84?'🌗':'🌘';
 }
@@ -429,46 +393,46 @@ function drawBg() {
   const W = cv.width  = window.innerWidth > 430 ? 390 : window.innerWidth;
   const H = cv.height = window.innerHeight;
   const ctx = cv.getContext('2d');
+  ctx.clearRect(0,0,W,H);
 
-  const N = Math.floor(W * H / 2600);
+  // Gwiazdy — rozproszone po całym niebie, nie tylko na górze
+  const N = Math.floor(W * H / 2400);
   for(let i=0; i<N; i++) {
     const x = Math.random()*W;
-    const y = Math.random()*H*0.78;
+    const y = Math.random()*H*0.85; // do 85% wysokości
     const r = Math.random()*1.3+0.2;
     const a = Math.random()*0.55+0.12;
     const cols = [
-      `rgba(195,210,255,${a})`,
-      `rgba(255,255,245,${a})`,
-      `rgba(255,240,210,${a*0.8})`,
-      `rgba(210,225,255,${a})`,
+      `rgba(210,220,255,${a})`,
+      `rgba(255,255,250,${a})`,
+      `rgba(255,245,220,${a*0.8})`,
     ];
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI*2);
     ctx.fillStyle = cols[Math.floor(Math.random()*cols.length)];
     ctx.fill();
-    if(Math.random()>.72) {
+    if(Math.random()>.75) {
       ctx.beginPath();
-      ctx.arc(x, y, r*2.8, 0, Math.PI*2);
+      ctx.arc(x, y, r*2.5, 0, Math.PI*2);
       ctx.fillStyle = `rgba(200,215,255,${a*0.07})`;
       ctx.fill();
     }
   }
   // Droga Mleczna
-  const grd = ctx.createLinearGradient(W*.25,0,W*.75,H*.65);
-  grd.addColorStop(0,'rgba(110,130,190,0)');
-  grd.addColorStop(.4,'rgba(120,135,200,0.05)');
-  grd.addColorStop(.6,'rgba(130,145,210,0.055)');
-  grd.addColorStop(1,'rgba(110,130,190,0)');
-  ctx.save(); ctx.rotate(-.28); ctx.translate(-W*.08,-H*.04);
+  const grd = ctx.createLinearGradient(W*.2, 0, W*.8, H*.7);
+  grd.addColorStop(0,'rgba(100,120,180,0)');
+  grd.addColorStop(.4,'rgba(110,125,190,0.05)');
+  grd.addColorStop(.6,'rgba(120,135,200,0.055)');
+  grd.addColorStop(1,'rgba(100,120,180,0)');
+  ctx.save(); ctx.rotate(-.25); ctx.translate(-W*.06,-H*.03);
   ctx.fillStyle = grd; ctx.fillRect(-W,-H,W*3,H*2);
   ctx.restore();
 }
 
 /* ══════════════════════════════════════
-   KONSTELACJE
+   KONSTELACJE — wyśrodkowane na ekranie
 ══════════════════════════════════════ */
 let rot = 0;
-let constTimer = null;
 
 function getW() { return window.innerWidth > 430 ? 390 : window.innerWidth; }
 
@@ -478,24 +442,24 @@ function drawConst() {
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
   svg.innerHTML = '';
 
-  // defs
   const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
-  defs.innerHTML = `
-    <filter id="sg"><feGaussianBlur stdDeviation="2.2" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>`;
+  defs.innerHTML = `<filter id="sg"><feGaussianBlur stdDeviation="2" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
   svg.appendChild(defs);
 
-  const CX = W/2, CY = H*0.36, RAD = rot*Math.PI/180;
+  // Centrum rotacji — środek nieba (nie ekranu)
+  const skyH = H * 0.72; // konstelacje zajmują górne 72% ekranu
+  const CX = W/2, CY = skyH/2;
+  const RAD = rot * Math.PI / 180;
 
   CONSTELLATIONS.forEach(con => {
     const g = document.createElementNS('http://www.w3.org/2000/svg','g');
     g.style.cursor = 'pointer';
 
-    // oblicz punkty z rotacją
     const pts = con.sx.map((sx,i) => {
+      // Mapuj % na obszar skyH — konstelacje zajmują całą dostępną przestrzeń nieba
       const px = sx/100*W;
-      const py = con.sy[i]/100*(H*0.74);
+      const py = con.sy[i]/100*skyH;
       const dx = px-CX, dy = py-CY;
       return {
         x: CX + dx*Math.cos(RAD) - dy*Math.sin(RAD),
@@ -504,48 +468,47 @@ function drawConst() {
       };
     });
 
-    // linie
+    // Linie
     con.lines.forEach(([a,b]) => {
       const gl = document.createElementNS('http://www.w3.org/2000/svg','line');
       gl.setAttribute('x1',pts[a].x); gl.setAttribute('y1',pts[a].y);
       gl.setAttribute('x2',pts[b].x); gl.setAttribute('y2',pts[b].y);
-      gl.setAttribute('stroke','rgba(150,175,255,0.07)');
-      gl.setAttribute('stroke-width','3');
+      gl.setAttribute('stroke','rgba(150,175,255,0.07)'); gl.setAttribute('stroke-width','3');
       g.appendChild(gl);
 
       const ln = document.createElementNS('http://www.w3.org/2000/svg','line');
       ln.setAttribute('x1',pts[a].x); ln.setAttribute('y1',pts[a].y);
       ln.setAttribute('x2',pts[b].x); ln.setAttribute('y2',pts[b].y);
-      ln.setAttribute('stroke','rgba(160,185,255,0.17)');
-      ln.setAttribute('stroke-width','0.75');
+      ln.setAttribute('stroke','rgba(165,190,255,0.18)');
+      ln.setAttribute('stroke-width','0.8');
       ln.setAttribute('stroke-dasharray','3 4');
       g.appendChild(ln);
     });
 
-    // gwiazdy
+    // Gwiazdy
     pts.forEach(pt => {
       const glow = document.createElementNS('http://www.w3.org/2000/svg','circle');
       glow.setAttribute('cx',pt.x); glow.setAttribute('cy',pt.y);
-      glow.setAttribute('r',pt.r*3.2);
-      glow.setAttribute('fill','rgba(200,215,255,0.055)');
+      glow.setAttribute('r',pt.r*3);
+      glow.setAttribute('fill','rgba(200,215,255,0.05)');
       g.appendChild(glow);
 
       const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
       c.setAttribute('cx',pt.x); c.setAttribute('cy',pt.y);
       c.setAttribute('r',pt.r);
-      c.setAttribute('fill','rgba(232,240,255,0.9)');
+      c.setAttribute('fill','rgba(235,242,255,0.9)');
       c.setAttribute('filter','url(#sg)');
       g.appendChild(c);
     });
 
-    // centrum + label + zona dotyku
+    // Centrum + etykieta + zona dotyku
     const mx = pts.reduce((s,p)=>s+p.x,0)/pts.length;
     const my = pts.reduce((s,p)=>s+p.y,0)/pts.length;
 
     const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
-    lbl.setAttribute('x',mx); lbl.setAttribute('y',my+26);
+    lbl.setAttribute('x',mx); lbl.setAttribute('y',my+24);
     lbl.setAttribute('text-anchor','middle');
-    lbl.setAttribute('fill','rgba(170,195,255,0.2)');
+    lbl.setAttribute('fill','rgba(175,200,255,0.2)');
     lbl.setAttribute('font-size','8');
     lbl.setAttribute('font-family','Cinzel,serif');
     lbl.setAttribute('letter-spacing','1.8');
@@ -554,7 +517,7 @@ function drawConst() {
 
     const tz = document.createElementNS('http://www.w3.org/2000/svg','circle');
     tz.setAttribute('cx',mx); tz.setAttribute('cy',my);
-    tz.setAttribute('r','42'); tz.setAttribute('fill','transparent');
+    tz.setAttribute('r','40'); tz.setAttribute('fill','transparent');
     g.appendChild(tz);
 
     g.addEventListener('click', e => { e.stopPropagation(); showPopup(con, mx, my); });
@@ -563,8 +526,8 @@ function drawConst() {
 }
 
 function startRotation() {
-  constTimer = setInterval(() => {
-    rot += 0.006; // ~6° na minutę — niemal niedostrzegalne
+  setInterval(() => {
+    rot += 0.006;
     if(rot>=360) rot=0;
     drawConst();
   }, 100);
@@ -580,16 +543,14 @@ function showPopup(con, cx, cy) {
   document.getElementById('p-star').textContent  = '✦ '+con.star;
   document.getElementById('p-desc').textContent  = con.desc;
   document.getElementById('p-tip').textContent   = con.tip;
-
   const W = getW(), H = window.innerHeight;
   const pw = Math.min(280, W*0.88);
-  let left = cx - pw/2;
-  let top  = cy + 28;
+  let left = cx - pw/2, top = cy + 28;
   left = Math.max(10, Math.min(left, W-pw-10));
-  top  = Math.max(70, Math.min(top, H-260));
-
+  top  = Math.max(70, Math.min(top, H-270));
+  const offset = window.innerWidth > 430 ? (window.innerWidth-390)/2 : 0;
   pp.style.width = pw+'px';
-  pp.style.left  = (window.innerWidth>430 ? (window.innerWidth-390)/2 : 0) + left + 'px';
+  pp.style.left  = (offset+left)+'px';
   pp.style.top   = top+'px';
   pp.classList.add('on');
 }
@@ -597,7 +558,7 @@ function closePopup() { document.getElementById('popup').classList.remove('on');
 document.getElementById('const-svg').addEventListener('click', closePopup);
 
 /* ══════════════════════════════════════
-   PASKI KOLORÓW
+   PASKI + PISANIE
 ══════════════════════════════════════ */
 let chosenColor = COLORS[0];
 
@@ -608,7 +569,7 @@ function buildStrips() {
     const b = document.createElement('button');
     b.className = 'cstrip';
     b.style.background = hex;
-    b.style.opacity = '0.72';
+    b.style.opacity = '0.78';
     b.onclick = () => openWriter(hex);
     wrap.appendChild(b);
   });
@@ -618,24 +579,20 @@ function openWriter(hex) {
   chosenColor = hex;
   const dot = document.getElementById('chosen-dot');
   dot.style.background = hex;
-  dot.style.boxShadow  = `0 0 10px ${hex}88`;
-
+  dot.style.boxShadow  = `0 0 10px ${hex}99`;
   const btn = document.getElementById('btn-submit');
   btn.style.background = hex;
-  btn.style.opacity    = '0.82';
-
-  const inp = document.getElementById('note-input');
-  inp.style.borderColor = hex+'44';
-
-  document.getElementById('strips').style.display  = 'none';
+  btn.style.opacity    = '0.85';
+  document.getElementById('note-input').style.borderColor = hex+'44';
+  document.getElementById('strips').style.display = 'none';
   document.getElementById('writer').classList.add('on');
-  setTimeout(() => inp.focus(), 160);
+  setTimeout(() => document.getElementById('note-input').focus(), 160);
 }
 
 function backToStrips() {
   document.getElementById('note-input').value = '';
   document.getElementById('writer').classList.remove('on');
-  document.getElementById('confirm').classList.remove('on');
+  document.getElementById('jar-screen').classList.remove('on');
   document.getElementById('strips').style.display = 'flex';
 }
 
@@ -654,29 +611,43 @@ function submit() {
   const txt = document.getElementById('note-input').value.trim();
   if(!txt) { document.getElementById('note-input').focus(); return; }
 
-  // Animacja karteczki
+  // Zapisz do słoika
+  jarItems.push({ text:txt, color:chosenColor });
+
+  // Animacja karteczki w górę
   const fly = document.createElement('div');
   fly.className = 'fly';
-  fly.style.cssText = `background:${chosenColor};opacity:0.9;
-    left:50%;bottom:140px;transform:translateX(-50%);`;
+  fly.style.cssText = `background:${chosenColor};left:50%;bottom:150px;transform:translateX(-50%);opacity:0.9;`;
   fly.textContent = txt.length>22 ? txt.slice(0,22)+'…' : txt;
   document.body.appendChild(fly);
-
   setTimeout(()=>{
-    fly.style.transition = 'all 1.1s cubic-bezier(.3,0,.2,1)';
-    fly.style.bottom = '80%';
-    fly.style.opacity = '0';
-    fly.style.transform = 'translateX(-50%) scale(.1)';
-  }, 40);
-  setTimeout(()=>fly.remove(), 1200);
+    fly.style.transition='all 1.1s cubic-bezier(.3,0,.2,1)';
+    fly.style.bottom='62%'; fly.style.opacity='0';
+    fly.style.transform='translateX(-50%) scale(.12)';
+  },40);
+  setTimeout(()=>fly.remove(), 1250);
 
-  // Potwierdzenie
+  // Aktualizuj słoik
+  renderJar();
+
+  // Kolor przycisku "dopisz" = wybrany kolor
+  document.getElementById('btn-more').style.background = chosenColor;
+  document.getElementById('btn-more').style.opacity = '0.82';
+
+  // Pokaż ekran ze słoikiem
+  const msg = MSGS[Math.floor(Math.random()*MSGS.length)];
+  document.getElementById('conf-msg').textContent = msg;
   setTimeout(()=>{
-    document.getElementById('conf-msg').textContent =
-      MSGS[Math.floor(Math.random()*MSGS.length)];
     document.getElementById('writer').classList.remove('on');
-    document.getElementById('confirm').classList.add('on');
-  }, 800);
+    document.getElementById('jar-screen').classList.add('on');
+  }, 850);
+}
+
+function addMore() {
+  document.getElementById('jar-screen').classList.remove('on');
+  document.getElementById('note-input').value = '';
+  // Wróć do pasków (nowy wybór koloru)
+  document.getElementById('strips').style.display = 'flex';
 }
 
 /* ══════════════════════════════════════
@@ -688,6 +659,7 @@ window.addEventListener('DOMContentLoaded', () => {
   drawConst();
   startRotation();
   buildStrips();
+  renderJar();
   setTimeout(()=>{ document.getElementById('hint').style.display='none'; }, 5200);
 });
 
