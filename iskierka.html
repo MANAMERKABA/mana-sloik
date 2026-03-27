@@ -1,567 +1,332 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0f0f1e">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Magic Jar</title>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700&family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-  <style>
-    :root{--nb:#1a0f2e;--nc:#2a1f42;--na:#f0c060;--ns:#c4a0e8;--nt:#f0eafa;--nu:#a090c0;--db:#fff9f2;--da:#f6a825;--dt:#2a2640;--du:#8a86a6;--r:22px;--rs:14px;}
-    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-    html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;}
-    body{background:#0a0010;}
-    h1{font-family:'Baloo 2',cursive;font-weight:800;line-height:1.2;}
-    h2{font-family:'Baloo 2',cursive;font-weight:600;}
-    .screen{position:fixed;inset:0;display:none;flex-direction:column;overflow:hidden;padding-bottom:env(safe-area-inset-bottom);}
-    .screen.active{display:flex;}
-    .night{background:radial-gradient(ellipse at 50% 110%,#3d1f6e 0%,#1a0f2e 55%,#120a22 100%);color:var(--nt);}
-    .day{background:var(--db);color:var(--dt);}
-    .stars-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
-    .star{position:absolute;border-radius:50%;animation:twinkleA var(--d,3s) infinite var(--del,0s);}
-    .star-w{background:#fff;}.star-g{background:#ffd080;}
-    @keyframes twinkleA{0%,100%{opacity:.1}50%{opacity:.88}}
-    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-    .btn{display:block;width:100%;padding:17px 24px;border:none;border-radius:var(--r);font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;cursor:pointer;transition:transform .15s;outline:none;text-align:center;margin-top:10px;}
-    .btn:active{transform:scale(.96);}
-    .btn-gold{background:var(--na);color:#1a1400;}
-    .btn-ghost{background:rgba(255,255,255,.09);color:var(--nt);border:1.5px solid rgba(255,255,255,.14);}
-    .btn-sun{background:var(--da);color:#fff;}
-    .inp-n{width:100%;background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.15);border-radius:var(--rs);padding:15px;color:var(--nt);font-family:'Nunito',sans-serif;font-size:17px;outline:none;resize:none;}
-    .inp-n:focus{border-color:var(--na);}
-    .inp-n::placeholder{color:var(--nu);}
-    .inp-d{width:100%;background:#fff;border:1.5px solid rgba(0,0,0,.1);border-radius:var(--rs);padding:15px;color:var(--dt);font-family:'Nunito',sans-serif;font-size:17px;outline:none;resize:none;}
-    .inp-d:focus{border-color:var(--da);}
-    .inp-d::placeholder{color:var(--du);}
-    .step{display:none;padding:20px 20px 48px;flex:1;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;max-width:480px;margin:0 auto;width:100%;}
-    .step.active{display:flex;}
-    .back{display:inline-flex;align-items:center;gap:6px;background:none;border:none;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;margin-bottom:14px;opacity:.6;}
-    .back:active{opacity:.4;}
-    .back-n{color:var(--nt);}.back-d{color:var(--dt);}
-    .ritual-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:150;flex-direction:column;justify-content:flex-end;padding:20px;}
-    .ritual-ov.open{display:flex;}
-    .ritual-card{background:var(--nc);border-radius:var(--r);padding:26px 22px;}
-    .ritual-card h2{color:var(--na);font-size:21px;margin-bottom:6px;}
-    .ritual-card p{color:var(--nu);font-size:14px;margin-bottom:20px;line-height:1.5;}
-    .ritual-opts{display:flex;flex-direction:column;gap:10px;}
-    .r-btn{padding:15px;border-radius:var(--rs);border:none;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;}
-    .r-keep{background:rgba(255,255,255,.09);color:var(--nt);}
-    .r-bury{background:rgba(139,90,43,.35);color:#d4aa78;}
-    .r-burn{background:rgba(192,57,43,.25);color:#e88070;}
-    #ritual-screen{display:none;position:fixed;inset:0;z-index:400;flex-direction:column;align-items:center;justify-content:center;}
-    #ritual-screen.active{display:flex;}
-    .gear-btn{position:fixed;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;opacity:.4;z-index:100;display:none;}
-    .set-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;justify-content:center;align-items:flex-end;padding:16px;}
-    .set-ov.open{display:flex;}
-    .set-card{background:var(--nc);border-radius:var(--r) var(--r) 14px 14px;padding:26px 22px;width:100%;max-width:480px;}
-    .set-card h3{color:var(--nt);font-size:19px;margin-bottom:6px;}
-    .set-card p{color:var(--nu);font-size:13px;margin-bottom:14px;line-height:1.5;}
-    .set-sep{border:none;border-top:1px solid rgba(255,255,255,.08);margin:16px 0;}
-    .set-danger{color:#e07060;font-size:14px;font-weight:700;background:rgba(192,57,43,.15);border:1.5px solid rgba(192,57,43,.25);border-radius:var(--rs);padding:13px;width:100%;font-family:'Nunito',sans-serif;cursor:pointer;margin-top:4px;}
-    #sleep{background:var(--nb);justify-content:center;align-items:center;text-align:center;}
-    #home{overflow-y:auto;-webkit-overflow-scrolling:touch;}
-    .home-inner{max-width:480px;margin:0 auto;padding:52px 20px 40px;width:100%;}
-    .home-greet{font-size:14px;font-weight:700;opacity:.6;margin-bottom:3px;}
-    .home-name{font-size:30px;margin-bottom:28px;}
-    .mod-card{border-radius:var(--r);padding:26px 22px;cursor:pointer;transition:transform .18s;position:relative;overflow:hidden;min-height:148px;display:flex;flex-direction:column;justify-content:flex-end;margin-bottom:16px;}
-    .mod-card:active{transform:scale(.97);}
-    .mod-card .ico{font-size:44px;display:block;margin-bottom:10px;}
-    .mod-card h2{font-size:22px;line-height:1.2;margin-bottom:3px;}
-    .mod-card p{font-size:13px;opacity:.8;}
-    .card-sn{background:linear-gradient(135deg,#2d1a5e,#4a2880);color:var(--nt);box-shadow:0 8px 32px rgba(60,20,100,.5);}
-    .card-sn::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Ccircle cx='15' cy='15' r='1' fill='white' opacity='.3'/%3E%3Ccircle cx='50' cy='10' r='1.5' fill='white' opacity='.4'/%3E%3Ccircle cx='70' cy='38' r='1' fill='white' opacity='.2'/%3E%3C/svg%3E") repeat;}
-    .card-dd{background:linear-gradient(135deg,#fff5e0,#fde8a0);color:var(--dt);box-shadow:0 8px 32px rgba(246,168,37,.25);}
-    .series-badge{position:absolute;top:14px;right:14px;background:var(--da);color:#fff;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;}
-    #dd{padding:0;}
-    .pz-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:14px;}
-    .pz-container{position:relative;border-radius:14px;overflow:hidden;flex-shrink:0;box-shadow:0 8px 32px rgba(0,0,0,.2);transition:box-shadow .3s;}
-    .serce-bub{background:rgba(255,255,255,.94);border-radius:var(--rs);padding:16px;margin:10px 0;box-shadow:0 4px 16px rgba(0,0,0,.09);}
-    .serce-bub::before{content:'💛';font-size:18px;display:block;margin-bottom:6px;}
-    .serce-bub p{font-size:16px;color:var(--dt);line-height:1.5;}
-    .flash{position:fixed;inset:0;background:rgba(114,201,160,.18);z-index:500;pointer-events:none;animation:flashOut .6s forwards;}
-    @keyframes flashOut{to{opacity:0}}
-    ::-webkit-scrollbar{width:0;}
-    #onboarding{background:#03080f;overflow:hidden;}
-    .ob-scene{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;}
-    .q{position:relative;overflow:hidden;}
-    .q svg{position:absolute;inset:0;width:100%;height:100%;}
-    .q-wind{background:#071428;}.q-water{background:#020e20;}.q-fire{background:#130404;}.q-earth{background:#050f04;}
-    .ob-vignette{position:absolute;inset:0;pointer-events:none;z-index:8;background:radial-gradient(ellipse 55% 52% at 50% 50%,transparent 20%,rgba(0,0,0,.65) 70%,rgba(0,0,0,.9) 100%);}
-    .scroll-wrap{position:absolute;top:50%;left:50%;z-index:20;width:min(292px,84vw);transform:translate(-50%,-50%);animation:scrollIn 1.4s cubic-bezier(0.16,1,0.3,1) both;filter:drop-shadow(0 0 32px rgba(220,120,15,0.22)) drop-shadow(0 22px 55px rgba(0,0,0,0.98));}
-    @keyframes scrollIn{from{opacity:0;transform:translate(-50%,-54%) scale(.88);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
-    .roller{display:block;width:100%;position:relative;z-index:2;}
-    .roller-top{margin-bottom:-14px;}.roller-bot{margin-top:-14px;}
-    .scroll-body{display:block;width:100%;position:relative;z-index:1;}
-    .scroll-content{position:absolute;top:0;left:0;right:0;bottom:0;z-index:3;padding:30px 24px 28px;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;max-height:100%;}
-    .scroll-content::-webkit-scrollbar{width:0;}
-    .sc-glyph{text-align:center;font-size:22px;margin-bottom:3px;animation:glyphPulse 3s ease-in-out infinite;}
-    @keyframes glyphPulse{0%,100%{filter:drop-shadow(0 0 6px rgba(170,110,15,.4));}50%{filter:drop-shadow(0 0 14px rgba(200,140,20,.7));}}
-    .sc-title{font-family:'Cinzel',serif;font-size:19px;font-weight:700;color:#1e1005;text-align:center;letter-spacing:4px;text-shadow:0 1px 0 rgba(255,225,140,.6);margin-bottom:2px;}
-    .sc-sub{font-family:'Lora',serif;font-style:italic;font-size:11px;color:#6a4818;text-align:center;opacity:.75;margin-bottom:14px;}
-    .rune-sep{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
-    .rune-sep::before,.rune-sep::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(110,72,20,.45),transparent);}
-    .rune-sep span{font-size:11px;color:rgba(110,72,20,.5);}
-    .sc-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2.5px;color:#5a3812;display:block;margin-bottom:5px;}
-    .sc-inp{width:100%;background:rgba(255,252,238,.75);border:1px solid rgba(110,72,25,.3);border-radius:3px 6px 4px 5px;padding:10px 12px;font-family:'Lora',serif;font-size:15px;color:#18100a;outline:none;margin-bottom:12px;transition:border-color .2s,box-shadow .2s;box-shadow:inset 0 1px 4px rgba(0,0,0,.07);}
-    .sc-inp::placeholder{color:rgba(110,72,25,.4);font-style:italic;}
-    .sc-inp:focus{border-color:rgba(160,100,18,.6);box-shadow:inset 0 1px 4px rgba(0,0,0,.07),0 0 0 2px rgba(185,120,18,.14);}
-    .ob-step{display:none;}.ob-step.active{display:block;}
-    .sc-back{background:none;border:none;font-family:'Lora',serif;font-style:italic;font-size:12px;color:#6a4818;cursor:pointer;padding:2px 0;margin-bottom:10px;display:block;opacity:.65;}
-    .sc-btn{width:100%;padding:12px 14px;margin-top:4px;background:linear-gradient(150deg,#241508,#3a2208);border:1px solid rgba(185,125,28,.42);border-radius:3px 6px 4px 5px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:2.5px;color:#d4a030;cursor:pointer;box-shadow:0 3px 14px rgba(0,0,0,.45),inset 0 1px 0 rgba(210,155,40,.18);transition:all .22s;}
-    .sc-btn:active{transform:scale(.97);}
-    .jar-grid-ob{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:10px 0 14px;}
-    .jar-opt-ob{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 9px;border-radius:3px 6px 4px 5px;border:1.5px solid rgba(110,72,25,.22);cursor:pointer;transition:all .15s;background:rgba(255,248,228,.45);font-family:'Cinzel',serif;font-size:8px;color:#5a3812;letter-spacing:1.5px;}
-    .jar-opt-ob.sel{border-color:rgba(165,105,20,.85);background:rgba(255,235,175,.82);box-shadow:0 0 8px rgba(185,120,20,.18);}
-    .jar-opt-ob span{font-size:22px;}
-    @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
-    .shake{animation:shake .38s ease;}
-    @keyframes twinkle{0%,100%{opacity:.12}50%{opacity:.9}}
-    @keyframes windLine{0%{stroke-dashoffset:500;opacity:0;}8%{opacity:.7;}85%{opacity:.35;}100%{stroke-dashoffset:0;opacity:0;}}
-    @keyframes leafDrift1{0%{transform:translate(0,0) rotate(0deg);opacity:0;}10%{opacity:.75;}90%{opacity:.4;}100%{transform:translate(90px,-25px) rotate(200deg);opacity:0;}}
-    @keyframes leafDrift2{0%{transform:translate(0,0) rotate(20deg);opacity:0;}12%{opacity:.7;}88%{opacity:.3;}100%{transform:translate(110px,-15px) rotate(-120deg);opacity:0;}}
-    @keyframes leafDrift3{0%{transform:translate(0,0) rotate(-10deg);opacity:0;}8%{opacity:.8;}92%{opacity:.35;}100%{transform:translate(80px,-35px) rotate(150deg);opacity:0;}}
-    @keyframes wfall{from{transform:translateY(-5px);opacity:.6;}to{transform:translateY(8px);opacity:.1;}}
-    @keyframes moonPulse{0%,100%{opacity:.88;}50%{opacity:1;}}
-    @keyframes flicker{0%,100%{transform:scaleX(1)scaleY(1);}25%{transform:scaleX(.93)scaleY(1.07);}50%{transform:scaleX(1.04)scaleY(.96);}75%{transform:scaleX(.96)scaleY(1.04);}}
-    @keyframes sparksA{0%{transform:translate(0,0);opacity:1;}100%{transform:translate(7px,-52px);opacity:0;}}
-    @keyframes sparksB{0%{transform:translate(0,0);opacity:1;}100%{transform:translate(-6px,-48px);opacity:0;}}
-    @keyframes sparksC{0%{transform:translate(0,0);opacity:1;}100%{transform:translate(11px,-60px);opacity:0;}}
-    @keyframes sway1{0%,100%{transform:rotate(-2.5deg);}50%{transform:rotate(2.5deg);}}
-    @keyframes sway2{0%,100%{transform:rotate(-1.8deg);}50%{transform:rotate(2deg);}}
-    @keyframes sway3{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(1.5deg);}}
-    @keyframes firefly{0%,100%{opacity:0;r:1;}45%,55%{opacity:.95;r:1.6;}}
-    #sn{background:#020810;overflow:hidden;}
-    #sn-sky{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 30%,#0d1b2a 0%,#060d18 50%,#020508 100%);}
-    .sn-nb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(70px);mix-blend-mode:screen;}
-    .sn-nb1{width:65%;height:55%;top:2%;left:-5%;background:radial-gradient(circle,rgba(25,40,100,0.2) 0%,transparent 70%);}
-    .sn-nb2{width:50%;height:42%;top:10%;right:0%;background:radial-gradient(circle,rgba(60,20,80,0.13) 0%,transparent 70%);}
-    #sn-canvas{position:absolute;inset:0;z-index:2;}
-    #sn-popup{display:none;position:absolute;z-index:50;width:min(270px,84%);background:rgba(6,12,28,0.94);border:1px solid rgba(160,185,255,0.11);border-radius:18px;padding:16px 18px;backdrop-filter:blur(20px);box-shadow:0 10px 40px rgba(0,0,8,0.85);animation:popIn .22s ease;}
-    #sn-popup.on{display:block;}
-    @keyframes popIn{from{opacity:0;transform:scale(.88);}to{opacity:1;transform:scale(1);}}
-    .sn-px{position:absolute;top:10px;right:14px;background:none;border:none;font-size:19px;line-height:1;color:rgba(255,255,255,.25);cursor:pointer;font-family:'Nunito',sans-serif;}
-    .sn-pname{font-family:'Cinzel',serif;font-size:13px;font-weight:600;color:#c8d8ff;letter-spacing:1.5px;margin-bottom:2px;}
-    .sn-platin{font-size:10px;font-style:italic;color:rgba(180,200,255,.35);margin-bottom:8px;}
-    .sn-pstar{font-size:11px;color:rgba(210,220,255,.5);margin-bottom:7px;line-height:1.4;}
-    .sn-pdesc{font-size:12px;color:rgba(220,225,245,.72);line-height:1.6;margin-bottom:8px;}
-    .sn-ptip{font-size:11px;font-style:italic;color:rgba(180,195,230,.42);line-height:1.5;border-top:1px solid rgba(255,255,255,.06);padding-top:8px;}
-    #sn-hint{position:absolute;bottom:175px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:none;text-align:center;animation:hintAnim 5s ease forwards;}
-    @keyframes hintAnim{0%{opacity:0;}15%{opacity:1;}75%{opacity:1;}100%{opacity:0;}}
-    .sn-hint-txt{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(200,215,255,.32);}
-    #sn-ui{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;pointer-events:none;}
-    .sn-top{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),16px) 20px 10px;pointer-events:all;}
-    .sn-back-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 16px;color:rgba(255,255,255,.55);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
-    .sn-back-btn:active{opacity:.6;}
-    .sn-title{font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:rgba(255,255,255,.28);}
-    .sn-moon{font-size:22px;filter:drop-shadow(0 0 6px rgba(200,220,255,.35));}
-    .sn-bottom{flex-shrink:0;padding:0 16px max(env(safe-area-inset-bottom),20px);pointer-events:all;}
-    #sn-nav,#sn-today-btn{pointer-events:all;}
-    .sn-strips{display:flex;gap:8px;height:54px;}
-    .sn-strip{flex:1;border-radius:14px;cursor:pointer;border:none;outline:none;transition:transform .14s;position:relative;overflow:hidden;}
-    .sn-strip::after{content:'';position:absolute;inset:0;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.22) 0%,transparent 55%);pointer-events:none;}
-    .sn-strip:active{transform:scale(.92);}
-    .sn-writer{display:none;flex-direction:column;gap:10px;animation:slideUp .28s ease;}
-    .sn-writer.on{display:flex;}
-    @keyframes slideUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-    .sn-wtop{display:flex;align-items:center;justify-content:space-between;}
-    .sn-dot{width:18px;height:18px;border-radius:50%;transition:background .2s;}
-    .sn-change{background:none;border:none;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,.28);cursor:pointer;padding:4px 0;}
-    .sn-textarea2{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px 16px;color:#eeeaff;font-family:'Nunito',sans-serif;font-size:16px;line-height:1.6;outline:none;resize:none;-webkit-appearance:none;transition:border-color .2s;}
-    .sn-textarea2::placeholder{color:rgba(210,200,235,.3);}
-    .sn-textarea2:focus{border-color:rgba(220,190,255,.3);}
-    .sn-sendbtn{width:100%;padding:15px;border:none;border-radius:16px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:#fff;cursor:pointer;letter-spacing:.3px;transition:transform .15s;border:1px solid rgba(255,255,255,.15);}
-    .sn-sendbtn:active{transform:scale(.97);}
-    #sn-jar-screen{display:none;position:absolute;inset:0;z-index:30;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px max(env(safe-area-inset-bottom),32px);}
-    #sn-jar-screen.on{display:flex;}
-    .sn-conf-msg{font-size:17px;font-weight:600;color:rgba(225,220,250,.88);line-height:1.7;text-align:center;max-width:280px;margin-bottom:24px;}
-    .sn-jar-wrap{position:relative;width:130px;height:165px;margin-bottom:24px;}
-    .sn-actions{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;}
-    .sn-btn-more{padding:14px;border-radius:16px;border:none;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:#fff;cursor:pointer;border:1px solid rgba(255,255,255,.15);}
-    .sn-btn-more:active{opacity:.7;}
-    .sn-btn-done{padding:13px;border-radius:16px;border:none;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55);font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
-    .sn-btn-done:active{opacity:.6;}
-    .sn-fly{position:fixed;z-index:1000;pointer-events:none;border-radius:10px;padding:6px 14px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:#fff;max-width:180px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    #dd-inact{display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;text-align:center;}
-    #dd-inact.on{display:flex;}
-    .inact-img{width:200px;height:200px;border-radius:20px;overflow:hidden;margin-bottom:24px;box-shadow:0 8px 32px rgba(0,0,0,.15);}
-    .inact-q{font-size:17px;font-weight:700;color:var(--dt);margin-bottom:6px;}
-    .inact-sub{font-size:13px;color:var(--du);margin-bottom:24px;line-height:1.5;}
-    .inact-btns{display:flex;gap:12px;}
-    .inact-btn{padding:14px 28px;border-radius:16px;border:none;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;cursor:pointer;}
-    .inact-yes{background:var(--da);color:#fff;}
-    .inact-no{background:rgba(0,0,0,.07);color:var(--du);}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#0f0f1e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Magic Jar</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700&family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--nb:#1a0f2e;--nc:#2a1f42;--na:#f0c060;--nt:#f0eafa;--nu:#a090c0;--db:#fff9f2;--da:#f6a825;--dt:#2a2640;--du:#8a86a6;--r:22px;--rs:14px;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;}
+body{background:#0a0010;}
+h1{font-family:'Baloo 2',cursive;font-weight:800;line-height:1.2;}
+h2{font-family:'Baloo 2',cursive;font-weight:600;}
+.screen{position:fixed;inset:0;display:none;flex-direction:column;overflow:hidden;padding-bottom:env(safe-area-inset-bottom);}
+.screen.active{display:flex;}
+.night{background:radial-gradient(ellipse at 50% 110%,#3d1f6e 0%,#1a0f2e 55%,#120a22 100%);color:var(--nt);}
+.day{background:var(--db);color:var(--dt);}
+.stars-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.star{position:absolute;border-radius:50%;animation:twinkleA var(--d,3s) infinite var(--del,0s);}
+.star-w{background:#fff;}.star-g{background:#ffd080;}
+@keyframes twinkleA{0%,100%{opacity:.1}50%{opacity:.88}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.btn{display:block;width:100%;padding:17px 24px;border:none;border-radius:var(--r);font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;cursor:pointer;transition:transform .15s;outline:none;text-align:center;margin-top:10px;}
+.btn:active{transform:scale(.96);}
+.btn-ghost{background:rgba(255,255,255,.09);color:var(--nt);border:1.5px solid rgba(255,255,255,.14);}
+.btn-sun{background:var(--da);color:#fff;}
+.inp-d{width:100%;background:#fff;border:1.5px solid rgba(0,0,0,.1);border-radius:var(--rs);padding:15px;color:var(--dt);font-family:'Nunito',sans-serif;font-size:17px;outline:none;resize:none;}
+.inp-d:focus{border-color:var(--da);}
+.inp-d::placeholder{color:var(--du);}
+.step{display:none;padding:20px 20px 48px;flex:1;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;max-width:480px;margin:0 auto;width:100%;}
+.step.active{display:flex;}
+.back{display:inline-flex;align-items:center;gap:6px;background:none;border:none;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;margin-bottom:14px;opacity:.6;}
+.back-d{color:var(--dt);}
+.ritual-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:150;flex-direction:column;justify-content:flex-end;padding:20px;}
+.ritual-ov.open{display:flex;}
+.ritual-card{background:var(--nc);border-radius:var(--r);padding:26px 22px;}
+.ritual-card h2{color:var(--na);font-size:21px;margin-bottom:6px;}
+.ritual-card p{color:var(--nu);font-size:14px;margin-bottom:20px;line-height:1.5;}
+.ritual-opts{display:flex;flex-direction:column;gap:10px;}
+.r-btn{padding:15px;border-radius:var(--rs);border:none;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;}
+.r-keep{background:rgba(255,255,255,.09);color:var(--nt);}
+.r-bury{background:rgba(139,90,43,.35);color:#d4aa78;}
+.r-burn{background:rgba(192,57,43,.25);color:#e88070;}
+.gear-btn{position:fixed;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;opacity:.4;z-index:100;display:none;}
+.set-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;justify-content:center;align-items:flex-end;padding:16px;}
+.set-ov.open{display:flex;}
+.set-card{background:var(--nc);border-radius:var(--r) var(--r) 14px 14px;padding:26px 22px;width:100%;max-width:480px;}
+.set-card h3{color:var(--nt);font-size:19px;margin-bottom:6px;}
+.set-card p{color:var(--nu);font-size:13px;margin-bottom:14px;line-height:1.5;}
+.set-sep{border:none;border-top:1px solid rgba(255,255,255,.08);margin:16px 0;}
+.set-danger{color:#e07060;font-size:14px;font-weight:700;background:rgba(192,57,43,.15);border:1.5px solid rgba(192,57,43,.25);border-radius:var(--rs);padding:13px;width:100%;font-family:'Nunito',sans-serif;cursor:pointer;margin-top:4px;}
+#sleep{background:var(--nb);justify-content:center;align-items:center;text-align:center;}
+#home{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.home-inner{max-width:480px;margin:0 auto;padding:52px 20px 40px;width:100%;}
+.home-greet{font-size:14px;font-weight:700;opacity:.6;margin-bottom:3px;}
+.home-name{font-size:30px;margin-bottom:28px;}
+.mod-card{border-radius:var(--r);padding:26px 22px;cursor:pointer;transition:transform .18s;position:relative;overflow:hidden;min-height:148px;display:flex;flex-direction:column;justify-content:flex-end;margin-bottom:16px;}
+.mod-card:active{transform:scale(.97);}
+.mod-card .ico{font-size:44px;display:block;margin-bottom:10px;}
+.mod-card h2{font-size:22px;line-height:1.2;margin-bottom:3px;}
+.mod-card p{font-size:13px;opacity:.8;}
+.card-sn{background:linear-gradient(135deg,#2d1a5e,#4a2880);color:var(--nt);box-shadow:0 8px 32px rgba(60,20,100,.5);}
+.card-sn::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Ccircle cx='15' cy='15' r='1' fill='white' opacity='.3'/%3E%3Ccircle cx='50' cy='10' r='1.5' fill='white' opacity='.4'/%3E%3Ccircle cx='70' cy='38' r='1' fill='white' opacity='.2'/%3E%3C/svg%3E") repeat;}
+.card-dd{background:linear-gradient(135deg,#fff5e0,#fde8a0);color:var(--dt);box-shadow:0 8px 32px rgba(246,168,37,.25);}
+.series-badge{position:absolute;top:14px;right:14px;background:var(--da);color:#fff;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;}
+#dd{padding:0;}
+.pz-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:14px;}
+.pz-container{position:relative;border-radius:14px;overflow:hidden;flex-shrink:0;box-shadow:0 8px 32px rgba(0,0,0,.2);transition:box-shadow .3s;}
+.serce-bub{background:rgba(255,255,255,.94);border-radius:var(--rs);padding:16px;margin:10px 0;box-shadow:0 4px 16px rgba(0,0,0,.09);}
+.serce-bub::before{content:'💛';font-size:18px;display:block;margin-bottom:6px;}
+.serce-bub p{font-size:16px;color:var(--dt);line-height:1.5;}
+.flash{position:fixed;inset:0;background:rgba(114,201,160,.18);z-index:500;pointer-events:none;animation:flashOut .6s forwards;}
+@keyframes flashOut{to{opacity:0}}
+::-webkit-scrollbar{width:0;}
+#onboarding{background:#03080f;overflow:hidden;}
+.ob-scene{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;}
+.q{position:relative;overflow:hidden;}
+.q svg{position:absolute;inset:0;width:100%;height:100%;}
+.q-wind{background:#071428;}.q-water{background:#020e20;}.q-fire{background:#130404;}.q-earth{background:#050f04;}
+.ob-vignette{position:absolute;inset:0;pointer-events:none;z-index:8;background:radial-gradient(ellipse 55% 52% at 50% 50%,transparent 20%,rgba(0,0,0,.65) 70%,rgba(0,0,0,.9) 100%);}
+.scroll-wrap{position:absolute;top:50%;left:50%;z-index:20;width:min(292px,84vw);transform:translate(-50%,-50%);animation:scrollIn 1.4s cubic-bezier(0.16,1,0.3,1) both;filter:drop-shadow(0 0 32px rgba(220,120,15,0.22)) drop-shadow(0 22px 55px rgba(0,0,0,0.98));}
+@keyframes scrollIn{from{opacity:0;transform:translate(-50%,-54%) scale(.88);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
+.roller{display:block;width:100%;position:relative;z-index:2;}
+.roller-top{margin-bottom:-14px;}.roller-bot{margin-top:-14px;}
+.scroll-body{display:block;width:100%;position:relative;z-index:1;}
+.scroll-content{position:absolute;top:0;left:0;right:0;bottom:0;z-index:3;padding:30px 24px 28px;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;max-height:100%;}
+.scroll-content::-webkit-scrollbar{width:0;}
+.sc-glyph{text-align:center;font-size:22px;margin-bottom:3px;animation:glyphPulse 3s ease-in-out infinite;}
+@keyframes glyphPulse{0%,100%{filter:drop-shadow(0 0 6px rgba(170,110,15,.4));}50%{filter:drop-shadow(0 0 14px rgba(200,140,20,.7));}}
+.sc-title{font-family:'Cinzel',serif;font-size:19px;font-weight:700;color:#1e1005;text-align:center;letter-spacing:4px;text-shadow:0 1px 0 rgba(255,225,140,.6);margin-bottom:2px;}
+.sc-sub{font-family:'Lora',serif;font-style:italic;font-size:11px;color:#6a4818;text-align:center;opacity:.75;margin-bottom:14px;}
+.rune-sep{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.rune-sep::before,.rune-sep::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(110,72,20,.45),transparent);}
+.rune-sep span{font-size:11px;color:rgba(110,72,20,.5);}
+.sc-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2.5px;color:#5a3812;display:block;margin-bottom:5px;}
+.sc-inp{width:100%;background:rgba(255,252,238,.75);border:1px solid rgba(110,72,25,.3);border-radius:3px 6px 4px 5px;padding:10px 12px;font-family:'Lora',serif;font-size:15px;color:#18100a;outline:none;margin-bottom:12px;box-shadow:inset 0 1px 4px rgba(0,0,0,.07);}
+.sc-inp::placeholder{color:rgba(110,72,25,.4);font-style:italic;}
+.sc-inp:focus{border-color:rgba(160,100,18,.6);}
+.ob-step{display:none;}.ob-step.active{display:block;}
+.sc-back{background:none;border:none;font-family:'Lora',serif;font-style:italic;font-size:12px;color:#6a4818;cursor:pointer;padding:2px 0;margin-bottom:10px;display:block;opacity:.65;}
+.sc-btn{width:100%;padding:12px 14px;margin-top:4px;background:linear-gradient(150deg,#241508,#3a2208);border:1px solid rgba(185,125,28,.42);border-radius:3px 6px 4px 5px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:2.5px;color:#d4a030;cursor:pointer;box-shadow:0 3px 14px rgba(0,0,0,.45);}
+.sc-btn:active{transform:scale(.97);}
+.jar-grid-ob{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:10px 0 14px;}
+.jar-opt-ob{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 9px;border-radius:3px 6px 4px 5px;border:1.5px solid rgba(110,72,25,.22);cursor:pointer;background:rgba(255,248,228,.45);font-family:'Cinzel',serif;font-size:8px;color:#5a3812;letter-spacing:1.5px;}
+.jar-opt-ob.sel{border-color:rgba(165,105,20,.85);background:rgba(255,235,175,.82);}
+.jar-opt-ob span{font-size:22px;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.shake{animation:shake .38s ease;}
+@keyframes twinkle{0%,100%{opacity:.12}50%{opacity:.9}}
+@keyframes windLine{0%{stroke-dashoffset:500;opacity:0;}8%{opacity:.7;}85%{opacity:.35;}100%{stroke-dashoffset:0;opacity:0;}}
+@keyframes leafDrift1{0%{transform:translate(0,0) rotate(0deg);opacity:0;}10%{opacity:.75;}90%{opacity:.4;}100%{transform:translate(90px,-25px) rotate(200deg);opacity:0;}}
+@keyframes leafDrift2{0%{transform:translate(0,0) rotate(20deg);opacity:0;}12%{opacity:.7;}88%{opacity:.3;}100%{transform:translate(110px,-15px) rotate(-120deg);opacity:0;}}
+@keyframes leafDrift3{0%{transform:translate(0,0) rotate(-10deg);opacity:0;}8%{opacity:.8;}92%{opacity:.35;}100%{transform:translate(80px,-35px) rotate(150deg);opacity:0;}}
+@keyframes wfall{from{transform:translateY(-5px);opacity:.6;}to{transform:translateY(8px);opacity:.1;}}
+@keyframes moonPulse{0%,100%{opacity:.88;}50%{opacity:1;}}
+@keyframes flicker{0%,100%{transform:scaleX(1)scaleY(1);}25%{transform:scaleX(.93)scaleY(1.07);}50%{transform:scaleX(1.04)scaleY(.96);}75%{transform:scaleX(.96)scaleY(1.04);}}
+@keyframes sparksA{0%{transform:translate(0,0);opacity:1;}100%{transform:translate(7px,-52px);opacity:0;}}
+@keyframes sparksB{0%{transform:translate(0,0);opacity:1;}100%{transform:translate(-6px,-48px);opacity:0;}}
+@keyframes sparksC{0%{transform:translate(0,0);opacity:1;}100%{transform:translate(11px,-60px);opacity:0;}}
+@keyframes sway1{0%,100%{transform:rotate(-2.5deg);}50%{transform:rotate(2.5deg);}}
+@keyframes sway2{0%,100%{transform:rotate(-1.8deg);}50%{transform:rotate(2deg);}}
+@keyframes sway3{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(1.5deg);}}
+@keyframes firefly{0%,100%{opacity:0;r:1;}45%,55%{opacity:.95;r:1.6;}}
+#sn{background:#020810;overflow:hidden;}
+#sn-sky{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 30%,#0d1b2a 0%,#060d18 50%,#020508 100%);}
+.sn-nb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(70px);mix-blend-mode:screen;}
+.sn-nb1{width:65%;height:55%;top:2%;left:-5%;background:radial-gradient(circle,rgba(25,40,100,0.2) 0%,transparent 70%);}
+.sn-nb2{width:50%;height:42%;top:10%;right:0%;background:radial-gradient(circle,rgba(60,20,80,0.13) 0%,transparent 70%);}
+/* SVG konstelacji — pełny ekran */
+#sn-svg{position:absolute;inset:0;z-index:2;width:100%;height:100%;}
+#sn-popup{display:none;position:absolute;z-index:50;width:min(270px,84%);background:rgba(6,12,28,0.94);border:1px solid rgba(160,185,255,0.11);border-radius:18px;padding:16px 18px;backdrop-filter:blur(20px);box-shadow:0 10px 40px rgba(0,0,8,0.85);animation:popIn .22s ease;}
+#sn-popup.on{display:block;}
+@keyframes popIn{from{opacity:0;transform:scale(.88);}to{opacity:1;transform:scale(1);}}
+.sn-px{position:absolute;top:10px;right:14px;background:none;border:none;font-size:19px;line-height:1;color:rgba(255,255,255,.25);cursor:pointer;}
+.sn-pname{font-family:'Cinzel',serif;font-size:13px;font-weight:600;color:#c8d8ff;letter-spacing:1.5px;margin-bottom:2px;}
+.sn-platin{font-size:10px;font-style:italic;color:rgba(180,200,255,.35);margin-bottom:8px;}
+.sn-pstar{font-size:11px;color:rgba(210,220,255,.5);margin-bottom:7px;line-height:1.4;}
+.sn-pdesc{font-size:12px;color:rgba(220,225,245,.72);line-height:1.6;margin-bottom:8px;}
+.sn-ptip{font-size:11px;font-style:italic;color:rgba(180,195,230,.42);line-height:1.5;border-top:1px solid rgba(255,255,255,.06);padding-top:8px;}
+#sn-hint{position:absolute;bottom:175px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:none;text-align:center;animation:hintAnim 5s ease forwards;}
+@keyframes hintAnim{0%{opacity:0;}15%{opacity:1;}75%{opacity:1;}100%{opacity:0;}}
+.sn-hint-txt{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(200,215,255,.32);}
+#sn-ui{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;pointer-events:none;}
+.sn-top{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),16px) 20px 10px;pointer-events:all;}
+.sn-back-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 16px;color:rgba(255,255,255,.55);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.sn-title{font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:rgba(255,255,255,.28);}
+.sn-moon{font-size:22px;}
+.sn-bottom{flex-shrink:0;padding:0 16px max(env(safe-area-inset-bottom),20px);pointer-events:all;}
+#sn-nav,#sn-today-btn{pointer-events:all;}
+.sn-strips{display:flex;gap:8px;height:54px;}
+.sn-strip{flex:1;border-radius:14px;cursor:pointer;border:none;outline:none;transition:transform .14s;position:relative;overflow:hidden;}
+.sn-strip::after{content:'';position:absolute;inset:0;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.22) 0%,transparent 55%);pointer-events:none;}
+.sn-strip:active{transform:scale(.92);}
+.sn-writer{display:none;flex-direction:column;gap:10px;animation:slideUp .28s ease;}
+.sn-writer.on{display:flex;}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.sn-wtop{display:flex;align-items:center;justify-content:space-between;}
+.sn-dot{width:18px;height:18px;border-radius:50%;}
+.sn-change{background:none;border:none;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,.28);cursor:pointer;}
+.sn-textarea2{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px 16px;color:#eeeaff;font-family:'Nunito',sans-serif;font-size:16px;line-height:1.6;outline:none;resize:none;}
+.sn-textarea2::placeholder{color:rgba(210,200,235,.3);}
+.sn-sendbtn{width:100%;padding:15px;border:none;border-radius:16px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:#fff;cursor:pointer;border:1px solid rgba(255,255,255,.15);}
+#sn-jar-screen{display:none;position:absolute;inset:0;z-index:30;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px max(env(safe-area-inset-bottom),32px);}
+#sn-jar-screen.on{display:flex;}
+.sn-conf-msg{font-size:17px;font-weight:600;color:rgba(225,220,250,.88);line-height:1.7;text-align:center;max-width:280px;margin-bottom:24px;}
+.sn-jar-wrap{position:relative;width:130px;height:165px;margin-bottom:24px;}
+.sn-actions{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;}
+.sn-btn-more{padding:14px;border-radius:16px;border:none;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:#fff;cursor:pointer;border:1px solid rgba(255,255,255,.15);}
+.sn-btn-done{padding:13px;border-radius:16px;border:none;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55);font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+.sn-fly{position:fixed;z-index:1000;pointer-events:none;border-radius:10px;padding:6px 14px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:#fff;max-width:180px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#dd-inact{display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;text-align:center;}
+#dd-inact.on{display:flex;}
+.inact-img{width:200px;height:200px;border-radius:20px;overflow:hidden;margin-bottom:24px;}
+.inact-q{font-size:17px;font-weight:700;color:var(--dt);margin-bottom:6px;}
+.inact-sub{font-size:13px;color:var(--du);margin-bottom:24px;line-height:1.5;}
+.inact-btns{display:flex;gap:12px;}
+.inact-btn{padding:14px 28px;border-radius:16px;border:none;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;cursor:pointer;}
+.inact-yes{background:var(--da);color:#fff;}
+.inact-no{background:rgba(0,0,0,.07);color:var(--du);}
+</style>
 </head>
 <body>
 <button class="gear-btn" id="gear-btn">⚙️</button>
-<div class="set-ov" id="set-ov">
-  <div class="set-card">
-    <h3>Ustawienia</h3>
-    <p>Dane przechowywane tylko na tym urządzeniu.</p>
-    <hr class="set-sep">
-    <button class="set-danger" onclick="switchUser()">🔄 Zmień użytkownika</button>
-    <button class="btn btn-ghost" onclick="closeSet()" style="margin-top:8px;">Zamknij</button>
-  </div>
-</div>
-<div class="ritual-ov" id="ritual-ov">
-  <div class="ritual-card">
-    <h2>Słoik jest pełny 🫙</h2>
-    <p>Twoje myśli mają swoje miejsce. Co chcesz z nimi zrobić?</p>
-    <div class="ritual-opts">
-      <button class="r-btn r-keep" onclick="doRitual('keep')">🫙 Zostaw — niech dalej czekają</button>
-      <button class="r-btn r-bury" onclick="doRitual('bury')">🌱 Zakop — zamknij ten rozdział</button>
-      <button class="r-btn r-burn" onclick="doRitual('burn')">🔥 Spal — uwolnij i zacznij od nowa</button>
-    </div>
-  </div>
-</div>
-<div id="ritual-screen">
-  <div class="ritual-target" id="ritual-target-emoji"></div>
-  <div class="ritual-msg" id="ritual-msg-text"></div>
-</div>
+<div class="set-ov" id="set-ov"><div class="set-card"><h3>Ustawienia</h3><p>Dane przechowywane tylko na tym urządzeniu.</p><hr class="set-sep"><button class="set-danger" onclick="switchUser()">🔄 Zmień użytkownika</button><button class="btn btn-ghost" onclick="closeSet()" style="margin-top:8px;">Zamknij</button></div></div>
+<div class="ritual-ov" id="ritual-ov"><div class="ritual-card"><h2>Słoik jest pełny 🫙</h2><p>Twoje myśli mają swoje miejsce. Co chcesz z nimi zrobić?</p><div class="ritual-opts"><button class="r-btn r-keep" onclick="doRitual('keep')">🫙 Zostaw</button><button class="r-btn r-bury" onclick="doRitual('bury')">🌱 Zakop</button><button class="r-btn r-burn" onclick="doRitual('burn')">🔥 Spal</button></div></div></div>
 
 <!-- SLEEP -->
 <div class="screen night" id="sleep">
-  <div class="stars-bg" id="sleep-stars"></div>
-  <div style="position:relative;z-index:1;text-align:center;padding:40px 32px;">
-    <div style="font-size:72px;animation:float 4s ease-in-out infinite;">🌙</div>
-    <h1 id="sleep-h" style="font-size:26px;margin:20px 0 10px;">Dobranoc</h1>
-    <p id="sleep-p" style="color:var(--nu);font-size:15px;line-height:1.6;">Magic Jar czeka na Ciebie jutro.</p>
-    <p style="color:var(--nu);font-size:13px;margin-top:8px;">Aplikacja czynna 6:00 – 22:00.</p>
-  </div>
+<div class="stars-bg" id="sleep-stars"></div>
+<div style="position:relative;z-index:1;text-align:center;padding:40px 32px;">
+<div style="font-size:72px;animation:float 4s ease-in-out infinite;">🌙</div>
+<h1 id="sleep-h" style="font-size:26px;margin:20px 0 10px;">Dobranoc</h1>
+<p id="sleep-p" style="color:var(--nu);font-size:15px;line-height:1.6;">Magic Jar czeka na Ciebie jutro.</p>
+<p style="color:var(--nu);font-size:13px;margin-top:8px;">Aplikacja czynna 6:00 – 22:00.</p>
+</div>
 </div>
 
 <!-- ONBOARDING -->
 <div class="screen" id="onboarding">
-  <div class="ob-scene">
-    <div class="q q-wind">
-      <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-        <defs><linearGradient id="wSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a1830"/><stop offset="100%" stop-color="#1a3a5c"/></linearGradient></defs>
-        <rect width="200" height="200" fill="url(#wSky)"/>
-        <circle cx="18" cy="12" r="1.2" fill="white" opacity=".9" style="animation:twinkle 3.1s infinite .1s"/>
-        <circle cx="52" cy="7" r="1.6" fill="#cce4ff" opacity=".95" style="animation:twinkle 4s infinite .6s"/>
-        <circle cx="94" cy="19" r="1" fill="white" opacity=".85" style="animation:twinkle 2.6s infinite 1.1s"/>
-        <circle cx="141" cy="9" r="1.4" fill="white" opacity=".9" style="animation:twinkle 3.6s infinite .35s"/>
-        <path d="M-8,55 C22,43 55,63 95,50 C132,37 162,56 208,46" fill="none" stroke="rgba(200,230,255,0.7)" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="500" stroke-dashoffset="500" style="animation:windLine 3.2s ease-in-out infinite 0s"/>
-        <path d="M-8,78 C28,66 62,88 102,74 C142,60 170,80 208,70" fill="none" stroke="rgba(180,220,255,0.55)" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="500" stroke-dashoffset="500" style="animation:windLine 3.8s ease-in-out infinite .9s"/>
-        <path d="M-8,100 C32,88 68,108 110,94 C150,80 175,100 208,90" fill="none" stroke="rgba(210,235,255,0.6)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="500" stroke-dashoffset="500" style="animation:windLine 4.4s ease-in-out infinite 1.8s"/>
-        <g style="animation:leafDrift1 5.5s linear infinite 0s"><path d="M22,90 C25,83 34,84 32,91 C29,98 18,96 22,90Z" fill="#52c46a"/></g>
-        <g style="animation:leafDrift2 6.2s linear infinite 1.8s"><path d="M12,107 C15,99 25,101 22,108 C19,115 8,113 12,107Z" fill="#62d47a"/></g>
-        <g style="animation:leafDrift3 4.8s linear infinite 3.2s"><path d="M6,75 C9,68 18,70 16,76 C13,82 3,80 6,75Z" fill="#48b85e"/></g>
-        <path d="M-5,145 L25,102 L52,125 L82,78 L114,102 L140,62 L166,85 L190,55 L208,72 L208,200 L-5,200Z" fill="#0f1f35" opacity=".95"/>
-        <path d="M-5,165 L50,148 L100,158 L155,142 L208,152 L208,200 L-5,200Z" fill="#0a1825"/>
-        <text x="8" y="196" font-family="Georgia,serif" font-size="9" fill="rgba(180,220,255,0.5)" letter-spacing="3">WIATR</text>
-      </svg>
-    </div>
-    <div class="q q-water">
-      <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="waSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#040c18"/><stop offset="100%" stop-color="#0c2d45"/></linearGradient>
-          <radialGradient id="moonHalo" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(200,225,255,0.35)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient>
-          <radialGradient id="moonFace" cx="40%" cy="38%" r="60%"><stop offset="0%" stop-color="#e8f2ff"/><stop offset="70%" stop-color="#c0d8f8"/><stop offset="100%" stop-color="#9abce0"/></radialGradient>
-          <filter id="moonGlowF"><feGaussianBlur stdDeviation="6"/></filter>
-        </defs>
-        <rect width="200" height="200" fill="url(#waSky)"/>
-        <circle cx="22" cy="11" r="1.2" fill="white" opacity=".92" style="animation:twinkle 3.6s infinite .2s"/>
-        <circle cx="128" cy="16" r="1.5" fill="white" opacity=".95" style="animation:twinkle 3s infinite .7s"/>
-        <circle cx="172" cy="9" r="1.1" fill="white" opacity=".88" style="animation:twinkle 5.2s infinite 0s"/>
-        <circle cx="148" cy="38" r="35" fill="rgba(180,215,255,0.12)" filter="url(#moonGlowF)"/>
-        <circle cx="148" cy="38" r="22" fill="url(#moonHalo)"/>
-        <circle cx="148" cy="38" r="16" fill="url(#moonFace)" style="animation:moonPulse 4.5s ease-in-out infinite"/>
-        <path d="M-5,120 L22,74 L44,95 L72,48 L96,74 L122,32 L148,70 L172,44 L200,74 L208,64 L208,200 L-5,200Z" fill="#061828"/>
-        <path d="M113,30 C110,62 108,96 112,138 C113,160 110,180 109,200" stroke="rgba(140,210,255,0.75)" stroke-width="9" fill="none" stroke-linecap="round" style="animation:wfall 1.8s ease-in-out infinite"/>
-        <text x="8" y="196" font-family="Georgia,serif" font-size="9" fill="rgba(140,210,255,0.5)" letter-spacing="3">WODA</text>
-      </svg>
-    </div>
-    <div class="q q-fire">
-      <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="fSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0c0202"/><stop offset="55%" stop-color="#1c0606"/><stop offset="100%" stop-color="#2a0c08"/></linearGradient>
-          <radialGradient id="fGlow" cx="50%" cy="85%" r="60%"><stop offset="0%" stop-color="rgba(255,110,20,0.75)"/><stop offset="45%" stop-color="rgba(220,55,8,0.38)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient>
-          <filter id="fBlur"><feGaussianBlur stdDeviation="6"/></filter>
-        </defs>
-        <rect width="200" height="200" fill="url(#fSky)"/>
-        <ellipse cx="100" cy="168" rx="90" ry="50" fill="url(#fGlow)" filter="url(#fBlur)"/>
-        <g transform="translate(82,145)" style="animation:flicker 1.3s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom">
-          <path d="M18,48 C14,34 4,24 8,10 C11,1 18,0 18,0 C18,0 25,1 28,10 C32,24 22,34 18,48Z" fill="#ff5500" opacity=".98"/>
-          <path d="M18,48 C15,37 7,29 11,18 C13,11 18,8 18,8 C18,8 23,11 25,18 C29,29 21,37 18,48Z" fill="#ff9020"/>
-          <path d="M18,48 C16,40 10,34 13,24 C15,19 18,17 18,17 C18,17 21,19 23,24 C26,34 20,40 18,48Z" fill="#ffcc44"/>
-        </g>
-        <g transform="translate(60,153)" style="animation:flicker 1.7s ease-in-out infinite .35s;transform-box:fill-box;transform-origin:center bottom">
-          <path d="M13,36 C10,26 2,18 5,8 C7,2 13,0 13,0 C13,0 19,2 21,8 C24,18 16,26 13,36Z" fill="#ff4800" opacity=".95"/>
-        </g>
-        <g transform="translate(110,150)" style="animation:flicker 1.5s ease-in-out infinite .7s;transform-box:fill-box;transform-origin:center bottom">
-          <path d="M14,38 C11,28 3,20 6,9 C8,3 14,0 14,0 C14,0 20,3 22,9 C25,20 17,28 14,38Z" fill="#ff5200" opacity=".96"/>
-          <path d="M14,38 C12,29 5,23 8,14 C10,9 14,7 14,7 C14,7 18,9 20,14 C23,23 16,29 14,38Z" fill="#ff9820"/>
-        </g>
-        <circle cx="93" cy="142" r="2" fill="#ffaa30" style="animation:sparksA 1.9s ease-out infinite .1s"/>
-        <circle cx="84" cy="147" r="1.7" fill="#ffcc50" style="animation:sparksB 2.3s ease-out infinite .6s"/>
-        <circle cx="106" cy="140" r="1.5" fill="#ff9020" style="animation:sparksC 1.7s ease-out infinite 1.1s"/>
-        <text x="8" y="18" font-family="Georgia,serif" font-size="9" fill="rgba(255,130,30,0.6)" letter-spacing="3">OGIEŃ</text>
-      </svg>
-    </div>
-    <div class="q q-earth">
-      <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="eSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#020d02"/><stop offset="100%" stop-color="#082808"/></linearGradient>
-          <radialGradient id="eGlow" cx="50%" cy="72%" r="58%"><stop offset="0%" stop-color="rgba(55,175,40,0.32)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient>
-          <filter id="eBlur"><feGaussianBlur stdDeviation="4"/></filter>
-        </defs>
-        <rect width="200" height="200" fill="url(#eSky)"/>
-        <circle cx="25" cy="14" r=".9" fill="white" opacity=".7" style="animation:twinkle 4.2s infinite 0s"/>
-        <circle cx="138" cy="12" r="1" fill="white" opacity=".72" style="animation:twinkle 3.8s infinite .7s"/>
-        <ellipse cx="100" cy="152" rx="100" ry="62" fill="url(#eGlow)" filter="url(#eBlur)"/>
-        <path d="M-5,132 L12,108 L26,120 L40,100 L56,114 L72,92 L88,108 L104,86 L122,104 L140,82 L158,96 L174,76 L190,90 L208,72 L208,200 L-5,200Z" fill="#0c2408"/>
-        <path d="M-5,155 Q40,136 80,145 Q120,154 160,136 Q185,124 208,132 L208,200 L-5,200Z" fill="#10320c"/>
-        <g style="animation:sway1 3.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom" transform="translate(28,150)">
-          <line x1="0" y1="0" x2="-1" y2="-28" stroke="#22a028" stroke-width="2"/>
-          <circle cx="-1" cy="-28" r="6" fill="#ff3060" opacity=".95"/>
-        </g>
-        <g style="animation:sway2 3.8s ease-in-out infinite .5s;transform-box:fill-box;transform-origin:center bottom" transform="translate(58,143)">
-          <line x1="0" y1="0" x2="1" y2="-24" stroke="#22a028" stroke-width="1.8"/>
-          <circle cx="1" cy="-24" r="5.5" fill="#bb44ff" opacity=".92"/>
-        </g>
-        <g style="animation:sway3 4.1s ease-in-out infinite 1.1s;transform-box:fill-box;transform-origin:center bottom" transform="translate(148,135)">
-          <line x1="0" y1="0" x2="-1" y2="-32" stroke="#22a028" stroke-width="2"/>
-          <circle cx="-1" cy="-32" r="6.5" fill="rgba(245,252,255,0.92)"/>
-        </g>
-        <circle cx="38" cy="124" r="2.2" fill="#88ff22" style="animation:firefly 2.6s ease-in-out infinite 0s;transform-box:fill-box;transform-origin:center"/>
-        <circle cx="124" cy="114" r="1.8" fill="#aaff44" style="animation:firefly 3.1s ease-in-out infinite 1.1s;transform-box:fill-box;transform-origin:center"/>
-        <text x="8" y="18" font-family="Georgia,serif" font-size="9" fill="rgba(60,180,45,0.5)" letter-spacing="3">ZIEMIA</text>
-      </svg>
-    </div>
-  </div>
-  <div class="ob-vignette"></div>
-  <div class="scroll-wrap" id="scroll-wrap">
-    <svg class="roller roller-top" viewBox="0 0 292 34" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="rg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d4863a"/><stop offset="28%" stop-color="#a05c1a"/><stop offset="58%" stop-color="#7a4210"/><stop offset="82%" stop-color="#9a5418"/><stop offset="100%" stop-color="#c07028"/></linearGradient>
-        <linearGradient id="re1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5a2a08"/><stop offset="50%" stop-color="#8a4a18"/><stop offset="100%" stop-color="#5a2a08"/></linearGradient>
-        <filter id="rShadow"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="rgba(0,0,0,0.7)"/></filter>
-      </defs>
-      <rect x="14" y="26" width="264" height="10" rx="4" fill="rgba(0,0,0,0.55)"/>
-      <ellipse cx="14" cy="17" rx="12" ry="17" fill="url(#re1)"/>
-      <ellipse cx="278" cy="17" rx="12" ry="17" fill="url(#re1)"/>
-      <rect x="14" y="0" width="264" height="34" fill="url(#rg1)" filter="url(#rShadow)"/>
-      <line x1="55" y1="0" x2="55" y2="34" stroke="rgba(80,35,5,0.25)" stroke-width="1.2"/>
-      <line x1="97" y1="0" x2="97" y2="34" stroke="rgba(80,35,5,0.25)" stroke-width="1.2"/>
-      <line x1="140" y1="0" x2="140" y2="34" stroke="rgba(80,35,5,0.25)" stroke-width="1.2"/>
-      <line x1="183" y1="0" x2="183" y2="34" stroke="rgba(80,35,5,0.25)" stroke-width="1.2"/>
-      <line x1="226" y1="0" x2="226" y2="34" stroke="rgba(80,35,5,0.25)" stroke-width="1.2"/>
-      <rect x="14" y="5" width="264" height="9" fill="rgba(255,210,140,0.28)"/>
-      <ellipse cx="14" cy="17" rx="12" ry="17" fill="none" stroke="rgba(90,40,8,0.5)" stroke-width="1.5"/>
-      <ellipse cx="278" cy="17" rx="12" ry="17" fill="none" stroke="rgba(90,40,8,0.5)" stroke-width="1.5"/>
-    </svg>
-    <div style="position:relative;">
-      <svg class="scroll-body" viewBox="0 0 292 470" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="pg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f8edd2"/><stop offset="22%" stop-color="#eedfc0"/><stop offset="48%" stop-color="#f5e6cc"/><stop offset="72%" stop-color="#e9d4a8"/><stop offset="100%" stop-color="#f0ddb8"/></linearGradient>
-          <linearGradient id="pgSide" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(80,45,8,0.28)"/><stop offset="10%" stop-color="rgba(80,45,8,0)"/><stop offset="90%" stop-color="rgba(80,45,8,0)"/><stop offset="100%" stop-color="rgba(80,45,8,0.32)"/></linearGradient>
-          <linearGradient id="pgTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(50,22,4,0.45)"/><stop offset="100%" stop-color="rgba(50,22,4,0)"/></linearGradient>
-          <linearGradient id="pgBot" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(50,22,4,0)"/><stop offset="100%" stop-color="rgba(50,22,4,0.38)"/></linearGradient>
-          <clipPath id="scrollClip"><path d="M 16,0 C 30,-2 60,3 80,0 L 110,2 C 140,-1 165,4 185,1 L 212,4 C 236,0 258,5 275,2 L 292,6 L 292,464 L 275,469 C 258,467 236,472 212,469 L 185,472 C 165,468 140,473 110,470 L 80,473 C 60,469 30,474 16,471 L 0,466 L 0,6 Z"/></clipPath>
-        </defs>
-        <g clip-path="url(#scrollClip)">
-          <rect x="0" y="0" width="292" height="470" fill="url(#pg1)"/>
-          <line x1="0" y1="58" x2="292" y2="55" stroke="rgba(110,65,15,0.08)" stroke-width="1.4"/>
-          <line x1="0" y1="90" x2="292" y2="88" stroke="rgba(90,52,12,0.06)" stroke-width="1"/>
-          <line x1="0" y1="125" x2="292" y2="122" stroke="rgba(100,60,14,0.07)" stroke-width="1.2"/>
-          <line x1="0" y1="168" x2="292" y2="165" stroke="rgba(80,48,10,0.06)" stroke-width="1"/>
-          <line x1="0" y1="215" x2="292" y2="212" stroke="rgba(110,65,15,0.06)" stroke-width="1.1"/>
-          <rect x="0" y="0" width="292" height="470" fill="url(#pgSide)"/>
-          <rect x="0" y="0" width="292" height="40" fill="url(#pgTop)"/>
-          <rect x="0" y="430" width="292" height="40" fill="url(#pgBot)"/>
-          <ellipse cx="146" cy="235" rx="110" ry="190" fill="rgba(255,252,230,0.18)"/>
-        </g>
-        <path d="M 16,0 C 30,-2 60,3 80,0 L 110,2 C 140,-1 165,4 185,1 L 212,4 C 236,0 258,5 275,2 L 292,6 L 292,464 L 275,469 C 258,467 236,472 212,469 L 185,472 C 165,468 140,473 110,470 L 80,473 C 60,469 30,474 16,471 L 0,466 L 0,6 Z" fill="none" stroke="rgba(110,68,18,0.5)" stroke-width="1.8"/>
-        <path d="M 24,10 C 38,8 62,12 82,10 L 112,12 C 140,9 165,13 184,10 L 210,13 C 234,10 256,14 272,11 L 282,16 L 282,455 L 272,460 C 256,457 234,461 210,458 L 184,461 C 165,458 140,462 112,459 L 82,461 C 62,458 38,462 24,460 L 10,455 L 10,16 Z" fill="none" stroke="rgba(130,80,22,0.2)" stroke-width="1" stroke-dasharray="6 3"/>
-      </svg>
-      <div class="scroll-content">
-        <div class="sc-glyph">✦</div>
-        <div class="sc-title">MAGIC JAR</div>
-        <p class="sc-sub">Twoja przestrzeń. Tylko Twoja.</p>
-        <div class="rune-sep"><span>᛫ ᛭ ᛫</span></div>
-        <div class="ob-step active" id="ob1">
-          <label class="sc-label" for="ob-name">Imię</label>
-          <input class="sc-inp" type="text" id="ob-name" placeholder="jak masz na imię..." maxlength="20" autocorrect="off" autocapitalize="words" autocomplete="off">
-          <label class="sc-label" for="ob-year">Rok urodzenia</label>
-          <input class="sc-inp" type="number" id="ob-year" placeholder="np. 2015" min="1950" inputmode="numeric">
-          <button class="sc-btn" onclick="obStep2()">Wchodzę &nbsp;ᚱ</button>
-        </div>
-        <div class="ob-step" id="ob2">
-          <button class="sc-back" onclick="obStep1()">← wróć</button>
-          <div class="sc-title" style="font-size:16px;margin-bottom:2px;">Twój Słoik</div>
-          <p class="sc-sub">Wybierz symbol swojej przestrzeni.</p>
-          <div class="rune-sep"><span>᛫ ᛭ ᛫</span></div>
-          <div class="jar-grid-ob" id="jar-grid-ob"></div>
-          <button class="sc-btn" onclick="obFinish()">Zaczynam &nbsp;ᚢ</button>
-        </div>
-      </div>
-    </div>
-    <svg class="roller roller-bot" viewBox="0 0 292 34" xmlns="http://www.w3.org/2000/svg">
-      <defs><linearGradient id="rg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c07028"/><stop offset="25%" stop-color="#9a5418"/><stop offset="55%" stop-color="#7a4210"/><stop offset="80%" stop-color="#a05c1a"/><stop offset="100%" stop-color="#d4863a"/></linearGradient></defs>
-      <ellipse cx="14" cy="17" rx="12" ry="17" fill="url(#re1)"/>
-      <ellipse cx="278" cy="17" rx="12" ry="17" fill="url(#re1)"/>
-      <rect x="14" y="0" width="264" height="34" fill="url(#rg2)"/>
-      <line x1="55" y1="0" x2="55" y2="34" stroke="rgba(80,35,5,0.25)" stroke-width="1.2"/>
-      <line x1="97" y1="0" x2="97" y2="34" stroke="rgba(80,35,5,0.25)" stroke-width="1.2"/>
-      <line x1="140" y1="0" x2="140" y2="34" stroke="rgba(80,35,5,0.25)" stroke-width="1.2"/>
-      <line x1="183" y1="0" x2="183" y2="34" stroke="rgba(80,35,5,0.25)" stroke-width="1.2"/>
-      <line x1="226" y1="0" x2="226" y2="34" stroke="rgba(80,35,5,0.25)" stroke-width="1.2"/>
-      <rect x="14" y="20" width="264" height="9" fill="rgba(50,18,2,0.25)"/>
-      <ellipse cx="14" cy="17" rx="12" ry="17" fill="none" stroke="rgba(90,40,8,0.5)" stroke-width="1.5"/>
-      <ellipse cx="278" cy="17" rx="12" ry="17" fill="none" stroke="rgba(90,40,8,0.5)" stroke-width="1.5"/>
-    </svg>
-  </div>
+<div class="ob-scene">
+<div class="q q-wind"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a1830"/><stop offset="100%" stop-color="#1a3a5c"/></linearGradient></defs><rect width="200" height="200" fill="url(#wSky)"/><circle cx="18" cy="12" r="1.2" fill="white" opacity=".9" style="animation:twinkle 3.1s infinite .1s"/><circle cx="52" cy="7" r="1.6" fill="#cce4ff" opacity=".95" style="animation:twinkle 4s infinite .6s"/><circle cx="94" cy="19" r="1" fill="white" opacity=".85" style="animation:twinkle 2.6s infinite 1.1s"/><path d="M-8,55 C22,43 55,63 95,50 C132,37 162,56 208,46" fill="none" stroke="rgba(200,230,255,0.7)" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="500" stroke-dashoffset="500" style="animation:windLine 3.2s ease-in-out infinite 0s"/><path d="M-8,78 C28,66 62,88 102,74 C142,60 170,80 208,70" fill="none" stroke="rgba(180,220,255,0.55)" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="500" stroke-dashoffset="500" style="animation:windLine 3.8s ease-in-out infinite .9s"/><g style="animation:leafDrift1 5.5s linear infinite 0s"><path d="M22,90 C25,83 34,84 32,91 C29,98 18,96 22,90Z" fill="#52c46a"/></g><path d="M-5,145 L25,102 L52,125 L82,78 L114,102 L140,62 L166,85 L190,55 L208,72 L208,200 L-5,200Z" fill="#0f1f35" opacity=".95"/><text x="8" y="196" font-family="Georgia,serif" font-size="9" fill="rgba(180,220,255,0.5)" letter-spacing="3">WIATR</text></svg></div>
+<div class="q q-water"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="waSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#040c18"/><stop offset="100%" stop-color="#0c2d45"/></linearGradient><radialGradient id="moonHalo" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(200,225,255,0.35)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient><radialGradient id="moonFace" cx="40%" cy="38%" r="60%"><stop offset="0%" stop-color="#e8f2ff"/><stop offset="100%" stop-color="#9abce0"/></radialGradient><filter id="moonGlowF"><feGaussianBlur stdDeviation="6"/></filter></defs><rect width="200" height="200" fill="url(#waSky)"/><circle cx="22" cy="11" r="1.2" fill="white" opacity=".92" style="animation:twinkle 3.6s infinite .2s"/><circle cx="148" cy="38" r="35" fill="rgba(180,215,255,0.12)" filter="url(#moonGlowF)"/><circle cx="148" cy="38" r="16" fill="url(#moonFace)" style="animation:moonPulse 4.5s ease-in-out infinite"/><path d="M-5,120 L22,74 L44,95 L72,48 L96,74 L122,32 L148,70 L172,44 L200,74 L208,200 L-5,200Z" fill="#061828"/><path d="M113,30 C110,62 108,96 112,138" stroke="rgba(140,210,255,0.75)" stroke-width="9" fill="none" stroke-linecap="round" style="animation:wfall 1.8s ease-in-out infinite"/><text x="8" y="196" font-family="Georgia,serif" font-size="9" fill="rgba(140,210,255,0.5)" letter-spacing="3">WODA</text></svg></div>
+<div class="q q-fire"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="fSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0c0202"/><stop offset="100%" stop-color="#2a0c08"/></linearGradient><radialGradient id="fGlow" cx="50%" cy="85%" r="60%"><stop offset="0%" stop-color="rgba(255,110,20,0.75)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient><filter id="fBlur"><feGaussianBlur stdDeviation="6"/></filter></defs><rect width="200" height="200" fill="url(#fSky)"/><ellipse cx="100" cy="168" rx="90" ry="50" fill="url(#fGlow)" filter="url(#fBlur)"/><g transform="translate(82,145)" style="animation:flicker 1.3s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom"><path d="M18,48 C14,34 4,24 8,10 C11,1 18,0 18,0 C18,0 25,1 28,10 C32,24 22,34 18,48Z" fill="#ff5500"/><path d="M18,48 C15,37 7,29 11,18 C13,11 18,8 18,8 C18,8 23,11 25,18 C29,29 21,37 18,48Z" fill="#ff9020"/></g><circle cx="93" cy="142" r="2" fill="#ffaa30" style="animation:sparksA 1.9s ease-out infinite .1s"/><circle cx="106" cy="140" r="1.5" fill="#ff9020" style="animation:sparksC 1.7s ease-out infinite 1.1s"/><text x="8" y="18" font-family="Georgia,serif" font-size="9" fill="rgba(255,130,30,0.6)" letter-spacing="3">OGIEŃ</text></svg></div>
+<div class="q q-earth"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="eSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#020d02"/><stop offset="100%" stop-color="#082808"/></linearGradient><radialGradient id="eGlow" cx="50%" cy="72%" r="58%"><stop offset="0%" stop-color="rgba(55,175,40,0.32)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient><filter id="eBlur"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="200" height="200" fill="url(#eSky)"/><circle cx="25" cy="14" r=".9" fill="white" opacity=".7" style="animation:twinkle 4.2s infinite 0s"/><ellipse cx="100" cy="152" rx="100" ry="62" fill="url(#eGlow)" filter="url(#eBlur)"/><path d="M-5,132 L12,108 L26,120 L40,100 L56,114 L72,92 L88,108 L104,86 L122,104 L140,82 L158,96 L174,76 L190,90 L208,72 L208,200 L-5,200Z" fill="#0c2408"/><g style="animation:sway1 3.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom" transform="translate(28,150)"><line x1="0" y1="0" x2="-1" y2="-28" stroke="#22a028" stroke-width="2"/><circle cx="-1" cy="-28" r="6" fill="#ff3060" opacity=".95"/></g><circle cx="38" cy="124" r="2.2" fill="#88ff22" style="animation:firefly 2.6s ease-in-out infinite 0s;transform-box:fill-box;transform-origin:center"/><text x="8" y="18" font-family="Georgia,serif" font-size="9" fill="rgba(60,180,45,0.5)" letter-spacing="3">ZIEMIA</text></svg></div>
+</div>
+<div class="ob-vignette"></div>
+<div class="scroll-wrap" id="scroll-wrap">
+<svg class="roller roller-top" viewBox="0 0 292 34" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="rg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d4863a"/><stop offset="58%" stop-color="#7a4210"/><stop offset="100%" stop-color="#c07028"/></linearGradient><linearGradient id="re1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5a2a08"/><stop offset="50%" stop-color="#8a4a18"/><stop offset="100%" stop-color="#5a2a08"/></linearGradient><filter id="rShadow"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="rgba(0,0,0,0.7)"/></filter></defs><ellipse cx="14" cy="17" rx="12" ry="17" fill="url(#re1)"/><ellipse cx="278" cy="17" rx="12" ry="17" fill="url(#re1)"/><rect x="14" y="0" width="264" height="34" fill="url(#rg1)" filter="url(#rShadow)"/><rect x="14" y="5" width="264" height="9" fill="rgba(255,210,140,0.28)"/></svg>
+<div style="position:relative;">
+<svg class="scroll-body" viewBox="0 0 292 470" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="pg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f8edd2"/><stop offset="48%" stop-color="#f5e6cc"/><stop offset="100%" stop-color="#f0ddb8"/></linearGradient><clipPath id="scrollClip"><path d="M 16,0 C 30,-2 60,3 80,0 L 110,2 C 140,-1 165,4 185,1 L 212,4 C 236,0 258,5 275,2 L 292,6 L 292,464 L 275,469 C 258,467 236,472 212,469 L 185,472 C 165,468 140,473 110,470 L 80,473 C 60,469 30,474 16,471 L 0,466 L 0,6 Z"/></clipPath></defs><g clip-path="url(#scrollClip)"><rect x="0" y="0" width="292" height="470" fill="url(#pg1)"/></g><path d="M 16,0 C 30,-2 60,3 80,0 L 110,2 C 140,-1 165,4 185,1 L 212,4 C 236,0 258,5 275,2 L 292,6 L 292,464 L 275,469 C 258,467 236,472 212,469 L 185,472 C 165,468 140,473 110,470 L 80,473 C 60,469 30,474 16,471 L 0,466 L 0,6 Z" fill="none" stroke="rgba(110,68,18,0.5)" stroke-width="1.8"/></svg>
+<div class="scroll-content">
+<div class="sc-glyph">✦</div>
+<div class="sc-title">MAGIC JAR</div>
+<p class="sc-sub">Twoja przestrzeń. Tylko Twoja.</p>
+<div class="rune-sep"><span>᛫ ᛭ ᛫</span></div>
+<div class="ob-step active" id="ob1">
+<label class="sc-label" for="ob-name">Imię</label>
+<input class="sc-inp" type="text" id="ob-name" placeholder="jak masz na imię..." maxlength="20" autocorrect="off" autocapitalize="words" autocomplete="off">
+<label class="sc-label" for="ob-year">Rok urodzenia</label>
+<input class="sc-inp" type="number" id="ob-year" placeholder="np. 2015" min="1950" inputmode="numeric">
+<button class="sc-btn" onclick="obStep2()">Wchodzę &nbsp;ᚱ</button>
+</div>
+<div class="ob-step" id="ob2">
+<button class="sc-back" onclick="obStep1()">← wróć</button>
+<div class="sc-title" style="font-size:16px;margin-bottom:2px;">Twój Słoik</div>
+<p class="sc-sub">Wybierz symbol swojej przestrzeni.</p>
+<div class="rune-sep"><span>᛫ ᛭ ᛫</span></div>
+<div class="jar-grid-ob" id="jar-grid-ob"></div>
+<button class="sc-btn" onclick="obFinish()">Zaczynam &nbsp;ᚢ</button>
+</div>
+</div>
+</div>
+<svg class="roller roller-bot" viewBox="0 0 292 34" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="rg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c07028"/><stop offset="55%" stop-color="#7a4210"/><stop offset="100%" stop-color="#d4863a"/></linearGradient></defs><ellipse cx="14" cy="17" rx="12" ry="17" fill="url(#re1)"/><ellipse cx="278" cy="17" rx="12" ry="17" fill="url(#re1)"/><rect x="14" y="0" width="264" height="34" fill="url(#rg2)"/><rect x="14" y="20" width="264" height="9" fill="rgba(50,18,2,0.25)"/></svg>
+</div>
 </div>
 
 <!-- HOME -->
-<div class="screen" id="home">
-  <div class="home-inner">
-    <div class="home-greet" id="h-greet"></div>
-    <h1 class="home-name" id="h-name"></h1>
-    <div id="cosmic-bar" style="font-size:12px;margin-bottom:20px;letter-spacing:0.04em;"></div>
-    <div class="mod-card card-sn" onclick="openSN()">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-        <span class="ico" id="sn-moon" style="margin-bottom:0;">🌙</span>
-        <span id="sn-zod" style="font-size:32px;opacity:.8;"></span>
-        <span id="sn-el" style="font-size:28px;opacity:.7;"></span>
-      </div>
-      <h2>Spokojna Noc</h2>
-      <p id="sn-card-sub">Wyrzuć myśl z głowy. Idź spać lżejszy.</p>
-    </div>
-    <div class="mod-card card-dd" onclick="openDD()">
-      <span class="ico">☀️</span>
-      <h2>Dobry Dzień</h2>
-      <p>Podziel się czymś dobrym z dziś.</p>
-      <div id="dd-date-info" style="font-size:11px;opacity:.65;margin-top:6px;font-weight:600;"></div>
-      <div class="series-badge" id="ser-badge" style="display:none;">🔥 <span id="ser-n">0</span> dni</div>
-    </div>
-    <button onclick="switchUser()" style="background:none;border:none;color:var(--nu);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;padding:8px 0;opacity:.6;display:block;width:100%;text-align:center;margin-top:4px;">🔄 Zmień użytkownika</button>
-  </div>
+<div class="screen" id="home"><div class="home-inner">
+<div class="home-greet" id="h-greet"></div>
+<h1 class="home-name" id="h-name"></h1>
+<div id="cosmic-bar" style="font-size:12px;margin-bottom:20px;letter-spacing:0.04em;"></div>
+<div class="mod-card card-sn" onclick="openSN()">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span class="ico" id="sn-moon" style="margin-bottom:0;">🌙</span><span id="sn-zod" style="font-size:32px;opacity:.8;"></span><span id="sn-el" style="font-size:28px;opacity:.7;"></span></div>
+<h2>Spokojna Noc</h2><p id="sn-card-sub">Wyrzuć myśl z głowy. Idź spać lżejszy.</p>
 </div>
+<div class="mod-card card-dd" onclick="openDD()">
+<span class="ico">☀️</span><h2>Dobry Dzień</h2><p>Podziel się czymś dobrym z dziś.</p>
+<div id="dd-date-info" style="font-size:11px;opacity:.65;margin-top:6px;font-weight:600;"></div>
+<div class="series-badge" id="ser-badge" style="display:none;">🔥 <span id="ser-n">0</span> dni</div>
+</div>
+<button onclick="switchUser()" style="background:none;border:none;color:var(--nu);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;padding:8px 0;opacity:.6;display:block;width:100%;text-align:center;margin-top:4px;">🔄 Zmień użytkownika</button>
+</div></div>
 
 <!-- SPOKOJNA NOC -->
 <div class="screen" id="sn">
-  <div id="sn-sky"><div class="sn-nb sn-nb1"></div><div class="sn-nb sn-nb2"></div></div>
-  <canvas id="sn-canvas"></canvas>
-  <div id="sn-popup">
-    <button class="sn-px" onclick="snClosePopup()">×</button>
-    <div class="sn-pname" id="snp-name"></div>
-    <div class="sn-platin" id="snp-latin"></div>
-    <div class="sn-pstar" id="snp-star"></div>
-    <div class="sn-pdesc" id="snp-desc"></div>
-    <div class="sn-ptip" id="snp-tip"></div>
-  </div>
-  <div id="sn-hint"><div class="sn-hint-txt">dotknij gwiazdozbiór</div></div>
-  <div id="sn-nav" style="position:absolute;left:0;top:50%;transform:translateY(-50%);z-index:25;padding:16px 0;">
-    <button id="sn-prev-btn" onclick="snGoYesterday()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:0 12px 12px 0;padding:18px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;">
-      <span style="font-size:18px;color:rgba(255,255,255,0.4);">‹</span>
-      <span style="font-size:9px;letter-spacing:1.5px;color:rgba(255,255,255,0.25);font-family:Cinzel,serif;">WCZORAJ</span>
-    </button>
-  </div>
-  <div id="sn-today-btn" style="display:none;position:absolute;left:0;top:50%;transform:translateY(-50%);z-index:25;padding:16px 0;">
-    <button onclick="snGoToday()" style="background:rgba(255,200,100,0.1);border:1px solid rgba(255,200,100,0.2);border-radius:0 12px 12px 0;padding:18px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;">
-      <span style="font-size:18px;color:rgba(255,200,100,0.5);">›</span>
-      <span style="font-size:9px;letter-spacing:1.5px;color:rgba(255,200,100,0.35);font-family:Cinzel,serif;">DZIŚ</span>
-    </button>
-  </div>
-  <div id="sn-ui">
-    <div class="sn-top">
-      <button class="sn-back-btn" onclick="goHome()">← Wróć</button>
-      <div class="sn-title">SPOKOJNA NOC</div>
-      <div class="sn-moon" id="sn-moon-em">🌔</div>
-    </div>
-    <div style="flex:1;min-height:0;"></div>
-    <div class="sn-bottom">
-      <div class="sn-strips" id="sn-strips"></div>
-      <div class="sn-writer" id="sn-writer">
-        <div class="sn-wtop">
-          <div class="sn-dot" id="sn-dot"></div>
-          <button class="sn-change" onclick="snBackToStrips()">zmień kolor</button>
-        </div>
-        <textarea class="sn-textarea2" id="sn-txt2" rows="3" placeholder="Zostaw za sobą co Ci ciąży..."></textarea>
-        <button class="sn-sendbtn" id="sn-sendbtn" onclick="snSubmitNew()">Wrzuć do słoika 🫙</button>
-      </div>
-    </div>
-  </div>
-  <div id="sn-jar-screen">
-    <div class="sn-conf-msg" id="sn-conf-msg">Twoja myśl jest już bezpieczna. 🌙</div>
-    <div class="sn-jar-wrap"><svg id="sn-jar-svg" viewBox="0 0 130 165" xmlns="http://www.w3.org/2000/svg" width="130" height="165"></svg></div>
-    <div class="sn-actions">
-      <button class="sn-btn-more" id="sn-btn-more" onclick="snAddMore()">Dopisz kolejną myśl</button>
-      <button class="sn-btn-done" onclick="goHome()">Dobranoc ✦</button>
-    </div>
-  </div>
+<div id="sn-sky"><div class="sn-nb sn-nb1"></div><div class="sn-nb sn-nb2"></div></div>
+<svg id="sn-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+<div id="sn-popup">
+<button class="sn-px" onclick="snClosePopup()">×</button>
+<div class="sn-pname" id="snp-name"></div>
+<div class="sn-platin" id="snp-latin"></div>
+<div class="sn-pstar" id="snp-star"></div>
+<div class="sn-pdesc" id="snp-desc"></div>
+<div class="sn-ptip" id="snp-tip"></div>
+</div>
+<div id="sn-hint"><div class="sn-hint-txt">dotknij gwiazdozbiór</div></div>
+<div id="sn-nav" style="position:absolute;left:0;top:50%;transform:translateY(-50%);z-index:25;padding:16px 0;">
+<button id="sn-prev-btn" onclick="snGoYesterday()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:0 12px 12px 0;padding:18px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;"><span style="font-size:18px;color:rgba(255,255,255,0.4);">‹</span><span style="font-size:9px;letter-spacing:1.5px;color:rgba(255,255,255,0.25);font-family:Cinzel,serif;">WCZORAJ</span></button>
+</div>
+<div id="sn-today-btn" style="display:none;position:absolute;left:0;top:50%;transform:translateY(-50%);z-index:25;padding:16px 0;">
+<button onclick="snGoToday()" style="background:rgba(255,200,100,0.1);border:1px solid rgba(255,200,100,0.2);border-radius:0 12px 12px 0;padding:18px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;"><span style="font-size:18px;color:rgba(255,200,100,0.5);">›</span><span style="font-size:9px;letter-spacing:1.5px;color:rgba(255,200,100,0.35);font-family:Cinzel,serif;">DZIŚ</span></button>
+</div>
+<div id="sn-ui">
+<div class="sn-top">
+<button class="sn-back-btn" onclick="goHome()">← Wróć</button>
+<div class="sn-title">SPOKOJNA NOC</div>
+<div class="sn-moon" id="sn-moon-em">🌔</div>
+</div>
+<div style="flex:1;min-height:0;"></div>
+<div class="sn-bottom">
+<div class="sn-strips" id="sn-strips"></div>
+<div class="sn-writer" id="sn-writer">
+<div class="sn-wtop"><div class="sn-dot" id="sn-dot"></div><button class="sn-change" onclick="snBackToStrips()">zmień kolor</button></div>
+<textarea class="sn-textarea2" id="sn-txt2" rows="3" placeholder="Zostaw za sobą co Ci ciąży..."></textarea>
+<button class="sn-sendbtn" id="sn-sendbtn" onclick="snSubmitNew()">Wrzuć do słoika 🫙</button>
+</div>
+</div>
+</div>
+<div id="sn-jar-screen">
+<div class="sn-conf-msg" id="sn-conf-msg">Twoja myśl jest już bezpieczna. 🌙</div>
+<div class="sn-jar-wrap"><svg id="sn-jar-svg" viewBox="0 0 130 165" xmlns="http://www.w3.org/2000/svg" width="130" height="165"></svg></div>
+<div class="sn-actions">
+<button class="sn-btn-more" id="sn-btn-more" onclick="snAddMore()">Dopisz kolejną myśl</button>
+<button class="sn-btn-done" onclick="goHome()">Dobranoc ✦</button>
+</div>
+</div>
 </div>
 
 <!-- DOBRY DZIEŃ -->
 <div class="screen day" id="dd">
-  <div class="step" id="dd1">
-    <button class="back back-d" onclick="goHome()">← Wróć</button>
-    <h1 style="font-size:24px;color:var(--dt);margin-bottom:3px;" id="dd-title">Dobry Dzień ☀️</h1>
-    <p style="color:var(--du);font-size:15px;margin-bottom:14px;line-height:1.5;" id="dd-question"></p>
-    <div id="dd-inact">
-      <div class="inact-img"><svg id="inact-img-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="200" height="200"></svg></div>
-      <div class="inact-q">Jak Ci się podoba ten obraz?</div>
-      <div class="inact-sub">Minęło trochę czasu. Wróćmy razem do Dobrego Dnia.</div>
-      <div class="inact-btns">
-        <button class="inact-btn inact-yes" onclick="ddInactYes()">TAK ☀️</button>
-        <button class="inact-btn inact-no" onclick="ddInactNo()">NIE</button>
-      </div>
-    </div>
-    <div class="pz-wrap" id="dd-puzzle-area">
-      <div class="pz-container" id="pz-cont">
-        <svg id="pz-art" xmlns="http://www.w3.org/2000/svg" style="display:block;"></svg>
-        <svg id="pz-ov" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0;"></svg>
-      </div>
-      <p style="font-size:13px;color:var(--du);font-weight:600;" id="pz-prog"></p>
-    </div>
-    <div id="dd-input">
-      <p style="font-size:13px;color:var(--du);text-align:center;margin-bottom:8px;" id="dd-info"></p>
-      <textarea class="inp-d" id="dd-txt" rows="3" placeholder="np. Zjadłam lody z mamą..."></textarea>
-      <button class="btn btn-sun" style="margin-top:12px;" onclick="ddSubmit()">Wrzuć dobrą myśl ☀️</button>
-    </div>
-    <div id="dd-done-msg" style="display:none;text-align:center;padding:20px;background:rgba(246,168,37,.1);border-radius:var(--rs);margin-top:8px;">
-      <div style="font-size:30px;margin-bottom:8px;">🌟</div>
-      <p style="font-weight:700;color:var(--dt);">Na dziś koniec!</p>
-      <p style="font-size:13px;color:var(--du);margin-top:4px;">Wróć jutro po kolejny puzzle.</p>
-    </div>
-  </div>
-  <div class="step" id="dd2">
-    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
-      <div id="dd-think" style="text-align:center;padding:32px 0;">
-        <div style="font-size:44px;animation:float 2s ease-in-out infinite;">💛</div>
-        <p style="color:var(--du);margin-top:12px;font-size:15px;">Serce słucha...</p>
-      </div>
-      <div id="dd-resp" style="display:none;">
-        <div class="serce-bub" id="dd-bub"></div>
-        <div id="dd-rev-msg" style="display:none;text-align:center;margin-top:14px;">
-          <div style="font-size:38px;">🧩</div>
-          <p style="font-weight:700;color:var(--dt);margin-top:6px;" id="dd-rev-txt">Puzzle odkryty!</p>
-        </div>
-        <button class="btn btn-sun" style="margin-top:20px;" onclick="ddBack()">Dobra ☀️</button>
-      </div>
-    </div>
-  </div>
+<div class="step" id="dd1">
+<button class="back back-d" onclick="goHome()">← Wróć</button>
+<h1 style="font-size:24px;color:var(--dt);margin-bottom:3px;" id="dd-title">Dobry Dzień ☀️</h1>
+<p style="color:var(--du);font-size:15px;margin-bottom:14px;line-height:1.5;" id="dd-question"></p>
+<div id="dd-inact"><div class="inact-img"><svg id="inact-img-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="200" height="200"></svg></div><div class="inact-q">Jak Ci się podoba ten obraz?</div><div class="inact-sub">Minęło trochę czasu. Wróćmy razem do Dobrego Dnia.</div><div class="inact-btns"><button class="inact-btn inact-yes" onclick="ddInactYes()">TAK ☀️</button><button class="inact-btn inact-no" onclick="ddInactNo()">NIE</button></div></div>
+<div class="pz-wrap" id="dd-puzzle-area"><div class="pz-container" id="pz-cont"><svg id="pz-art" xmlns="http://www.w3.org/2000/svg" style="display:block;"></svg><svg id="pz-ov" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0;"></svg></div><p style="font-size:13px;color:var(--du);font-weight:600;" id="pz-prog"></p></div>
+<div id="dd-input"><p style="font-size:13px;color:var(--du);text-align:center;margin-bottom:8px;" id="dd-info"></p><textarea class="inp-d" id="dd-txt" rows="3" placeholder="np. Zjadłam lody z mamą..."></textarea><button class="btn btn-sun" style="margin-top:12px;" onclick="ddSubmit()">Wrzuć dobrą myśl ☀️</button></div>
+<div id="dd-done-msg" style="display:none;text-align:center;padding:20px;background:rgba(246,168,37,.1);border-radius:var(--rs);margin-top:8px;"><div style="font-size:30px;margin-bottom:8px;">🌟</div><p style="font-weight:700;color:var(--dt);">Na dziś koniec!</p><p style="font-size:13px;color:var(--du);margin-top:4px;">Wróć jutro po kolejny puzzle.</p></div>
 </div>
+<div class="step" id="dd2"><div style="flex:1;display:flex;flex-direction:column;justify-content:center;"><div id="dd-think" style="text-align:center;padding:32px 0;"><div style="font-size:44px;animation:float 2s ease-in-out infinite;">💛</div><p style="color:var(--du);margin-top:12px;font-size:15px;">Serce słucha...</p></div><div id="dd-resp" style="display:none;"><div class="serce-bub" id="dd-bub"></div><div id="dd-rev-msg" style="display:none;text-align:center;margin-top:14px;"><div style="font-size:38px;">🧩</div><p style="font-weight:700;color:var(--dt);margin-top:6px;" id="dd-rev-txt">Puzzle odkryty!</p></div><button class="btn btn-sun" style="margin-top:20px;" onclick="ddBack()">Dobra ☀️</button></div></div></div>
+</div>
+
 <script>
-/* ══ DANE ══ */
 var JARS=[{id:'classic',emoji:'🫙',label:'KLASYCZNY'},{id:'heart',emoji:'❤️',label:'SERCE'},{id:'balloon',emoji:'🎈',label:'BALONIK'},{id:'star',emoji:'⭐',label:'GWIAZDA'},{id:'moon',emoji:'🌙',label:'KSIĘŻYC'}];
 var JAR_SHAPES={classic:{body:'M20,40 Q12,52 10,80 L10,138 Q10,152 24,152 L106,152 Q120,152 120,138 L120,80 Q118,52 110,40 Z',cap:'M16,30 Q13,38 20,40 L110,40 Q117,38 114,30 Z',lid:'M44,18 Q40,28 44,30 L86,30 Q90,28 86,18 Z',fill:'rgba(255,160,40,.32)',body_c:'rgba(255,200,100,.45)',stroke:'rgba(255,210,120,.6)',shine:'rgba(255,240,180,.4)'},heart:{body:'M20,45 Q12,58 10,85 L10,138 Q10,152 24,152 L106,152 Q120,152 120,138 L120,85 Q118,58 110,45 Z',cap:'M15,36 Q12,43 20,45 L110,45 Q118,43 115,36 Z',lid:'M65,12 C65,4 54,4 54,12 C54,4 43,4 43,12 C43,20 54,26 65,26 C76,26 87,20 87,12 C87,4 76,4 76,12 C76,4 65,4 65,12 Z',fill:'rgba(255,100,150,.32)',body_c:'rgba(255,160,190,.45)',stroke:'rgba(255,190,210,.6)',shine:'rgba(255,220,235,.4)'},balloon:{body:'M18,58 Q8,72 8,98 Q8,132 24,148 Q40,160 65,160 Q90,160 106,148 Q122,132 122,98 Q122,72 112,58 Z',cap:'M30,46 Q18,54 18,58 L112,58 Q112,54 100,46 Z',lid:'M52,18 Q42,24 42,30 L88,30 Q88,24 78,18 Z',fill:'rgba(100,170,255,.32)',body_c:'rgba(160,210,255,.45)',stroke:'rgba(180,225,255,.65)',shine:'rgba(210,238,255,.4)'},star:{body:'M20,42 Q12,54 10,82 L10,136 Q10,150 24,150 L106,150 Q120,150 120,136 L120,82 Q118,54 110,42 Z',cap:'M16,32 Q13,38 20,42 L110,42 Q117,38 114,32 Z',lid:'M65,8 L69,20 L82,20 L72,28 L76,40 L65,33 L54,40 L58,28 L48,20 L61,20 Z',fill:'rgba(255,210,50,.32)',body_c:'rgba(255,235,120,.45)',stroke:'rgba(255,248,150,.7)',shine:'rgba(255,252,190,.45)'},moon:{body:'M22,42 Q12,55 10,82 L10,136 Q10,150 24,150 L106,150 Q120,150 120,136 L120,82 Q118,55 110,42 Z',cap:'M18,32 Q14,38 22,42 L110,42 Q116,38 112,32 Z',lid:'M48,22 Q62,10 76,22 Q62,14 52,28 Q60,12 48,22 Z',fill:'rgba(170,140,255,.32)',body_c:'rgba(210,190,255,.45)',stroke:'rgba(225,210,255,.65)',shine:'rgba(238,230,255,.4)'}};
 var S={nick:'',birthYear:0,ageGroup:0,jarType:'classic',snItems:[],ddTiles:[],ddOrder:[],ddDone:0,ddDate:'',ddSeries:0,ddLastDate:'',ddSet:0,_lastTile:-1,lastValid:true};
 function loadS(){try{var d=localStorage.getItem('iskierka_v3');if(d)Object.assign(S,JSON.parse(d));}catch(e){}}
 function saveS(){try{localStorage.setItem('iskierka_v3',JSON.stringify(S));}catch(e){}}
 function nickDisplay(){return(S.nick||'').replace(/\d+$/,'').trim();}
-
-window.addEventListener('DOMContentLoaded',function(){loadS();mkStars('sleep-stars',60);buildJarGridOb();var yearInp=document.getElementById('ob-year');if(yearInp)yearInp.setAttribute('max',String(new Date().getFullYear()-4));route();snInit();});
-
+window.addEventListener('DOMContentLoaded',function(){loadS();mkStars('sleep-stars',60);buildJarGridOb();var y=document.getElementById('ob-year');if(y)y.setAttribute('max',String(new Date().getFullYear()-4));route();snInit();});
 function route(){var h=new Date().getHours();if(!S.nick||!S.birthYear){show('onboarding');return;}calcAge();var age=new Date().getFullYear()-S.birthYear;if(age<=13&&(h<6||h>=22)){showSleep();return;}if(age<=15&&h<6){showSleep();return;}showHome();}
 function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');document.getElementById('gear-btn').style.display=['onboarding','sleep'].includes(id)?'none':'block';}
-function showSleep(){var h=new Date().getHours();var msg=h>=22?'Dobranoc':'Za wcześnie';var sub=h>=22?'Magic Jar czeka na Ciebie jutro. Aplikacja czynna 6:00–22:00.':'Magic Jar budzi się o 6:00. Do zobaczenia!';var n=nickDisplay();document.getElementById('sleep-h').textContent=n?msg+', '+n+' 🌙':msg+' 🌙';document.getElementById('sleep-p').textContent=sub;show('sleep');}
+function showSleep(){var h=new Date().getHours();var msg=h>=22?'Dobranoc':'Za wcześnie';var n=nickDisplay();document.getElementById('sleep-h').textContent=n?msg+', '+n+' 🌙':msg+' 🌙';document.getElementById('sleep-p').textContent=h>=22?'Magic Jar czeka jutro. Czynna 6:00–22:00.':'Magic Jar budzi się o 6:00. Do zobaczenia!';show('sleep');}
 function buildJarGridOb(){var g=document.getElementById('jar-grid-ob');g.innerHTML='';JARS.forEach(function(j){var d=document.createElement('div');d.className='jar-opt-ob'+(j.id===(S.jarType||'classic')?' sel':'');d.innerHTML='<span>'+j.emoji+'</span>'+j.label;d.onclick=function(){S.jarType=j.id;g.querySelectorAll('.jar-opt-ob').forEach(function(x){x.classList.remove('sel');});d.classList.add('sel');};g.appendChild(d);});}
-function obStep2(){var n=document.getElementById('ob-name').value.trim();var y=parseInt(document.getElementById('ob-year').value);var maxY=new Date().getFullYear()-4;if(!n){shake('ob-name');document.getElementById('ob-name').focus();return;}if(!y||y<1950||y>maxY){shake('ob-year');document.getElementById('ob-year').focus();return;}S.nick=n.charAt(0).toUpperCase()+n.slice(1);S.birthYear=y;calcAge();document.getElementById('ob1').classList.remove('active');document.getElementById('ob2').classList.add('active');}
+function obStep2(){var n=document.getElementById('ob-name').value.trim();var y=parseInt(document.getElementById('ob-year').value);var maxY=new Date().getFullYear()-4;if(!n){shake('ob-name');return;}if(!y||y<1950||y>maxY){shake('ob-year');return;}S.nick=n.charAt(0).toUpperCase()+n.slice(1);S.birthYear=y;calcAge();document.getElementById('ob1').classList.remove('active');document.getElementById('ob2').classList.add('active');}
 function obStep1(){document.getElementById('ob2').classList.remove('active');document.getElementById('ob1').classList.add('active');}
 function obFinish(){saveS();showHome();}
 function shake(id){var el=document.getElementById(id);el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');setTimeout(function(){el.classList.remove('shake');},400);}
@@ -569,10 +334,10 @@ document.addEventListener('DOMContentLoaded',function(){var nm=document.getEleme
 function timeGreeting(h){if(h>=5&&h<9)return'Dzień się zaczyna';if(h>=9&&h<12)return'Dobry ranek';if(h>=12&&h<14)return'Dobrego dnia';if(h>=14&&h<17)return'Piękne popołudnie';if(h>=17&&h<20)return'Dobry wieczór';return'Dobranoc';}
 function showHome(){calcAge();var h=new Date().getHours();document.getElementById('h-greet').textContent=timeGreeting(h);document.getElementById('h-name').textContent=(nickDisplay()||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';renderCosmicBar();renderCardExtras();snSetCardSub();show('home');}
 function moonPhase(date){var known=new Date(2000,0,6);var diff=(date-known)/(1000*60*60*24);var cycle=diff%29.53059;if(cycle<0)cycle+=29.53059;return cycle;}
-function moonEmoji(date){var c=moonPhase(date);if(c<1.85)return{e:'🌑',n:'Nów'};if(c<7.38)return{e:'🌒',n:'Przybywający sierp'};if(c<11.07)return{e:'🌓',n:'Pierwsza kwadra'};if(c<14.77)return{e:'🌔',n:'Przybywający garb'};if(c<18.46)return{e:'🌕',n:'Pełnia'};if(c<22.15)return{e:'🌖',n:'Ubywający garb'};if(c<25.84)return{e:'🌗',n:'Ostatnia kwadra'};if(c<29.53)return{e:'🌘',n:'Ubywający sierp'};return{e:'🌑',n:'Nów'};}
+function moonEmoji(date){var c=moonPhase(date);if(c<1.85)return{e:'🌑',n:'Nów'};if(c<7.38)return{e:'🌒',n:'Przybywający sierp'};if(c<11.07)return{e:'🌓',n:'Pierwsza kwadra'};if(c<14.77)return{e:'🌔',n:'Przybywający garb'};if(c<18.46)return{e:'🌕',n:'Pełnia'};if(c<22.15)return{e:'🌖',n:'Ubywający garb'};if(c<25.84)return{e:'🌗',n:'Ostatnia kwadra'};return{e:'🌘',n:'Ubywający sierp'};}
 function zodiacSign(date){var m=date.getMonth()+1,d=date.getDate();var signs=[{s:'Koziorożec',e:'♑',el:'ziemia',k:'Cap'},{s:'Wodnik',e:'♒',el:'powietrze',k:'Aqr'},{s:'Ryby',e:'♓',el:'woda',k:'Psc'},{s:'Baran',e:'♈',el:'ogień',k:'Ari'},{s:'Byk',e:'♉',el:'ziemia',k:'Tau'},{s:'Bliźnięta',e:'♊',el:'powietrze',k:'Gem'},{s:'Rak',e:'♋',el:'woda',k:'Cnc'},{s:'Lew',e:'♌',el:'ogień',k:'Leo'},{s:'Panna',e:'♍',el:'ziemia',k:'Vir'},{s:'Waga',e:'♎',el:'powietrze',k:'Lib'},{s:'Skorpion',e:'♏',el:'woda',k:'Sco'},{s:'Strzelec',e:'♐',el:'ogień',k:'Sgr'}];var fromTo=[[12,22,1,19],[1,20,2,18],[2,19,3,20],[3,21,4,19],[4,20,5,20],[5,21,6,20],[6,21,7,22],[7,23,8,22],[8,23,9,22],[9,23,10,22],[10,23,11,21],[11,22,12,21]];for(var i=0;i<12;i++){var ft=fromTo[i];var fm=ft[0],fd=ft[1],tm=ft[2],td=ft[3];if(fm<=tm){if((m===fm&&d>=fd)||(m===tm&&d<=td)||(m>fm&&m<tm))return signs[i];}else{if((m===fm&&d>=fd)||m>fm||(m===tm&&d<=td)||m<tm)return signs[i];}}return signs[0];}
-function elementEmoji(el){var map={ogień:'🜂',ziemia:'🜃',powietrze:'🜁',woda:'🜄'};return map[el]||'';}
-function specialDay(date){var m=date.getMonth()+1,d=date.getDate();var days={'1-1':'🎆 Nowy Rok','2-14':'💝 Walentynki','3-8':'🌸 Dzień Kobiet','3-20':'🌱 Pierwszy dzień wiosny','5-26':'👩 Dzień Matki','6-1':'🧒 Dzień Dziecka','12-6':'🎅 Mikołajki','12-24':'🎄 Wigilia','12-25':'🎄 Boże Narodzenie','12-31':'🎆 Sylwester'};return days[m+'-'+d]||null;}
+function elementEmoji(el){return{ogień:'🜂',ziemia:'🜃',powietrze:'🜁',woda:'🜄'}[el]||'';}
+function specialDay(date){var m=date.getMonth()+1,d=date.getDate();return{'1-1':'🎆 Nowy Rok','2-14':'💝 Walentynki','3-8':'🌸 Dzień Kobiet','3-20':'🌱 Pierwszy dzień wiosny','5-26':'👩 Dzień Matki','6-1':'🧒 Dzień Dziecka','12-6':'🎅 Mikołajki','12-24':'🎄 Wigilia','12-25':'🎄 Boże Narodzenie','12-31':'🎆 Sylwester'}[m+'-'+d]||null;}
 function renderCardExtras(){var now=new Date();var moon=moonEmoji(now);var zod=zodiacSign(now);var moonEl=document.getElementById('sn-moon');var zodEl=document.getElementById('sn-zod');var elEl=document.getElementById('sn-el');if(moonEl)moonEl.textContent=moon.e;if(zodEl)zodEl.textContent=zod.e;if(elEl)elEl.textContent=elementEmoji(zod.el);var dateEl=document.getElementById('dd-date-info');if(dateEl){var days=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];var months=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];var special=specialDay(now);dateEl.textContent=special||(now.getDate()+' '+months[now.getMonth()]+' · '+days[now.getDay()]);}}
 function renderCosmicBar(){var now=new Date();var moon=moonEmoji(now);var zod=zodiacSign(now);var h=now.getHours();var isNight=h>=18||h<6;var bar=document.getElementById('cosmic-bar');if(bar){bar.style.color=isNight?'rgba(240,234,250,0.55)':'rgba(107,92,69,0.6)';bar.innerHTML=moon.e+' <span>'+moon.n+'</span> &nbsp;·&nbsp; '+zod.e+' <span>'+zod.s+'</span> &nbsp;·&nbsp; '+elementEmoji(zod.el)+' <span>'+zod.el+'</span>';}}
 function goHome(){snBackToStrips();showHome();}
@@ -580,324 +345,173 @@ function mkStars(id,n){var c=document.getElementById(id);if(!c)return;for(var i=
 function calcAge(){if(!S.birthYear){S.ageGroup=4;return;}var age=new Date().getFullYear()-S.birthYear;S.ageGroup=age<=9?1:age<=13?2:age<=17?3:4;}
 function gridN(){return S.ageGroup===1?3:S.ageGroup===3?5:4;}
 function maxDaily(){return S.ageGroup===3?4:3;}
-function totalTiles(){var g=gridN();return g*g;}
+function totalTiles(){return gridN()*gridN();}
 
-/* ══════════════════════════════════════════════════════════
-   SPOKOJNA NOC — KONSTELACJE
-   Współrzędne znormalizowane [0..1] odczytane z referencji IAU
-   Byk: wzorowany na plakacie LoveClub + dane Yale BSC
-   ══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   KONSTELACJE — SVG z hardkodowanymi znormalizowanymi
+   współrzędnymi [0..1]. SVG zawsze działa bez DPR problemów.
+   ═══════════════════════════════════════════════════════ */
 var SN_COLORS=['#c9a0dc','#a8c5e0','#8ecfb8','#e8b48a','#e0959f','#d4c46a'];
 var snJarItems=[];
 var snChosenColor=SN_COLORS[0];
 var snConstOffset=0;
 
-/*
-  Każda konstelacja: stars[] = [{x,y,r,aldebaran?}], lines[] = [[i,j]]
-  x,y ∈ [0,1] — 0,0 = lewy-górny róg bounding box konstelacji
-  r = względny rozmiar (1 = normalny, 1.5+ = główna gwiazda)
-  aldebaran:true = rysuj pomarańczowo
-*/
 var CONSTS={
-  Tau:{
-    name:'Byk',latin:'Taurus',
-    /* Źródło: plakat LoveClub + dane Yale BSC
-       Elnath(górny-lewy) → łańcuch Hiad w dół-prawo → Aldebaran(środek) → ζTau(dolny-prawy)
-       Odgałęzienie lewe: z punktu fork */
-    stars:[
-      {x:0.25,y:0.12,r:1.3},   /* 0 Elnath β Tau — górny lewy */
-      {x:0.38,y:0.28,r:0.75},  /* 1 ε Tau */
-      {x:0.45,y:0.38,r:0.85},  /* 2 δ Tau — punkt fork */
-      {x:0.52,y:0.46,r:0.75},  /* 3 γ Tau */
-      {x:0.60,y:0.56,r:1.7,aldebaran:true}, /* 4 Aldebaran α Tau */
-      {x:0.80,y:0.76,r:0.65},  /* 5 ζ Tau — dolny prawy */
-      {x:0.22,y:0.52,r:0.85},  /* 6 λ Tau — odgałęzienie lewe */
-    ],
+  Tau:{name:'Byk',latin:'Taurus',
+    stars:[{x:.25,y:.12,r:4,w:false},{x:.38,y:.28,r:2.8,w:false},{x:.45,y:.38,r:3.2,w:false},{x:.52,y:.46,r:2.8,w:false},{x:.60,y:.56,r:7,ald:true},{x:.80,y:.76,r:2.5,w:false},{x:.22,y:.52,r:3.2,w:false}],
     lines:[[0,1],[1,2],[2,6],[2,3],[3,4],[4,5]],
     star_text:'Aldebaran (α Tau) — czerwone oko Byka, 65 lat świetlnych',
-    desc_text:'Zeus przemieniony w białego byka porwał Europę. Hiady — charakterystyczne V — to jedna z najbliższych nam gromad gwiezdnych.',
-    tip_text:'👁 Szukaj litery V z pomarańczowym Aldebaranem zimą na południu.'
-  },
-  Ari:{
-    name:'Baran',latin:'Aries',
-    stars:[
-      {x:0.15,y:0.30,r:1.2},  /* 0 Hamal α Ari */
-      {x:0.42,y:0.48,r:0.95}, /* 1 Sheratan β Ari */
-      {x:0.58,y:0.55,r:0.65}, /* 2 Mesarthim γ Ari */
-      {x:0.85,y:0.20,r:0.7},  /* 3 δ Ari */
-    ],
+    desc_text:'Zeus przemieniony w białego byka porwał Europę. Hiady — charakterystyczne V — to jedna z najbliższych gromad gwiezdnych.',
+    tip_text:'👁 Szukaj litery V z pomarańczowym Aldebaranem zimą na południu.'},
+  Ari:{name:'Baran',latin:'Aries',
+    stars:[{x:.15,y:.30,r:4.5,w:false},{x:.42,y:.48,r:3.5,w:false},{x:.58,y:.55,r:2.5,w:false},{x:.85,y:.20,r:2.5,w:false}],
     lines:[[3,0],[0,1],[1,2]],
     star_text:'Hamal (α Ari) — pomarańczowy olbrzym, 66 lat świetlnych',
     desc_text:'Złote Runo — cel wyprawy Argonautów pod wodzą Jazona.',
-    tip_text:'👁 Mały łuk trzech gwiazd między Plejadami a Wielorybem jesienią.'
-  },
-  Gem:{
-    name:'Bliźnięta',latin:'Gemini',
-    stars:[
-      {x:0.15,y:0.05,r:1.1},  /* 0 Kastor α Gem */
-      {x:0.30,y:0.08,r:1.3},  /* 1 Polluks β Gem — jaśniejszy */
-      {x:0.12,y:0.32,r:0.7},  /* 2 μ Gem */
-      {x:0.22,y:0.35,r:0.75}, /* 3 ε Gem */
-      {x:0.32,y:0.38,r:0.7},  /* 4 ν Gem */
-      {x:0.20,y:0.58,r:0.7},  /* 5 ξ Gem */
-      {x:0.35,y:0.62,r:0.75}, /* 6 γ Gem */
-      {x:0.52,y:0.68,r:0.65}, /* 7 δ Gem */
-      {x:0.62,y:0.78,r:0.65}, /* 8 ζ Gem */
-      {x:0.75,y:0.85,r:0.6},  /* 9 η Gem */
-    ],
+    tip_text:'👁 Mały łuk trzech gwiazd między Plejadami a Wielorybem jesienią.'},
+  Gem:{name:'Bliźnięta',latin:'Gemini',
+    stars:[{x:.15,y:.05,r:4,w:false},{x:.30,y:.08,r:4.5,w:false},{x:.12,y:.32,r:2.5,w:false},{x:.22,y:.35,r:2.8,w:false},{x:.32,y:.38,r:2.5,w:false},{x:.20,y:.58,r:2.5,w:false},{x:.35,y:.62,r:3,w:false},{x:.52,y:.68,r:2.5,w:false},{x:.62,y:.78,r:2.5,w:false},{x:.75,y:.85,r:2.2,w:false}],
     lines:[[0,2],[2,3],[3,5],[5,6],[6,7],[7,8],[8,9],[1,4],[4,6]],
     star_text:'Polluks (β Gem) — najjaśniejsza gwiazda, 34 lat świetlnych',
     desc_text:'Dioskurowie — Kastor i Polluks — nierozłączni bracia-wojownicy z greckich mitów.',
-    tip_text:'👁 Dwie jasne gwiazdy blisko siebie, wiosną wysoko na niebie.'
-  },
-  Cnc:{
-    name:'Rak',latin:'Cancer',
-    stars:[
-      {x:0.20,y:0.20,r:0.65}, /* 0 ι Cnc */
-      {x:0.42,y:0.38,r:0.7},  /* 1 γ Cnc */
-      {x:0.55,y:0.45,r:0.65}, /* 2 δ Cnc */
-      {x:0.30,y:0.65,r:0.75}, /* 3 β Cnc */
-      {x:0.68,y:0.72,r:0.8},  /* 4 α Cnc Al Tarf */
-    ],
+    tip_text:'👁 Dwie jasne gwiazdy blisko siebie, wiosną wysoko na niebie.'},
+  Cnc:{name:'Rak',latin:'Cancer',
+    stars:[{x:.20,y:.20,r:2.5,w:false},{x:.42,y:.38,r:2.8,w:false},{x:.55,y:.45,r:2.5,w:false},{x:.30,y:.65,r:3,w:false},{x:.68,y:.72,r:3.2,w:false}],
     lines:[[0,1],[1,2],[1,3],[2,4]],
     star_text:'Al Tarf (β Cnc) — najjaśniejsza gwiazda, 290 lat świetlnych',
-    desc_text:'Rak wysłany przez Herę by przeszkodzić Herkulesowi w walce z Hydrą. W środku znajduje się gromada Ul (M44).',
-    tip_text:'👁 Słaba konstelacja — szukaj gromady Ul między Bliźniętami a Lwem.'
-  },
-  Leo:{
-    name:'Lew',latin:'Leo',
-    stars:[
-      {x:0.12,y:0.55,r:1.4,aldebaran:true}, /* 0 Regulus α Leo */
-      {x:0.22,y:0.32,r:0.8}, /* 1 η Leo */
-      {x:0.30,y:0.18,r:0.75},/* 2 γ Leo Algieba */
-      {x:0.42,y:0.12,r:0.7}, /* 3 ζ Leo */
-      {x:0.55,y:0.20,r:0.85},/* 4 μ Leo */
-      {x:0.65,y:0.35,r:0.7}, /* 5 ε Leo */
-      {x:0.78,y:0.28,r:0.8}, /* 6 δ Leo */
-      {x:0.88,y:0.42,r:1.0}, /* 7 β Leo Denebola */
-    ],
+    desc_text:'Rak wysłany przez Herę by przeszkodzić Herkulesowi w walce z Hydrą.',
+    tip_text:'👁 Słaba konstelacja — szukaj gromady Ul między Bliźniętami a Lwem.'},
+  Leo:{name:'Lew',latin:'Leo',
+    stars:[{x:.12,y:.55,r:5.5,ald:true},{x:.22,y:.32,r:3,w:false},{x:.30,y:.18,r:2.8,w:false},{x:.42,y:.12,r:2.5,w:false},{x:.55,y:.20,r:3.2,w:false},{x:.65,y:.35,r:2.5,w:false},{x:.78,y:.28,r:3,w:false},{x:.88,y:.42,r:3.8,w:false}],
     lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[0,5],[5,6],[6,7]],
     star_text:'Regulus (α Leo) — serce Lwa, 79 lat świetlnych',
     desc_text:'Lew Nemejski — pierwsza z dwunastu prac Heraklesa. Charakterystyczny sierp wiosenny.',
-    tip_text:'👁 Charakterystyczny sierp z jasnym Regulusem wiosną na południu.'
-  },
-  Vir:{
-    name:'Panna',latin:'Virgo',
-    stars:[
-      {x:0.10,y:0.30,r:0.7},  /* 0 ε Vir */
-      {x:0.22,y:0.18,r:0.7},  /* 1 δ Vir */
-      {x:0.35,y:0.10,r:0.65}, /* 2 γ Vir */
-      {x:0.48,y:0.28,r:1.4,aldebaran:true},/* 3 Spica α Vir */
-      {x:0.60,y:0.45,r:0.7},  /* 4 θ Vir */
-      {x:0.72,y:0.38,r:0.65}, /* 5 ι Vir */
-      {x:0.82,y:0.22,r:0.7},  /* 6 μ Vir */
-      {x:0.30,y:0.50,r:0.65}, /* 7 η Vir */
-    ],
+    tip_text:'👁 Charakterystyczny sierp z jasnym Regulusem wiosną na południu.'},
+  Vir:{name:'Panna',latin:'Virgo',
+    stars:[{x:.10,y:.30,r:2.5,w:false},{x:.22,y:.18,r:2.5,w:false},{x:.35,y:.10,r:2.5,w:false},{x:.48,y:.28,r:5.5,ald:true},{x:.60,y:.45,r:2.5,w:false},{x:.72,y:.38,r:2.5,w:false},{x:.82,y:.22,r:2.5,w:false},{x:.30,y:.50,r:2.5,w:false}],
     lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[3,7],[7,0]],
     star_text:'Spica (α Vir) — błękitny olbrzym, 250 lat świetlnych',
-    desc_text:'Bogini zbiorów Demeter — konstelacja związana z porami roku i urodzajem.',
-    tip_text:'👁 Jeden z najjaśniejszych punktów wiosennego nieba.'
-  },
-  Lib:{
-    name:'Waga',latin:'Libra',
-    stars:[
-      {x:0.20,y:0.25,r:0.9},  /* 0 α Lib Zubenelgenubi */
-      {x:0.50,y:0.15,r:0.85}, /* 1 β Lib Zubeneschamali */
-      {x:0.75,y:0.35,r:0.7},  /* 2 γ Lib */
-      {x:0.50,y:0.65,r:0.65}, /* 3 θ Lib */
-    ],
+    desc_text:'Bogini zbiorów Demeter — konstelacja związana z urodzajem i porami roku.',
+    tip_text:'👁 Jeden z najjaśniejszych punktów wiosennego nieba.'},
+  Lib:{name:'Waga',latin:'Libra',
+    stars:[{x:.20,y:.25,r:3.5,w:false},{x:.50,y:.15,r:3.2,w:false},{x:.75,y:.35,r:2.5,w:false},{x:.50,y:.65,r:2.5,w:false}],
     lines:[[0,1],[1,2],[0,3],[2,3]],
     star_text:'Zubenelgenubi (α Lib) — 77 lat świetlnych',
-    desc_text:'Jedyna konstelacja zodiaku bez postaci zwierzęcej — symbol sprawiedliwości i równowagi.',
-    tip_text:'👁 Charakterystyczny czworokąt między Skorpionem a Panną latem.'
-  },
-  Sco:{
-    name:'Skorpion',latin:'Scorpius',
-    stars:[
-      {x:0.10,y:0.25,r:0.7},  /* 0 ν Sco */
-      {x:0.22,y:0.32,r:0.75}, /* 1 β Sco */
-      {x:0.30,y:0.42,r:1.5,aldebaran:true},/* 2 Antares α Sco */
-      {x:0.38,y:0.55,r:0.7},  /* 3 τ Sco */
-      {x:0.48,y:0.65,r:0.7},  /* 4 ε Sco */
-      {x:0.58,y:0.72,r:0.75}, /* 5 μ Sco */
-      {x:0.68,y:0.80,r:0.65}, /* 6 ζ Sco */
-      {x:0.78,y:0.85,r:0.7},  /* 7 η Sco */
-      {x:0.88,y:0.75,r:0.65}, /* 8 θ Sco — koniec ogona */
-    ],
+    desc_text:'Jedyna konstelacja zodiaku bez postaci zwierzęcej — symbol sprawiedliwości.',
+    tip_text:'👁 Charakterystyczny czworokąt między Skorpionem a Panną latem.'},
+  Sco:{name:'Skorpion',latin:'Scorpius',
+    stars:[{x:.10,y:.25,r:2.5,w:false},{x:.22,y:.32,r:2.8,w:false},{x:.30,y:.42,r:5.5,ald:true},{x:.38,y:.55,r:2.5,w:false},{x:.48,y:.65,r:2.5,w:false},{x:.58,y:.72,r:2.8,w:false},{x:.68,y:.80,r:2.5,w:false},{x:.78,y:.85,r:2.5,w:false},{x:.88,y:.75,r:2.5,w:false}],
     lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8]],
     star_text:'Antares (α Sco) — czerwony nadolbrzym, 550 lat świetlnych',
-    desc_text:'Skorpion zesłany by zabić Oriona — dlatego nigdy nie widać ich na niebie razem.',
-    tip_text:'👁 Wielka litera J z czerwonym Antaresem latem nisko na południu.'
-  },
-  Sgr:{
-    name:'Strzelec',latin:'Sagittarius',
-    stars:[
-      {x:0.15,y:0.55,r:0.8},  /* 0 δ Sgr */
-      {x:0.28,y:0.40,r:0.85}, /* 1 ε Sgr Kaus Australis */
-      {x:0.38,y:0.28,r:0.75}, /* 2 ζ Sgr */
-      {x:0.50,y:0.22,r:0.7},  /* 3 λ Sgr */
-      {x:0.62,y:0.35,r:0.7},  /* 4 φ Sgr */
-      {x:0.72,y:0.52,r:0.65}, /* 5 σ Sgr */
-      {x:0.55,y:0.60,r:0.8},  /* 6 τ Sgr */
-    ],
+    desc_text:'Skorpion zesłany by zabić Oriona — dlatego nigdy nie widać ich razem na niebie.',
+    tip_text:'👁 Wielka litera J z czerwonym Antaresem latem nisko na południu.'},
+  Sgr:{name:'Strzelec',latin:'Sagittarius',
+    stars:[{x:.15,y:.55,r:3,w:false},{x:.28,y:.40,r:3.2,w:false},{x:.38,y:.28,r:2.8,w:false},{x:.50,y:.22,r:2.5,w:false},{x:.62,y:.35,r:2.5,w:false},{x:.72,y:.52,r:2.5,w:false},{x:.55,y:.60,r:3,w:false}],
     lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,0],[1,6]],
     star_text:'Kaus Australis (ε Sgr) — 143 lat świetlnych',
-    desc_text:'Centaur celujący w Skorpiona. W kierunku Strzelca leży centrum naszej Drogi Mlecznej.',
-    tip_text:'👁 Kształt czajniczka — latem nisko na południu wskazuje na centrum galaktyki.'
-  },
-  Cap:{
-    name:'Koziorożec',latin:'Capricornus',
-    stars:[
-      {x:0.10,y:0.20,r:0.85}, /* 0 α Cap */
-      {x:0.28,y:0.15,r:0.8},  /* 1 β Cap */
-      {x:0.50,y:0.22,r:0.7},  /* 2 ψ Cap */
-      {x:0.68,y:0.35,r:0.75}, /* 3 ε Cap */
-      {x:0.80,y:0.55,r:0.85}, /* 4 δ Cap Deneb Algedi */
-      {x:0.65,y:0.70,r:0.7},  /* 5 γ Cap */
-      {x:0.42,y:0.65,r:0.65}, /* 6 ι Cap */
-      {x:0.22,y:0.55,r:0.7},  /* 7 θ Cap */
-    ],
+    desc_text:'Centaur celujący w Skorpiona. W kierunku Strzelca leży centrum Drogi Mlecznej.',
+    tip_text:'👁 Kształt czajniczka latem nisko na południu — wskazuje na centrum galaktyki.'},
+  Cap:{name:'Koziorożec',latin:'Capricornus',
+    stars:[{x:.10,y:.20,r:3.2,w:false},{x:.28,y:.15,r:3,w:false},{x:.50,y:.22,r:2.5,w:false},{x:.68,y:.35,r:2.8,w:false},{x:.80,y:.55,r:3.2,w:false},{x:.65,y:.70,r:2.5,w:false},{x:.42,y:.65,r:2.5,w:false},{x:.22,y:.55,r:2.5,w:false}],
     lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,0]],
     star_text:'Deneb Algedi (δ Cap) — 39 lat świetlnych',
     desc_text:'Koza-ryba — Pan wskoczył do rzeki uciekając przed Tyfonem i przemienił się w tę hybrydę.',
-    tip_text:'👁 Mały trójkąt jesienią nisko nad horyzontem na południu.'
-  },
-  Aqr:{
-    name:'Wodnik',latin:'Aquarius',
-    stars:[
-      {x:0.15,y:0.30,r:0.9},  /* 0 α Aqr Sadalmelik */
-      {x:0.32,y:0.22,r:0.95}, /* 1 β Aqr Sadalsuud */
-      {x:0.48,y:0.35,r:0.7},  /* 2 γ Aqr */
-      {x:0.60,y:0.42,r:0.65}, /* 3 ζ Aqr */
-      {x:0.55,y:0.58,r:0.7},  /* 4 η Aqr */
-      {x:0.68,y:0.68,r:0.65}, /* 5 θ Aqr */
-      {x:0.78,y:0.78,r:0.6},  /* 6 λ Aqr */
-    ],
+    tip_text:'👁 Mały trójkąt jesienią nisko nad horyzontem na południu.'},
+  Aqr:{name:'Wodnik',latin:'Aquarius',
+    stars:[{x:.15,y:.30,r:3.5,w:false},{x:.32,y:.22,r:3.8,w:false},{x:.48,y:.35,r:2.5,w:false},{x:.60,y:.42,r:2.5,w:false},{x:.55,y:.58,r:2.5,w:false},{x:.68,y:.68,r:2.5,w:false},{x:.78,y:.78,r:2.2,w:false}],
     lines:[[0,1],[0,2],[2,3],[3,4],[4,5],[5,6]],
     star_text:'Sadalsuud (β Aqr) — 540 lat świetlnych',
     desc_text:'Ganimedes — chłopiec porwany przez Zeusa by nieść bogom nektar i ambrozję.',
-    tip_text:'👁 Słaba konstelacja — szukaj charakterystycznego Y jesienią.'
-  },
-  Psc:{
-    name:'Ryby',latin:'Pisces',
-    stars:[
-      {x:0.12,y:0.50,r:0.7},  /* 0 η Psc */
-      {x:0.25,y:0.35,r:0.65}, /* 1 ω Psc */
-      {x:0.38,y:0.28,r:0.75}, /* 2 α Psc */
-      {x:0.52,y:0.22,r:0.65}, /* 3 ν Psc */
-      {x:0.65,y:0.30,r:0.7},  /* 4 μ Psc */
-      {x:0.75,y:0.42,r:0.65}, /* 5 ξ Psc */
-      {x:0.80,y:0.58,r:0.7},  /* 6 λ Psc */
-      {x:0.72,y:0.72,r:0.75}, /* 7 κ Psc */
-      {x:0.58,y:0.80,r:0.65}, /* 8 γ Psc */
-      {x:0.42,y:0.75,r:0.7},  /* 9 θ Psc */
-      {x:0.28,y:0.68,r:0.65}, /* 10 ι Psc */
-    ],
+    tip_text:'👁 Słaba konstelacja — szukaj charakterystycznego Y jesienią.'},
+  Psc:{name:'Ryby',latin:'Pisces',
+    stars:[{x:.12,y:.50,r:2.5,w:false},{x:.25,y:.35,r:2.5,w:false},{x:.38,y:.28,r:3,w:false},{x:.52,y:.22,r:2.5,w:false},{x:.65,y:.30,r:2.5,w:false},{x:.75,y:.42,r:2.5,w:false},{x:.80,y:.58,r:2.5,w:false},{x:.72,y:.72,r:2.8,w:false},{x:.58,y:.80,r:2.5,w:false},{x:.42,y:.75,r:2.5,w:false},{x:.28,y:.68,r:2.5,w:false}],
     lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,0],[2,9]],
     star_text:'η Psc — 294 lat świetlnych',
-    desc_text:'Afrodyta i Eros zamienili się w ryby uciekając przed Tyfonem — są połączone wstążką.',
-    tip_text:'👁 Dwa łuki gwiazd połączone — trudna do dostrzeżenia jesienią.'
-  }
+    desc_text:'Afrodyta i Eros zamienili się w ryby uciekając przed Tyfonem — połączone wstążką.',
+    tip_text:'👁 Dwa łuki gwiazd połączone — trudna do dostrzeżenia jesienią.'}
 };
 
-/* Wybierz konstelację dla danego dnia */
-function snGetConstKey(){
-  var now=new Date();
-  var d=new Date(now);
-  if(snConstOffset<0)d.setDate(d.getDate()-1);
-  var zod=zodiacSign(d);
-  return zod.k||'Tau';
-}
+function snGetKey(){var now=new Date();var d=new Date(now);if(snConstOffset<0)d.setDate(d.getDate()-1);return zodiacSign(d).k||'Tau';}
 
-/* ══ RYSOWANIE NA CANVAS ══ */
+/* ═══ RYSOWANIE SVG — zawsze działa, bez DPR ═══ */
 function snDraw(){
-  var cv=document.getElementById('sn-canvas');
-  if(!cv)return;
-  var W=cv.width=window.innerWidth;
-  var H=cv.height=window.innerHeight;
-  var ctx=cv.getContext('2d');
-  ctx.clearRect(0,0,W,H);
+  var svg=document.getElementById('sn-svg');
+  if(!svg)return;
+  var W=window.innerWidth, H=window.innerHeight;
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  svg.innerHTML='';
 
-  /* tło gwiazd */
-  var N=Math.floor(W*H/2200);
+  var ns='http://www.w3.org/2000/svg';
+  function el(tag,attrs){var e=document.createElementNS(ns,tag);Object.keys(attrs).forEach(function(k){e.setAttribute(k,attrs[k]);});return e;}
+
+  /* filtr poświaty */
+  var defs=el('defs',{});
+  defs.innerHTML='<filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  svg.appendChild(defs);
+
+  /* tło gwiazd — małe kółka SVG, zawsze widoczne */
+  var seed=12345;
+  function rnd(){seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;}
+  var N=Math.floor(W*H/3000);
   for(var i=0;i<N;i++){
-    var x=Math.random()*W,y=Math.random()*H*0.82;
-    var r=Math.random()*1.2+0.2;
-    var a=Math.random()*0.5+0.12;
-    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
-    ctx.fillStyle='rgba(210,225,255,'+a+')';ctx.fill();
+    var x=rnd()*W, y=rnd()*H*0.85;
+    var r=rnd()*1.4+0.4;
+    var a=(rnd()*0.4+0.25).toFixed(2);
+    svg.appendChild(el('circle',{cx:x.toFixed(1),cy:y.toFixed(1),r:r.toFixed(1),fill:'rgba(210,225,255,'+a+')'}));
   }
 
   /* konstelacja */
-  var key=snGetConstKey();
+  var key=snGetKey();
   var con=CONSTS[key]||CONSTS['Tau'];
+  var pad=0.14;
+  var skyH=H*0.70;
+  var cW=W*(1-pad*2), cH=skyH*(1-pad*2);
+  var offX=W*pad, offY=skyH*pad;
+  function sx(nx){return (offX+nx*cW).toFixed(1);}
+  function sy(ny){return (offY+ny*cH).toFixed(1);}
 
-  /* skalowanie: constellation bounding box → 70% ekranu wyśrodkowane */
-  var pad=0.15;
-  var skyH=H*0.72;
-  var cW=W*(1-pad*2);
-  var cH=skyH*(1-pad*2);
-  var offX=W*pad;
-  var offY=skyH*pad;
-
-  function sx(nx){return offX+nx*cW;}
-  function sy(ny){return offY+ny*cH;}
-
-  /* linie */
+  /* linie — gruba poświata + cienka linia */
   con.lines.forEach(function(ab){
     var a=con.stars[ab[0]],b=con.stars[ab[1]];
-    /* glowa */
-    ctx.beginPath();ctx.moveTo(sx(a.x),sy(a.y));ctx.lineTo(sx(b.x),sy(b.y));
-    ctx.strokeStyle='rgba(130,170,255,0.10)';ctx.lineWidth=6;ctx.stroke();
-    /* linia */
-    ctx.beginPath();ctx.moveTo(sx(a.x),sy(a.y));ctx.lineTo(sx(b.x),sy(b.y));
-    ctx.strokeStyle='rgba(190,215,255,0.60)';ctx.lineWidth=1.5;ctx.stroke();
+    svg.appendChild(el('line',{x1:sx(a.x),y1:sy(a.y),x2:sx(b.x),y2:sy(b.y),stroke:'rgba(160,200,255,0.15)','stroke-width':'8','stroke-linecap':'round'}));
+    svg.appendChild(el('line',{x1:sx(a.x),y1:sy(a.y),x2:sx(b.x),y2:sy(b.y),stroke:'rgba(190,215,255,0.70)','stroke-width':'1.8','stroke-linecap':'round'}));
   });
 
   /* gwiazdy */
   con.stars.forEach(function(st){
-    var px=sx(st.x),py=sy(st.y);
-    var baseR=st.r*3.5;
-    var isMain=st.r>=1.3;
-    var isAld=st.aldebaran;
+    var px=sx(st.x), py=sy(st.y);
+    var r=st.r||3;
+    var isAld=st.ald;
 
     /* zewnętrzna poświata */
-    var g=ctx.createRadialGradient(px,py,0,px,py,baseR*(isMain?4:2.5));
-    if(isAld){g.addColorStop(0,'rgba(255,160,60,0.22)');g.addColorStop(1,'rgba(255,130,30,0)');}
-    else{g.addColorStop(0,'rgba(180,210,255,0.18)');g.addColorStop(1,'rgba(130,180,255,0)');}
-    ctx.beginPath();ctx.arc(px,py,baseR*(isMain?4:2.5),0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
-
+    svg.appendChild(el('circle',{cx:px,cy:py,r:r*3.5,fill:isAld?'rgba(255,150,40,0.15)':'rgba(160,200,255,0.10)'}));
     /* wewnętrzna poświata */
-    var g2=ctx.createRadialGradient(px,py,0,px,py,baseR*(isMain?2.2:1.4));
-    if(isAld){g2.addColorStop(0,'rgba(255,185,80,0.45)');g2.addColorStop(1,'rgba(255,140,40,0)');}
-    else{g2.addColorStop(0,'rgba(210,230,255,0.35)');g2.addColorStop(1,'rgba(160,200,255,0)');}
-    ctx.beginPath();ctx.arc(px,py,baseR*(isMain?2.2:1.4),0,Math.PI*2);ctx.fillStyle=g2;ctx.fill();
-
+    svg.appendChild(el('circle',{cx:px,cy:py,r:r*2,fill:isAld?'rgba(255,175,70,0.30)':'rgba(190,220,255,0.22)'}));
     /* rdzeń */
-    ctx.beginPath();ctx.arc(px,py,baseR*(isAld?1.1:isMain?0.9:0.75),0,Math.PI*2);
-    ctx.fillStyle=isAld?'#ffb050':'rgba(225,238,255,0.98)';ctx.fill();
+    svg.appendChild(el('circle',{cx:px,cy:py,r:r,fill:isAld?'#ffaa42':'rgba(230,242,255,0.98)',filter:'url(#glow)'}));
 
-    /* krzyżyk dla głównych */
-    if(isMain){
-      var cr=baseR*3.5;
-      ctx.strokeStyle=isAld?'rgba(255,190,80,0.20)':'rgba(210,230,255,0.18)';
-      ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(px-cr,py);ctx.lineTo(px+cr,py);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(px,py-cr);ctx.lineTo(px,py+cr);ctx.stroke();
+    /* krzyżyk dla dużych */
+    if(r>=4){
+      var cr=r*3.5;
+      svg.appendChild(el('line',{x1:(+px-cr).toFixed(1),y1:py,x2:(+px+cr).toFixed(1),y2:py,stroke:isAld?'rgba(255,190,80,0.22)':'rgba(210,230,255,0.20)','stroke-width':'1'}));
+      svg.appendChild(el('line',{x1:px,y1:(+py-cr).toFixed(1),x2:px,y2:(+py+cr).toFixed(1),stroke:isAld?'rgba(255,190,80,0.22)':'rgba(210,230,255,0.20)','stroke-width':'1'}));
     }
   });
 
   /* nazwa */
-  ctx.font='500 13px Cinzel,serif';ctx.fillStyle='rgba(190,210,255,0.50)';
-  ctx.textAlign='center';ctx.letterSpacing='3px';
-  ctx.fillText(con.name.toUpperCase(),W/2,skyH+30);
-  ctx.font='italic 10px Lora,serif';ctx.fillStyle='rgba(160,185,235,0.28)';
-  ctx.fillText(con.latin,W/2,skyH+48);
+  var nt=el('text',{x:W/2,y:skyH+32,'text-anchor':'middle',fill:'rgba(190,210,255,0.55)','font-size':'13','font-family':'Cinzel,serif','letter-spacing':'3'});
+  nt.textContent=con.name.toUpperCase();svg.appendChild(nt);
+  var lt=el('text',{x:W/2,y:skyH+50,'text-anchor':'middle',fill:'rgba(160,185,235,0.28)','font-size':'10','font-family':'Lora,serif','font-style':'italic'});
+  lt.textContent=con.latin;svg.appendChild(lt);
+
+  /* strefa klikalna */
+  var tz=el('rect',{x:0,y:0,width:W,height:skyH,fill:'transparent',cursor:'pointer'});
+  tz.addEventListener('click',function(){var pp=document.getElementById('sn-popup');if(pp&&pp.classList.contains('on'))snClosePopup();else snShowPopup();});
+  svg.appendChild(tz);
 }
 
 function snShowPopup(){
-  var key=snGetConstKey();
-  var con=CONSTS[key]||CONSTS['Tau'];
+  var con=CONSTS[snGetKey()]||CONSTS['Tau'];
   document.getElementById('snp-name').textContent=con.name;
   document.getElementById('snp-latin').textContent=con.latin;
   document.getElementById('snp-star').textContent='✦ '+con.star_text;
@@ -910,15 +524,6 @@ function snShowPopup(){
 }
 function snClosePopup(){document.getElementById('sn-popup').classList.remove('on');}
 
-document.addEventListener('DOMContentLoaded',function(){
-  var cv=document.getElementById('sn-canvas');
-  if(cv)cv.addEventListener('click',function(){
-    var pp=document.getElementById('sn-popup');
-    if(pp&&pp.classList.contains('on'))snClosePopup();
-    else snShowPopup();
-  });
-});
-
 function snGetMoon(){var c=(((new Date()-new Date(2000,0,6))/864e5)%29.53059+29.53059)%29.53059;return c<1.85?'🌑':c<7.38?'🌒':c<11.07?'🌓':c<14.77?'🌔':c<18.46?'🌕':c<22.15?'🌖':c<25.84?'🌗':'🌘';}
 
 function openSN(){
@@ -927,13 +532,62 @@ function openSN(){
   document.getElementById('sn-today-btn').style.display='none';
   snBackToStrips();snRenderJar();
   show('sn');
-  setTimeout(snDraw,50);
+  snDraw();
   setTimeout(function(){var h=document.getElementById('sn-hint');if(h)h.style.display='none';},5200);
 }
-
-var SN_SUBS=['Zostaw tu co Ci ciąży — niech noc będzie lżejsza.','Co chcesz zostawić — zostaw. Niech noc będzie spokojna.','Jeśli coś ciążyło Ci dziś — zostaw to tu. Niech noc będzie inna.','Co nosisz w głowie przed snem? Zostaw — noc będzie lżejsza.','Wyrzuć to do Słoika. On to uniesie. Idź spokojnie spać.','Noc jest do czegoś innego niż noszenie tego co przyniósł dzień.','Śpij spokojnie i kolorowo. Co niepotrzebne — puść i zostaw w Słoiku.','Twój sen nie potrzebuje tego co niesiesz. Zostaw to w Słoiku.','Zostaw tu swój dzień. Jutro zaczynasz nowy — bez bagażu.','Nie musisz nieść przez sen tego co przyniósł dzień.','Co było trudne — niech tu zostanie. Ty idź dalej.','Słoik przyjmuje wszystko czego nie chcesz nieść dalej.','Sen jest dla Ciebie — nie dla tego co Cię dziś zmęczyło.','Puść to i zostaw w Słoiku zanim zamkniesz oczy.','Dzień się skończył. Jeśli był trudny — możesz go zostawić w Słoiku.','Jeśli coś Ci ciąży — niech zostanie w Słoiku. Ty jesteś lżejszy.','Noc należy do Ciebie. To co zostaje — niech zostanie w Słoiku.','Jeden oddech. Jeden Słoik. Dobranoc.'];
+var SN_SUBS=['Zostaw tu co Ci ciąży — niech noc będzie lżejsza.','Co chcesz zostawić — zostaw. Niech noc będzie spokojna.','Co nosisz w głowie przed snem? Zostaw — noc będzie lżejsza.','Wyrzuć to do Słoika. On to uniesie. Idź spokojnie spać.','Śpij spokojnie i kolorowo. Co niepotrzebne — puść i zostaw w Słoiku.','Zostaw tu swój dzień. Jutro zaczynasz nowy — bez bagażu.','Sen jest dla Ciebie — nie dla tego co Cię dziś zmęczyło.','Jeden oddech. Jeden Słoik. Dobranoc.'];
 function snSetCardSub(){var el=document.getElementById('sn-card-sub');if(!el)return;var d=new Date();el.textContent=SN_SUBS[(d.getDay()*3+d.getDate())%SN_SUBS.length];}
-function snGoYesterday(){if(snConstOffset<0)return;snConstOffset=-1;document.getElementById('sn-prev-btn').parentElement.style.display='none';document.getElementById('sn-today-btn').style.display='block';setTimeout(snDraw,50);}
-function snGoToday(){snConstOffset=0;document.getElementById('sn-prev-btn').parentElement.style.display='block';document.getElementById('sn-today-btn').style.display='none';setTimeout(snDraw,50);}
-function snInit(){document.getElementById('sn-moon-em').textContent=snGetMoon();if(S.snItems&&S.snItems.length){snJarItems=S.snItems;}snBuildStrips();snRenderJar();}
-window.addEventListener('resize',function(){if(document.getElementById('sn')&&document.getElementById('sn').classList.contains('active')){snDraw();}});
+function snGoYesterday(){if(snConstOffset<0)return;snConstOffset=-1;document.getElementById('sn-prev-btn').parentElement.style.display='none';document.getElementById('sn-today-btn').style.display='block';snDraw();}
+function snGoToday(){snConstOffset=0;document.getElementById('sn-prev-btn').parentElement.style.display='block';document.getElementById('sn-today-btn').style.display='none';snDraw();}
+function snInit(){document.getElementById('sn-moon-em').textContent=snGetMoon();if(S.snItems&&S.snItems.length)snJarItems=S.snItems;snBuildStrips();snRenderJar();}
+window.addEventListener('resize',function(){if(document.getElementById('sn')&&document.getElementById('sn').classList.contains('active'))snDraw();});
+
+/* ═══ SŁOIK ═══ */
+function snBuildJarSVG(){var type=S.jarType||'classic';var sh=JAR_SHAPES[type]||JAR_SHAPES.classic;var svg=document.getElementById('sn-jar-svg');if(!svg)return;svg.innerHTML=['<defs><clipPath id="sjclip"><path d="'+sh.body+'"/></clipPath><radialGradient id="sjglow" cx="35%" cy="30%" r="65%"><stop offset="0%" stop-color="#ffe8a0" stop-opacity=".3"/><stop offset="100%" stop-color="#c87820" stop-opacity=".04"/></radialGradient></defs>','<ellipse cx="65" cy="98" rx="55" ry="66" fill="rgba(255,180,60,.07)"/>','<path d="'+sh.body+'" fill="'+sh.body_c+'" stroke="'+sh.stroke+'" stroke-width="2"/>','<rect id="sn-jfill" x="10" y="152" width="110" height="0" clip-path="url(#sjclip)" fill="'+sh.fill+'"/>','<path d="'+sh.body+'" fill="url(#sjglow)"/>','<g id="sn-jnotes" clip-path="url(#sjclip)"></g>','<path d="M24,55 Q21,90 21,122" stroke="'+sh.shine+'" stroke-width="4" stroke-linecap="round" fill="none"/>','<path d="'+sh.cap+'" fill="'+sh.body_c+'" stroke="'+sh.stroke+'" stroke-width="1.5"/>','<path d="'+sh.lid+'" fill="rgba(255,220,120,.4)" stroke="rgba(255,235,150,.65)" stroke-width="1.4"/>'].join('');}
+function snRenderJar(){snBuildJarSVG();var max=7,pct=Math.min(snJarItems.length/max,1),fillH=Math.round(112*pct);var fr=document.getElementById('sn-jfill');if(fr){fr.setAttribute('y',152-fillH);fr.setAttribute('height',fillH);}var ng=document.getElementById('sn-jnotes');if(!ng)return;ng.innerHTML='';var pos=[{x:60,y:143},{x:36,y:137},{x:84,y:139},{x:48,y:125},{x:76,y:123},{x:60,y:112},{x:38,y:103}];snJarItems.slice(-max).forEach(function(item,i){if(i>=pos.length)return;var p=pos[i];var r=document.createElementNS('http://www.w3.org/2000/svg','rect');r.setAttribute('x',p.x-13);r.setAttribute('y',p.y-7);r.setAttribute('width','26');r.setAttribute('height','14');r.setAttribute('rx','4');r.setAttribute('fill',item.color);r.setAttribute('opacity','0.85');ng.appendChild(r);});}
+function snBuildStrips(){var wrap=document.getElementById('sn-strips');if(!wrap)return;wrap.innerHTML='';SN_COLORS.forEach(function(hex){var b=document.createElement('button');b.className='sn-strip';b.style.cssText='background:'+hex+';opacity:0.82;flex:1;height:100%;border-radius:14px;border:none;cursor:pointer;';b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();snOpenWriter(hex);});wrap.appendChild(b);});}
+function snOpenWriter(hex){snChosenColor=hex;var dot=document.getElementById('sn-dot');dot.style.background=hex;var btn=document.getElementById('sn-sendbtn');btn.style.background=hex;document.getElementById('sn-txt2').style.borderColor=hex+'44';document.getElementById('sn-strips').style.display='none';document.getElementById('sn-writer').classList.add('on');setTimeout(function(){document.getElementById('sn-txt2').focus();},160);}
+function snBackToStrips(){document.getElementById('sn-txt2').value='';document.getElementById('sn-writer').classList.remove('on');document.getElementById('sn-jar-screen').classList.remove('on');var strips=document.getElementById('sn-strips');if(strips){strips.style.display='';strips.style.visibility='visible';}}
+var SN_MSGS=['Twoja myśl jest już bezpieczna. 🌙','Głowa wolna. Można spać.','Słoik przyjął. Możesz odpuścić.','Odłożone. Nie musisz tego nosić.','Dobrze, że to powiedziałeś. 🌙'];
+function snSubmitNew(){var txt=document.getElementById('sn-txt2').value.trim();if(!txt){document.getElementById('sn-txt2').focus();return;}snJarItems.push({text:txt,color:snChosenColor});S.snItems=snJarItems;saveS();var fly=document.createElement('div');fly.className='sn-fly';fly.style.cssText='background:'+snChosenColor+';left:50%;bottom:150px;transform:translateX(-50%);opacity:0.9;position:fixed;';fly.textContent=txt.length>22?txt.slice(0,22)+'…':txt;document.body.appendChild(fly);setTimeout(function(){fly.style.transition='all 1.1s cubic-bezier(.3,0,.2,1)';fly.style.bottom='62%';fly.style.opacity='0';fly.style.transform='translateX(-50%) scale(.12)';},40);setTimeout(function(){fly.remove();},1250);snRenderJar();document.getElementById('sn-btn-more').style.background=snChosenColor;document.getElementById('sn-conf-msg').textContent=SN_MSGS[Math.floor(Math.random()*SN_MSGS.length)];setTimeout(function(){document.getElementById('sn-writer').classList.remove('on');document.getElementById('sn-jar-screen').classList.add('on');},850);}
+function snAddMore(){document.getElementById('sn-jar-screen').classList.remove('on');document.getElementById('sn-txt2').value='';document.getElementById('sn-strips').style.display='flex';}
+
+/* ═══ DOBRY DZIEŃ ═══ */
+var INACT_ARTWORKS=['<rect width="200" height="200" fill="#87ceeb"/><path d="M0,100 Q100,20 200,100" fill="none" stroke="#ff6b9d" stroke-width="18" stroke-linecap="round" opacity=".75"/><path d="M0,112 Q100,30 200,112" fill="none" stroke="#ff9e2a" stroke-width="14" stroke-linecap="round" opacity=".75"/><rect y="155" width="200" height="45" fill="#66bb6a"/>','<rect width="200" height="200" fill="#ffe082"/><rect y="140" width="200" height="60" fill="#66bb6a"/><circle cx="60" cy="70" r="30" fill="#ffb300" opacity=".9"/><circle cx="140" cy="55" r="26" fill="#ffa000" opacity=".9"/>','<rect width="200" height="200" fill="#0a1628"/><path d="M0,60 Q50,20 100,50 Q150,80 200,40" fill="none" stroke="#00e5ff" stroke-width="28" stroke-linecap="round" opacity=".45"/><rect y="155" width="200" height="45" fill="#0d2137"/>'];
+function checkInactivity(){if(!S.ddLastDate)return false;var today=new Date(todayStr()),last=new Date(S.ddLastDate);return Math.floor((today-last)/(1000*60*60*24))>=20;}
+function ddShowInactScreen(){document.getElementById('inact-img-svg').innerHTML=INACT_ARTWORKS[(new Date().getDate())%INACT_ARTWORKS.length];document.getElementById('dd-inact').style.display='flex';document.getElementById('dd-inact').classList.add('on');document.getElementById('dd-puzzle-area').style.display='none';document.getElementById('dd-input').style.display='none';document.getElementById('dd-done-msg').style.display='none';document.getElementById('dd-question').textContent='Hej — minęło trochę czasu.';}
+function ddInactYes(){document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');document.getElementById('dd-puzzle-area').style.display='flex';ddShowNormalDD();}
+function ddInactNo(){document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');goHome();}
+var DD_QUESTIONS=['Czy dziś w [dzień] masz dobrą myśl którą chciałbyś się podzielić?','Czy [dzień] przyniósł Ci coś dobrego czym chciałbyś się podzielić?','Czy jest coś dobrego z tego [dnia] czym chciałbyś się podzielić?','Czy masz dziś coś dobrego dla siebie z tego [dnia]?','Czy coś dobrego przydarzyło Ci się dziś w [dzień]?','Czy w ten [dzień] masz chwilę którą chciałbyś zapamiętać?','Czy ten [dzień] przyniósł Ci coś na co czekasz by się podzielić?','Czy dziś w [dzień] jest coś co chciałbyś zachować?','Czy masz dobry powód by się uśmiechnąć tego [dnia]?','Czy chciałbyś się czymś dobrym podzielić z tego [dnia]?','Czy ten [dzień] dał Ci coś czym warto się podzielić?','Czy jest coś z dzisiejszego [dnia] co chciałbyś zapamiętać?','Czy dziś w [dzień] przydarzyło Ci się coś na co czekałeś?','Czy masz dziś coś dobrego o czym chciałbyś mi powiedzieć?'];
+var DD_DAYS_ACC=['niedzielę','poniedziałek','wtorek','środę','czwartek','piątek','sobotę'];
+var DD_DAYS_GEN=['niedzieli','poniedziałku','wtorku','środy','czwartku','piątku','soboty'];
+function ddGetQuestion(){var now=new Date();var dow=now.getDay();var q=DD_QUESTIONS[(dow*3+now.getDate())%DD_QUESTIONS.length];return q.replace('[dzień]',DD_DAYS_ACC[dow]).replace('[dnia]',DD_DAYS_GEN[dow]);}
+var DD_MORNING=['Dzień się zaczyna. Niech ten [dzień] przyniesie Ci coś dobrego.','Dobry ranek. Niech [dzień] będzie dla Ciebie łagodny.','Ranek należy do Ciebie. Dobrego [dnia].','Nowy dzień, nowe możliwości. Niech [dzień] Ci sprzyja.'];
+var DD_DAYS_NOM=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
+function openDD(){var today=todayStr();if(S.ddDate!==today){S.ddDone=0;S.ddDate=today;saveS();}initTiles();document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';document.getElementById('dd-rev-msg').style.display='none';document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.remove('active');document.getElementById('dd1').classList.add('active');if(checkInactivity()){show('dd');ddShowInactScreen();return;}document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');document.getElementById('dd-puzzle-area').style.display='flex';ddShowNormalDD();show('dd');}
+function ddShowNormalDD(){var h=new Date().getHours(),dow=new Date().getDay(),dom=new Date().getDate(),nick=nickDisplay();var qEl=document.getElementById('dd-question'),titleEl=document.getElementById('dd-title'),inputEl=document.getElementById('dd-input'),doneMsgEl=document.getElementById('dd-done-msg');renderPuzzle();if(h>=6&&h<12){var msg=DD_MORNING[dom%DD_MORNING.length].replace('[dzień]',DD_DAYS_NOM[dow]);if(nick)msg=msg.replace('Dzień się zaczyna','Dzień się zaczyna, '+nick).replace('Dobry ranek','Dobry ranek, '+nick);if(qEl)qEl.textContent=msg;if(titleEl)titleEl.textContent='Dobry Dzień ☀️';if(inputEl)inputEl.style.display='none';if(doneMsgEl)doneMsgEl.style.display='none';}else{if(qEl)qEl.textContent=ddGetQuestion();if(titleEl)titleEl.textContent='Dobry Dzień ☀️'+(nick?' — '+nick:'');updateDDUI();}}
+function initTiles(){var tot=totalTiles();if(!S.ddTiles||S.ddTiles.length!==tot){S.ddTiles=Array(tot).fill(false);S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));saveS();}}
+function shuffle(arr){for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr;}
+function renderPuzzle(){var gs=gridN(),size=Math.min(Math.floor(window.innerWidth*0.85),300);size=Math.floor(size/gs)*gs;var cont=document.getElementById('pz-cont');cont.style.width=size+'px';cont.style.height=size+'px';var art=document.getElementById('pz-art');art.setAttribute('width',size);art.setAttribute('height',size);art.setAttribute('viewBox','0 0 320 320');art.innerHTML=getArtwork();var ov=document.getElementById('pz-ov');ov.setAttribute('width',size);ov.setAttribute('height',size);ov.setAttribute('viewBox','0 0 '+size+' '+size);ov.innerHTML='';var defs=document.createElementNS('http://www.w3.org/2000/svg','defs');ov.appendChild(defs);var tw=size/gs,th=size/gs,revealed=0;for(var i=0;i<gs*gs;i++){if(S.ddTiles[i]){revealed++;continue;}var row=Math.floor(i/gs),col=i%gs,x=col*tw,y=row*th,path=piecePath(x,y,tw,th,row,col,gs);var cp=document.createElementNS('http://www.w3.org/2000/svg','clipPath');cp.setAttribute('id','c'+i);var pp=document.createElementNS('http://www.w3.org/2000/svg','path');pp.setAttribute('d',path);cp.appendChild(pp);defs.appendChild(cp);var r=document.createElementNS('http://www.w3.org/2000/svg','rect');r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',tw);r.setAttribute('height',th);r.setAttribute('fill','rgba(255,252,245,.92)');r.setAttribute('clip-path','url(#c'+i+')');ov.appendChild(r);var b=document.createElementNS('http://www.w3.org/2000/svg','path');b.setAttribute('d',path);b.setAttribute('fill','none');b.setAttribute('stroke','rgba(180,160,130,.55)');b.setAttribute('stroke-width','1.5');ov.appendChild(b);}var tot=totalTiles();document.getElementById('pz-prog').textContent=revealed>=tot?'🎉 Puzzle ukończone! Nowe czeka.':revealed+'/'+tot+' odkrytych';}
+function piecePath(x,y,w,h,row,col,gs){var tab=Math.min(w,h)*0.22;function det(a,b){return(((a*100+b)*9301+(b+1)*49297+233)%1000)/1000;}var top=row===0?0:(det(row,col)>.5?1:-1);var right=col===gs-1?0:(det(col,row+50)>.5?1:-1);var bottom=row===gs-1?0:(det(row+50,col)>.5?1:-1);var left=col===0?0:(det(col+50,row)>.5?1:-1);if(col>0)left=-(det(col-1+50,row)>.5?1:-1);if(row>0)top=-(det(row-1,col)>.5?1:-1);var mx=x+w/2,d='M '+x+' '+y+' ';if(top===0){d+='L '+(x+w)+' '+y+' ';}else{d+='L '+(mx-tab*.7)+' '+y+' C '+(mx-tab*.7)+' '+(y-top*tab)+' '+(mx+tab*.7)+' '+(y-top*tab)+' '+(mx+tab*.7)+' '+y+' L '+(x+w)+' '+y+' ';}var rmy=y+h/2;if(right===0){d+='L '+(x+w)+' '+(y+h)+' ';}else{d+='L '+(x+w)+' '+(rmy-tab*.7)+' C '+(x+w+right*tab)+' '+(rmy-tab*.7)+' '+(x+w+right*tab)+' '+(rmy+tab*.7)+' '+(x+w)+' '+(rmy+tab*.7)+' L '+(x+w)+' '+(y+h)+' ';}var bmx=x+w/2;if(bottom===0){d+='L '+x+' '+(y+h)+' ';}else{d+='L '+(bmx+tab*.7)+' '+(y+h)+' C '+(bmx+tab*.7)+' '+(y+h+bottom*tab)+' '+(bmx-tab*.7)+' '+(y+h+bottom*tab)+' '+(bmx-tab*.7)+' '+(y+h)+' L '+x+' '+(y+h)+' ';}var lmy=y+h/2;if(left===0){d+='L '+x+' '+y+' ';}else{d+='L '+x+' '+(lmy+tab*.7)+' C '+(x-left*tab)+' '+(lmy+tab*.7)+' '+(x-left*tab)+' '+(lmy-tab*.7)+' '+x+' '+(lmy-tab*.7)+' L '+x+' '+y+' ';}return d+'Z';}
+function updateDDUI(){var left=maxDaily()-S.ddDone,ia=document.getElementById('dd-input'),dm=document.getElementById('dd-done-msg'),info=document.getElementById('dd-info');if(left<=0){ia.style.display='none';dm.style.display='block';}else{ia.style.display='block';dm.style.display='none';info.textContent=left===maxDaily()?'Możesz dodać '+maxDaily()+' myśli dziś.':'Zostało Ci '+left+(left===1?' myśl':' myśli')+' na dziś.';}}
+function ddSubmit(){var txt=document.getElementById('dd-txt').value.trim();if(txt.length<3){document.getElementById('dd-txt').focus();return;}document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.add('active');document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';var nick=nickDisplay()||'';var r=['Cieszę się że się tym podzieliłeś'+(nick?', '+nick:'')+'! 🌟','Piękna chwila. Dobrze że ją zapamiętujesz. ✨','Takie chwile są wyjątkowe. 💛','Dziękuję że mi o tym powiedziałeś'+(nick?', '+nick:'')+'! 🌸','Ale fajnie! Warto to nosić ze sobą. ⭐','Ładna myśl. Słoik ją przyjmie. 🌻'];setTimeout(function(){document.getElementById('dd-think').style.display='none';document.getElementById('dd-resp').style.display='block';document.getElementById('dd-bub').innerHTML='<p>'+r[Math.floor(Math.random()*r.length)]+'</p>';document.getElementById('dd-rev-msg').style.display='none';revealTile();S.ddDone++;var today=todayStr();if(S.ddLastDate===yest())S.ddSeries++;else if(S.ddLastDate!==today)S.ddSeries=1;S.ddLastDate=today;saveS();var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;document.getElementById('dd-rev-txt').textContent=rev>=tot?'🎉 Puzzle ukończone!':'🧩 Puzzle odkryty!';document.getElementById('dd-rev-msg').style.display='block';},800);}
+function revealTile(){var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;if(rev>=tot){S.ddTiles=Array(tot).fill(false);S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));S.ddSet=(S.ddSet||0)+1;saveS();return;}for(var i=0;i<S.ddOrder.length;i++){var idx=S.ddOrder[i];if(!S.ddTiles[idx]){S.ddTiles[idx]=true;S._lastTile=idx;saveS();return;}}}
+function ddBack(){document.getElementById('dd2').classList.remove('active');document.getElementById('dd1').classList.add('active');document.getElementById('dd-txt').value='';document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';renderPuzzle();updateDDUI();if(S._lastTile>=0){var cont=document.getElementById('pz-cont');cont.style.boxShadow='0 0 0 4px #f6a825,0 0 28px rgba(246,168,37,.55)';setTimeout(function(){cont.style.boxShadow='0 8px 32px rgba(0,0,0,.2)';},1600);S._lastTile=-1;}}
+function getArtwork(){if(S.ageGroup===1)return artBajkowy();if(S.ageGroup===2)return artNatura();if(S.ageGroup===3)return artMerkaba();return artDorosly();}
+function artBajkowy(){return '<defs><linearGradient id="bSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#87ceeb"/><stop offset="100%" stop-color="#b8e4f9"/></linearGradient></defs><rect width="320" height="320" fill="url(#bSky)"/><circle cx="268" cy="52" r="42" fill="#ffe033" opacity=".95"/><path d="M0,180 Q80,158 160,168 Q240,178 320,162 L320,320 L0,320Z" fill="#66bb6a"/><path d="M0,195 Q80,178 160,185 Q240,192 320,178 L320,320 L0,320Z" fill="#4caf50"/><path d="M-10,195 Q160,50 330,195" fill="none" stroke="#ff6b9d" stroke-width="18" stroke-linecap="round" opacity=".7"/><path d="M0,205 Q160,65 320,205" fill="none" stroke="#ff9e2a" stroke-width="14" stroke-linecap="round" opacity=".7"/><ellipse cx="52" cy="82" rx="32" ry="18" fill="white" opacity=".88"/><rect x="115" y="200" width="90" height="75" fill="#f9a825" rx="3"/><polygon points="115,200 160,158 205,200" fill="#e64a19"/><rect x="145" y="240" width="30" height="35" fill="#5d4037" rx="3"/><circle cx="50" cy="212" r="10" fill="#ff6b9d"/><circle cx="240" cy="208" r="9" fill="#ab47bc"/>';}
+function artNatura(){return '<defs><linearGradient id="nSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64b5f6"/><stop offset="100%" stop-color="#66bb6a"/></linearGradient><radialGradient id="nSun" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffe57f"/><stop offset="100%" stop-color="#ffcc02"/></radialGradient></defs><rect width="320" height="320" fill="url(#nSky)"/><circle cx="262" cy="58" r="36" fill="url(#nSun)"/><ellipse cx="55" cy="75" rx="36" ry="20" fill="white" opacity=".88"/><path d="M0,200 Q80,155 160,175 Q240,195 320,162 L320,320 L0,320Z" fill="#66bb6a"/><path d="M0,225 Q80,205 160,215 Q240,225 320,208 L320,320 L0,320Z" fill="#4caf50"/><polygon points="42,200 65,140 88,200" fill="#388e3c"/><rect x="59" y="200" width="12" height="24" fill="#5d4037"/><circle cx="30" cy="240" r="8" fill="#ff80ab"/><circle cx="292" cy="238" r="7" fill="#e040fb"/>';}
+function artMerkaba(){return '<defs><radialGradient id="mkBg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e8f4f8"/><stop offset="100%" stop-color="#b2ebf2"/></radialGradient><radialGradient id="mkGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,235,120,0.55)"/><stop offset="100%" stop-color="rgba(255,235,120,0)"/></radialGradient></defs><rect width="320" height="320" fill="url(#mkBg)"/><circle cx="160" cy="160" r="148" fill="none" stroke="#80deea" stroke-width="1" opacity=".4"/><circle cx="160" cy="160" r="80" fill="url(#mkGlow)"/><polygon points="160,42 290,252 30,252" fill="rgba(0,188,212,0.10)" stroke="#00bcd4" stroke-width="2.5"/><polygon points="160,278 290,68 30,68" fill="rgba(255,193,7,0.10)" stroke="#ffd54f" stroke-width="2.5"/><circle cx="160" cy="160" r="5" fill="#fff" opacity=".95"/><circle cx="160" cy="42" r="5" fill="#ffd54f" opacity=".9"/><circle cx="290" cy="252" r="4" fill="#4dd0e1" opacity=".9"/><circle cx="30" cy="252" r="4" fill="#4dd0e1" opacity=".9"/>';}
+function artDorosly(){return '<defs><linearGradient id="dSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fce4ec"/><stop offset="60%" stop-color="#ffe0b2"/><stop offset="100%" stop-color="#a5d6a7"/></linearGradient><radialGradient id="dSun" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff9c4"/><stop offset="100%" stop-color="#ffca28"/></radialGradient><radialGradient id="dHalo" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,238,88,0.45)"/><stop offset="100%" stop-color="rgba(255,238,88,0)"/></radialGradient></defs><rect width="320" height="320" fill="url(#dSky)"/><circle cx="160" cy="195" r="55" fill="url(#dHalo)"/><circle cx="160" cy="195" r="34" fill="url(#dSun)"/><path d="M0,215 Q80,200 160,208 Q240,216 320,202 L320,320 L0,320Z" fill="#81c784"/><path d="M0,248 Q80,240 160,244 Q240,248 320,240 L320,320 L0,320Z" fill="#4caf50"/><polygon points="25,215 44,168 63,215" fill="#2e7d32" opacity=".88"/><ellipse cx="65" cy="75" rx="42" ry="22" fill="white" opacity=".82"/><ellipse cx="225" cy="60" rx="38" ry="20" fill="white" opacity=".75"/><circle cx="38" cy="245" r="7" fill="#ff80ab" opacity=".9"/><circle cx="280" cy="242" r="6" fill="#e040fb" opacity=".9"/>';}
+
+document.addEventListener('DOMContentLoaded',function(){var gb=document.getElementById('gear-btn');if(gb)gb.onclick=function(){document.getElementById('set-ov').classList.add('open');};});
+function closeSet(){document.getElementById('set-ov').classList.remove('open');}
+function switchUser(){if(!confirm('Wylogować się? Twoje dane na tym urządzeniu zostaną usunięte.'))return;try{localStorage.removeItem('iskierka_v3');}catch(e){}location.reload();}
+document.addEventListener('DOMContentLoaded',function(){var so=document.getElementById('set-ov');if(so)so.addEventListener('click',function(e){if(e.target===this)closeSet();});var ro=document.getElementById('ritual-ov');if(ro)ro.addEventListener('click',function(e){if(e.target===this)ro.classList.remove('open');});});
+function doRitual(type){document.getElementById('ritual-ov').classList.remove('open');flash();}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function yest(){var d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);}
+function flash(){var f=document.createElement('div');f.className='flash';document.body.appendChild(f);setTimeout(function(){f.remove();},700);}
+</script>
+</body>
+</html>
