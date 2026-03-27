@@ -137,6 +137,9 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
   background:linear-gradient(to top,rgba(15,25,50,0.6) 0%,transparent 100%);
   pointer-events:none;
 }
+/* ── NOWE: zdjęcie tła ── */
+#sn-bg-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 1.8s ease;z-index:0;}
+#sn-bg-photo.loaded{opacity:0.38;}
 .sn-nb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px);mix-blend-mode:screen;z-index:1;}
 .sn-nb1{width:55%;height:40%;top:5%;left:10%;background:radial-gradient(circle,rgba(30,50,120,0.18) 0%,transparent 70%);}
 .sn-nb2{width:40%;height:35%;top:20%;right:5%;background:radial-gradient(circle,rgba(60,20,100,0.12) 0%,transparent 70%);}
@@ -155,7 +158,6 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 .sn-back-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 16px;color:rgba(255,255,255,.55);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
 .sn-title{font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:rgba(255,255,255,.28);}
 .sn-moon{font-size:22px;}
-/* środkowy obszar — kliknięcie otwiera info */
 #sn-center{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;cursor:pointer;}
 .sn-zod-big{font-size:52px;margin-bottom:6px;filter:drop-shadow(0 0 12px rgba(255,255,255,0.3));}
 .sn-zod-name{font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:rgba(255,255,255,0.45);margin-bottom:4px;}
@@ -223,7 +225,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <div class="scroll-wrap">
 <svg class="roller roller-top" viewBox="0 0 292 34" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="rg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d4863a"/><stop offset="58%" stop-color="#7a4210"/><stop offset="100%" stop-color="#c07028"/></linearGradient><linearGradient id="re1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5a2a08"/><stop offset="50%" stop-color="#8a4a18"/><stop offset="100%" stop-color="#5a2a08"/></linearGradient><filter id="rSh"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="rgba(0,0,0,0.7)"/></filter></defs><ellipse cx="14" cy="17" rx="12" ry="17" fill="url(#re1)"/><ellipse cx="278" cy="17" rx="12" ry="17" fill="url(#re1)"/><rect x="14" y="0" width="264" height="34" fill="url(#rg1)" filter="url(#rSh)"/><rect x="14" y="5" width="264" height="9" fill="rgba(255,210,140,0.28)"/></svg>
 <div style="position:relative;">
-<svg class="scroll-body" viewBox="0 0 292 470" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="pg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f8edd2"/><stop offset="48%" stop-color="#f5e6cc"/><stop offset="100%" stop-color="#f0ddb8"/></linearGradient><clipPath id="sc"><path d="M 16,0 C 30,-2 60,3 80,0 L 110,2 C 140,-1 165,4 185,1 L 212,4 C 236,0 258,5 275,2 L 292,6 L 292,464 L 275,469 C 258,467 236,472 212,469 L 185,472 C 165,468 140,473 110,470 L 80,473 C 60,469 30,474 16,471 L 0,466 L 0,6 Z"/></clipPath></defs><g clip-path="url(#sc)"><rect x="0" y="0" width="292" height="470" fill="url(#pg1)"/></g><path d="M 16,0 C 30,-2 60,3 80,0 L 110,2 C 140,-1 165,4 185,1 L 212,4 C 236,0 258,5 275,2 L 292,6 L 292,464 L 275,469 C 258,467 236,472 212,469 L 185,472 C 165,468 140,473 110,470 L 80,473 C 60,469 30,474 16,471 L 0,466 L 0,6 Z" fill="none" stroke="rgba(110,68,18,0.5)" stroke-width="1.8"/></svg>
+<svg class="scroll-body" viewBox="0 0 292 470" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="pg1" x1="0" y1="1" x2="1" y2="1"><stop offset="0%" stop-color="#f8edd2"/><stop offset="48%" stop-color="#f5e6cc"/><stop offset="100%" stop-color="#f0ddb8"/></linearGradient><clipPath id="sc"><path d="M 16,0 C 30,-2 60,3 80,0 L 110,2 C 140,-1 165,4 185,1 L 212,4 C 236,0 258,5 275,2 L 292,6 L 292,464 L 275,469 C 258,467 236,472 212,469 L 185,472 C 165,468 140,473 110,470 L 80,473 C 60,469 30,474 16,471 L 0,466 L 0,6 Z"/></clipPath></defs><g clip-path="url(#sc)"><rect x="0" y="0" width="292" height="470" fill="url(#pg1)"/></g><path d="M 16,0 C 30,-2 60,3 80,0 L 110,2 C 140,-1 165,4 185,1 L 212,4 C 236,0 258,5 275,2 L 292,6 L 292,464 L 275,469 C 258,467 236,472 212,469 L 185,472 C 165,468 140,473 110,470 L 80,473 C 60,469 30,474 16,471 L 0,466 L 0,6 Z" fill="none" stroke="rgba(110,68,18,0.5)" stroke-width="1.8"/></svg>
 <div class="scroll-content">
 <div class="sc-glyph">✦</div>
 <div class="sc-title">MAGIC JAR</div>
@@ -270,12 +272,13 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <!-- SPOKOJNA NOC -->
 <div class="screen" id="sn">
 <div id="sn-sky">
+  <!-- NOWE: zdjęcie tła nieba -->
+  <img id="sn-bg-photo" alt="">
   <div class="sn-nb sn-nb1"></div>
   <div class="sn-nb sn-nb2"></div>
   <div class="sn-nb sn-nb3"></div>
   <canvas id="sn-star-canvas"></canvas>
 </div>
-<!-- środek: znak zodiaku + kliknięcie = popup -->
 <div id="sn-center" onclick="snTogglePopup()">
   <div class="sn-zod-big" id="sn-center-zod">♉</div>
   <div class="sn-zod-name" id="sn-center-name">BYK</div>
@@ -369,25 +372,14 @@ function maxDaily(){return S.ageGroup===3?4:3;}
 function totalTiles(){return gridN()*gridN();}
 
 /* ═══════════════════════════════════════
-   SPOKOJNA NOC — ZDJĘCIA NIEBA Z UNSPLASH
-   Zmienia się wg pory roku i czasu wieczoru
+   SPOKOJNA NOC — ZDJĘCIA NIEBA
+   Rotacja kategorii co dzień: aurora → moon → m-w → aurora...
+   W ramach kategorii: deterministyczny wybór wg dnia roku
    ═══════════════════════════════════════ */
 var SN_COLORS=['#c9a0dc','#a8c5e0','#8ecfb8','#e8b48a','#e0959f','#d4c46a'];
 var snJarItems=[];
 var snChosenColor=SN_COLORS[0];
 var snConstOffset=0;
-
-/* 4 pory roku × 2 warianty (zmierzch / noc) = 8 zdjęć */
-var SKY_PHOTOS={
-  winter_night:    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Milky_way_2.jpg/1280px-Milky_way_2.jpg',
-  winter_twilight: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Twilight_at_swifts_creek.jpg/1280px-Twilight_at_swifts_creek.jpg',
-  spring_night:    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Moonset_-_Flickr_-_Joe_Parks.jpg/1280px-Moonset_-_Flickr_-_Joe_Parks.jpg',
-  spring_twilight: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/280px-PNG_transparency_demonstration_1.png',
-  summer_night:    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Milky_Way_Night_Sky_Black_Rock_Desert_Nevada.jpg/1280px-Milky_Way_Night_Sky_Black_Rock_Desert_Nevada.jpg',
-  summer_twilight: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenGateBridge-001.jpg/1280px-GoldenGateBridge-001.jpg',
-  autumn_night:    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Earth_Eastern_Hemisphere.jpg/600px-Earth_Eastern_Hemisphere.jpg',
-  autumn_twilight: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Sunrise_over_the_sea.jpg/1280px-Sunrise_over_the_sea.jpg'
-};
 
 var SEASON_NAMES={winter:'zima',spring:'wiosna',summer:'lato',autumn:'jesień'};
 
@@ -399,18 +391,36 @@ function snGetSeason(d){
   return'winter';
 }
 
-function snGetSkyGradient(){
-  return null; /* canvas robi tło — gradient nie używany */
+/* ── Główna funkcja wyboru zdjęcia ── */
+function snGetDailyPhoto(){
+  var now=new Date();
+  var dayOfYear=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);
+  /* 3 kategorie rotują co dzień */
+  var cats=[
+    {n:'aurora', c:4},
+    {n:'moon',   c:6},
+    {n:'m-w',    c:8}
+  ];
+  var cat=cats[dayOfYear%3];
+  /* deterministyczny wybór numeru w obrębie kategorii */
+  var num=(dayOfYear%cat.c)+1;
+  return 'img/sky/'+cat.n+'_'+num+'.jpg';
 }
 
 function snSetBg(){
-
+  /* wczytaj zdjęcie tła */
+  var img=document.getElementById('sn-bg-photo');
+  if(img){
+    img.classList.remove('loaded');
+    img.onload=function(){img.classList.add('loaded');};
+    img.onerror=function(){img.style.display='none';};
+    img.src=snGetDailyPhoto();
+  }
   /* aktualizuj środkowy panel */
   var now=new Date();
   if(snConstOffset<0)now.setDate(now.getDate()-1);
   var zod=zodiacSign(now);
   var season=snGetSeason(now);
-
   var zodEl=document.getElementById('sn-center-zod');
   var nameEl=document.getElementById('sn-center-name');
   var seaEl=document.getElementById('sn-season-label');
@@ -450,7 +460,6 @@ function openSN(){
   snBackToStrips();snRenderJar();
   show('sn');
   snSetBg();
-  setTimeout(function(){var h=document.getElementById('sn-hint');if(h)h.style.display='none';},5200);
 }
 var SN_SUBS=['Zostaw tu co Ci ciąży — niech noc będzie lżejsza.','Co chcesz zostawić — zostaw. Niech noc będzie spokojna.','Co nosisz w głowie przed snem? Zostaw — noc będzie lżejsza.','Wyrzuć to do Słoika. On to uniesie. Idź spokojnie spać.','Śpij spokojnie i kolorowo. Co niepotrzebne — puść i zostaw w Słoiku.','Zostaw tu swój dzień. Jutro zaczynasz nowy — bez bagażu.','Sen jest dla Ciebie — nie dla tego co Cię dziś zmęczyło.','Jeden oddech. Jeden Słoik. Dobranoc.'];
 function snSetCardSub(){var el=document.getElementById('sn-card-sub');if(!el)return;var d=new Date();el.textContent=SN_SUBS[(d.getDay()*3+d.getDate())%SN_SUBS.length];}
