@@ -130,8 +130,8 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 #sn{overflow:hidden;}
 #sn-sky{
   position:absolute;inset:0;z-index:0;
-  background-size:cover;background-position:center center;
-  transition:background-image 1s ease;
+  background:linear-gradient(to bottom,#1a0a4e 0%,#3a1a80 25%,#6a2a9e 50%,#8a3ab8 70%,#2a0a5e 100%);
+  transition:background 1s ease;
 }
 /* nakładka ciemności dla czytelności tekstu */
 #sn-sky::after{
@@ -375,15 +375,15 @@ var snChosenColor=SN_COLORS[0];
 var snConstOffset=0;
 
 /* 4 pory roku × 2 warianty (zmierzch / noc) = 8 zdjęć */
-var SKY_PHOTOS={
-  winter_twilight: 'https://images.unsplash.com/photo-1517242296-a07c66348c29?w=1080&q=80&fit=crop',
-  winter_night:    'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1080&q=80&fit=crop',
-  spring_twilight: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1080&q=80&fit=crop',
-  spring_night:    'https://images.unsplash.com/photo-1446776709462-d6af6cef5883?w=1080&q=80&fit=crop',
-  summer_twilight: 'https://images.unsplash.com/photo-1504608524841-42584120d693?w=1080&q=80&fit=crop',
-  summer_night:    'https://images.unsplash.com/photo-1464802686167-b939a6910659?w=1080&q=80&fit=crop',
-  autumn_twilight: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1080&q=80&fit=crop',
-  autumn_night:    'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1080&q=80&fit=crop'
+var SKY_GRADIENTS={
+  winter_twilight: 'linear-gradient(to bottom,#1a0a4e 0%,#3a1a80 25%,#6a2a9e 50%,#8a3ab8 70%,#2a0a5e 100%)',
+  winter_night:    'linear-gradient(to bottom,#060828 0%,#0d1448 25%,#152060 50%,#1a2870 75%,#0a1035 100%)',
+  spring_twilight: 'linear-gradient(to bottom,#2a0a40 0%,#5a1570 25%,#8a2080 50%,#b03060 70%,#5a0a40 100%)',
+  spring_night:    'linear-gradient(to bottom,#0a0530 0%,#180d55 30%,#281870 55%,#352080 80%,#120838 100%)',
+  summer_twilight: 'linear-gradient(to bottom,#0a0a30 0%,#200f60 20%,#4a1880 45%,#7a2060 65%,#a03020 85%,#5a1010 100%)',
+  summer_night:    'linear-gradient(to bottom,#040820 0%,#0a1438 25%,#102050 50%,#142860 75%,#0a1530 100%)',
+  autumn_twilight: 'linear-gradient(to bottom,#1a0820 0%,#3a1040 25%,#6a1545 50%,#8a2025 70%,#a03a08 85%,#5a1808 100%)',
+  autumn_night:    'linear-gradient(to bottom,#0e0515 0%,#1a0d28 30%,#2a1545 55%,#301848 80%,#180a28 100%)'
 };
 
 var SEASON_NAMES={winter:'zima',spring:'wiosna',summer:'lato',autumn:'jesień'};
@@ -396,20 +396,20 @@ function snGetSeason(d){
   return'winter';
 }
 
-function snGetSkyPhoto(){
+function snGetSkyGradient(){
   var now=new Date();
   if(snConstOffset<0)now.setDate(now.getDate()-1);
   var h=now.getHours();
   var season=snGetSeason(now);
   var period=(h>=18&&h<21)?'twilight':'night';
-  return SKY_PHOTOS[season+'_'+period]||SKY_PHOTOS['winter_night'];
+  return SKY_GRADIENTS[season+'_'+period]||SKY_GRADIENTS['winter_night'];
 }
 
 function snSetBg(){
   var sky=document.getElementById('sn-sky');
   if(!sky)return;
-  var url=snGetSkyPhoto();
-  sky.style.backgroundImage='url('+url+')';
+  var grad=snGetSkyGradient();
+  sky.style.background=grad;
 
   /* aktualizuj środkowy panel */
   var now=new Date();
