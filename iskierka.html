@@ -19,7 +19,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 .screen.active{display:flex;}
 .night{background:radial-gradient(ellipse at 50% 110%,#3d1f6e 0%,#1a0f2e 55%,#120a22 100%);color:var(--nt);}
 .day{background:var(--db);color:var(--dt);}
-.stars-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.stars-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;}
 .star{position:absolute;border-radius:50%;animation:twinkleA var(--d,3s) infinite var(--del,0s);}
 .star-w{background:#fff;}.star-g{background:#ffd080;}
 @keyframes twinkleA{0%,100%{opacity:.1}50%{opacity:.88}}
@@ -130,13 +130,18 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 #sn{overflow:hidden;}
 #sn-sky{
   position:absolute;inset:0;z-index:0;
-  background:linear-gradient(to bottom,#1a0a4e 0%,#3a1a80 25%,#6a2a9e 50%,#8a3ab8 70%,#2a0a5e 100%);
-  transition:background 1s ease;
+  background:radial-gradient(ellipse at 50% 0%,#0d1b2a 0%,#060d18 40%,#020508 100%);
 }
-/* nakładka usunięta - gradient sam w sobie jest wystarczający */
-.sn-nb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(70px);mix-blend-mode:screen;z-index:1;}
-.sn-nb1{width:65%;height:55%;top:2%;left:-5%;background:radial-gradient(circle,rgba(25,40,100,0.15) 0%,transparent 70%);}
-.sn-nb2{width:50%;height:42%;top:10%;right:0%;background:radial-gradient(circle,rgba(60,20,80,0.10) 0%,transparent 70%);}
+#sn-sky::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:35%;
+  background:linear-gradient(to top,rgba(15,25,50,0.6) 0%,transparent 100%);
+  pointer-events:none;
+}
+.sn-nb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px);mix-blend-mode:screen;z-index:1;}
+.sn-nb1{width:55%;height:40%;top:5%;left:10%;background:radial-gradient(circle,rgba(30,50,120,0.18) 0%,transparent 70%);}
+.sn-nb2{width:40%;height:35%;top:20%;right:5%;background:radial-gradient(circle,rgba(60,20,100,0.12) 0%,transparent 70%);}
+.sn-nb3{width:30%;height:25%;top:50%;left:40%;background:radial-gradient(circle,rgba(20,60,80,0.10) 0%,transparent 70%);}
+#sn-star-canvas{position:absolute;inset:0;z-index:2;pointer-events:none;}
 #sn-popup{display:none;position:absolute;z-index:50;width:min(270px,84%);background:rgba(6,12,28,0.94);border:1px solid rgba(160,185,255,0.11);border-radius:18px;padding:16px 18px;backdrop-filter:blur(20px);box-shadow:0 10px 40px rgba(0,0,8,0.85);animation:popIn .22s ease;}
 #sn-popup.on{display:block;}
 @keyframes popIn{from{opacity:0;transform:scale(.88);}to{opacity:1;transform:scale(1);}}
@@ -267,6 +272,8 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <div id="sn-sky">
   <div class="sn-nb sn-nb1"></div>
   <div class="sn-nb sn-nb2"></div>
+  <div class="sn-nb sn-nb3"></div>
+  <canvas id="sn-star-canvas"></canvas>
 </div>
 <!-- środek: znak zodiaku + kliknięcie = popup -->
 <div id="sn-center" onclick="snTogglePopup()">
@@ -371,15 +378,15 @@ var snChosenColor=SN_COLORS[0];
 var snConstOffset=0;
 
 /* 4 pory roku × 2 warianty (zmierzch / noc) = 8 zdjęć */
-var SKY_GRADIENTS={
-  winter_twilight: 'linear-gradient(to bottom,#1a0a4e 0%,#3a1a80 25%,#6a2a9e 50%,#8a3ab8 70%,#2a0a5e 100%)',
-  winter_night:    'linear-gradient(to bottom,#060828 0%,#0d1448 25%,#152060 50%,#1a2870 75%,#0a1035 100%)',
-  spring_twilight: 'linear-gradient(to bottom,#2a0a40 0%,#5a1570 25%,#8a2080 50%,#b03060 70%,#5a0a40 100%)',
-  spring_night:    'linear-gradient(to bottom,#0a0530 0%,#180d55 30%,#281870 55%,#352080 80%,#120838 100%)',
-  summer_twilight: 'linear-gradient(to bottom,#0a0a30 0%,#200f60 20%,#4a1880 45%,#7a2060 65%,#a03020 85%,#5a1010 100%)',
-  summer_night:    'linear-gradient(to bottom,#040820 0%,#0a1438 25%,#102050 50%,#142860 75%,#0a1530 100%)',
-  autumn_twilight: 'linear-gradient(to bottom,#1a0820 0%,#3a1040 25%,#6a1545 50%,#8a2025 70%,#a03a08 85%,#5a1808 100%)',
-  autumn_night:    'linear-gradient(to bottom,#0e0515 0%,#1a0d28 30%,#2a1545 55%,#301848 80%,#180a28 100%)'
+var SKY_PHOTOS={
+  winter_night:    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Milky_way_2.jpg/1280px-Milky_way_2.jpg',
+  winter_twilight: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Twilight_at_swifts_creek.jpg/1280px-Twilight_at_swifts_creek.jpg',
+  spring_night:    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Moonset_-_Flickr_-_Joe_Parks.jpg/1280px-Moonset_-_Flickr_-_Joe_Parks.jpg',
+  spring_twilight: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/280px-PNG_transparency_demonstration_1.png',
+  summer_night:    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Milky_Way_Night_Sky_Black_Rock_Desert_Nevada.jpg/1280px-Milky_Way_Night_Sky_Black_Rock_Desert_Nevada.jpg',
+  summer_twilight: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenGateBridge-001.jpg/1280px-GoldenGateBridge-001.jpg',
+  autumn_night:    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Earth_Eastern_Hemisphere.jpg/600px-Earth_Eastern_Hemisphere.jpg',
+  autumn_twilight: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Sunrise_over_the_sea.jpg/1280px-Sunrise_over_the_sea.jpg'
 };
 
 var SEASON_NAMES={winter:'zima',spring:'wiosna',summer:'lato',autumn:'jesień'};
@@ -393,19 +400,10 @@ function snGetSeason(d){
 }
 
 function snGetSkyGradient(){
-  var now=new Date();
-  if(snConstOffset<0)now.setDate(now.getDate()-1);
-  var h=now.getHours();
-  var season=snGetSeason(now);
-  var period=(h>=18&&h<21)?'twilight':'night';
-  return SKY_GRADIENTS[season+'_'+period]||SKY_GRADIENTS['winter_night'];
+  return null; /* canvas robi tło — gradient nie używany */
 }
 
 function snSetBg(){
-  var sky=document.getElementById('sn-sky');
-  if(!sky)return;
-  var grad=snGetSkyGradient();
-  sky.style.background=grad;
 
   /* aktualizuj środkowy panel */
   var now=new Date();
@@ -458,7 +456,32 @@ var SN_SUBS=['Zostaw tu co Ci ciąży — niech noc będzie lżejsza.','Co chces
 function snSetCardSub(){var el=document.getElementById('sn-card-sub');if(!el)return;var d=new Date();el.textContent=SN_SUBS[(d.getDay()*3+d.getDate())%SN_SUBS.length];}
 function snGoYesterday(){if(snConstOffset<0)return;snConstOffset=-1;document.getElementById('sn-prev-btn').parentElement.style.display='none';document.getElementById('sn-today-btn').style.display='block';snSetBg();}
 function snGoToday(){snConstOffset=0;document.getElementById('sn-prev-btn').parentElement.style.display='block';document.getElementById('sn-today-btn').style.display='none';snSetBg();}
-function snInit(){document.getElementById('sn-moon-em').textContent=snGetMoon();if(S.snItems&&S.snItems.length)snJarItems=S.snItems;snBuildStrips();snRenderJar();}
+function drawSnStars(){
+  var canvas=document.getElementById('sn-star-canvas');
+  if(!canvas)return;
+  var W=window.innerWidth,H=window.innerHeight;
+  canvas.width=W*window.devicePixelRatio;
+  canvas.height=H*window.devicePixelRatio;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  var ctx=canvas.getContext('2d');
+  ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
+  var count=Math.floor((W*H)/2800);
+  for(var i=0;i<count;i++){
+    var x=Math.random()*W,y=Math.random()*H*0.80;
+    var r=Math.random()*1.2+0.2;
+    var a=(Math.random()*0.6+0.15).toFixed(2);
+    var colors=['rgba(200,215,255,'+a+')','rgba(255,255,240,'+a+')','rgba(255,235,200,'+a+')','rgba(255,200,150,'+(a*0.7).toFixed(2)+')'];
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle=colors[Math.floor(Math.random()*colors.length)];ctx.fill();
+    if(Math.random()>0.7){ctx.beginPath();ctx.arc(x,y,r*2.5,0,Math.PI*2);ctx.fillStyle='rgba(200,215,255,'+(a*0.08).toFixed(3)+')';ctx.fill();}
+  }
+  var grd=ctx.createLinearGradient(W*0.3,0,W*0.7,H*0.6);
+  grd.addColorStop(0,'rgba(120,140,200,0)');grd.addColorStop(0.3,'rgba(120,140,200,0.04)');
+  grd.addColorStop(0.5,'rgba(150,160,220,0.06)');grd.addColorStop(0.7,'rgba(120,140,200,0.04)');grd.addColorStop(1,'rgba(120,140,200,0)');
+  ctx.save();ctx.rotate(-0.3);ctx.translate(-W*0.1,-H*0.05);ctx.fillStyle=grd;ctx.fillRect(-W,-H,W*3,H*2);ctx.restore();
+}
+window.addEventListener('resize',function(){if(document.getElementById('sn')&&document.getElementById('sn').classList.contains('active'))drawSnStars();});
+function snInit(){document.getElementById('sn-moon-em').textContent=snGetMoon();drawSnStars();if(S.snItems&&S.snItems.length)snJarItems=S.snItems;snBuildStrips();snRenderJar();}
 
 /* ═══ SŁOIK ═══ */
 function snBuildJarSVG(){var type=S.jarType||'classic';var sh=JAR_SHAPES[type]||JAR_SHAPES.classic;var svg=document.getElementById('sn-jar-svg');if(!svg)return;svg.innerHTML='<defs><clipPath id="sjclip"><path d="'+sh.body+'"/></clipPath><radialGradient id="sjglow" cx="35%" cy="30%" r="65%"><stop offset="0%" stop-color="#ffe8a0" stop-opacity=".3"/><stop offset="100%" stop-color="#c87820" stop-opacity=".04"/></radialGradient></defs><ellipse cx="65" cy="98" rx="55" ry="66" fill="rgba(255,180,60,.07)"/><path d="'+sh.body+'" fill="'+sh.body_c+'" stroke="'+sh.stroke+'" stroke-width="2"/><rect id="sn-jfill" x="10" y="152" width="110" height="0" clip-path="url(#sjclip)" fill="'+sh.fill+'"/><path d="'+sh.body+'" fill="url(#sjglow)"/><g id="sn-jnotes" clip-path="url(#sjclip)"></g><path d="M24,55 Q21,90 21,122" stroke="'+sh.shine+'" stroke-width="4" stroke-linecap="round" fill="none"/><path d="'+sh.cap+'" fill="'+sh.body_c+'" stroke="'+sh.stroke+'" stroke-width="1.5"/><path d="'+sh.lid+'" fill="rgba(255,220,120,.4)" stroke="rgba(255,235,150,.65)" stroke-width="1.4"/>';}
