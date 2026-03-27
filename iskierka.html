@@ -279,12 +279,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
   <div class="sn-nb sn-nb3"></div>
   <canvas id="sn-star-canvas"></canvas>
 </div>
-<div id="sn-center" onclick="snTogglePopup()">
-  <div class="sn-zod-big" id="sn-center-zod">♉</div>
-  <div class="sn-zod-name" id="sn-center-name">BYK</div>
-  <div class="sn-season-label" id="sn-season-label">wiosna</div>
-  <div class="sn-tap-hint">dotknij by dowiedzieć się więcej</div>
-</div>
+
 <div id="sn-popup">
 <button class="sn-px" onclick="snClosePopup()">×</button>
 <div class="sn-pname" id="snp-name"></div>
@@ -292,12 +287,8 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <div class="sn-pdesc" id="snp-desc"></div>
 <div class="sn-ptip" id="snp-tip"></div>
 </div>
-<div id="sn-nav" style="position:absolute;left:0;top:50%;transform:translateY(-50%);z-index:25;padding:16px 0;">
-<button id="sn-prev-btn" onclick="snGoYesterday()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:0 12px 12px 0;padding:18px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;"><span style="font-size:18px;color:rgba(255,255,255,0.4);">‹</span><span style="font-size:9px;letter-spacing:1.5px;color:rgba(255,255,255,0.25);font-family:Cinzel,serif;">WCZORAJ</span></button>
-</div>
-<div id="sn-today-btn" style="display:none;position:absolute;left:0;top:50%;transform:translateY(-50%);z-index:25;padding:16px 0;">
-<button onclick="snGoToday()" style="background:rgba(255,200,100,0.1);border:1px solid rgba(255,200,100,0.2);border-radius:0 12px 12px 0;padding:18px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;"><span style="font-size:18px;color:rgba(255,200,100,0.5);">›</span><span style="font-size:9px;letter-spacing:1.5px;color:rgba(255,200,100,0.35);font-family:Cinzel,serif;">DZIŚ</span></button>
-</div>
+
+
 <div id="sn-ui">
 <div class="sn-top">
 <button class="sn-back-btn" onclick="goHome()">← Wróć</button>
@@ -455,16 +446,14 @@ function snGetMoon(){var c=(((new Date()-new Date(2000,0,6))/864e5)%29.53059+29.
 
 function openSN(){
   snConstOffset=0;
-  document.getElementById('sn-prev-btn').parentElement.style.display='block';
-  document.getElementById('sn-today-btn').style.display='none';
   snBackToStrips();snRenderJar();
   show('sn');
   snSetBg();
 }
 var SN_SUBS=['Zostaw tu co Ci ciąży — niech noc będzie lżejsza.','Co chcesz zostawić — zostaw. Niech noc będzie spokojna.','Co nosisz w głowie przed snem? Zostaw — noc będzie lżejsza.','Wyrzuć to do Słoika. On to uniesie. Idź spokojnie spać.','Śpij spokojnie i kolorowo. Co niepotrzebne — puść i zostaw w Słoiku.','Zostaw tu swój dzień. Jutro zaczynasz nowy — bez bagażu.','Sen jest dla Ciebie — nie dla tego co Cię dziś zmęczyło.','Jeden oddech. Jeden Słoik. Dobranoc.'];
 function snSetCardSub(){var el=document.getElementById('sn-card-sub');if(!el)return;var d=new Date();el.textContent=SN_SUBS[(d.getDay()*3+d.getDate())%SN_SUBS.length];}
-function snGoYesterday(){if(snConstOffset<0)return;snConstOffset=-1;document.getElementById('sn-prev-btn').parentElement.style.display='none';document.getElementById('sn-today-btn').style.display='block';snSetBg();}
-function snGoToday(){snConstOffset=0;document.getElementById('sn-prev-btn').parentElement.style.display='block';document.getElementById('sn-today-btn').style.display='none';snSetBg();}
+function snGoYesterday(){if(snConstOffset<0)return;snConstOffset=-1;snSetBg();}
+function snGoToday(){snConstOffset=0;snSetBg();}
 function drawSnStars(){
   var canvas=document.getElementById('sn-star-canvas');
   if(!canvas)return;
