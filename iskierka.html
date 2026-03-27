@@ -79,10 +79,10 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 
 /* ══ ONBOARDING ══ */
 #onboarding{overflow:hidden;background:#0a1a0a;display:flex;align-items:center;justify-content:center;}
-#ob-bg{position:absolute;inset:0;z-index:0;overflow:hidden;}
+#ob-bg{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
 #ob-bg-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 1.2s ease;}
 #ob-bg-photo.loaded{opacity:1;}
-#ob-bg-dim{position:absolute;inset:0;background:rgba(0,0,0,0.08);}
+#ob-bg-dim{position:absolute;inset:0;background:rgba(0,0,0,0.08);pointer-events:none;}
 @keyframes obIn{from{opacity:0;transform:translateY(16px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
 .ob-card{position:relative;z-index:20;width:min(320px,86vw);max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:rgba(10,15,28,0.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:24px;padding:32px 28px 28px;border:1px solid rgba(255,255,255,0.09);box-shadow:0 8px 40px rgba(0,0,0,0.6);animation:obIn .6s cubic-bezier(0.16,1,0.3,1) both;}
 .ob-card::-webkit-scrollbar{width:0;}
