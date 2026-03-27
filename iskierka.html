@@ -76,75 +76,41 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 .flash{position:fixed;inset:0;background:rgba(114,201,160,.18);z-index:500;pointer-events:none;animation:flashOut .6s forwards;}
 @keyframes flashOut{to{opacity:0}}
 ::-webkit-scrollbar{width:0;}
-#onboarding{background:#1a3a1a;overflow:hidden;}
-.ob-scene{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;}
-.q{position:relative;overflow:hidden;}
-.q svg{position:absolute;inset:0;width:100%;height:100%;}
-.q-wind{background:#071428;}.q-water{background:#020e20;}.q-fire{background:#130404;}.q-earth{background:#050f04;}
-.ob-vignette{position:absolute;inset:0;pointer-events:none;z-index:8;background:radial-gradient(ellipse 55% 52% at 50% 50%,transparent 20%,rgba(0,0,0,.65) 70%,rgba(0,0,0,.9) 100%);}
-.scroll-wrap{position:absolute;top:50%;left:50%;z-index:20;width:min(292px,84vw);transform:translate(-50%,-50%);animation:scrollIn 1.4s cubic-bezier(0.16,1,0.3,1) both;box-shadow:0 0 0 1px rgba(0,0,0,0.25),0 8px 32px rgba(0,0,0,0.55),0 32px 70px rgba(0,0,0,0.45);border-radius:6px;overflow:hidden;}
-@keyframes scrollIn{from{opacity:0;transform:translate(-50%,-54%) scale(.88);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
-.roller{display:block;width:100%;position:relative;z-index:2;}
-.roller-top{margin-bottom:0;}.roller-bot{margin-top:0;}
 
-.scroll-content{position:relative;z-index:3;padding:28px 24px 26px;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-.scroll-content::-webkit-scrollbar{width:0;}
-.sc-glyph{text-align:center;font-size:22px;margin-bottom:3px;animation:glyphPulse 3s ease-in-out infinite;}
-@keyframes glyphPulse{0%,100%{filter:drop-shadow(0 0 6px rgba(170,110,15,.4));}50%{filter:drop-shadow(0 0 14px rgba(200,140,20,.7));}}
-.sc-title{font-family:'Cinzel',serif;font-size:19px;font-weight:700;color:#180c03;text-align:center;letter-spacing:4px;text-shadow:0 1px 0 rgba(240,200,100,.4);margin-bottom:2px;}
-.sc-sub{font-family:'Lora',serif;font-style:italic;font-size:11px;color:#3a2008;text-align:center;opacity:.85;margin-bottom:14px;}
-.rune-sep{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
-.rune-sep::before,.rune-sep::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(110,72,20,.45),transparent);}
-.rune-sep span{font-size:11px;color:rgba(110,72,20,.5);}
-.scroll-content.dark-theme .sc-title{color:#f0c060 !important;}
-.scroll-content.dark-theme .sc-sub{color:#c89040 !important;}
-.scroll-content.dark-theme .sc-label{color:#d4a030 !important;}
-.scroll-content.dark-theme .sc-back{color:#c89040 !important;}
-.scroll-content.dark-theme .jar-opt-ob{background:rgba(255,200,80,.12);border-color:rgba(200,150,40,.3);color:#d4a030;}
-.scroll-content.dark-theme .jar-opt-ob.sel{background:rgba(255,200,80,.3);border-color:rgba(220,170,50,.8);}
-.scroll-content.dark-theme .sc-btn{background:linear-gradient(150deg,#1a0c02,#2e1808);border-color:rgba(200,140,30,.55);color:#e8b840;}
-.sc-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2.5px;color:#2a1406;display:block;margin-bottom:5px;}
-.sc-inp{width:100%;background:rgba(235,220,185,.65);border:1px solid rgba(110,72,25,.35);border-radius:3px 6px 4px 5px;padding:10px 12px;font-family:'Lora',serif;font-size:15px;color:#18100a;outline:none;margin-bottom:12px;box-shadow:inset 0 1px 5px rgba(0,0,0,.10);}
-.sc-inp::placeholder{color:rgba(110,72,25,.4);font-style:italic;}
-.sc-inp:focus{border-color:rgba(160,100,18,.6);}
+/* ══ ONBOARDING ══ */
+#onboarding{overflow:hidden;background:#0a1a0a;}
+#ob-bg{position:absolute;inset:0;z-index:0;}
+#ob-bg-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 1.2s ease;}
+#ob-bg-photo.loaded{opacity:1;}
+#ob-bg-dim{position:absolute;inset:0;background:rgba(0,0,0,0.35);}
+@keyframes obIn{from{opacity:0;transform:translateY(16px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+.ob-card{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;width:min(340px,88vw);max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:rgba(10,15,28,0.78);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px;padding:32px 28px 28px;border:1px solid rgba(255,255,255,0.09);box-shadow:0 8px 40px rgba(0,0,0,0.6);animation:obIn .6s cubic-bezier(0.16,1,0.3,1) both;}
+.ob-card::-webkit-scrollbar{width:0;}
+.ob-glyph{text-align:center;font-size:24px;margin-bottom:6px;}
+.ob-title{font-family:'Cinzel',serif;font-size:21px;font-weight:700;color:#f0eafa;text-align:center;letter-spacing:4px;margin-bottom:4px;}
+.ob-sub{font-family:'Lora',serif;font-style:italic;font-size:12px;color:rgba(200,185,240,0.55);text-align:center;margin-bottom:22px;}
+.ob-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2.5px;color:rgba(200,185,240,0.45);display:block;margin-bottom:6px;}
+.ob-inp{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:13px 16px;font-family:'Nunito',sans-serif;font-size:16px;color:#f0eafa;outline:none;margin-bottom:16px;}
+.ob-inp::placeholder{color:rgba(200,185,240,0.28);}
+.ob-inp:focus{border-color:rgba(180,130,255,0.5);background:rgba(255,255,255,0.10);}
+.ob-btn{width:100%;padding:15px;margin-top:6px;background:rgba(140,90,255,0.22);border:1px solid rgba(170,120,255,0.35);border-radius:14px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:3px;color:#d4a8ff;cursor:pointer;transition:transform .15s;}
+.ob-btn:active{transform:scale(.97);}
+.ob-back{background:none;border:none;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:rgba(200,185,240,0.4);cursor:pointer;padding:0 0 14px;display:block;}
 .ob-step{display:none;}.ob-step.active{display:block;}
-.sc-back{background:none;border:none;font-family:'Lora',serif;font-style:italic;font-size:12px;color:#3a2008;cursor:pointer;padding:2px 0;margin-bottom:10px;display:block;opacity:.65;}
-.sc-btn{width:100%;padding:12px 14px;margin-top:4px;background:linear-gradient(150deg,#241508,#3a2208);border:1px solid rgba(185,125,28,.42);border-radius:3px 6px 4px 5px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:2.5px;color:#d4a030;cursor:pointer;box-shadow:0 3px 14px rgba(0,0,0,.45);}
-.sc-btn:active{transform:scale(.97);}
-.jar-grid-ob{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:10px 0 14px;}
-.jar-opt-ob{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 9px;border-radius:3px 6px 4px 5px;border:1.5px solid rgba(110,72,25,.22);cursor:pointer;background:rgba(255,248,228,.45);font-family:'Cinzel',serif;font-size:8px;color:#5a3812;letter-spacing:1.5px;}
-.jar-opt-ob.sel{border-color:rgba(165,105,20,.85);background:rgba(255,235,175,.82);}
-.jar-opt-ob span{font-size:22px;}
+.ob-sep{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
+.ob-sep::before,.ob-sep::after{content:'';flex:1;height:1px;background:rgba(200,185,240,0.12);}
+.ob-sep span{font-size:11px;color:rgba(200,185,240,0.25);}
+.jar-grid-ob{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0 18px;}
+.jar-opt-ob{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;border-radius:14px;border:1.5px solid rgba(255,255,255,0.09);cursor:pointer;background:rgba(255,255,255,0.05);font-family:'Cinzel',serif;font-size:8px;color:rgba(200,185,240,0.5);letter-spacing:1.5px;}
+.jar-opt-ob.sel{border-color:rgba(170,120,255,0.7);background:rgba(140,90,255,0.2);color:#d4a8ff;}
+.jar-opt-ob span{font-size:24px;}
 @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
 .shake{animation:shake .38s ease;}
-@keyframes twinkle{0%,100%{opacity:.12}50%{opacity:.9}}
-@keyframes windLine{0%{stroke-dashoffset:500;opacity:0;}8%{opacity:.7;}85%{opacity:.35;}100%{stroke-dashoffset:0;opacity:0;}}
-@keyframes leafDrift1{0%{transform:translate(0,0) rotate(0deg);opacity:0;}10%{opacity:.75;}90%{opacity:.4;}100%{transform:translate(90px,-25px) rotate(200deg);opacity:0;}}
-@keyframes leafDrift2{0%{transform:translate(0,0) rotate(20deg);opacity:0;}12%{opacity:.7;}88%{opacity:.3;}100%{transform:translate(110px,-15px) rotate(-120deg);opacity:0;}}
-@keyframes leafDrift3{0%{transform:translate(0,0) rotate(-10deg);opacity:0;}8%{opacity:.8;}92%{opacity:.35;}100%{transform:translate(80px,-35px) rotate(150deg);opacity:0;}}
-@keyframes wfall{from{transform:translateY(-5px);opacity:.6;}to{transform:translateY(8px);opacity:.1;}}
-@keyframes moonPulse{0%,100%{opacity:.88;}50%{opacity:1;}}
-@keyframes flicker{0%,100%{transform:scaleX(1)scaleY(1);}25%{transform:scaleX(.93)scaleY(1.07);}50%{transform:scaleX(1.04)scaleY(.96);}75%{transform:scaleX(.96)scaleY(1.04);}}
-@keyframes sparksA{0%{transform:translate(0,0);opacity:1;}100%{transform:translate(7px,-52px);opacity:0;}}
-@keyframes sparksB{0%{transform:translate(0,0);opacity:1;}100%{transform:translate(-6px,-48px);opacity:0;}}
-@keyframes sparksC{0%{transform:translate(0,0);opacity:1;}100%{transform:translate(11px,-60px);opacity:0;}}
-@keyframes sway1{0%,100%{transform:rotate(-2.5deg);}50%{transform:rotate(2.5deg);}}
-@keyframes sway2{0%,100%{transform:rotate(-1.8deg);}50%{transform:rotate(2deg);}}
-@keyframes sway3{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(1.5deg);}}
-@keyframes firefly{0%,100%{opacity:0;r:1;}45%,55%{opacity:.95;r:1.6;}}
 
-/* ═══ SPOKOJNA NOC ═══ */
+/* ══ SPOKOJNA NOC ══ */
 #sn{overflow:hidden;}
-#sn-sky{
-  position:absolute;inset:0;z-index:0;
-  background:radial-gradient(ellipse at 50% 0%,#0d1b2a 0%,#060d18 40%,#020508 100%);
-}
-#sn-sky::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:35%;
-  background:linear-gradient(to top,rgba(15,25,50,0.6) 0%,transparent 100%);
-  pointer-events:none;
-}
-/* ── NOWE: zdjęcie tła ── */
+#sn-sky{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 0%,#0d1b2a 0%,#060d18 40%,#020508 100%);}
+#sn-sky::after{content:'';position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(to top,rgba(15,25,50,0.6) 0%,transparent 100%);pointer-events:none;}
 #sn-bg-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 1.8s ease;z-index:0;}
 #sn-bg-photo.loaded{opacity:0.38;}
 .sn-nb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px);mix-blend-mode:screen;z-index:1;}
@@ -165,13 +131,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 .sn-back-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 16px;color:rgba(255,255,255,.55);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
 .sn-title{font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:rgba(255,255,255,.28);}
 .sn-moon{font-size:22px;}
-#sn-center{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;cursor:pointer;}
-.sn-zod-big{font-size:52px;margin-bottom:6px;filter:drop-shadow(0 0 12px rgba(255,255,255,0.3));}
-.sn-zod-name{font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:rgba(255,255,255,0.45);margin-bottom:4px;}
-.sn-season-label{font-family:'Lora',serif;font-style:italic;font-size:11px;color:rgba(255,255,255,0.25);}
-.sn-tap-hint{font-size:10px;letter-spacing:2px;color:rgba(255,255,255,0.18);margin-top:16px;font-family:'Cinzel',serif;}
 .sn-bottom{flex-shrink:0;padding:0 16px max(env(safe-area-inset-bottom),20px);pointer-events:all;}
-#sn-nav,#sn-today-btn{pointer-events:all;}
 .sn-strips{display:flex;gap:8px;height:54px;}
 .sn-strip{flex:1;border-radius:14px;cursor:pointer;border:none;outline:none;transition:transform .14s;position:relative;overflow:hidden;}
 .sn-strip::after{content:'';position:absolute;inset:0;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.22) 0%,transparent 55%);pointer-events:none;}
@@ -222,36 +182,31 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 
 <!-- ONBOARDING -->
 <div class="screen" id="onboarding">
-
-<img id="ob-bg-photo" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 2s ease;z-index:0;">
-<canvas id="ob-star-canvas" style="position:absolute;inset:0;z-index:1;pointer-events:none;"></canvas>
-<div class="scroll-wrap">
-<svg class="roller roller-top" viewBox="0 0 292 32" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="rg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3a1a06"/><stop offset="35%" stop-color="#6a3510"/><stop offset="55%" stop-color="#2e1405"/><stop offset="80%" stop-color="#5a2c0e"/><stop offset="100%" stop-color="#3a1a06"/></linearGradient><linearGradient id="re1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1a0a02"/><stop offset="35%" stop-color="#4a2208"/><stop offset="50%" stop-color="#6a3812"/><stop offset="65%" stop-color="#4a2208"/><stop offset="100%" stop-color="#1a0a02"/></linearGradient><filter id="rSh"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="rgba(0,0,0,0.92)"/></filter></defs><rect x="14" y="0" width="264" height="32" fill="url(#rg1)" filter="url(#rSh)"/><rect x="14" y="0" width="264" height="32" fill="url(#rg1)"/><line x1="14" y1="7" x2="278" y2="7" stroke="rgba(0,0,0,0.28)" stroke-width="1"/><line x1="14" y1="13" x2="278" y2="13" stroke="rgba(200,140,60,0.10)" stroke-width="0.7"/><line x1="14" y1="19" x2="278" y2="19" stroke="rgba(0,0,0,0.32)" stroke-width="1.2"/><line x1="14" y1="25" x2="278" y2="25" stroke="rgba(200,140,60,0.08)" stroke-width="0.7"/><ellipse cx="14" cy="16" rx="13" ry="16" fill="url(#re1)"/><ellipse cx="14" cy="16" rx="7" ry="10" fill="rgba(0,0,0,0.38)"/><ellipse cx="14" cy="16" rx="3" ry="4" fill="rgba(180,120,40,0.14)"/><ellipse cx="278" cy="16" rx="13" ry="16" fill="url(#re1)"/><ellipse cx="278" cy="16" rx="7" ry="10" fill="rgba(0,0,0,0.38)"/><ellipse cx="278" cy="16" rx="3" ry="4" fill="rgba(180,120,40,0.14)"/></svg>
-<div style="position:relative;">
-<svg class="scroll-body" viewBox="0 0 292 470" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="pg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4b878"/><stop offset="30%" stop-color="#c8a85e"/><stop offset="60%" stop-color="#d0b068"/><stop offset="100%" stop-color="#b89040"/></linearGradient><linearGradient id="pg_edges" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(40,15,2,0.55)"/><stop offset="10%" stop-color="rgba(40,15,2,0.18)"/><stop offset="50%" stop-color="rgba(0,0,0,0)"/><stop offset="90%" stop-color="rgba(40,15,2,0.18)"/><stop offset="100%" stop-color="rgba(40,15,2,0.55)"/></linearGradient><linearGradient id="pg_tb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(25,10,1,0.45)"/><stop offset="8%" stop-color="rgba(0,0,0,0)"/><stop offset="92%" stop-color="rgba(0,0,0,0)"/><stop offset="100%" stop-color="rgba(25,10,1,0.45)"/></linearGradient><radialGradient id="pg_age" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="rgba(255,210,120,0.12)"/><stop offset="70%" stop-color="rgba(0,0,0,0)"/><stop offset="100%" stop-color="rgba(30,12,1,0.22)"/></radialGradient><clipPath id="sc"><path d="M 16,0 C 30,-2 60,3 80,0 L 110,2 C 140,-1 165,4 185,1 L 212,4 C 236,0 258,5 275,2 L 292,6 L 292,464 L 275,469 C 258,467 236,472 212,469 L 185,472 C 165,468 140,473 110,470 L 80,473 C 60,469 30,474 16,471 L 0,466 L 0,6 Z"/></clipPath></defs><g clip-path="url(#sc)"><rect x="0" y="0" width="292" height="470" fill="url(#pg1)"/><rect x="0" y="0" width="292" height="470" fill="url(#pg_age)"/><rect x="0" y="0" width="292" height="470" fill="url(#pg_edges)"/><rect x="0" y="0" width="292" height="470" fill="url(#pg_tb)"/><ellipse cx="55" cy="100" rx="40" ry="28" fill="rgba(80,40,5,0.08)"/><ellipse cx="235" cy="190" rx="35" ry="45" fill="rgba(65,30,3,0.07)"/><ellipse cx="75" cy="330" rx="48" ry="32" fill="rgba(85,42,5,0.08)"/><ellipse cx="218" cy="390" rx="38" ry="25" fill="rgba(70,32,4,0.07)"/><line x1="0" y1="90" x2="292" y2="92" stroke="rgba(70,32,5,0.08)" stroke-width="1.2"/><line x1="0" y1="185" x2="292" y2="182" stroke="rgba(70,32,5,0.06)" stroke-width="0.9"/><line x1="0" y1="278" x2="292" y2="280" stroke="rgba(70,32,5,0.08)" stroke-width="1.1"/><line x1="0" y1="370" x2="292" y2="368" stroke="rgba(70,32,5,0.06)" stroke-width="0.9"/></g><path d="M 16,0 C 30,-2 60,3 80,0 L 110,2 C 140,-1 165,4 185,1 L 212,4 C 236,0 258,5 275,2 L 292,6 L 292,464 L 275,469 C 258,467 236,472 212,469 L 185,472 C 165,468 140,473 110,470 L 80,473 C 60,469 30,474 16,471 L 0,466 L 0,6 Z" fill="none" stroke="rgba(70,38,8,0.55)" stroke-width="1.5"/><path d="M 22,12 C 36,10 62,15 82,12 L 112,14 C 142,11 167,16 187,13 L 214,16 C 238,12 258,16 274,14 L 282,16 L 282,454 L 274,458 C 258,456 238,460 214,457 L 187,460 C 167,456 142,461 112,458 L 82,461 C 62,457 36,462 22,459 L 10,454 L 10,16 Z" fill="none" stroke="rgba(70,38,8,0.14)" stroke-width="0.8"/></svg>
-<div class="scroll-content">
-<div class="sc-glyph">✦</div>
-<div class="sc-title">MAGIC JAR</div>
-<p class="sc-sub">Twoja przestrzeń. Tylko Twoja.</p>
-<div class="rune-sep"><span>᛫ ᛭ ᛫</span></div>
-<div class="ob-step active" id="ob1">
-<label class="sc-label" for="ob-name">Imię</label>
-<input class="sc-inp" type="text" id="ob-name" placeholder="jak masz na imię..." maxlength="20" autocorrect="off" autocapitalize="words" autocomplete="off">
-<label class="sc-label" for="ob-year">Rok urodzenia</label>
-<input class="sc-inp" type="number" id="ob-year" placeholder="np. 2015" min="1950" inputmode="numeric">
-<button class="sc-btn" onclick="obStep2()">Wchodzę &nbsp;ᚱ</button>
+<div id="ob-bg">
+  <img id="ob-bg-photo" alt="">
+  <div id="ob-bg-dim"></div>
 </div>
-<div class="ob-step" id="ob2">
-<button class="sc-back" onclick="obStep1()">← wróć</button>
-<div class="sc-title" style="font-size:16px;margin-bottom:2px;">Twój Słoik</div>
-<p class="sc-sub">Wybierz symbol swojej przestrzeni.</p>
-<div class="rune-sep"><span>᛫ ᛭ ᛫</span></div>
-<div class="jar-grid-ob" id="jar-grid-ob"></div>
-<button class="sc-btn" onclick="obFinish()">Zaczynam &nbsp;ᚢ</button>
-</div>
-</div>
-</div>
-<svg class="roller roller-bot" viewBox="0 0 292 32" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="rg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3a1a06"/><stop offset="20%" stop-color="#5a2c0e"/><stop offset="50%" stop-color="#2e1405"/><stop offset="75%" stop-color="#6a3510"/><stop offset="100%" stop-color="#3a1a06"/></linearGradient><linearGradient id="re2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1a0a02"/><stop offset="35%" stop-color="#4a2208"/><stop offset="50%" stop-color="#6a3812"/><stop offset="65%" stop-color="#4a2208"/><stop offset="100%" stop-color="#1a0a02"/></linearGradient></defs><rect x="14" y="0" width="264" height="32" fill="url(#rg2)"/><line x1="14" y1="7" x2="278" y2="7" stroke="rgba(0,0,0,0.28)" stroke-width="1"/><line x1="14" y1="13" x2="278" y2="13" stroke="rgba(200,140,60,0.10)" stroke-width="0.7"/><line x1="14" y1="19" x2="278" y2="19" stroke="rgba(0,0,0,0.32)" stroke-width="1.2"/><line x1="14" y1="25" x2="278" y2="25" stroke="rgba(200,140,60,0.08)" stroke-width="0.7"/><ellipse cx="14" cy="16" rx="13" ry="16" fill="url(#re2)"/><ellipse cx="14" cy="16" rx="7" ry="10" fill="rgba(0,0,0,0.38)"/><ellipse cx="278" cy="16" rx="13" ry="16" fill="url(#re2)"/><ellipse cx="278" cy="16" rx="7" ry="10" fill="rgba(0,0,0,0.38)"/></svg>
+<div class="ob-card">
+  <div class="ob-step active" id="ob1">
+    <div class="ob-glyph">✦</div>
+    <div class="ob-title">MAGIC JAR</div>
+    <p class="ob-sub">Twoja przestrzeń. Tylko Twoja.</p>
+    <div class="ob-sep"><span>᛫ ᛭ ᛫</span></div>
+    <label class="ob-label" for="ob-name">Imię</label>
+    <input class="ob-inp" type="text" id="ob-name" placeholder="jak masz na imię..." maxlength="20" autocorrect="off" autocapitalize="words" autocomplete="off">
+    <label class="ob-label" for="ob-year">Rok urodzenia</label>
+    <input class="ob-inp" type="number" id="ob-year" placeholder="np. 2015" min="1950" inputmode="numeric">
+    <button class="ob-btn" onclick="obStep2()">Wchodzę &nbsp;ᚱ</button>
+  </div>
+  <div class="ob-step" id="ob2">
+    <button class="ob-back" onclick="obStep1()">← wróć</button>
+    <div class="ob-glyph">🫙</div>
+    <div class="ob-title" style="font-size:18px;">Twój Słoik</div>
+    <p class="ob-sub">Wybierz symbol swojej przestrzeni.</p>
+    <div class="ob-sep"><span>᛫ ᛭ ᛫</span></div>
+    <div class="jar-grid-ob" id="jar-grid-ob"></div>
+    <button class="ob-btn" onclick="obFinish()">Zaczynam &nbsp;ᚢ</button>
+  </div>
 </div>
 </div>
 
@@ -275,14 +230,12 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <!-- SPOKOJNA NOC -->
 <div class="screen" id="sn">
 <div id="sn-sky">
-  <!-- NOWE: zdjęcie tła nieba -->
   <img id="sn-bg-photo" alt="">
   <div class="sn-nb sn-nb1"></div>
   <div class="sn-nb sn-nb2"></div>
   <div class="sn-nb sn-nb3"></div>
   <canvas id="sn-star-canvas"></canvas>
 </div>
-
 <div id="sn-popup">
 <button class="sn-px" onclick="snClosePopup()">×</button>
 <div class="sn-pname" id="snp-name"></div>
@@ -290,8 +243,6 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <div class="sn-pdesc" id="snp-desc"></div>
 <div class="sn-ptip" id="snp-tip"></div>
 </div>
-
-
 <div id="sn-ui">
 <div class="sn-top">
 <button class="sn-back-btn" onclick="goHome()">← Wróć</button>
@@ -339,21 +290,50 @@ var S={nick:'',birthYear:0,ageGroup:0,jarType:'classic',snItems:[],ddTiles:[],dd
 function loadS(){try{var d=localStorage.getItem('iskierka_v3');if(d)Object.assign(S,JSON.parse(d));}catch(e){}}
 function saveS(){try{localStorage.setItem('iskierka_v3',JSON.stringify(S));}catch(e){}}
 function nickDisplay(){return(S.nick||'').replace(/\d+$/,'').trim();}
-window.addEventListener('DOMContentLoaded',function(){loadS();mkStars('sleep-stars',60);buildJarGridOb();var y=document.getElementById('ob-year');if(y)y.setAttribute('max',String(new Date().getFullYear()-4));route();snInit();});
-function route(){var h=new Date().getHours();if(!S.nick||!S.birthYear){show('onboarding');setTimeout(function(){drawObStars();setObBgPhoto('img/onboarding/bg.jpg');},50);return;}calcAge();var age=new Date().getFullYear()-S.birthYear;if(age<=13&&(h<6||h>=22)){showSleep();return;}if(age<=15&&h<6){showSleep();return;}showHome();}
+window.addEventListener('DOMContentLoaded',function(){
+  loadS();mkStars('sleep-stars',60);buildJarGridOb();
+  var y=document.getElementById('ob-year');
+  if(y)y.setAttribute('max',String(new Date().getFullYear()-4));
+  route();snInit();
+  // Załaduj zdjęcie tła onboardingu
+  var obImg=document.getElementById('ob-bg-photo');
+  if(obImg){obImg.onload=function(){obImg.classList.add('loaded');};obImg.src='img/onboarding/bg.jpg';}
+});
+function route(){var h=new Date().getHours();if(!S.nick||!S.birthYear){show('onboarding');return;}calcAge();var age=new Date().getFullYear()-S.birthYear;if(age<=13&&(h<6||h>=22)){showSleep();return;}if(age<=15&&h<6){showSleep();return;}showHome();}
 function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');document.getElementById('gear-btn').style.display=['onboarding','sleep'].includes(id)?'none':'block';}
 function showSleep(){var h=new Date().getHours();var n=nickDisplay();document.getElementById('sleep-h').textContent=(n?(h>=22?'Dobranoc':'Za wcześnie')+', '+n+' 🌙':(h>=22?'Dobranoc':'Za wcześnie')+' 🌙');document.getElementById('sleep-p').textContent=h>=22?'Magic Jar czeka jutro. Czynna 6:00–22:00.':'Magic Jar budzi się o 6:00. Do zobaczenia!';show('sleep');}
-function buildJarGridOb(){var g=document.getElementById('jar-grid-ob');g.innerHTML='';JARS.forEach(function(j){var d=document.createElement('div');d.className='jar-opt-ob'+(j.id===(S.jarType||'classic')?' sel':'');d.innerHTML='<span>'+j.emoji+'</span>'+j.label;d.onclick=function(){S.jarType=j.id;g.querySelectorAll('.jar-opt-ob').forEach(function(x){x.classList.remove('sel');});d.classList.add('sel');};g.appendChild(d);});}
-function obStep2(){var n=document.getElementById('ob-name').value.trim();var y=parseInt(document.getElementById('ob-year').value);var maxY=new Date().getFullYear()-4;if(!n){shake('ob-name');return;}if(!y||y<1950||y>maxY){shake('ob-year');return;}S.nick=n.charAt(0).toUpperCase()+n.slice(1);S.birthYear=y;calcAge();setObBgPhoto('img/onboarding/drugi_ekran.jpg');setScrollTheme('dark');document.querySelector('.scroll-content').classList.add('dark-theme');document.getElementById('ob1').classList.remove('active');document.getElementById('ob2').classList.add('active');}
-function obStep1(){setObBgPhoto('img/onboarding/bg.jpg');setScrollTheme('light');document.querySelector('.scroll-content').classList.remove('dark-theme');document.getElementById('ob2').classList.remove('active');document.getElementById('ob1').classList.add('active');}
+function buildJarGridOb(){var g=document.getElementById('jar-grid-ob');if(!g)return;g.innerHTML='';JARS.forEach(function(j){var d=document.createElement('div');d.className='jar-opt-ob'+(j.id===(S.jarType||'classic')?' sel':'');d.innerHTML='<span>'+j.emoji+'</span>'+j.label;d.onclick=function(){S.jarType=j.id;g.querySelectorAll('.jar-opt-ob').forEach(function(x){x.classList.remove('sel');});d.classList.add('sel');};g.appendChild(d);});}
+function obStep2(){
+  var n=document.getElementById('ob-name').value.trim();
+  var y=parseInt(document.getElementById('ob-year').value);
+  var maxY=new Date().getFullYear()-4;
+  if(!n){shake('ob-name');return;}
+  if(!y||y<1950||y>maxY){shake('ob-year');return;}
+  S.nick=n.charAt(0).toUpperCase()+n.slice(1);S.birthYear=y;calcAge();
+  // Zmień tło na drugi ekran
+  var obImg=document.getElementById('ob-bg-photo');
+  if(obImg){obImg.classList.remove('loaded');obImg.onload=function(){obImg.classList.add('loaded');};obImg.src='img/onboarding/drugi_ekran.jpg';}
+  document.getElementById('ob1').classList.remove('active');
+  document.getElementById('ob2').classList.add('active');
+}
+function obStep1(){
+  var obImg=document.getElementById('ob-bg-photo');
+  if(obImg){obImg.classList.remove('loaded');obImg.onload=function(){obImg.classList.add('loaded');};obImg.src='img/onboarding/bg.jpg';}
+  document.getElementById('ob2').classList.remove('active');
+  document.getElementById('ob1').classList.add('active');
+}
 function obFinish(){saveS();showHome();}
 function shake(id){var el=document.getElementById(id);el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');setTimeout(function(){el.classList.remove('shake');},400);}
-document.addEventListener('DOMContentLoaded',function(){var nm=document.getElementById('ob-name');var yr=document.getElementById('ob-year');if(nm)nm.addEventListener('keydown',function(e){if(e.key==='Enter')yr.focus();});if(yr)yr.addEventListener('keydown',function(e){if(e.key==='Enter')obStep2();});});
+document.addEventListener('DOMContentLoaded',function(){
+  var nm=document.getElementById('ob-name');var yr=document.getElementById('ob-year');
+  if(nm)nm.addEventListener('keydown',function(e){if(e.key==='Enter')yr.focus();});
+  if(yr)yr.addEventListener('keydown',function(e){if(e.key==='Enter')obStep2();});
+});
 function timeGreeting(h){if(h>=5&&h<9)return'Dzień się zaczyna';if(h>=9&&h<12)return'Dobry ranek';if(h>=12&&h<14)return'Dobrego dnia';if(h>=14&&h<17)return'Piękne popołudnie';if(h>=17&&h<20)return'Dobry wieczór';return'Dobranoc';}
 function showHome(){calcAge();var h=new Date().getHours();document.getElementById('h-greet').textContent=timeGreeting(h);document.getElementById('h-name').textContent=(nickDisplay()||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';renderCosmicBar();renderCardExtras();snSetCardSub();show('home');}
 function moonPhase(date){var known=new Date(2000,0,6);var diff=(date-known)/(1000*60*60*24);var cycle=diff%29.53059;if(cycle<0)cycle+=29.53059;return cycle;}
 function moonEmoji(date){var c=moonPhase(date);if(c<1.85)return{e:'🌑',n:'Nów'};if(c<7.38)return{e:'🌒',n:'Przybywający sierp'};if(c<11.07)return{e:'🌓',n:'Pierwsza kwadra'};if(c<14.77)return{e:'🌔',n:'Przybywający garb'};if(c<18.46)return{e:'🌕',n:'Pełnia'};if(c<22.15)return{e:'🌖',n:'Ubywający garb'};if(c<25.84)return{e:'🌗',n:'Ostatnia kwadra'};return{e:'🌘',n:'Ubywający sierp'};}
-function zodiacSign(date){var m=date.getMonth()+1,d=date.getDate();var signs=[{s:'Koziorożec',e:'♑',el:'ziemia',desc:'Koziorożec — znak ziemi. Wytrwałość i ambicja.',tip:'Koziorożec widoczny jesienią i zimą na południu nieba.'},{s:'Wodnik',e:'♒',el:'powietrze',desc:'Wodnik — znak powietrza. Niezależność i oryginalność.',tip:'Słaba konstelacja — szukaj charakterystycznego Y jesienią.'},{s:'Ryby',e:'♓',el:'woda',desc:'Ryby — znak wody. Wrażliwość i intuicja.',tip:'Ryby widoczne wczesną wiosną — dwa łuki gwiazd.'},{s:'Baran',e:'♈',el:'ogień',desc:'Baran — znak ognia. Odwaga i inicjatywa. Złote Runo — cel wyprawy Argonautów.',tip:'Mały łuk trzech gwiazd między Plejadami a Wielorybem.'},{s:'Byk',e:'♉',el:'ziemia',desc:'Byk — znak ziemi. Cierpliwość i determinacja. Zeus przemieniony w byka porwał Europę.',tip:'Charakterystyczne V Hiad z pomarańczowym Aldebaranem zimą.'},{s:'Bliźnięta',e:'♊',el:'powietrze',desc:'Bliźnięta — znak powietrza. Ciekawość i komunikatywność. Kastor i Polluks — nierozłączni bracia.',tip:'Dwie jasne gwiazdy blisko siebie — Kastor i Polluks wiosną.'},{s:'Rak',e:'♋',el:'woda',desc:'Rak — znak wody. Intuicja i emocjonalność. Zawiera słynną gromadę Ul (M44).',tip:'Słaba konstelacja między Bliźniętami a Lwem.'},{s:'Lew',e:'♌',el:'ogień',desc:'Lew — znak ognia. Pewność siebie i hojność. Lew Nemejski pokonany przez Heraklesa.',tip:'Charakterystyczny sierp z jasnym Regulusem — wiosną na południu.'},{s:'Panna',e:'♍',el:'ziemia',desc:'Panna — znak ziemi. Precyzja i skromność. Bogini zbiorów Demeter.',tip:'Jasna Spica — jeden z najjaśniejszych punktów wiosennego nieba.'},{s:'Waga',e:'♎',el:'powietrze',desc:'Waga — znak powietrza. Harmonia i sprawiedliwość. Jedyna konstelacja bez postaci zwierzęcej.',tip:'Czworokąt gwiazd między Skorpionem a Panną latem.'},{s:'Skorpion',e:'♏',el:'woda',desc:'Skorpion — znak wody. Intensywność i transformacja. Antares to czerwony nadolbrzym.',tip:'Wielka litera J z czerwonym Antaresem latem nisko na południu.'},{s:'Strzelec',e:'♐',el:'ogień',desc:'Strzelec — znak ognia. Optymizm i swoboda. W kierunku Strzelca leży centrum Drogi Mlecznej.',tip:'Kształt czajniczka latem — wskazuje na centrum galaktyki.'}];var fromTo=[[12,22,1,19],[1,20,2,18],[2,19,3,20],[3,21,4,19],[4,20,5,20],[5,21,6,20],[6,21,7,22],[7,23,8,22],[8,23,9,22],[9,23,10,22],[10,23,11,21],[11,22,12,21]];for(var i=0;i<12;i++){var ft=fromTo[i];var fm=ft[0],fd=ft[1],tm=ft[2],td=ft[3];if(fm<=tm){if((m===fm&&d>=fd)||(m===tm&&d<=td)||(m>fm&&m<tm))return signs[i];}else{if((m===fm&&d>=fd)||m>fm||(m===tm&&d<=td)||m<tm)return signs[i];}}return signs[0];}
+function zodiacSign(date){var m=date.getMonth()+1,d=date.getDate();var signs=[{s:'Koziorożec',e:'♑',el:'ziemia',desc:'Koziorożec — znak ziemi. Wytrwałość i ambicja.',tip:'Koziorożec widoczny jesienią i zimą na południu nieba.'},{s:'Wodnik',e:'♒',el:'powietrze',desc:'Wodnik — znak powietrza. Niezależność i oryginalność.',tip:'Słaba konstelacja — szukaj charakterystycznego Y jesienią.'},{s:'Ryby',e:'♓',el:'woda',desc:'Ryby — znak wody. Wrażliwość i intuicja.',tip:'Ryby widoczne wczesną wiosną — dwa łuki gwiazd.'},{s:'Baran',e:'♈',el:'ogień',desc:'Baran — znak ognia. Odwaga i inicjatywa.',tip:'Mały łuk trzech gwiazd między Plejadami a Wielorybem.'},{s:'Byk',e:'♉',el:'ziemia',desc:'Byk — znak ziemi. Cierpliwość i determinacja.',tip:'Charakterystyczne V Hiad z pomarańczowym Aldebaranem zimą.'},{s:'Bliźnięta',e:'♊',el:'powietrze',desc:'Bliźnięta — znak powietrza. Ciekawość i komunikatywność.',tip:'Dwie jasne gwiazdy blisko siebie — Kastor i Polluks wiosną.'},{s:'Rak',e:'♋',el:'woda',desc:'Rak — znak wody. Intuicja i emocjonalność.',tip:'Słaba konstelacja między Bliźniętami a Lwem.'},{s:'Lew',e:'♌',el:'ogień',desc:'Lew — znak ognia. Pewność siebie i hojność.',tip:'Charakterystyczny sierp z jasnym Regulusem — wiosną na południu.'},{s:'Panna',e:'♍',el:'ziemia',desc:'Panna — znak ziemi. Precyzja i skromność.',tip:'Jasna Spica — jeden z najjaśniejszych punktów wiosennego nieba.'},{s:'Waga',e:'♎',el:'powietrze',desc:'Waga — znak powietrza. Harmonia i sprawiedliwość.',tip:'Czworokąt gwiazd między Skorpionem a Panną latem.'},{s:'Skorpion',e:'♏',el:'woda',desc:'Skorpion — znak wody. Intensywność i transformacja.',tip:'Wielka litera J z czerwonym Antaresem latem nisko na południu.'},{s:'Strzelec',e:'♐',el:'ogień',desc:'Strzelec — znak ognia. Optymizm i swoboda.',tip:'Kształt czajniczka latem — wskazuje na centrum galaktyki.'}];var fromTo=[[12,22,1,19],[1,20,2,18],[2,19,3,20],[3,21,4,19],[4,20,5,20],[5,21,6,20],[6,21,7,22],[7,23,8,22],[8,23,9,22],[9,23,10,22],[10,23,11,21],[11,22,12,21]];for(var i=0;i<12;i++){var ft=fromTo[i];var fm=ft[0],fd=ft[1],tm=ft[2],td=ft[3];if(fm<=tm){if((m===fm&&d>=fd)||(m===tm&&d<=td)||(m>fm&&m<tm))return signs[i];}else{if((m===fm&&d>=fd)||m>fm||(m===tm&&d<=td)||m<tm)return signs[i];}}return signs[0];}
 function elementEmoji(el){return{ogień:'🜂',ziemia:'🜃',powietrze:'🜁',woda:'🜄'}[el]||'';}
 function specialDay(date){var m=date.getMonth()+1,d=date.getDate();return{'1-1':'🎆 Nowy Rok','2-14':'💝 Walentynki','3-8':'🌸 Dzień Kobiet','3-20':'🌱 Pierwszy dzień wiosny','5-26':'👩 Dzień Matki','6-1':'🧒 Dzień Dziecka','12-6':'🎅 Mikołajki','12-24':'🎄 Wigilia','12-25':'🎄 Boże Narodzenie','12-31':'🎆 Sylwester'}[m+'-'+d]||null;}
 function renderCardExtras(){var now=new Date();var moon=moonEmoji(now);var zod=zodiacSign(now);var moonEl=document.getElementById('sn-moon');var zodEl=document.getElementById('sn-zod');var elEl=document.getElementById('sn-el');if(moonEl)moonEl.textContent=moon.e;if(zodEl)zodEl.textContent=zod.e;if(elEl)elEl.textContent=elementEmoji(zod.el);var dateEl=document.getElementById('dd-date-info');if(dateEl){var days=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];var months=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];var special=specialDay(now);dateEl.textContent=special||(now.getDate()+' '+months[now.getMonth()]+' · '+days[now.getDay()]);}}
@@ -364,150 +344,21 @@ function calcAge(){if(!S.birthYear){S.ageGroup=4;return;}var age=new Date().getF
 function gridN(){return S.ageGroup===1?3:S.ageGroup===3?5:4;}
 function maxDaily(){return S.ageGroup===3?4:3;}
 function totalTiles(){return gridN()*gridN();}
-
-/* ═══════════════════════════════════════
-   SPOKOJNA NOC — ZDJĘCIA NIEBA
-   Rotacja kategorii co dzień: aurora → moon → m-w → aurora...
-   W ramach kategorii: deterministyczny wybór wg dnia roku
-   ═══════════════════════════════════════ */
 var SN_COLORS=['#c9a0dc','#a8c5e0','#8ecfb8','#e8b48a','#e0959f','#d4c46a'];
-var snJarItems=[];
-var snChosenColor=SN_COLORS[0];
-var snConstOffset=0;
-
+var snJarItems=[];var snChosenColor=SN_COLORS[0];var snConstOffset=0;
 var SEASON_NAMES={winter:'zima',spring:'wiosna',summer:'lato',autumn:'jesień'};
-
-function snGetSeason(d){
-  var m=(d||new Date()).getMonth()+1;
-  if(m>=3&&m<=5)return'spring';
-  if(m>=6&&m<=8)return'summer';
-  if(m>=9&&m<=11)return'autumn';
-  return'winter';
-}
-
-/* ── Główna funkcja wyboru zdjęcia ── */
-function snGetDailyPhoto(){
-  var now=new Date();
-  var dayOfYear=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);
-  /* 3 kategorie rotują co dzień */
-  var cats=[
-    {n:'aurora', c:4},
-    {n:'moon',   c:6},
-    {n:'m-w',    c:8}
-  ];
-  var cat=cats[dayOfYear%3];
-  /* deterministyczny wybór numeru w obrębie kategorii */
-  var num=(dayOfYear%cat.c)+1;
-  return 'img/sky/'+cat.n+'_'+num+'.jpg';
-}
-
-function snSetBg(){
-  /* wczytaj zdjęcie tła */
-  var img=document.getElementById('sn-bg-photo');
-  if(img){
-    img.classList.remove('loaded');
-    img.onload=function(){img.classList.add('loaded');};
-    img.onerror=function(){img.style.display='none';};
-    img.src=snGetDailyPhoto();
-  }
-  /* aktualizuj środkowy panel */
-  var now=new Date();
-  if(snConstOffset<0)now.setDate(now.getDate()-1);
-  var zod=zodiacSign(now);
-  var season=snGetSeason(now);
-  var zodEl=document.getElementById('sn-center-zod');
-  var nameEl=document.getElementById('sn-center-name');
-  var seaEl=document.getElementById('sn-season-label');
-  if(zodEl)zodEl.textContent=zod.e;
-  if(nameEl)nameEl.textContent=zod.s.toUpperCase();
-  if(seaEl)seaEl.textContent=SEASON_NAMES[season]||'';
-}
-
-function snTogglePopup(){
-  var pp=document.getElementById('sn-popup');
-  if(pp&&pp.classList.contains('on')){snClosePopup();}
-  else{snShowPopup();}
-}
-
-function snShowPopup(){
-  var now=new Date();
-  if(snConstOffset<0)now.setDate(now.getDate()-1);
-  var zod=zodiacSign(now);
-  var moon=moonEmoji(now);
-  document.getElementById('snp-name').textContent=zod.e+' '+zod.s;
-  document.getElementById('snp-latin').textContent=moon.e+' '+moon.n;
-  document.getElementById('snp-desc').textContent=zod.desc||'';
-  document.getElementById('snp-tip').textContent=zod.tip||'';
-  var pp=document.getElementById('sn-popup');
-  var W=window.innerWidth,pw=Math.min(300,W*0.88);
-  pp.style.width=pw+'px';pp.style.left=((W-pw)/2)+'px';pp.style.top='80px';
-  pp.classList.add('on');
-}
+function snGetSeason(d){var m=(d||new Date()).getMonth()+1;if(m>=3&&m<=5)return'spring';if(m>=6&&m<=8)return'summer';if(m>=9&&m<=11)return'autumn';return'winter';}
+function snGetDailyPhoto(){var now=new Date();var dayOfYear=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);var cats=[{n:'aurora',c:4},{n:'moon',c:6},{n:'m-w',c:8}];var cat=cats[dayOfYear%3];var num=(dayOfYear%cat.c)+1;return'img/sky/'+cat.n+'_'+num+'.jpg';}
+function snSetBg(){var img=document.getElementById('sn-bg-photo');if(img){img.classList.remove('loaded');img.onload=function(){img.classList.add('loaded');};img.onerror=function(){img.style.display='none';};img.src=snGetDailyPhoto();}var now=new Date();if(snConstOffset<0)now.setDate(now.getDate()-1);}
+function snShowPopup(){var now=new Date();if(snConstOffset<0)now.setDate(now.getDate()-1);var zod=zodiacSign(now);var moon=moonEmoji(now);document.getElementById('snp-name').textContent=zod.e+' '+zod.s;document.getElementById('snp-latin').textContent=moon.e+' '+moon.n;document.getElementById('snp-desc').textContent=zod.desc||'';document.getElementById('snp-tip').textContent=zod.tip||'';var pp=document.getElementById('sn-popup');var W=window.innerWidth,pw=Math.min(300,W*0.88);pp.style.width=pw+'px';pp.style.left=((W-pw)/2)+'px';pp.style.top='80px';pp.classList.add('on');}
 function snClosePopup(){document.getElementById('sn-popup').classList.remove('on');}
-
 function snGetMoon(){var c=(((new Date()-new Date(2000,0,6))/864e5)%29.53059+29.53059)%29.53059;return c<1.85?'🌑':c<7.38?'🌒':c<11.07?'🌓':c<14.77?'🌔':c<18.46?'🌕':c<22.15?'🌖':c<25.84?'🌗':'🌘';}
-
-function openSN(){
-  snConstOffset=0;
-  snBackToStrips();snRenderJar();
-  show('sn');
-  snSetBg();
-}
+function openSN(){snConstOffset=0;snBackToStrips();snRenderJar();show('sn');snSetBg();}
 var SN_SUBS=['Zostaw tu co Ci ciąży — niech noc będzie lżejsza.','Co chcesz zostawić — zostaw. Niech noc będzie spokojna.','Co nosisz w głowie przed snem? Zostaw — noc będzie lżejsza.','Wyrzuć to do Słoika. On to uniesie. Idź spokojnie spać.','Śpij spokojnie i kolorowo. Co niepotrzebne — puść i zostaw w Słoiku.','Zostaw tu swój dzień. Jutro zaczynasz nowy — bez bagażu.','Sen jest dla Ciebie — nie dla tego co Cię dziś zmęczyło.','Jeden oddech. Jeden Słoik. Dobranoc.'];
 function snSetCardSub(){var el=document.getElementById('sn-card-sub');if(!el)return;var d=new Date();el.textContent=SN_SUBS[(d.getDay()*3+d.getDate())%SN_SUBS.length];}
-function snGoYesterday(){if(snConstOffset<0)return;snConstOffset=-1;snSetBg();}
-function snGoToday(){snConstOffset=0;snSetBg();}
-function drawSnStars(){
-  var canvas=document.getElementById('sn-star-canvas');
-  if(!canvas)return;
-  var W=window.innerWidth,H=window.innerHeight;
-  canvas.width=W*window.devicePixelRatio;
-  canvas.height=H*window.devicePixelRatio;
-  canvas.style.width=W+'px';canvas.style.height=H+'px';
-  var ctx=canvas.getContext('2d');
-  ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
-  var count=Math.floor((W*H)/2800);
-  for(var i=0;i<count;i++){
-    var x=Math.random()*W,y=Math.random()*H*0.80;
-    var r=Math.random()*1.2+0.2;
-    var a=(Math.random()*0.6+0.15).toFixed(2);
-    var colors=['rgba(200,215,255,'+a+')','rgba(255,255,240,'+a+')','rgba(255,235,200,'+a+')','rgba(255,200,150,'+(a*0.7).toFixed(2)+')'];
-    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
-    ctx.fillStyle=colors[Math.floor(Math.random()*colors.length)];ctx.fill();
-    if(Math.random()>0.7){ctx.beginPath();ctx.arc(x,y,r*2.5,0,Math.PI*2);ctx.fillStyle='rgba(200,215,255,'+(a*0.08).toFixed(3)+')';ctx.fill();}
-  }
-  var grd=ctx.createLinearGradient(W*0.3,0,W*0.7,H*0.6);
-  grd.addColorStop(0,'rgba(120,140,200,0)');grd.addColorStop(0.3,'rgba(120,140,200,0.04)');
-  grd.addColorStop(0.5,'rgba(150,160,220,0.06)');grd.addColorStop(0.7,'rgba(120,140,200,0.04)');grd.addColorStop(1,'rgba(120,140,200,0)');
-  ctx.save();ctx.rotate(-0.3);ctx.translate(-W*0.1,-H*0.05);ctx.fillStyle=grd;ctx.fillRect(-W,-H,W*3,H*2);ctx.restore();
-}
+function drawSnStars(){var canvas=document.getElementById('sn-star-canvas');if(!canvas)return;var W=window.innerWidth,H=window.innerHeight;canvas.width=W*window.devicePixelRatio;canvas.height=H*window.devicePixelRatio;canvas.style.width=W+'px';canvas.style.height=H+'px';var ctx=canvas.getContext('2d');ctx.scale(window.devicePixelRatio,window.devicePixelRatio);var count=Math.floor((W*H)/2800);for(var i=0;i<count;i++){var x=Math.random()*W,y=Math.random()*H*0.80;var r=Math.random()*1.2+0.2;var a=(Math.random()*0.6+0.15).toFixed(2);var colors=['rgba(200,215,255,'+a+')','rgba(255,255,240,'+a+')','rgba(255,235,200,'+a+')','rgba(255,200,150,'+(a*0.7).toFixed(2)+')'];ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=colors[Math.floor(Math.random()*colors.length)];ctx.fill();}}
 window.addEventListener('resize',function(){if(document.getElementById('sn')&&document.getElementById('sn').classList.contains('active'))drawSnStars();});
-function setObBgPhoto(url){
-  var img=document.getElementById('ob-bg-photo');
-  if(!img||!url)return;
-  img.onload=function(){img.style.opacity='1';};
-  img.src=url;
-}
-/* TUTAJ wstaw URL zdjęcia gdy będzie gotowe: */
-setObBgPhoto('img/onboarding/bg.jpg');
-function drawObStars(){var c=document.getElementById('ob-star-canvas');if(!c)return;if(document.getElementById('ob-bg-photo')&&document.getElementById('ob-bg-photo').src)return;var W=window.innerWidth,H=window.innerHeight;c.width=W*devicePixelRatio;c.height=H*devicePixelRatio;c.style.width=W+'px';c.style.height=H+'px';var ctx=c.getContext('2d');ctx.scale(devicePixelRatio,devicePixelRatio);var n=Math.floor(W*H/2200);for(var i=0;i<n;i++){var x=Math.random()*W,y=Math.random()*H,r=Math.random()*1.3+0.2,a=(Math.random()*0.65+0.12).toFixed(2);var cols=['rgba(200,215,255,'+a+')','rgba(255,255,240,'+a+')','rgba(255,230,190,'+a+')'];ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=cols[Math.floor(Math.random()*cols.length)];ctx.fill();}}
-function setScrollTheme(theme){
-  var body=document.querySelector('.scroll-wrap>div:nth-child(2)');
-  var beltTop=document.querySelector('.scroll-wrap>div:first-child');
-  var beltBot=document.querySelector('.scroll-wrap>div:last-child');
-  if(theme==='dark'){
-    if(body)body.style.background='#2a1a08';
-    if(beltTop){beltTop.style.background='linear-gradient(180deg,#0e0804 0%,#1e1008 40%,#120a04 100%)';}
-    if(beltBot){beltBot.style.background='linear-gradient(180deg,#120a04 0%,#1e1008 60%,#0e0804 100%)';}
-  }else{
-    if(body)body.style.background='#b8903a';
-    if(beltTop){beltTop.style.background='linear-gradient(180deg,#1a0c03 0%,#3a1e08 40%,#1e0e04 100%)';}
-    if(beltBot){beltBot.style.background='linear-gradient(180deg,#1e0e04 0%,#3a1e08 60%,#1a0c03 100%)';}
-  }
-}
 function snInit(){document.getElementById('sn-moon-em').textContent=snGetMoon();drawSnStars();if(S.snItems&&S.snItems.length)snJarItems=S.snItems;snBuildStrips();snRenderJar();}
-
-/* ═══ SŁOIK ═══ */
 function snBuildJarSVG(){var type=S.jarType||'classic';var sh=JAR_SHAPES[type]||JAR_SHAPES.classic;var svg=document.getElementById('sn-jar-svg');if(!svg)return;svg.innerHTML='<defs><clipPath id="sjclip"><path d="'+sh.body+'"/></clipPath><radialGradient id="sjglow" cx="35%" cy="30%" r="65%"><stop offset="0%" stop-color="#ffe8a0" stop-opacity=".3"/><stop offset="100%" stop-color="#c87820" stop-opacity=".04"/></radialGradient></defs><ellipse cx="65" cy="98" rx="55" ry="66" fill="rgba(255,180,60,.07)"/><path d="'+sh.body+'" fill="'+sh.body_c+'" stroke="'+sh.stroke+'" stroke-width="2"/><rect id="sn-jfill" x="10" y="152" width="110" height="0" clip-path="url(#sjclip)" fill="'+sh.fill+'"/><path d="'+sh.body+'" fill="url(#sjglow)"/><g id="sn-jnotes" clip-path="url(#sjclip)"></g><path d="M24,55 Q21,90 21,122" stroke="'+sh.shine+'" stroke-width="4" stroke-linecap="round" fill="none"/><path d="'+sh.cap+'" fill="'+sh.body_c+'" stroke="'+sh.stroke+'" stroke-width="1.5"/><path d="'+sh.lid+'" fill="rgba(255,220,120,.4)" stroke="rgba(255,235,150,.65)" stroke-width="1.4"/>';}
 function snRenderJar(){snBuildJarSVG();var max=7,pct=Math.min(snJarItems.length/max,1),fillH=Math.round(112*pct);var fr=document.getElementById('sn-jfill');if(fr){fr.setAttribute('y',152-fillH);fr.setAttribute('height',fillH);}var ng=document.getElementById('sn-jnotes');if(!ng)return;ng.innerHTML='';var pos=[{x:60,y:143},{x:36,y:137},{x:84,y:139},{x:48,y:125},{x:76,y:123},{x:60,y:112},{x:38,y:103}];snJarItems.slice(-max).forEach(function(item,i){if(i>=pos.length)return;var p=pos[i];var r=document.createElementNS('http://www.w3.org/2000/svg','rect');r.setAttribute('x',p.x-13);r.setAttribute('y',p.y-7);r.setAttribute('width','26');r.setAttribute('height','14');r.setAttribute('rx','4');r.setAttribute('fill',item.color);r.setAttribute('opacity','0.85');ng.appendChild(r);});}
 function snBuildStrips(){var wrap=document.getElementById('sn-strips');if(!wrap)return;wrap.innerHTML='';SN_COLORS.forEach(function(hex){var b=document.createElement('button');b.className='sn-strip';b.style.cssText='background:'+hex+';opacity:0.82;flex:1;height:100%;border-radius:14px;border:none;cursor:pointer;';b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();snOpenWriter(hex);});wrap.appendChild(b);});}
@@ -516,18 +367,16 @@ function snBackToStrips(){document.getElementById('sn-txt2').value='';document.g
 var SN_MSGS=['Twoja myśl jest już bezpieczna. 🌙','Głowa wolna. Można spać.','Słoik przyjął. Możesz odpuścić.','Odłożone. Nie musisz tego nosić.','Dobrze, że to powiedziałeś. 🌙'];
 function snSubmitNew(){var txt=document.getElementById('sn-txt2').value.trim();if(!txt){document.getElementById('sn-txt2').focus();return;}snJarItems.push({text:txt,color:snChosenColor});S.snItems=snJarItems;saveS();var fly=document.createElement('div');fly.className='sn-fly';fly.style.cssText='background:'+snChosenColor+';left:50%;bottom:150px;transform:translateX(-50%);opacity:0.9;position:fixed;';fly.textContent=txt.length>22?txt.slice(0,22)+'…':txt;document.body.appendChild(fly);setTimeout(function(){fly.style.transition='all 1.1s cubic-bezier(.3,0,.2,1)';fly.style.bottom='62%';fly.style.opacity='0';fly.style.transform='translateX(-50%) scale(.12)';},40);setTimeout(function(){fly.remove();},1250);snRenderJar();document.getElementById('sn-btn-more').style.background=snChosenColor;document.getElementById('sn-conf-msg').textContent=SN_MSGS[Math.floor(Math.random()*SN_MSGS.length)];setTimeout(function(){document.getElementById('sn-writer').classList.remove('on');document.getElementById('sn-jar-screen').classList.add('on');},850);}
 function snAddMore(){document.getElementById('sn-jar-screen').classList.remove('on');document.getElementById('sn-txt2').value='';document.getElementById('sn-strips').style.display='flex';}
-
-/* ═══ DOBRY DZIEŃ ═══ */
-var INACT_ARTWORKS=['<rect width="200" height="200" fill="#87ceeb"/><path d="M0,100 Q100,20 200,100" fill="none" stroke="#ff6b9d" stroke-width="18" stroke-linecap="round" opacity=".75"/><path d="M0,112 Q100,30 200,112" fill="none" stroke="#ff9e2a" stroke-width="14" stroke-linecap="round" opacity=".75"/><rect y="155" width="200" height="45" fill="#66bb6a"/>','<rect width="200" height="200" fill="#ffe082"/><rect y="140" width="200" height="60" fill="#66bb6a"/><circle cx="60" cy="70" r="30" fill="#ffb300" opacity=".9"/><circle cx="140" cy="55" r="26" fill="#ffa000" opacity=".9"/>','<rect width="200" height="200" fill="#0a1628"/><path d="M0,60 Q50,20 100,50 Q150,80 200,40" fill="none" stroke="#00e5ff" stroke-width="28" stroke-linecap="round" opacity=".45"/><rect y="155" width="200" height="45" fill="#0d2137"/>'];
+var INACT_ARTWORKS=['<rect width="200" height="200" fill="#87ceeb"/><path d="M0,100 Q100,20 200,100" fill="none" stroke="#ff6b9d" stroke-width="18" stroke-linecap="round" opacity=".75"/><rect y="155" width="200" height="45" fill="#66bb6a"/>','<rect width="200" height="200" fill="#ffe082"/><rect y="140" width="200" height="60" fill="#66bb6a"/><circle cx="60" cy="70" r="30" fill="#ffb300" opacity=".9"/>','<rect width="200" height="200" fill="#0a1628"/><path d="M0,60 Q50,20 100,50 Q150,80 200,40" fill="none" stroke="#00e5ff" stroke-width="28" stroke-linecap="round" opacity=".45"/>'];
 function checkInactivity(){if(!S.ddLastDate)return false;var today=new Date(todayStr()),last=new Date(S.ddLastDate);return Math.floor((today-last)/(1000*60*60*24))>=20;}
 function ddShowInactScreen(){document.getElementById('inact-img-svg').innerHTML=INACT_ARTWORKS[(new Date().getDate())%INACT_ARTWORKS.length];document.getElementById('dd-inact').style.display='flex';document.getElementById('dd-inact').classList.add('on');document.getElementById('dd-puzzle-area').style.display='none';document.getElementById('dd-input').style.display='none';document.getElementById('dd-done-msg').style.display='none';document.getElementById('dd-question').textContent='Hej — minęło trochę czasu.';}
 function ddInactYes(){document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');document.getElementById('dd-puzzle-area').style.display='flex';ddShowNormalDD();}
 function ddInactNo(){document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');goHome();}
-var DD_QUESTIONS=['Czy dziś w [dzień] masz dobrą myśl którą chciałbyś się podzielić?','Czy [dzień] przyniósł Ci coś dobrego czym chciałbyś się podzielić?','Czy jest coś dobrego z tego [dnia] czym chciałbyś się podzielić?','Czy masz dziś coś dobrego dla siebie z tego [dnia]?','Czy coś dobrego przydarzyło Ci się dziś w [dzień]?','Czy w ten [dzień] masz chwilę którą chciałbyś zapamiętać?','Czy ten [dzień] przyniósł Ci coś na co czekasz by się podzielić?','Czy dziś w [dzień] jest coś co chciałbyś zachować?','Czy masz dobry powód by się uśmiechnąć tego [dnia]?','Czy chciałbyś się czymś dobrym podzielić z tego [dnia]?','Czy ten [dzień] dał Ci coś czym warto się podzielić?','Czy jest coś z dzisiejszego [dnia] co chciałbyś zapamiętać?','Czy dziś w [dzień] przydarzyło Ci się coś na co czekałeś?','Czy masz dziś coś dobrego o czym chciałbyś mi powiedzieć?'];
+var DD_QUESTIONS=['Czy dziś w [dzień] masz dobrą myśl którą chciałbyś się podzielić?','Czy [dzień] przyniósł Ci coś dobrego czym chciałbyś się podzielić?','Czy coś dobrego przydarzyło Ci się dziś w [dzień]?','Czy w ten [dzień] masz chwilę którą chciałbyś zapamiętać?','Czy masz dobry powód by się uśmiechnąć tego [dnia]?','Czy ten [dzień] dał Ci coś czym warto się podzielić?'];
 var DD_DAYS_ACC=['niedzielę','poniedziałek','wtorek','środę','czwartek','piątek','sobotę'];
 var DD_DAYS_GEN=['niedzieli','poniedziałku','wtorku','środy','czwartku','piątku','soboty'];
 function ddGetQuestion(){var now=new Date();var dow=now.getDay();var q=DD_QUESTIONS[(dow*3+now.getDate())%DD_QUESTIONS.length];return q.replace('[dzień]',DD_DAYS_ACC[dow]).replace('[dnia]',DD_DAYS_GEN[dow]);}
-var DD_MORNING=['Dzień się zaczyna. Niech ten [dzień] przyniesie Ci coś dobrego.','Dobry ranek. Niech [dzień] będzie dla Ciebie łagodny.','Ranek należy do Ciebie. Dobrego [dnia].','Nowy dzień, nowe możliwości. Niech [dzień] Ci sprzyja.'];
+var DD_MORNING=['Dzień się zaczyna. Niech ten [dzień] przyniesie Ci coś dobrego.','Dobry ranek. Niech [dzień] będzie dla Ciebie łagodny.'];
 var DD_DAYS_NOM=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
 function openDD(){var today=todayStr();if(S.ddDate!==today){S.ddDone=0;S.ddDate=today;saveS();}initTiles();document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';document.getElementById('dd-rev-msg').style.display='none';document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.remove('active');document.getElementById('dd1').classList.add('active');if(checkInactivity()){show('dd');ddShowInactScreen();return;}document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');document.getElementById('dd-puzzle-area').style.display='flex';ddShowNormalDD();show('dd');}
 function ddShowNormalDD(){var h=new Date().getHours(),dow=new Date().getDay(),dom=new Date().getDate(),nick=nickDisplay();var qEl=document.getElementById('dd-question'),titleEl=document.getElementById('dd-title'),inputEl=document.getElementById('dd-input'),doneMsgEl=document.getElementById('dd-done-msg');renderPuzzle();if(h>=6&&h<12){var msg=DD_MORNING[dom%DD_MORNING.length].replace('[dzień]',DD_DAYS_NOM[dow]);if(nick)msg=msg.replace('Dzień się zaczyna','Dzień się zaczyna, '+nick).replace('Dobry ranek','Dobry ranek, '+nick);if(qEl)qEl.textContent=msg;if(titleEl)titleEl.textContent='Dobry Dzień ☀️';if(inputEl)inputEl.style.display='none';if(doneMsgEl)doneMsgEl.style.display='none';}else{if(qEl)qEl.textContent=ddGetQuestion();if(titleEl)titleEl.textContent='Dobry Dzień ☀️'+(nick?' — '+nick:'');updateDDUI();}}
@@ -540,11 +389,10 @@ function ddSubmit(){var txt=document.getElementById('dd-txt').value.trim();if(tx
 function revealTile(){var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;if(rev>=tot){S.ddTiles=Array(tot).fill(false);S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));S.ddSet=(S.ddSet||0)+1;saveS();return;}for(var i=0;i<S.ddOrder.length;i++){var idx=S.ddOrder[i];if(!S.ddTiles[idx]){S.ddTiles[idx]=true;S._lastTile=idx;saveS();return;}}}
 function ddBack(){document.getElementById('dd2').classList.remove('active');document.getElementById('dd1').classList.add('active');document.getElementById('dd-txt').value='';document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';renderPuzzle();updateDDUI();if(S._lastTile>=0){var cont=document.getElementById('pz-cont');cont.style.boxShadow='0 0 0 4px #f6a825,0 0 28px rgba(246,168,37,.55)';setTimeout(function(){cont.style.boxShadow='0 8px 32px rgba(0,0,0,.2)';},1600);S._lastTile=-1;}}
 function getArtwork(){if(S.ageGroup===1)return artBajkowy();if(S.ageGroup===2)return artNatura();if(S.ageGroup===3)return artMerkaba();return artDorosly();}
-function artBajkowy(){return '<defs><linearGradient id="bSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#87ceeb"/><stop offset="100%" stop-color="#b8e4f9"/></linearGradient></defs><rect width="320" height="320" fill="url(#bSky)"/><circle cx="268" cy="52" r="42" fill="#ffe033" opacity=".95"/><path d="M0,180 Q80,158 160,168 Q240,178 320,162 L320,320 L0,320Z" fill="#66bb6a"/><path d="M0,195 Q80,178 160,185 Q240,192 320,178 L320,320 L0,320Z" fill="#4caf50"/><path d="M-10,195 Q160,50 330,195" fill="none" stroke="#ff6b9d" stroke-width="18" stroke-linecap="round" opacity=".7"/><path d="M0,205 Q160,65 320,205" fill="none" stroke="#ff9e2a" stroke-width="14" stroke-linecap="round" opacity=".7"/><ellipse cx="52" cy="82" rx="32" ry="18" fill="white" opacity=".88"/><rect x="115" y="200" width="90" height="75" fill="#f9a825" rx="3"/><polygon points="115,200 160,158 205,200" fill="#e64a19"/><rect x="145" y="240" width="30" height="35" fill="#5d4037" rx="3"/><circle cx="50" cy="212" r="10" fill="#ff6b9d"/><circle cx="240" cy="208" r="9" fill="#ab47bc"/>';}
-function artNatura(){return '<defs><linearGradient id="nSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64b5f6"/><stop offset="100%" stop-color="#66bb6a"/></linearGradient><radialGradient id="nSun" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffe57f"/><stop offset="100%" stop-color="#ffcc02"/></radialGradient></defs><rect width="320" height="320" fill="url(#nSky)"/><circle cx="262" cy="58" r="36" fill="url(#nSun)"/><ellipse cx="55" cy="75" rx="36" ry="20" fill="white" opacity=".88"/><path d="M0,200 Q80,155 160,175 Q240,195 320,162 L320,320 L0,320Z" fill="#66bb6a"/><path d="M0,225 Q80,205 160,215 Q240,225 320,208 L320,320 L0,320Z" fill="#4caf50"/><polygon points="42,200 65,140 88,200" fill="#388e3c"/><rect x="59" y="200" width="12" height="24" fill="#5d4037"/><circle cx="30" cy="240" r="8" fill="#ff80ab"/><circle cx="292" cy="238" r="7" fill="#e040fb"/>';}
-function artMerkaba(){return '<defs><radialGradient id="mkBg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e8f4f8"/><stop offset="100%" stop-color="#b2ebf2"/></radialGradient><radialGradient id="mkGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,235,120,0.55)"/><stop offset="100%" stop-color="rgba(255,235,120,0)"/></radialGradient></defs><rect width="320" height="320" fill="url(#mkBg)"/><circle cx="160" cy="160" r="148" fill="none" stroke="#80deea" stroke-width="1" opacity=".4"/><circle cx="160" cy="160" r="80" fill="url(#mkGlow)"/><polygon points="160,42 290,252 30,252" fill="rgba(0,188,212,0.10)" stroke="#00bcd4" stroke-width="2.5"/><polygon points="160,278 290,68 30,68" fill="rgba(255,193,7,0.10)" stroke="#ffd54f" stroke-width="2.5"/><circle cx="160" cy="160" r="5" fill="#fff" opacity=".95"/><circle cx="160" cy="42" r="5" fill="#ffd54f" opacity=".9"/><circle cx="290" cy="252" r="4" fill="#4dd0e1" opacity=".9"/><circle cx="30" cy="252" r="4" fill="#4dd0e1" opacity=".9"/>';}
-function artDorosly(){return '<defs><linearGradient id="dSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fce4ec"/><stop offset="60%" stop-color="#ffe0b2"/><stop offset="100%" stop-color="#a5d6a7"/></linearGradient><radialGradient id="dSun" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff9c4"/><stop offset="100%" stop-color="#ffca28"/></radialGradient><radialGradient id="dHalo" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,238,88,0.45)"/><stop offset="100%" stop-color="rgba(255,238,88,0)"/></radialGradient></defs><rect width="320" height="320" fill="url(#dSky)"/><circle cx="160" cy="195" r="55" fill="url(#dHalo)"/><circle cx="160" cy="195" r="34" fill="url(#dSun)"/><path d="M0,215 Q80,200 160,208 Q240,216 320,202 L320,320 L0,320Z" fill="#81c784"/><path d="M0,248 Q80,240 160,244 Q240,248 320,240 L320,320 L0,320Z" fill="#4caf50"/><polygon points="25,215 44,168 63,215" fill="#2e7d32" opacity=".88"/><ellipse cx="65" cy="75" rx="42" ry="22" fill="white" opacity=".82"/><ellipse cx="225" cy="60" rx="38" ry="20" fill="white" opacity=".75"/><circle cx="38" cy="245" r="7" fill="#ff80ab" opacity=".9"/><circle cx="280" cy="242" r="6" fill="#e040fb" opacity=".9"/>';}
-
+function artBajkowy(){return '<defs><linearGradient id="bSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#87ceeb"/><stop offset="100%" stop-color="#b8e4f9"/></linearGradient></defs><rect width="320" height="320" fill="url(#bSky)"/><circle cx="268" cy="52" r="42" fill="#ffe033" opacity=".95"/><path d="M0,180 Q80,158 160,168 Q240,178 320,162 L320,320 L0,320Z" fill="#66bb6a"/><ellipse cx="52" cy="82" rx="32" ry="18" fill="white" opacity=".88"/><rect x="115" y="200" width="90" height="75" fill="#f9a825" rx="3"/><polygon points="115,200 160,158 205,200" fill="#e64a19"/>';}
+function artNatura(){return '<defs><linearGradient id="nSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64b5f6"/><stop offset="100%" stop-color="#66bb6a"/></linearGradient></defs><rect width="320" height="320" fill="url(#nSky)"/><circle cx="262" cy="58" r="36" fill="#ffe57f"/><path d="M0,200 Q80,155 160,175 Q240,195 320,162 L320,320 L0,320Z" fill="#66bb6a"/><polygon points="42,200 65,140 88,200" fill="#388e3c"/>';}
+function artMerkaba(){return '<defs><radialGradient id="mkBg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e8f4f8"/><stop offset="100%" stop-color="#b2ebf2"/></radialGradient></defs><rect width="320" height="320" fill="url(#mkBg)"/><polygon points="160,42 290,252 30,252" fill="rgba(0,188,212,0.10)" stroke="#00bcd4" stroke-width="2.5"/><polygon points="160,278 290,68 30,68" fill="rgba(255,193,7,0.10)" stroke="#ffd54f" stroke-width="2.5"/><circle cx="160" cy="160" r="5" fill="#fff" opacity=".95"/>';}
+function artDorosly(){return '<defs><linearGradient id="dSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fce4ec"/><stop offset="60%" stop-color="#ffe0b2"/><stop offset="100%" stop-color="#a5d6a7"/></linearGradient></defs><rect width="320" height="320" fill="url(#dSky)"/><circle cx="160" cy="195" r="34" fill="#ffca28"/><path d="M0,215 Q80,200 160,208 Q240,216 320,202 L320,320 L0,320Z" fill="#81c784"/><ellipse cx="65" cy="75" rx="42" ry="22" fill="white" opacity=".82"/>';}
 document.addEventListener('DOMContentLoaded',function(){var gb=document.getElementById('gear-btn');if(gb)gb.onclick=function(){document.getElementById('set-ov').classList.add('open');};});
 function closeSet(){document.getElementById('set-ov').classList.remove('open');}
 function switchUser(){if(!confirm('Wylogować się? Twoje dane na tym urządzeniu zostaną usunięte.'))return;try{localStorage.removeItem('iskierka_v3');}catch(e){}location.reload();}
