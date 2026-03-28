@@ -315,7 +315,9 @@ function obStep2(){
 
 function obLoginSupabase(nick,year,pin){
   var url=SB_URL+'/rest/v1/travels?nick=eq.'+encodeURIComponent(nick)+'&birth_year=eq.'+year+'&select=id,nick,birth_year,pin,jar_type';
-  fetch(url,{headers:sbHeaders(),signal:AbortSignal.timeout(5000)})
+  console.log('MJ fetch:', url);
+  console.log('MJ key starts:', SB_KEY.substring(0,20));
+  fetch(url,{method:'GET',headers:sbHeaders()})
   .then(function(r){return r.json();})
   .then(function(data){
     if(data&&data.length>0){
