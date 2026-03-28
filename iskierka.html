@@ -205,7 +205,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <h1 class="home-name" id="h-name"></h1>
 <div id="cosmic-bar" style="font-size:12px;margin-bottom:20px;letter-spacing:0.04em;"></div>
 <div class="mod-card card-sn" onclick="openSN()">
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;" onclick="event.stopPropagation();showMoonPopup()"><svg id="sn-moon-svg" width="44" height="44" viewBox="0 0 44 44" style="flex-shrink:0;"></svg></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;" id="moon-btn"><svg id="sn-moon-svg" width="44" height="44" viewBox="0 0 44 44" style="flex-shrink:0;pointer-events:none;"></svg></div>
 <h2>Spokojna Noc</h2><p id="sn-card-sub">Wyrzuć myśl z głowy. Idź spać lżejszy.</p>
 </div>
 <div class="mod-card card-dd" onclick="openDD()">
@@ -429,6 +429,8 @@ function renderMoonSVG(){
   var diff=(new Date()-known)/(1000*60*60*24);
   var cycle=(diff%29.53059+29.53059)%29.53059/29.53059;
   drawMoonSVG(svg,cycle,44);
+  var btn=document.getElementById('moon-btn');
+  if(btn){btn.style.cursor='pointer';btn.onclick=function(e){e.stopPropagation();e.preventDefault();showMoonPopup();};}
   var barSvg=document.getElementById('cosmic-moon-svg'); if(barSvg)drawMoonSVG(barSvg,cycle,26);
 }
 function moonAge(){var known=new Date(2000,0,6);var diff=(new Date()-known)/(1000*60*60*24);var cycle=diff%29.53059;if(cycle<0)cycle+=29.53059;return cycle;}
