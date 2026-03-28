@@ -174,7 +174,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <div style="background:#fff;border-radius:24px;padding:28px 24px;max-width:340px;width:100%;font-family:'Nunito',sans-serif;text-align:center;">
   <div style="font-size:36px;margin-bottom:12px;">☀️</div>
   <h3 style="font-size:18px;font-weight:700;color:#2a2640;margin-bottom:12px;">Magic Jar jest w fazie testów</h3>
-  <p style="font-size:14px;color:#6a6686;line-height:1.6;margin-bottom:20px;">Dobry Dzień z Sercem dostępny jest dla zaproszonych podróżników. Napisz do nas żeby dołączyć:<br><br><strong>kontakt@mana.pl</strong></p>
+  <p style="font-size:14px;color:#6a6686;line-height:1.6;margin-bottom:20px;">Dobry Dzień z Sercem dostępny jest dla zaproszonych podróżników. Napisz do nas żeby dołączyć:<br><br><strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="86ede9e8f2e7edf2c6ebe7e8e7a8f6ea">[email&#160;protected]</a></strong></p>
   <button onclick="document.getElementById('dd-consent-ov').style.display='none';" style="width:100%;padding:14px;background:#f6a825;border:none;border-radius:14px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:#fff;cursor:pointer;">Rozumiem</button>
 </div>
 </div>
@@ -238,7 +238,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
   <span style="font-size:42px;flex-shrink:0;">☀️</span>
   <h2 style="font-size:24px;flex:1;text-align:left;padding-left:8px;">Dobry Dzień</h2>
 </div>
-<p style="font-size:13px;opacity:0.75;text-align:center;">Każda dobra myśl odkrywa kawałek obrazu puzzla.</p>
+<p id="dd-card-sub" style="font-size:13px;opacity:0.75;text-align:center;">Każda dobra myśl odkrywa kawałek obrazu puzzla.</p>
 </div><div class="series-badge" id="ser-badge" style="display:none;">🔥 <span id="ser-n">0</span> dni</div>
 </div>
 <button onclick="switchUser()" style="background:none;border:none;color:var(--nu);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;padding:8px 0;opacity:.6;display:block;width:100%;text-align:center;margin-top:4px;">🔄 Zmień użytkownika</button>
@@ -300,7 +300,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <div class="step" id="dd2"><div style="flex:1;display:flex;flex-direction:column;justify-content:center;"><div id="dd-think" style="text-align:center;padding:32px 0;"><div style="font-size:44px;animation:float 2s ease-in-out infinite;">💛</div><p style="color:var(--du);margin-top:12px;font-size:15px;">Serce słucha...</p></div><div id="dd-resp" style="display:none;"><div class="serce-bub" id="dd-bub"></div><div id="dd-rev-msg" style="display:none;text-align:center;margin-top:14px;"><div style="font-size:38px;">🧩</div><p style="font-weight:700;color:var(--dt);margin-top:6px;" id="dd-rev-txt">Puzzle odkryty!</p></div><button class="btn btn-sun" style="margin-top:20px;" onclick="ddBack()">Dobra ☀️</button></div></div></div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var JARS=[{id:'classic',emoji:'🫙',label:'KLASYCZNY'},{id:'round',emoji:'💧',label:'OKRĄGŁY'},{id:'leaf',emoji:'🌿',label:'LIŚĆ'},{id:'crystal',emoji:'💎',label:'KRYSZTAŁ'},{id:'heart',emoji:'❤️',label:'SERCE'}];
 var JAR_SHAPES={classic:{body:'M20,40 Q12,52 10,80 L10,138 Q10,152 24,152 L106,152 Q120,152 120,138 L120,80 Q118,52 110,40 Z',cap:'M16,30 Q13,38 20,40 L110,40 Q117,38 114,30 Z',lid:'M44,18 Q40,28 44,30 L86,30 Q90,28 86,18 Z',fill:'rgba(255,160,40,.32)',body_c:'rgba(255,200,100,.45)',stroke:'rgba(255,210,120,.6)',shine:'rgba(255,240,180,.4)'},round:{body:'M18,50 Q8,68 8,100 Q8,140 20,152 Q34,162 65,162 Q96,162 110,152 Q122,140 122,100 Q122,68 112,50 Z',cap:'M24,38 Q16,46 18,50 L112,50 Q114,46 106,38 Z',lid:'M50,20 Q42,28 44,34 L86,34 Q88,28 80,20 Z',fill:'rgba(100,170,255,.32)',body_c:'rgba(160,210,255,.45)',stroke:'rgba(180,225,255,.65)',shine:'rgba(210,238,255,.4)'},leaf:{body:'M65,155 Q16,148 10,110 Q6,80 14,60 Q22,42 40,38 Q55,36 65,38 Q75,36 90,38 Q108,42 116,60 Q124,80 120,110 Q114,148 65,155 Z',cap:'M45,26 Q40,34 40,38 L90,38 Q90,34 85,26 Z',lid:'M50,12 Q58,6 65,6 Q72,6 80,12 L80,26 L50,26 Z',fill:'rgba(80,190,120,.32)',body_c:'rgba(160,240,180,.45)',stroke:'rgba(140,220,160,.65)',shine:'rgba(210,250,225,.4)'},crystal:{body:'M28,42 L12,75 L10,138 Q10,152 24,152 L106,152 Q120,152 120,138 L118,75 L102,42 Z',cap:'M22,30 L18,42 L112,42 L108,30 Z',lid:'M48,12 L38,30 L92,30 L82,12 Z',fill:'rgba(160,130,255,.32)',body_c:'rgba(200,180,255,.45)',stroke:'rgba(210,190,255,.65)',shine:'rgba(235,225,255,.4)'},heart:{body:'M65,155 C65,155 8,118 8,78 C8,54 22,42 38,42 C50,42 60,50 65,58 C70,50 80,42 92,42 C108,42 122,54 122,78 C122,118 65,155 65,155 Z',cap:'M44,22 Q40,32 40,42 L90,42 Q90,32 86,22 Z',lid:'M46,8 Q50,2 65,2 Q80,2 84,8 L86,22 L44,22 Z',fill:'rgba(255,100,150,.32)',body_c:'rgba(255,150,180,.45)',stroke:'rgba(255,170,200,.65)',shine:'rgba(255,220,235,.4)'}};
 var S={nick:'',birthYear:0,ageGroup:0,jarType:'classic',snItems:[],ddTiles:[],ddOrder:[],ddDone:0,ddDate:'',ddSeries:0,ddLastDate:'',ddSet:0,_lastTile:-1,lastValid:true,ddConsent:null};
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded',function(){
   if(pn)pn.addEventListener('keydown',function(e){if(e.key==='Enter')obStep2();});
 });
 function timeGreeting(h){if(h>=5&&h<9)return'Dzień się zaczyna';if(h>=9&&h<12)return'Dobry ranek';if(h>=12&&h<14)return'Dobrego dnia';if(h>=14&&h<17)return'Piękne popołudnie';if(h>=17&&h<20)return'Dobry wieczór';return'Dobranoc';}
-function showHome(){calcAge();var h=new Date().getHours();document.getElementById('h-greet').textContent=timeGreeting(h);document.getElementById('h-name').textContent=(nickDisplay()||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';renderCosmicBar();renderCardExtras();renderMoonSVG();renderTimeCard();snSetCardSub();show('home');}
+function showHome(){calcAge();var h=new Date().getHours();document.getElementById('h-greet').textContent=timeGreeting(h);document.getElementById('h-name').textContent=(nickDisplay()||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';renderCosmicBar();renderCardExtras();renderMoonSVG();renderTimeCard();snSetCardSub();updateDDCard();show('home');}
 function moonPhase(date){var known=new Date(2000,0,6);var diff=(date-known)/(1000*60*60*24);var cycle=diff%29.53059;if(cycle<0)cycle+=29.53059;return cycle;}
 function moonEmoji(date){var c=moonPhase(date);if(c<1.85)return{e:'🌑',n:'Nów'};if(c<7.38)return{e:'🌒',n:'Przybywający sierp'};if(c<11.07)return{e:'🌓',n:'Pierwsza kwadra'};if(c<14.77)return{e:'🌔',n:'Przybywający garb'};if(c<18.46)return{e:'🌕',n:'Pełnia'};if(c<22.15)return{e:'🌖',n:'Ubywający garb'};if(c<25.84)return{e:'🌗',n:'Ostatnia kwadra'};return{e:'🌘',n:'Ubywający sierp'};}
 function zodiacSign(date){var m=date.getMonth()+1,d=date.getDate();var signs=[{s:'Koziorożec',e:'♑',el:'ziemia',desc:'Koziorożec — znak ziemi. Wytrwałość i ambicja.',tip:'Koziorożec widoczny jesienią i zimą na południu nieba.'},{s:'Wodnik',e:'♒',el:'powietrze',desc:'Wodnik — znak powietrza. Niezależność i oryginalność.',tip:'Słaba konstelacja — szukaj charakterystycznego Y jesienią.'},{s:'Ryby',e:'♓',el:'woda',desc:'Ryby — znak wody. Wrażliwość i intuicja.',tip:'Ryby widoczne wczesną wiosną — dwa łuki gwiazd.'},{s:'Baran',e:'♈',el:'ogień',desc:'Baran — znak ognia. Odwaga i inicjatywa.',tip:'Mały łuk trzech gwiazd między Plejadami a Wielorybem.'},{s:'Byk',e:'♉',el:'ziemia',desc:'Byk — znak ziemi. Cierpliwość i determinacja.',tip:'Charakterystyczne V Hiad z pomarańczowym Aldebaranem zimą.'},{s:'Bliźnięta',e:'♊',el:'powietrze',desc:'Bliźnięta — znak powietrza. Ciekawość i komunikatywność.',tip:'Dwie jasne gwiazdy blisko siebie — Kastor i Polluks wiosną.'},{s:'Rak',e:'♋',el:'woda',desc:'Rak — znak wody. Intuicja i emocjonalność.',tip:'Słaba konstelacja między Bliźniętami a Lwem.'},{s:'Lew',e:'♌',el:'ogień',desc:'Lew — znak ognia. Pewność siebie i hojność.',tip:'Charakterystyczny sierp z jasnym Regulusem — wiosną na południu.'},{s:'Panna',e:'♍',el:'ziemia',desc:'Panna — znak ziemi. Precyzja i skromność.',tip:'Jasna Spica — jeden z najjaśniejszych punktów wiosennego nieba.'},{s:'Waga',e:'♎',el:'powietrze',desc:'Waga — znak powietrza. Harmonia i sprawiedliwość.',tip:'Czworokąt gwiazd między Skorpionem a Panną latem.'},{s:'Skorpion',e:'♏',el:'woda',desc:'Skorpion — znak wody. Intensywność i transformacja.',tip:'Wielka litera J z czerwonym Antaresem latem nisko na południu.'},{s:'Strzelec',e:'♐',el:'ogień',desc:'Strzelec — znak ognia. Optymizm i swoboda.',tip:'Kształt czajniczka latem — wskazuje na centrum galaktyki.'}];var fromTo=[[12,22,1,19],[1,20,2,18],[2,19,3,20],[3,21,4,19],[4,20,5,20],[5,21,6,20],[6,21,7,22],[7,23,8,22],[8,23,9,22],[9,23,10,22],[10,23,11,21],[11,22,12,21]];for(var i=0;i<12;i++){var ft=fromTo[i];var fm=ft[0],fd=ft[1],tm=ft[2],td=ft[3];if(fm<=tm){if((m===fm&&d>=fd)||(m===tm&&d<=td)||(m>fm&&m<tm))return signs[i];}else{if((m===fm&&d>=fd)||m>fm||(m===tm&&d<=td)||m<tm)return signs[i];}}return signs[0];}
@@ -479,11 +479,17 @@ function renderMoonSVG(){
   var cycle=(diff%29.53059+29.53059)%29.53059/29.53059;
   var btn=document.getElementById('moon-btn');
   if(btn){
-    var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-    svg.setAttribute('width','36');svg.setAttribute('height','36');svg.setAttribute('viewBox','0 0 36 36');
-    svg.id='sn-moon-svg';
-    btn.innerHTML='';btn.appendChild(svg);
-    drawMoonSVG(svg,cycle,36);
+    btn.innerHTML='';
+    if(S.ddConsent===true){
+      var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+      svg.setAttribute('width','36');svg.setAttribute('height','36');svg.setAttribute('viewBox','0 0 36 36');
+      svg.id='sn-moon-svg';btn.appendChild(svg);drawMoonSVG(svg,cycle,36);
+    } else {
+      var em=document.createElement('span');
+      em.style.cssText='font-size:32px;line-height:1;';
+      em.textContent=moonEmoji(new Date()).e;
+      btn.appendChild(em);
+    }
   }
 }
 function moonAge(){var known=new Date(2000,0,6);var diff=(new Date()-known)/(1000*60*60*24);var cycle=diff%29.53059;if(cycle<0)cycle+=29.53059;return cycle;}
@@ -497,19 +503,32 @@ function renderCosmicBar(){var bar=document.getElementById('cosmic-bar');if(bar)
 function goHome(){snBackToStrips();showHome();}
 function mkStars(id,n){var c=document.getElementById(id);if(!c)return;for(var i=0;i<n;i++){var s=document.createElement('div');var gold=Math.random()>.65;s.className='star '+(gold?'star-g':'star-w');var sz=Math.random()*(gold?3:2)+.5;s.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;--d:'+(2+Math.random()*4)+'s;--del:'+Math.random()*4+'s;opacity:'+(Math.random()*.6+.12);c.appendChild(s);}}
 function calcAge(){if(!S.birthYear){S.ageGroup=4;return;}var age=new Date().getFullYear()-S.birthYear;S.ageGroup=age<=9?1:age<=13?2:age<=17?3:4;}
-function gridN(){return S.ageGroup===1?3:S.ageGroup===3?5:4;}
+function gridN(){if(S.ddConsent!==true)return 3;return S.ageGroup===1?3:S.ageGroup===3?5:4;}
 function maxDaily(){return S.ageGroup===3?4:3;}
 function totalTiles(){return gridN()*gridN();}
 var SN_COLORS=['#c9a0dc','#a8c5e0','#8ecfb8','#e8b48a','#e0959f','#d4c46a'];
 var snJarItems=[];var snChosenColor=SN_COLORS[0];var snConstOffset=0;
 function snGetDailyPhoto(){var now=new Date();var dayOfYear=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);var cats=[{n:'aurora',c:4},{n:'moon',c:6},{n:'m-w',c:8},{n:'night',c:2}];var cat=cats[dayOfYear%4];var num=(dayOfYear%cat.c)+1;return'img/sky/'+cat.n+'_'+num+'.jpg';}
-function snSetBg(){var img=document.getElementById('sn-bg-photo');if(img){img.classList.remove('loaded');img.onload=function(){img.classList.add('loaded');};img.onerror=function(){img.style.display='none';};img.src=snGetDailyPhoto();}}
+function snSetBg(){
+  var img=document.getElementById('sn-bg-photo');
+  if(!img)return;
+  if(S.ddConsent!==true){
+    img.style.display='none';
+    return;
+  }
+  img.style.display='';
+  img.classList.remove('loaded');
+  img.onload=function(){img.classList.add('loaded');};
+  img.onerror=function(){img.style.display='none';};
+  img.src=snGetDailyPhoto();
+}
 function snShowPopup(){var now=new Date();var zod=zodiacSign(now);var moon=moonEmoji(now);document.getElementById('snp-name').textContent=zod.e+' '+zod.s;document.getElementById('snp-latin').textContent=moon.e+' '+moon.n;document.getElementById('snp-desc').textContent=zod.desc||'';document.getElementById('snp-tip').textContent=zod.tip||'';var pp=document.getElementById('sn-popup');var W=window.innerWidth,pw=Math.min(300,W*0.88);pp.style.width=pw+'px';pp.style.left=((W-pw)/2)+'px';pp.style.top='80px';pp.classList.add('on');}
 function snClosePopup(){document.getElementById('sn-popup').classList.remove('on');}
 function snGetMoon(){var c=(((new Date()-new Date(2000,0,6))/864e5)%29.53059+29.53059)%29.53059;return c<1.85?'🌑':c<7.38?'🌒':c<11.07?'🌓':c<14.77?'🌔':c<18.46?'🌕':c<22.15?'🌖':c<25.84?'🌗':'🌘';}
 function openSN(){snConstOffset=0;snBackToStrips();snRenderJar();show('sn');snSetBg();}
 var SN_SUBS=['Zostaw tu co Ci ciąży — niech noc będzie lżejsza.','Co chcesz zostawić — zostaw. Niech noc będzie spokojna.','Co nosisz w głowie przed snem? Zostaw — noc będzie lżejsza.','Wyrzuć to do Słoika. On to uniesie. Idź spokojnie spać.','Śpij spokojnie i kolorowo. Co niepotrzebne — puść i zostaw w Słoiku.','Zostaw tu swój dzień. Jutro zaczynasz nowy — bez bagażu.','Sen jest dla Ciebie — nie dla tego co Cię dziś zmęczyło.','Jeden oddech. Jeden Słoik. Dobranoc.'];
 function snSetCardSub(){var el=document.getElementById('sn-card-sub');if(!el)return;var d=new Date();el.textContent=SN_SUBS[(d.getDay()*3+d.getDate())%SN_SUBS.length];}
+function updateDDCard(){var el=document.getElementById('dd-card-sub');if(!el)return;el.textContent=S.ddConsent===true?'Każda dobra myśl odkrywa kawałek obrazu puzzla.':'Ta aplikacja nie spełnia swojego edukacyjnego potencjału bez zgody rodzica lub opiekuna prawnego.';}
 function drawSnStars(){var canvas=document.getElementById('sn-star-canvas');if(!canvas)return;var W=window.innerWidth,H=window.innerHeight;canvas.width=W*window.devicePixelRatio;canvas.height=H*window.devicePixelRatio;canvas.style.width=W+'px';canvas.style.height=H+'px';var ctx=canvas.getContext('2d');ctx.scale(window.devicePixelRatio,window.devicePixelRatio);var count=Math.floor((W*H)/2800);for(var i=0;i<count;i++){var x=Math.random()*W,y=Math.random()*H*0.80;var r=Math.random()*1.2+0.2;var a=(Math.random()*0.6+0.15).toFixed(2);var colors=['rgba(200,215,255,'+a+')','rgba(255,255,240,'+a+')','rgba(255,235,200,'+a+')','rgba(255,200,150,'+(a*0.7).toFixed(2)+')'];ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=colors[Math.floor(Math.random()*colors.length)];ctx.fill();}}
 window.addEventListener('resize',function(){if(document.getElementById('sn')&&document.getElementById('sn').classList.contains('active'))drawSnStars();});
 function snInit(){document.getElementById('sn-moon-em').textContent=snGetMoon();drawSnStars();if(S.snItems&&S.snItems.length)snJarItems=S.snItems;snBuildStrips();snRenderJar();}
@@ -567,7 +586,7 @@ function ddSubmit(){
   document.getElementById('dd2').classList.add('active');
   document.getElementById('dd-think').style.display='block';
   document.getElementById('dd-resp').style.display='none';
-  if(S.ddConsent===false){
+  if(S.ddConsent!==true){
     var r=['Piękna chwila. Dobrze że ją zapamiętujesz. ✨','Takie chwile są wyjątkowe. 💛','Ale fajnie! Warto to nosić ze sobą. ⭐','Cieszę się że się tym podzieliłeś! 🌟'];
     setTimeout(function(){
       document.getElementById('dd-think').style.display='none';
@@ -642,8 +661,4 @@ function doRitual(type){
   }
 }
 function todayStr(){return new Date().toISOString().slice(0,10);}
-function yest(){var d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);}
-function flash(){var f=document.createElement('div');f.className='flash';document.body.appendChild(f);setTimeout(function(){f.remove();},700);}
-</script>
-</body>
-</html>
+function yest(){var d=new Date();d.set
