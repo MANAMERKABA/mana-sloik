@@ -661,4 +661,8 @@ function doRitual(type){
   }
 }
 function todayStr(){return new Date().toISOString().slice(0,10);}
-function yest(){var d=new Date();d.set
+function yest(){var d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);}
+function flash(){var f=document.createElement('div');f.className='flash';document.body.appendChild(f);setTimeout(function(){f.remove();},700);}
+</script>
+</body>
+</html>
