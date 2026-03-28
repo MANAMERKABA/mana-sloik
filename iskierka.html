@@ -512,17 +512,18 @@ function snBuildStrips(){var wrap=document.getElementById('sn-strips');if(!wrap)
 function snOpenWriter(hex){snChosenColor=hex;var dot=document.getElementById('sn-dot');dot.style.background=hex;var btn=document.getElementById('sn-sendbtn');btn.style.background=hex;document.getElementById('sn-txt2').style.borderColor=hex+'44';document.getElementById('sn-strips').style.display='none';document.getElementById('sn-writer').classList.add('on');setTimeout(function(){document.getElementById('sn-txt2').focus();},160);}
 function snBackToStrips(){document.getElementById('sn-txt2').value='';document.getElementById('sn-writer').classList.remove('on');document.getElementById('sn-jar-screen').classList.remove('on');var strips=document.getElementById('sn-strips');if(strips){strips.style.display='';strips.style.visibility='visible';}}
 var SN_MSGS=['Twoja myśl jest już bezpieczna. 🌙','Głowa wolna. Można spać.','Słoik przyjął. Możesz odpuścić.','Odłożone. Nie musisz tego nosić.','Dobrze, że to powiedziałeś. 🌙'];
-function snSubmitNew(){var txt=document.getElementById('sn-txt2').value.trim();if(!txt){document.getElementById('sn-txt2').focus();return;}snJarItems.push({text:txt,color:snChosenColor});S.snItems=snJarItems;saveS();var fly=document.createElement('div');fly.className='sn-fly';fly.style.cssText='background:'+snChosenColor+';left:50%;bottom:150px;transform:translateX(-50%);opacity:0.9;position:fixed;';fly.textContent=txt.length>22?txt.slice(0,22)+'…':txt;document.body.appendChild(fly);setTimeout(function(){fly.style.transition='all 1.1s cubic-bezier(.3,0,.2,1)';fly.style.bottom='62%';fly.style.opacity='0';fly.style.transform='translateX(-50%) scale(.12)';},40);setTimeout(function(){fly.remove();},1250);snRenderJar();document.getElementById('sn-btn-more').style.background=snChosenColor;document.getElementById('sn-conf-msg').textContent=SN_MSGS[Math.floor(Math.random()*SN_MSGS.length)];setTimeout(function(){document.getElementById('sn-writer').classList.remove('on');document.getElementById('sn-jar-screen').classList.add('on');},850);}
+function snSubmitNew(){var txt=document.getElementById('sn-txt2').value.trim();if(!txt){document.getElementById('sn-txt2').focus();return;}snJarItems.push({text:txt,color:snChosenColor});S.snItems=snJarItems;saveS();var fly=document.createElement('div');fly.className='sn-fly';fly.style.cssText='background:'+snChosenColor+';left:50%;bottom:150px;transform:translateX(-50%);opacity:0.9;position:fixed;';fly.textContent=txt.length>22?txt.slice(0,22)+'…':txt;document.body.appendChild(fly);setTimeout(function(){fly.style.transition='all 1.1s cubic-bezier(.3,0,.2,1)';fly.style.bottom='62%';fly.style.opacity='0';fly.style.transform='translateX(-50%) scale(.12)';},40);setTimeout(function(){fly.remove();},1250);snRenderJar();document.getElementById('sn-btn-more').style.background=snChosenColor;document.getElementById('sn-conf-msg').textContent=SN_MSGS[Math.floor(Math.random()*SN_MSGS.length)];setTimeout(function(){document.getElementById('sn-writer').classList.remove('on');if(snJarItems.length>=7){document.getElementById('ritual-ov').classList.add('open');}else{document.getElementById('sn-jar-screen').classList.add('on');}},850);}
 function snAddMore(){document.getElementById('sn-jar-screen').classList.remove('on');document.getElementById('sn-txt2').value='';document.getElementById('sn-strips').style.display='flex';}
 var INACT_ARTWORKS=['<rect width="200" height="200" fill="#87ceeb"/><path d="M0,100 Q100,20 200,100" fill="none" stroke="#ff6b9d" stroke-width="18" stroke-linecap="round" opacity=".75"/><rect y="155" width="200" height="45" fill="#66bb6a"/>','<rect width="200" height="200" fill="#ffe082"/><rect y="140" width="200" height="60" fill="#66bb6a"/><circle cx="60" cy="70" r="30" fill="#ffb300" opacity=".9"/>','<rect width="200" height="200" fill="#0a1628"/><path d="M0,60 Q50,20 100,50 Q150,80 200,40" fill="none" stroke="#00e5ff" stroke-width="28" stroke-linecap="round" opacity=".45"/>'];
 function checkInactivity(){if(!S.ddLastDate)return false;var today=new Date(todayStr()),last=new Date(S.ddLastDate);return Math.floor((today-last)/(1000*60*60*24))>=20;}
 function ddShowInactScreen(){document.getElementById('inact-img-svg').innerHTML=INACT_ARTWORKS[(new Date().getDate())%INACT_ARTWORKS.length];document.getElementById('dd-inact').style.display='flex';document.getElementById('dd-inact').classList.add('on');document.getElementById('dd-puzzle-area').style.display='none';document.getElementById('dd-input').style.display='none';document.getElementById('dd-done-msg').style.display='none';document.getElementById('dd-question').textContent='Hej — minęło trochę czasu.';}
 function ddInactYes(){document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');document.getElementById('dd-puzzle-area').style.display='flex';ddShowNormalDD();}
 function ddInactNo(){document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');goHome();}
-var DD_QUESTIONS=['Czy dziś w [dzień] masz dobrą myśl którą chciałbyś się podzielić?','Czy [dzień] przyniósł Ci coś dobrego czym chciałbyś się podzielić?','Czy coś dobrego przydarzyło Ci się dziś w [dzień]?','Czy w ten [dzień] masz chwilę którą chciałbyś zapamiętać?','Czy masz dobry powód by się uśmiechnąć tego [dnia]?','Czy ten [dzień] dał Ci coś czym warto się podzielić?'];
+var DD_QUESTIONS=['Czy dziś w [dzień] masz dobrą myśl którą chciałbyś się podzielić?','Czy [dzień] przyniósł Ci coś dobrego czym chciałbyś się podzielić?','Czy coś dobrego przydarzyło Ci się dziś w [dzień]?','Czy w tę [środę] masz chwilę którą chciałbyś zapamiętać?','Czy masz dobry powód by się uśmiechnąć tej [soboty]?','Czy ten [dzień] dał Ci coś czym warto się podzielić?'];
 var DD_DAYS_ACC=['niedzielę','poniedziałek','wtorek','środę','czwartek','piątek','sobotę'];
 var DD_DAYS_GEN=['niedzieli','poniedziałku','wtorku','środy','czwartku','piątku','soboty'];
-function ddGetQuestion(){var now=new Date();var dow=now.getDay();var q=DD_QUESTIONS[(dow*3+now.getDate())%DD_QUESTIONS.length];return q.replace('[dzień]',DD_DAYS_ACC[dow]).replace('[dnia]',DD_DAYS_GEN[dow]);}
+var DD_DAYS_TEJ=['tej niedzieli','tego poniedziałku','tego wtorku','tej środy','tego czwartku','tego piątku','tej soboty'];
+function ddGetQuestion(){var now=new Date();var dow=now.getDay();var q=DD_QUESTIONS[(dow*3+now.getDate())%DD_QUESTIONS.length];return q.replace('[dzień]',DD_DAYS_ACC[dow]).replace('[dnia]',DD_DAYS_GEN[dow]).replace('[środy]',DD_DAYS_GEN[dow]).replace('[soboty]',DD_DAYS_TEJ[dow]);}
 var DD_MORNING=['Dzień się zaczyna. Niech ten [dzień] przyniesie Ci coś dobrego.','Dobry ranek. Niech [dzień] będzie dla Ciebie łagodny.'];
 var DD_DAYS_NOM=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
 function openDD(){var today=todayStr();if(S.ddDate!==today){S.ddDone=0;S.ddDate=today;saveS();}initTiles();document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';document.getElementById('dd-rev-msg').style.display='none';document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.remove('active');document.getElementById('dd1').classList.add('active');if(checkInactivity()){show('dd');ddShowInactScreen();return;}document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');document.getElementById('dd-puzzle-area').style.display='flex';ddShowNormalDD();show('dd');}
@@ -532,7 +533,93 @@ function shuffle(arr){for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.rand
 function renderPuzzle(){var gs=gridN(),size=Math.min(Math.floor(window.innerWidth*0.85),300);size=Math.floor(size/gs)*gs;var cont=document.getElementById('pz-cont');cont.style.width=size+'px';cont.style.height=size+'px';var art=document.getElementById('pz-art');art.setAttribute('width',size);art.setAttribute('height',size);art.setAttribute('viewBox','0 0 320 320');art.innerHTML=getArtwork();var ov=document.getElementById('pz-ov');ov.setAttribute('width',size);ov.setAttribute('height',size);ov.setAttribute('viewBox','0 0 '+size+' '+size);ov.innerHTML='';var defs=document.createElementNS('http://www.w3.org/2000/svg','defs');ov.appendChild(defs);var tw=size/gs,th=size/gs,revealed=0;for(var i=0;i<gs*gs;i++){if(S.ddTiles[i]){revealed++;continue;}var row=Math.floor(i/gs),col=i%gs,x=col*tw,y=row*th,path=piecePath(x,y,tw,th,row,col,gs);var cp=document.createElementNS('http://www.w3.org/2000/svg','clipPath');cp.setAttribute('id','c'+i);var pp=document.createElementNS('http://www.w3.org/2000/svg','path');pp.setAttribute('d',path);cp.appendChild(pp);defs.appendChild(cp);var r=document.createElementNS('http://www.w3.org/2000/svg','rect');r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',tw);r.setAttribute('height',th);r.setAttribute('fill','rgba(255,252,245,.92)');r.setAttribute('clip-path','url(#c'+i+')');ov.appendChild(r);var b=document.createElementNS('http://www.w3.org/2000/svg','path');b.setAttribute('d',path);b.setAttribute('fill','none');b.setAttribute('stroke','rgba(180,160,130,.55)');b.setAttribute('stroke-width','1.5');ov.appendChild(b);}var tot=totalTiles();document.getElementById('pz-prog').textContent=revealed>=tot?'🎉 Puzzle ukończone! Nowe czeka.':revealed+'/'+tot+' odkrytych';}
 function piecePath(x,y,w,h,row,col,gs){var tab=Math.min(w,h)*0.22;function det(a,b){return(((a*100+b)*9301+(b+1)*49297+233)%1000)/1000;}var top=row===0?0:(det(row,col)>.5?1:-1);var right=col===gs-1?0:(det(col,row+50)>.5?1:-1);var bottom=row===gs-1?0:(det(row+50,col)>.5?1:-1);var left=col===0?0:(det(col+50,row)>.5?1:-1);if(col>0)left=-(det(col-1+50,row)>.5?1:-1);if(row>0)top=-(det(row-1,col)>.5?1:-1);var mx=x+w/2,d='M '+x+' '+y+' ';if(top===0){d+='L '+(x+w)+' '+y+' ';}else{d+='L '+(mx-tab*.7)+' '+y+' C '+(mx-tab*.7)+' '+(y-top*tab)+' '+(mx+tab*.7)+' '+(y-top*tab)+' '+(mx+tab*.7)+' '+y+' L '+(x+w)+' '+y+' ';}var rmy=y+h/2;if(right===0){d+='L '+(x+w)+' '+(y+h)+' ';}else{d+='L '+(x+w)+' '+(rmy-tab*.7)+' C '+(x+w+right*tab)+' '+(rmy-tab*.7)+' '+(x+w+right*tab)+' '+(rmy+tab*.7)+' '+(x+w)+' '+(rmy+tab*.7)+' L '+(x+w)+' '+(y+h)+' ';}var bmx=x+w/2;if(bottom===0){d+='L '+x+' '+(y+h)+' ';}else{d+='L '+(bmx+tab*.7)+' '+(y+h)+' C '+(bmx+tab*.7)+' '+(y+h+bottom*tab)+' '+(bmx-tab*.7)+' '+(y+h+bottom*tab)+' '+(bmx-tab*.7)+' '+(y+h)+' L '+x+' '+(y+h)+' ';}var lmy=y+h/2;if(left===0){d+='L '+x+' '+y+' ';}else{d+='L '+x+' '+(lmy+tab*.7)+' C '+(x-left*tab)+' '+(lmy+tab*.7)+' '+(x-left*tab)+' '+(lmy-tab*.7)+' '+x+' '+(lmy-tab*.7)+' L '+x+' '+y+' ';}return d+'Z';}
 function updateDDUI(){var left=maxDaily()-S.ddDone,ia=document.getElementById('dd-input'),dm=document.getElementById('dd-done-msg'),info=document.getElementById('dd-info');if(left<=0){ia.style.display='none';dm.style.display='block';}else{ia.style.display='block';dm.style.display='none';info.textContent=left===maxDaily()?'Możesz dodać '+maxDaily()+' myśli dziś.':'Zostało Ci '+left+(left===1?' myśl':' myśli')+' na dziś.';}}
-function ddSubmit(){var txt=document.getElementById('dd-txt').value.trim();if(txt.length<3){document.getElementById('dd-txt').focus();return;}document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.add('active');document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';var nick=nickDisplay()||'';var r=['Cieszę się że się tym podzieliłeś'+(nick?', '+nick:'')+'! 🌟','Piękna chwila. Dobrze że ją zapamiętujesz. ✨','Takie chwile są wyjątkowe. 💛','Dziękuję że mi o tym powiedziałeś'+(nick?', '+nick:'')+'! 🌸','Ale fajnie! Warto to nosić ze sobą. ⭐','Ładna myśl. Słoik ją przyjmie. 🌻'];setTimeout(function(){document.getElementById('dd-think').style.display='none';document.getElementById('dd-resp').style.display='block';document.getElementById('dd-bub').innerHTML='<p>'+r[Math.floor(Math.random()*r.length)]+'</p>';document.getElementById('dd-rev-msg').style.display='none';revealTile();S.ddDone++;var today=todayStr();if(S.ddLastDate===yest())S.ddSeries++;else if(S.ddLastDate!==today)S.ddSeries=1;S.ddLastDate=today;saveS();var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;document.getElementById('dd-rev-txt').textContent=rev>=tot?'🎉 Puzzle ukończone!':'🧩 Puzzle odkryty!';document.getElementById('dd-rev-msg').style.display='block';},800);}
+function ddSessionId(){
+  var str=(S.nick||'')+(S.birthYear||'');
+  var hash=0;
+  for(var i=0;i<str.length;i++){hash=((hash<<5)-hash)+str.charCodeAt(i);hash|=0;}
+  return Math.abs(hash).toString(16);
+}
+
+function ddSaveToDB(mysl,odpowiedz,ocena){
+  var body={session_id:ddSessionId(),mysl:mysl,odpowiedz:odpowiedz,ocena:ocena};
+  fetch(SB_URL+'/rest/v1/dd_entries',{method:'POST',headers:Object.assign({},sbHeaders(),{'Prefer':'return=minimal'}),body:JSON.stringify(body)}).catch(function(){});
+}
+
+function ddCheckRepeats(mysl,callback){
+  var sid=ddSessionId();
+  var url=SB_URL+'/rest/v1/dd_entries?session_id=eq.'+sid+'&select=mysl,created_at&order=created_at.desc&limit=10';
+  fetch(url,{headers:sbHeaders()})
+  .then(function(r){return r.json();})
+  .then(function(data){
+    if(!data||data.length<2){callback(false);return;}
+    var recent=data.slice(0,6);
+    var myslLow=mysl.toLowerCase();
+    var kw=myslLow.split(' ').filter(function(w){return w.length>4;});
+    var matches=0;
+    recent.forEach(function(e){
+      var prev=(e.mysl||'').toLowerCase();
+      kw.forEach(function(k){if(prev.indexOf(k)>=0)matches++;});
+    });
+    callback(matches>=2);
+  })
+  .catch(function(){callback(false);});
+}
+
+function ddAskSerce(mysl,powtorka,callback){
+  var systemPrompt='Jesteś Sercem Magic Jar — ciepłym, mądrym towarzyszem dla dzieci, młodzieży i dorosłych. Twoje zadanie: (1) oceń czy myśl jest pozytywna — jeśli nie, delikatnie odeślij z powrotem z zachętą do szukania czegoś dobrego. (2) Jeśli pozytywna — odpowiedz krótko, ciepło, 1-2 zdania. Nie oceniaj. Nie pouczaj.'+(powtorka?' Zauważ że ta osoba po raz kolejny wspomina podobny temat — zareaguj na to specjalnie, doceniając tę stałą obecność dobra w jej życiu.':'')+' Odpowiedz tylko tekstem odpowiedzi, nic więcej.';
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:200,
+      system:systemPrompt,
+      messages:[{role:'user',content:mysl}]
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var txt=data.content&&data.content[0]?data.content[0].text:'Piękna myśl! ✨';
+    callback(txt);
+  })
+  .catch(function(){
+    var r=['Piękna chwila. Dobrze że ją zapamiętujesz. ✨','Takie chwile są wyjątkowe. 💛','Ale fajnie! Warto to nosić ze sobą. ⭐'];
+    callback(r[Math.floor(Math.random()*r.length)]);
+  });
+}
+
+function ddSubmit(){
+  var txt=document.getElementById('dd-txt').value.trim();
+  if(txt.length<3){document.getElementById('dd-txt').focus();return;}
+  document.getElementById('dd1').classList.remove('active');
+  document.getElementById('dd2').classList.add('active');
+  document.getElementById('dd-think').style.display='block';
+  document.getElementById('dd-resp').style.display='none';
+  ddCheckRepeats(txt,function(powtorka){
+    ddAskSerce(txt,powtorka,function(odpowiedz){
+      var ocena='pozytywna';
+      var negatywne=['nie mam','nic','nudno','źle','smutno','niedobrze','zły','smutny','płakałem','płakałam','kłótnia','bójka'];
+      negatywne.forEach(function(n){if(txt.toLowerCase().indexOf(n)>=0)ocena='negatywna';});
+      ddSaveToDB(txt,odpowiedz,ocena);
+      document.getElementById('dd-think').style.display='none';
+      document.getElementById('dd-resp').style.display='block';
+      document.getElementById('dd-bub').innerHTML='<p>'+odpowiedz+'</p>';
+      if(ocena==='negatywna'){
+        document.getElementById('dd-rev-msg').style.display='none';
+        return;
+      }
+      revealTile();
+      S.ddDone++;
+      var today=todayStr();
+      if(S.ddLastDate===yest())S.ddSeries++;
+      else if(S.ddLastDate!==today)S.ddSeries=1;
+      S.ddLastDate=today;saveS();
+      var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;
+      document.getElementById('dd-rev-txt').textContent=rev>=tot?'🎉 Puzzle ukończone!':'🧩 Puzzle odkryty!';
+      document.getElementById('dd-rev-msg').style.display='block';
+    });
+  });
+}
 function revealTile(){var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;if(rev>=tot){S.ddTiles=Array(tot).fill(false);S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));S.ddSet=(S.ddSet||0)+1;saveS();return;}for(var i=0;i<S.ddOrder.length;i++){var idx=S.ddOrder[i];if(!S.ddTiles[idx]){S.ddTiles[idx]=true;S._lastTile=idx;saveS();return;}}}
 function ddBack(){document.getElementById('dd2').classList.remove('active');document.getElementById('dd1').classList.add('active');document.getElementById('dd-txt').value='';document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';renderPuzzle();updateDDUI();if(S._lastTile>=0){var cont=document.getElementById('pz-cont');cont.style.boxShadow='0 0 0 4px #f6a825,0 0 28px rgba(246,168,37,.55)';setTimeout(function(){cont.style.boxShadow='0 8px 32px rgba(0,0,0,.2)';},1600);S._lastTile=-1;}}
 function getArtwork(){if(S.ageGroup===1)return artBajkowy();if(S.ageGroup===2)return artNatura();if(S.ageGroup===3)return artMerkaba();return artDorosly();}
@@ -544,7 +631,19 @@ document.addEventListener('DOMContentLoaded',function(){var gb=document.getEleme
 function closeSet(){document.getElementById('set-ov').classList.remove('open');}
 function switchUser(){if(!confirm('Wylogować się? Twoje dane na tym urządzeniu zostaną usunięte.'))return;try{localStorage.removeItem('iskierka_v3');}catch(e){}location.reload();}
 document.addEventListener('DOMContentLoaded',function(){var so=document.getElementById('set-ov');if(so)so.addEventListener('click',function(e){if(e.target===this)closeSet();});var ro=document.getElementById('ritual-ov');if(ro)ro.addEventListener('click',function(e){if(e.target===this)ro.classList.remove('open');});});
-function doRitual(type){document.getElementById('ritual-ov').classList.remove('open');flash();}
+function doRitual(type){
+  document.getElementById('ritual-ov').classList.remove('open');
+  if(type==='keep'){
+    // Zostaw — myśli zostają, słoik pełny
+    document.getElementById('sn-jar-screen').classList.add('on');
+  } else {
+    // Zakop lub Spal — czyści słoik
+    snJarItems=[];S.snItems=[];saveS();
+    snRenderJar();
+    flash();
+    document.getElementById('sn-jar-screen').classList.add('on');
+  }
+}
 function todayStr(){return new Date().toISOString().slice(0,10);}
 function yest(){var d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);}
 function flash(){var f=document.createElement('div');f.className='flash';document.body.appendChild(f);setTimeout(function(){f.remove();},700);}
