@@ -204,14 +204,33 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <div class="home-greet" id="h-greet"></div>
 <h1 class="home-name" id="h-name"></h1>
 <div id="cosmic-bar" style="font-size:12px;margin-bottom:20px;letter-spacing:0.04em;"></div>
-<div class="mod-card card-sn" onclick="openSN()">
-<button id="moon-btn" onclick="event.stopPropagation();showMoonPopup();" style="background:none;border:none;padding:0;cursor:pointer;display:block;margin-bottom:10px;"></button>
-<h2>Spokojna Noc</h2><p id="sn-card-sub">Wyrzuć myśl z głowy. Idź spać lżejszy.</p>
+<div class="mod-card card-sn" onclick="openSN()" style="min-height:90px;">
+<div style="display:flex;align-items:center;gap:14px;margin-bottom:8px;">
+  <span style="font-size:42px;flex-shrink:0;">🌙</span>
+  <h2 style="font-size:24px;flex:1;text-align:left;padding-left:8px;">Spokojna Noc</h2>
 </div>
+<p id="sn-card-sub" style="font-size:13px;opacity:0.8;text-align:center;">Wyrzuć myśl z głowy. Idź spać lżejszy.</p>
+</div>
+
+<!-- KAFEL CZASU -->
+<div class="mod-card" style="background:rgba(20,25,50,0.72);border:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:row;align-items:center;justify-content:space-between;padding:22px 22px;min-height:100px;margin-bottom:16px;">
+  <div style="flex:1;text-align:left;">
+    <div id="time-date" style="font-size:18px;font-weight:700;color:#f0eafa;"></div>
+    <div id="time-day" style="font-size:12px;color:rgba(200,185,240,0.5);margin-top:3px;letter-spacing:0.5px;"></div>
+  </div>
+  <button id="moon-btn2" onclick="showMoonPopup();" style="background:none;border:none;padding:0 8px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;"></button>
+  <div style="flex:1;text-align:right;">
+    <div id="time-clock" style="font-size:22px;font-weight:700;color:#f0eafa;letter-spacing:2px;font-family:'Nunito',sans-serif;"></div>
+  </div>
+</div>
+
 <div class="mod-card card-dd" onclick="openDD()">
-<span class="ico">☀️</span><h2>Dobry Dzień</h2><p>Podziel się czymś dobrym z dziś.</p>
-<div id="dd-date-info" style="font-size:11px;opacity:.65;margin-top:6px;font-weight:600;"></div>
-<div class="series-badge" id="ser-badge" style="display:none;">🔥 <span id="ser-n">0</span> dni</div>
+<div style="display:flex;align-items:center;gap:14px;margin-bottom:8px;">
+  <span style="font-size:42px;flex-shrink:0;">☀️</span>
+  <h2 style="font-size:24px;flex:1;text-align:left;padding-left:8px;">Dobry Dzień</h2>
+</div>
+<p style="font-size:13px;opacity:0.75;text-align:center;">Podziel się czymś dobrym z dziś.</p>
+</div><div class="series-badge" id="ser-badge" style="display:none;">🔥 <span id="ser-n">0</span> dni</div>
 </div>
 <button onclick="switchUser()" style="background:none;border:none;color:var(--nu);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;padding:8px 0;opacity:.6;display:block;width:100%;text-align:center;margin-top:4px;">🔄 Zmień użytkownika</button>
 </div></div>
@@ -377,7 +396,7 @@ document.addEventListener('DOMContentLoaded',function(){
   if(pn)pn.addEventListener('keydown',function(e){if(e.key==='Enter')obStep2();});
 });
 function timeGreeting(h){if(h>=5&&h<9)return'Dzień się zaczyna';if(h>=9&&h<12)return'Dobry ranek';if(h>=12&&h<14)return'Dobrego dnia';if(h>=14&&h<17)return'Piękne popołudnie';if(h>=17&&h<20)return'Dobry wieczór';return'Dobranoc';}
-function showHome(){calcAge();var h=new Date().getHours();document.getElementById('h-greet').textContent=timeGreeting(h);document.getElementById('h-name').textContent=(nickDisplay()||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';renderCosmicBar();renderCardExtras();renderMoonSVG();snSetCardSub();show('home');}
+function showHome(){calcAge();var h=new Date().getHours();document.getElementById('h-greet').textContent=timeGreeting(h);document.getElementById('h-name').textContent=(nickDisplay()||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';renderCosmicBar();renderCardExtras();renderMoonSVG();renderTimeCard();snSetCardSub();show('home');}
 function moonPhase(date){var known=new Date(2000,0,6);var diff=(date-known)/(1000*60*60*24);var cycle=diff%29.53059;if(cycle<0)cycle+=29.53059;return cycle;}
 function moonEmoji(date){var c=moonPhase(date);if(c<1.85)return{e:'🌑',n:'Nów'};if(c<7.38)return{e:'🌒',n:'Przybywający sierp'};if(c<11.07)return{e:'🌓',n:'Pierwsza kwadra'};if(c<14.77)return{e:'🌔',n:'Przybywający garb'};if(c<18.46)return{e:'🌕',n:'Pełnia'};if(c<22.15)return{e:'🌖',n:'Ubywający garb'};if(c<25.84)return{e:'🌗',n:'Ostatnia kwadra'};return{e:'🌘',n:'Ubywający sierp'};}
 function zodiacSign(date){var m=date.getMonth()+1,d=date.getDate();var signs=[{s:'Koziorożec',e:'♑',el:'ziemia',desc:'Koziorożec — znak ziemi. Wytrwałość i ambicja.',tip:'Koziorożec widoczny jesienią i zimą na południu nieba.'},{s:'Wodnik',e:'♒',el:'powietrze',desc:'Wodnik — znak powietrza. Niezależność i oryginalność.',tip:'Słaba konstelacja — szukaj charakterystycznego Y jesienią.'},{s:'Ryby',e:'♓',el:'woda',desc:'Ryby — znak wody. Wrażliwość i intuicja.',tip:'Ryby widoczne wczesną wiosną — dwa łuki gwiazd.'},{s:'Baran',e:'♈',el:'ogień',desc:'Baran — znak ognia. Odwaga i inicjatywa.',tip:'Mały łuk trzech gwiazd między Plejadami a Wielorybem.'},{s:'Byk',e:'♉',el:'ziemia',desc:'Byk — znak ziemi. Cierpliwość i determinacja.',tip:'Charakterystyczne V Hiad z pomarańczowym Aldebaranem zimą.'},{s:'Bliźnięta',e:'♊',el:'powietrze',desc:'Bliźnięta — znak powietrza. Ciekawość i komunikatywność.',tip:'Dwie jasne gwiazdy blisko siebie — Kastor i Polluks wiosną.'},{s:'Rak',e:'♋',el:'woda',desc:'Rak — znak wody. Intuicja i emocjonalność.',tip:'Słaba konstelacja między Bliźniętami a Lwem.'},{s:'Lew',e:'♌',el:'ogień',desc:'Lew — znak ognia. Pewność siebie i hojność.',tip:'Charakterystyczny sierp z jasnym Regulusem — wiosną na południu.'},{s:'Panna',e:'♍',el:'ziemia',desc:'Panna — znak ziemi. Precyzja i skromność.',tip:'Jasna Spica — jeden z najjaśniejszych punktów wiosennego nieba.'},{s:'Waga',e:'♎',el:'powietrze',desc:'Waga — znak powietrza. Harmonia i sprawiedliwość.',tip:'Czworokąt gwiazd między Skorpionem a Panną latem.'},{s:'Skorpion',e:'♏',el:'woda',desc:'Skorpion — znak wody. Intensywność i transformacja.',tip:'Wielka litera J z czerwonym Antaresem latem nisko na południu.'},{s:'Strzelec',e:'♐',el:'ogień',desc:'Strzelec — znak ognia. Optymizm i swoboda.',tip:'Kształt czajniczka latem — wskazuje na centrum galaktyki.'}];var fromTo=[[12,22,1,19],[1,20,2,18],[2,19,3,20],[3,21,4,19],[4,20,5,20],[5,21,6,20],[6,21,7,22],[7,23,8,22],[8,23,9,22],[9,23,10,22],[10,23,11,21],[11,22,12,21]];for(var i=0;i<12;i++){var ft=fromTo[i];var fm=ft[0],fd=ft[1],tm=ft[2],td=ft[3];if(fm<=tm){if((m===fm&&d>=fd)||(m===tm&&d<=td)||(m>fm&&m<tm))return signs[i];}else{if((m===fm&&d>=fd)||m>fm||(m===tm&&d<=td)||m<tm)return signs[i];}}return signs[0];}
@@ -423,6 +442,30 @@ function drawMoonSVG(svg,cycle,size){
   var glow=document.createElementNS(ns,'circle');glow.setAttribute('cx',cx);glow.setAttribute('cy',cy);glow.setAttribute('r',r*1.08);glow.setAttribute('fill','none');glow.setAttribute('stroke','rgba(255,220,100,0.07)');glow.setAttribute('stroke-width',r*0.14);svg.appendChild(glow);
   var border=document.createElementNS(ns,'circle');border.setAttribute('cx',cx);border.setAttribute('cy',cy);border.setAttribute('r',r);border.setAttribute('fill','none');border.setAttribute('stroke','rgba(255,220,120,0.18)');border.setAttribute('stroke-width','1');svg.appendChild(border);
 }
+function renderTimeCard(){
+  var known=new Date(2000,0,6);
+  var diff=(new Date()-known)/(1000*60*60*24);
+  var cycle=(diff%29.53059+29.53059)%29.53059/29.53059;
+  var btn2=document.getElementById('moon-btn2');
+  if(btn2&&!btn2.querySelector('svg')){
+    var svg2=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg2.setAttribute('width','64');svg2.setAttribute('height','64');svg2.setAttribute('viewBox','0 0 64 64');
+    btn2.appendChild(svg2);drawMoonSVG(svg2,cycle,64);
+  }
+  function tick(){
+    var now=new Date();
+    var months=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+    var days=['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
+    var dateEl=document.getElementById('time-date');
+    var dayEl=document.getElementById('time-day');
+    var clockEl=document.getElementById('time-clock');
+    if(dateEl)dateEl.textContent=now.getDate()+' '+months[now.getMonth()];
+    if(dayEl)dayEl.textContent=days[now.getDay()];
+    if(clockEl)clockEl.textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  }
+  tick();
+  if(!window._timeTick)window._timeTick=setInterval(tick,10000);
+}
 function renderMoonSVG(){
   var known=new Date(2000,0,6);
   var diff=(new Date()-known)/(1000*60*60*24);
@@ -430,10 +473,10 @@ function renderMoonSVG(){
   var btn=document.getElementById('moon-btn');
   if(btn){
     var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-    svg.setAttribute('width','44');svg.setAttribute('height','44');svg.setAttribute('viewBox','0 0 44 44');
+    svg.setAttribute('width','36');svg.setAttribute('height','36');svg.setAttribute('viewBox','0 0 36 36');
     svg.id='sn-moon-svg';
     btn.innerHTML='';btn.appendChild(svg);
-    drawMoonSVG(svg,cycle,44);
+    drawMoonSVG(svg,cycle,36);
   }
 }
 function moonAge(){var known=new Date(2000,0,6);var diff=(new Date()-known)/(1000*60*60*24);var cycle=diff%29.53059;if(cycle<0)cycle+=29.53059;return cycle;}
