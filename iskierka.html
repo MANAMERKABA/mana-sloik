@@ -79,6 +79,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 
 /* ══ ONBOARDING ══ */
 #onboarding{overflow:hidden;background:#050310 url("https://manamerkaba.github.io/mana-sloik/img/sky/drugi%20ekran.jpg") center/cover no-repeat;align-items:center;justify-content:center;}
+@media(max-width:600px){#onboarding{background-position:70% 15%;}}
 #ob-bg{position:absolute;inset:0;z-index:0;overflow:hidden;}
 #ob-bg-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 1.2s ease;}
 #ob-bg-photo.loaded{opacity:1;}
@@ -191,6 +192,9 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
   <input class="ob-inp" type="text" id="ob-name" placeholder="jak masz na imię..." maxlength="20" autocorrect="off" autocapitalize="words" autocomplete="off">
   <label class="ob-label" for="ob-year">Rok urodzenia</label>
   <input class="ob-inp" type="number" id="ob-year" placeholder="np. 2015" min="1930" max="2025" inputmode="numeric">
+  <label class="ob-label" for="ob-pin">Twój sekretny kod (4 cyfry)</label>
+  <input class="ob-inp" type="password" id="ob-pin" placeholder="••••" maxlength="4" inputmode="numeric" pattern="[0-9]{4}">
+  <div id="ob-msg" style="font-size:13px;color:#e88070;text-align:center;min-height:20px;margin-bottom:8px;"></div>
   <button class="ob-btn" id="ob-submit" type="button">Wchodzę &nbsp;✦</button>
 </div>
 </div>
@@ -287,25 +291,88 @@ function route(){var h=new Date().getHours();if(!S.nick||!S.birthYear){show('onb
 function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');document.getElementById('gear-btn').style.display=['onboarding','sleep'].includes(id)?'none':'block';}
 function showSleep(){var h=new Date().getHours();var n=nickDisplay();document.getElementById('sleep-h').textContent=(n?(h>=22?'Dobranoc':'Za wcześnie')+', '+n+' 🌙':(h>=22?'Dobranoc':'Za wcześnie')+' 🌙');document.getElementById('sleep-p').textContent=h>=22?'Magic Jar czeka jutro. Czynna 6:00–22:00.':'Magic Jar budzi się o 6:00. Do zobaczenia!';show('sleep');}
 function buildJarGridOb(){var g=document.getElementById('jar-grid-ob');if(!g)return;g.innerHTML='';JARS.forEach(function(j){var d=document.createElement('div');d.className='jar-opt-ob'+(j.id===(S.jarType||'classic')?' sel':'');d.innerHTML='<span>'+j.emoji+'</span>'+j.label;d.onclick=function(){S.jarType=j.id;g.querySelectorAll('.jar-opt-ob').forEach(function(x){x.classList.remove('sel');});d.classList.add('sel');};g.appendChild(d);});}
+var SB_URL='https://kkxhqtfxvgxdqpnzaufu.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtreGhxdGZ4dmd4ZHFwbnphdWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk4MzI3NzksImV4cCI6MjAyNTQwODc3OX0.CdMSMVGBpq79SenHRBFj3BbgvJp_QoRfPnMRuaXRNOk';
+
+function sbHeaders(){return{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};}
+
+function obMsg(txt,ok){var el=document.getElementById('ob-msg');if(el){el.textContent=txt;el.style.color=ok?'#8ecfb8':'#e88070';}}
+function obSetLoading(on){var btn=document.getElementById('ob-submit');if(btn)btn.textContent=on?'Chwila...':'Wchodzę ✦';}
+
 function obStep2(){
   var n=document.getElementById('ob-name').value.trim();
   var y=parseInt(document.getElementById('ob-year').value);
+  var p=document.getElementById('ob-pin').value.trim();
   var maxY=new Date().getFullYear()-1;
   if(!n){shake('ob-name');return;}
   if(!y||y<1930||y>maxY){shake('ob-year');return;}
-  S.nick=n.charAt(0).toUpperCase()+n.slice(1);
-  S.birthYear=y;
-  S.jarType='classic';
-  calcAge();
-  saveS();
-  showHome();
+  if(!p||p.length!==4||!/^\d{4}$/.test(p)){shake('ob-pin');obMsg('Kod musi mieć dokładnie 4 cyfry');return;}
+  var nick=n.charAt(0).toUpperCase()+n.slice(1);
+  obSetLoading(true);
+  obMsg('');
+  obLoginSupabase(nick,y,p);
 }
+
+function obLoginSupabase(nick,year,pin){
+  var url=SB_URL+'/rest/v1/travels?nick=eq.'+encodeURIComponent(nick)+'&birth_year=eq.'+year+'&select=id,nick,birth_year,pin,jar_type';
+  fetch(url,{headers:sbHeaders(),signal:AbortSignal.timeout(5000)})
+  .then(function(r){return r.json();})
+  .then(function(data){
+    if(data&&data.length>0){
+      // Podróżnik istnieje — sprawdź PIN
+      var traveler=data[0];
+      if(traveler.pin===pin){
+        // PIN OK — wchodzi
+        obSetLoading(false);
+        S.nick=nick;S.birthYear=year;S.jarType=traveler.jar_type||'classic';S.travelerId=traveler.id;
+        calcAge();saveS();
+        // Aktualizuj last_visit
+        fetch(SB_URL+'/rest/v1/travels?id=eq.'+traveler.id,{method:'PATCH',headers:sbHeaders(),body:JSON.stringify({last_visit:new Date().toISOString()})});
+        showHome();
+      } else {
+        // Zły PIN
+        obSetLoading(false);
+        shake('ob-pin');
+        obMsg('Nieprawidłowy kod. Spróbuj jeszcze raz.');
+      }
+    } else {
+      // Nowy podróżnik — utwórz konto
+      var body={nick:nick,birth_year:year,pin:pin,jar_type:'classic',source:'magic_jar'};
+      fetch(SB_URL+'/rest/v1/travels',{method:'POST',headers:Object.assign({},sbHeaders(),{'Prefer':'return=representation'}),body:JSON.stringify(body)})
+      .then(function(r){return r.json();})
+      .then(function(created){
+        obSetLoading(false);
+        S.nick=nick;S.birthYear=year;S.jarType='classic';
+        if(created&&created[0])S.travelerId=created[0].id;
+        calcAge();saveS();
+        obMsg('Witaj, '+nick+'! Twój Słoik jest gotowy.', true);
+        setTimeout(showHome,900);
+      })
+      .catch(function(){obSetLoading(false);obFallback(nick,year);});
+    }
+  })
+  .catch(function(){
+    // Supabase niedostępny — fallback
+    obSetLoading(false);
+    obFallback(nick,year);
+  });
+}
+
+function obFallback(nick,year){
+  // Bez połączenia — pracuj lokalnie
+  obMsg('Połączono lokalnie. Dane zsynchronizujemy później.', true);
+  S.nick=nick;S.birthYear=year;S.jarType='classic';
+  calcAge();saveS();
+  setTimeout(showHome,1200);
+}
+
 function obFinish(){saveS();showHome();}
 function shake(id){var el=document.getElementById(id);el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');setTimeout(function(){el.classList.remove('shake');},400);}
 document.addEventListener('DOMContentLoaded',function(){
-  var nm=document.getElementById('ob-name');var yr=document.getElementById('ob-year');
+  var nm=document.getElementById('ob-name');var yr=document.getElementById('ob-year');var pn=document.getElementById('ob-pin');
   if(nm)nm.addEventListener('keydown',function(e){if(e.key==='Enter')yr.focus();});
-  if(yr)yr.addEventListener('keydown',function(e){if(e.key==='Enter')obStep2();});
+  if(yr)yr.addEventListener('keydown',function(e){if(e.key==='Enter'&&pn)pn.focus();});
+  if(pn)pn.addEventListener('keydown',function(e){if(e.key==='Enter')obStep2();});
 });
 function timeGreeting(h){if(h>=5&&h<9)return'Dzień się zaczyna';if(h>=9&&h<12)return'Dobry ranek';if(h>=12&&h<14)return'Dobrego dnia';if(h>=14&&h<17)return'Piękne popołudnie';if(h>=17&&h<20)return'Dobry wieczór';return'Dobranoc';}
 function showHome(){calcAge();var h=new Date().getHours();document.getElementById('h-greet').textContent=timeGreeting(h);document.getElementById('h-name').textContent=(nickDisplay()||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';renderCosmicBar();renderCardExtras();snSetCardSub();show('home');}
