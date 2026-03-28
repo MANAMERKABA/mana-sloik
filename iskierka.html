@@ -189,7 +189,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
   <p class="ob-sub">Twoja przestrzeń. Tylko Twoja.</p>
   <div class="ob-sep"><span>᛫ ᛭ ᛫</span></div>
   <label class="ob-label" for="ob-name">Imię</label>
-  <input class="ob-inp" type="text" id="ob-name" placeholder="jak masz na imię..." maxlength="20" autocorrect="off" autocapitalize="words" autocomplete="off" style="text-transform:capitalize;">
+  <input class="ob-inp" type="text" id="ob-name" placeholder="jak masz na imię..." maxlength="20" autocorrect="off" autocapitalize="words" autocomplete="off" style="text-transform:uppercase;">
   <label class="ob-label" for="ob-year">Rok urodzenia</label>
   <input class="ob-inp" type="number" id="ob-year" placeholder="np. 2015" min="1930" max="2025" inputmode="numeric">
   <label class="ob-label" for="ob-pin">Twój sekretny kod (4 cyfry)</label>
@@ -307,7 +307,7 @@ function obStep2(){
   if(!n){shake('ob-name');return;}
   if(!y||y<1930||y>maxY){shake('ob-year');return;}
   if(!p||p.length!==4||!/^\d{4}$/.test(p)){shake('ob-pin');obMsg('Kod musi mieć dokładnie 4 cyfry');return;}
-  var nick=n.charAt(0).toUpperCase()+n.slice(1);
+  var nick=n.charAt(0).toUpperCase()+n.slice(1).toLowerCase();
   obSetLoading(true);
   obMsg('');
   obLoginSupabase(nick,y,p);
