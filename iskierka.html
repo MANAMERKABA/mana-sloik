@@ -87,20 +87,20 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 @keyframes obIn{from{opacity:0;transform:translateY(16px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
 .ob-card{position:relative;z-index:10;width:min(320px,86vw);max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:rgba(10,15,28,0.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:24px;pointer-events:all;padding:32px 28px 28px;border:1px solid rgba(255,255,255,0.09);box-shadow:0 8px 40px rgba(0,0,0,0.6);animation:obIn .6s cubic-bezier(0.16,1,0.3,1) both;}
 .ob-card::-webkit-scrollbar{width:0;}
-.ob-glyph{text-align:center;font-size:24px;margin-bottom:6px;}
+.ob-glyph{text-align:center;font-size:24px;margin-bottom:6px;color:#f5c842;text-shadow:0 0 12px rgba(245,200,60,0.7);}
 .ob-title{font-family:'Cinzel',serif;font-size:21px;font-weight:700;color:#f0eafa;text-align:center;letter-spacing:4px;margin-bottom:4px;}
 .ob-sub{font-family:'Lora',serif;font-style:italic;font-size:12px;color:rgba(200,185,240,0.55);text-align:center;margin-bottom:22px;}
 .ob-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2.5px;color:rgba(200,185,240,0.45);display:block;margin-bottom:6px;}
-.ob-inp{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:13px 16px;font-family:'Nunito',sans-serif;font-size:16px;color:#f0eafa;outline:none;margin-bottom:16px;}
-.ob-inp::placeholder{color:rgba(200,185,240,0.28);}
-.ob-inp:focus{border-color:rgba(180,130,255,0.5);background:rgba(255,255,255,0.10);}
+.ob-inp{width:100%;background:rgba(220,120,40,0.13);border:1px solid rgba(245,180,80,0.22);border-radius:12px;padding:13px 16px;font-family:'Nunito',sans-serif;font-size:16px;color:#f0eafa;outline:none;margin-bottom:16px;}
+.ob-inp::placeholder{color:rgba(245,200,130,0.35);}
+.ob-inp:focus{border-color:rgba(245,180,60,0.6);background:rgba(220,120,40,0.20);}
 .ob-btn{width:100%;padding:15px;margin-top:6px;background:rgba(140,90,255,0.22);border:1px solid rgba(170,120,255,0.35);border-radius:14px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:3px;color:#d4a8ff;cursor:pointer;transition:transform .15s;}
 .ob-btn:active{transform:scale(.97);}
 .ob-back{background:none;border:none;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:rgba(200,185,240,0.4);cursor:pointer;padding:0 0 14px;display:block;}
 .ob-step{display:none;}.ob-step.active{display:block;}
 .ob-sep{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
-.ob-sep::before,.ob-sep::after{content:'';flex:1;height:1px;background:rgba(200,185,240,0.12);}
-.ob-sep span{font-size:11px;color:rgba(200,185,240,0.25);}
+.ob-sep::before,.ob-sep::after{content:'';flex:1;height:1px;background:rgba(245,200,60,0.25);}
+.ob-sep span{font-size:11px;color:rgba(245,200,60,0.55);}
 .jar-grid-ob{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0 18px;}
 .jar-opt-ob{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;border-radius:14px;border:1.5px solid rgba(255,255,255,0.09);cursor:pointer;background:rgba(255,255,255,0.05);font-family:'Cinzel',serif;font-size:8px;color:rgba(200,185,240,0.5);letter-spacing:1.5px;}
 .jar-opt-ob.sel{border-color:rgba(170,120,255,0.7);background:rgba(140,90,255,0.2);color:#d4a8ff;}
