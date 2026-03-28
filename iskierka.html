@@ -54,7 +54,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 .set-sep{border:none;border-top:1px solid rgba(255,255,255,.08);margin:16px 0;}
 .set-danger{color:#e07060;font-size:14px;font-weight:700;background:rgba(192,57,43,.15);border:1.5px solid rgba(192,57,43,.25);border-radius:var(--rs);padding:13px;width:100%;font-family:'Nunito',sans-serif;cursor:pointer;margin-top:4px;}
 #sleep{background:var(--nb);justify-content:center;align-items:center;text-align:center;}
-#home{overflow-y:auto;-webkit-overflow-scrolling:touch;background:#f5f0e8 url("https://manamerkaba.github.io/mana-sloik/img/sky/ekran%20startowy.jpg") center/cover no-repeat fixed;}
+#home{overflow-y:auto;-webkit-overflow-scrolling:touch;background:#f5f0e8 url("https://manamerkaba.github.io/mana-sloik/img/sky/ekran%20startowy_5.jpg") center/cover no-repeat fixed;}
 .home-inner{max-width:480px;margin:0 auto;padding:52px 20px 40px;width:100%;}
 .home-greet{font-size:14px;font-weight:700;opacity:.6;margin-bottom:3px;}
 .home-name{font-size:30px;margin-bottom:28px;}
@@ -393,7 +393,7 @@ function maxDaily(){return S.ageGroup===3?4:3;}
 function totalTiles(){return gridN()*gridN();}
 var SN_COLORS=['#c9a0dc','#a8c5e0','#8ecfb8','#e8b48a','#e0959f','#d4c46a'];
 var snJarItems=[];var snChosenColor=SN_COLORS[0];var snConstOffset=0;
-function snGetDailyPhoto(){var now=new Date();var dayOfYear=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);var cats=[{n:'aurora',c:4},{n:'moon',c:6},{n:'m-w',c:8}];var cat=cats[dayOfYear%3];var num=(dayOfYear%cat.c)+1;return'img/sky/'+cat.n+'_'+num+'.jpg';}
+function snGetDailyPhoto(){var now=new Date();var dayOfYear=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);var cats=[{n:'aurora',c:4},{n:'moon',c:6},{n:'m-w',c:8},{n:'night',c:2}];var cat=cats[dayOfYear%4];var num=(dayOfYear%cat.c)+1;return'img/sky/'+cat.n+'_'+num+'.jpg';}
 function snSetBg(){var img=document.getElementById('sn-bg-photo');if(img){img.classList.remove('loaded');img.onload=function(){img.classList.add('loaded');};img.onerror=function(){img.style.display='none';};img.src=snGetDailyPhoto();}}
 function snShowPopup(){var now=new Date();var zod=zodiacSign(now);var moon=moonEmoji(now);document.getElementById('snp-name').textContent=zod.e+' '+zod.s;document.getElementById('snp-latin').textContent=moon.e+' '+moon.n;document.getElementById('snp-desc').textContent=zod.desc||'';document.getElementById('snp-tip').textContent=zod.tip||'';var pp=document.getElementById('sn-popup');var W=window.innerWidth,pw=Math.min(300,W*0.88);pp.style.width=pw+'px';pp.style.left=((W-pw)/2)+'px';pp.style.top='80px';pp.classList.add('on');}
 function snClosePopup(){document.getElementById('sn-popup').classList.remove('on');}
