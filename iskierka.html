@@ -292,7 +292,7 @@ function show(id){document.querySelectorAll('.screen').forEach(function(s){s.cla
 function showSleep(){var h=new Date().getHours();var n=nickDisplay();document.getElementById('sleep-h').textContent=(n?(h>=22?'Dobranoc':'Za wcześnie')+', '+n+' 🌙':(h>=22?'Dobranoc':'Za wcześnie')+' 🌙');document.getElementById('sleep-p').textContent=h>=22?'Magic Jar czeka jutro. Czynna 6:00–22:00.':'Magic Jar budzi się o 6:00. Do zobaczenia!';show('sleep');}
 function buildJarGridOb(){var g=document.getElementById('jar-grid-ob');if(!g)return;g.innerHTML='';JARS.forEach(function(j){var d=document.createElement('div');d.className='jar-opt-ob'+(j.id===(S.jarType||'classic')?' sel':'');d.innerHTML='<span>'+j.emoji+'</span>'+j.label;d.onclick=function(){S.jarType=j.id;g.querySelectorAll('.jar-opt-ob').forEach(function(x){x.classList.remove('sel');});d.classList.add('sel');};g.appendChild(d);});}
 var SB_URL='https://kkxhqtfxvgxdqpnzaufu.supabase.co';
-var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtreGhxdGZ4dmd4ZHFwbnphdWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk4MzI3NzksImV4cCI6MjAyNTQwODc3OX0.CdMSMVGBpq79SenHRBFj3BbgvJp_QoRfPnMRuaXRNOk';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtreGhxdGZ4dmd4ZHFwbnphdWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MjE0NTYsImV4cCI6MjA4ODM5NzQ1Nn0.s8Ju-ww3G4_yyH6RedK2gwLveVJKD3hY2IHh62-qjfo';
 
 function sbHeaders(){return{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};}
 
