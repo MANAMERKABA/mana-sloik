@@ -205,7 +205,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <h1 class="home-name" id="h-name"></h1>
 <div id="cosmic-bar" style="font-size:12px;margin-bottom:20px;letter-spacing:0.04em;"></div>
 <div class="mod-card card-sn" onclick="openSN()">
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;" onclick="showMoonPopup()"><svg id="sn-moon-svg" width="44" height="44" viewBox="0 0 44 44" style="flex-shrink:0;"></svg></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;" onclick="event.stopPropagation();showMoonPopup()"><svg id="sn-moon-svg" width="44" height="44" viewBox="0 0 44 44" style="flex-shrink:0;"></svg></div>
 <h2>Spokojna Noc</h2><p id="sn-card-sub">Wyrzuć myśl z głowy. Idź spać lżejszy.</p>
 </div>
 <div class="mod-card card-dd" onclick="openDD()">
