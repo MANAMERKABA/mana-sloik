@@ -205,7 +205,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <h1 class="home-name" id="h-name"></h1>
 <div id="cosmic-bar" style="font-size:12px;margin-bottom:20px;letter-spacing:0.04em;"></div>
 <div class="mod-card card-sn" onclick="openSN()">
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;" id="moon-btn"><svg id="sn-moon-svg" width="44" height="44" viewBox="0 0 44 44" style="flex-shrink:0;pointer-events:none;"></svg></div>
+<button id="moon-btn" onclick="event.stopPropagation();showMoonPopup();" style="background:none;border:none;padding:0;cursor:pointer;display:block;margin-bottom:10px;"></button>
 <h2>Spokojna Noc</h2><p id="sn-card-sub">Wyrzuć myśl z głowy. Idź spać lżejszy.</p>
 </div>
 <div class="mod-card card-dd" onclick="openDD()">
@@ -424,14 +424,17 @@ function drawMoonSVG(svg,cycle,size){
   var border=document.createElementNS(ns,'circle');border.setAttribute('cx',cx);border.setAttribute('cy',cy);border.setAttribute('r',r);border.setAttribute('fill','none');border.setAttribute('stroke','rgba(255,220,120,0.18)');border.setAttribute('stroke-width','1');svg.appendChild(border);
 }
 function renderMoonSVG(){
-  var svg=document.getElementById('sn-moon-svg'); if(!svg)return;
   var known=new Date(2000,0,6);
   var diff=(new Date()-known)/(1000*60*60*24);
   var cycle=(diff%29.53059+29.53059)%29.53059/29.53059;
-  drawMoonSVG(svg,cycle,44);
   var btn=document.getElementById('moon-btn');
-  if(btn){btn.style.cursor='pointer';btn.onclick=function(e){e.stopPropagation();e.preventDefault();showMoonPopup();};}
-  var barSvg=document.getElementById('cosmic-moon-svg'); if(barSvg)drawMoonSVG(barSvg,cycle,26);
+  if(btn){
+    var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('width','44');svg.setAttribute('height','44');svg.setAttribute('viewBox','0 0 44 44');
+    svg.id='sn-moon-svg';
+    btn.innerHTML='';btn.appendChild(svg);
+    drawMoonSVG(svg,cycle,44);
+  }
 }
 function moonAge(){var known=new Date(2000,0,6);var diff=(new Date()-known)/(1000*60*60*24);var cycle=diff%29.53059;if(cycle<0)cycle+=29.53059;return cycle;}
 function moonDistance(){var age=moonAge();var angle=age/27.55*2*Math.PI;return Math.round(384400-21000*Math.cos(angle));}
