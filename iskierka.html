@@ -168,7 +168,15 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <body>
 <button class="gear-btn" id="gear-btn">⚙️</button>
 <div class="set-ov" id="set-ov"><div class="set-card"><h3>Ustawienia</h3><p>Dane przechowywane tylko na tym urządzeniu.</p><hr class="set-sep"><button class="set-danger" onclick="switchUser()">🔄 Zmień użytkownika</button><button class="btn btn-ghost" onclick="closeSet()" style="margin-top:8px;">Zamknij</button></div></div>
-<div class="ritual-ov" id="ritual-ov"><div class="ritual-card"><h2>Słoik jest pełny 🫙</h2><p>Twoje myśli mają swoje miejsce. Co chcesz z nimi zrobić?</p><div class="ritual-opts"><button class="r-btn r-keep" onclick="doRitual('keep')">🫙 Zostaw</button><button class="r-btn r-bury" onclick="doRitual('bury')">🌱 Zakop</button><button class="r-btn r-burn" onclick="doRitual('burn')">🔥 Spal</button></div></div></div>
+<div class="ritual-ov" id="ritual-ov"> style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;justify-content:center;align-items:center;padding:20px;">
+<div style="background:#fff;border-radius:24px;padding:28px 24px;max-width:340px;width:100%;font-family:'Nunito',sans-serif;">
+  <div style="font-size:36px;text-align:center;margin-bottom:12px;">☀️</div>
+  <h3 style="font-size:18px;font-weight:700;color:#2a2640;text-align:center;margin-bottom:12px;">Zanim wpiszesz swoją myśl</h3>
+  <p style="font-size:14px;color:#6a6686;line-height:1.6;margin-bottom:20px;text-align:center;">Serce Magic Jar przeczyta Twoją myśl żeby Ci odpowiedzieć. <strong>Nie znamy Twojego imienia.</strong> Twoja myśl jest bezpieczna i anonimowa.</p>
+  <button onclick="ddConsentYes()" style="width:100%;padding:14px;background:#f6a825;border:none;border-radius:14px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:10px;">Rozumiem, wchodzę ☀️</button>
+  <button onclick="ddConsentNo()" style="width:100%;padding:12px;background:rgba(0,0,0,0.05);border:none;border-radius:14px;font-family:'Nunito',sans-serif;font-size:14px;color:#8a86a6;cursor:pointer;">Wolę bez Serca</button>
+</div>
+</div><div class="ritual-card"><h2>Słoik jest pełny 🫙</h2><p>Twoje myśli mają swoje miejsce. Co chcesz z nimi zrobić?</p><div class="ritual-opts"><button class="r-btn r-keep" onclick="doRitual('keep')">🫙 Zostaw</button><button class="r-btn r-bury" onclick="doRitual('bury')">🌱 Zakop</button><button class="r-btn r-burn" onclick="doRitual('burn')">🔥 Spal</button></div></div></div>
 
 <!-- SLEEP -->
 <div class="screen night" id="sleep">
@@ -294,7 +302,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <script>
 var JARS=[{id:'classic',emoji:'🫙',label:'KLASYCZNY'},{id:'round',emoji:'💧',label:'OKRĄGŁY'},{id:'leaf',emoji:'🌿',label:'LIŚĆ'},{id:'crystal',emoji:'💎',label:'KRYSZTAŁ'},{id:'heart',emoji:'❤️',label:'SERCE'}];
 var JAR_SHAPES={classic:{body:'M20,40 Q12,52 10,80 L10,138 Q10,152 24,152 L106,152 Q120,152 120,138 L120,80 Q118,52 110,40 Z',cap:'M16,30 Q13,38 20,40 L110,40 Q117,38 114,30 Z',lid:'M44,18 Q40,28 44,30 L86,30 Q90,28 86,18 Z',fill:'rgba(255,160,40,.32)',body_c:'rgba(255,200,100,.45)',stroke:'rgba(255,210,120,.6)',shine:'rgba(255,240,180,.4)'},round:{body:'M18,50 Q8,68 8,100 Q8,140 20,152 Q34,162 65,162 Q96,162 110,152 Q122,140 122,100 Q122,68 112,50 Z',cap:'M24,38 Q16,46 18,50 L112,50 Q114,46 106,38 Z',lid:'M50,20 Q42,28 44,34 L86,34 Q88,28 80,20 Z',fill:'rgba(100,170,255,.32)',body_c:'rgba(160,210,255,.45)',stroke:'rgba(180,225,255,.65)',shine:'rgba(210,238,255,.4)'},leaf:{body:'M65,155 Q16,148 10,110 Q6,80 14,60 Q22,42 40,38 Q55,36 65,38 Q75,36 90,38 Q108,42 116,60 Q124,80 120,110 Q114,148 65,155 Z',cap:'M45,26 Q40,34 40,38 L90,38 Q90,34 85,26 Z',lid:'M50,12 Q58,6 65,6 Q72,6 80,12 L80,26 L50,26 Z',fill:'rgba(80,190,120,.32)',body_c:'rgba(160,240,180,.45)',stroke:'rgba(140,220,160,.65)',shine:'rgba(210,250,225,.4)'},crystal:{body:'M28,42 L12,75 L10,138 Q10,152 24,152 L106,152 Q120,152 120,138 L118,75 L102,42 Z',cap:'M22,30 L18,42 L112,42 L108,30 Z',lid:'M48,12 L38,30 L92,30 L82,12 Z',fill:'rgba(160,130,255,.32)',body_c:'rgba(200,180,255,.45)',stroke:'rgba(210,190,255,.65)',shine:'rgba(235,225,255,.4)'},heart:{body:'M65,155 C65,155 8,118 8,78 C8,54 22,42 38,42 C50,42 60,50 65,58 C70,50 80,42 92,42 C108,42 122,54 122,78 C122,118 65,155 65,155 Z',cap:'M44,22 Q40,32 40,42 L90,42 Q90,32 86,22 Z',lid:'M46,8 Q50,2 65,2 Q80,2 84,8 L86,22 L44,22 Z',fill:'rgba(255,100,150,.32)',body_c:'rgba(255,150,180,.45)',stroke:'rgba(255,170,200,.65)',shine:'rgba(255,220,235,.4)'}};
-var S={nick:'',birthYear:0,ageGroup:0,jarType:'classic',snItems:[],ddTiles:[],ddOrder:[],ddDone:0,ddDate:'',ddSeries:0,ddLastDate:'',ddSet:0,_lastTile:-1,lastValid:true};
+var S={nick:'',birthYear:0,ageGroup:0,jarType:'classic',snItems:[],ddTiles:[],ddOrder:[],ddDone:0,ddDate:'',ddSeries:0,ddLastDate:'',ddSet:0,_lastTile:-1,lastValid:true,ddConsent:null};
 function loadS(){try{var d=localStorage.getItem('iskierka_v3');if(d){var parsed=JSON.parse(d);if(parsed.jarType&&!['classic','round','leaf','crystal','heart'].includes(parsed.jarType))parsed.jarType='classic';Object.assign(S,parsed);}}catch(e){localStorage.removeItem('iskierka_v3');}}
 function saveS(){try{localStorage.setItem('iskierka_v3',JSON.stringify(S));}catch(e){}}
 function nickDisplay(){return(S.nick||'').replace(/\d+$/,'').trim();}
@@ -526,7 +534,26 @@ var DD_DAYS_TEJ=['tej niedzieli','tego poniedziałku','tego wtorku','tej środy'
 function ddGetQuestion(){var now=new Date();var dow=now.getDay();var q=DD_QUESTIONS[(dow*3+now.getDate())%DD_QUESTIONS.length];return q.replace('[dzień]',DD_DAYS_ACC[dow]).replace('[dnia]',DD_DAYS_GEN[dow]).replace('[środy]',DD_DAYS_GEN[dow]).replace('[soboty]',DD_DAYS_TEJ[dow]);}
 var DD_MORNING=['Dzień się zaczyna. Niech ten [dzień] przyniesie Ci coś dobrego.','Dobry ranek. Niech [dzień] będzie dla Ciebie łagodny.'];
 var DD_DAYS_NOM=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
-function openDD(){var today=todayStr();if(S.ddDate!==today){S.ddDone=0;S.ddDate=today;saveS();}initTiles();document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';document.getElementById('dd-rev-msg').style.display='none';document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.remove('active');document.getElementById('dd1').classList.add('active');if(checkInactivity()){show('dd');ddShowInactScreen();return;}document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');document.getElementById('dd-puzzle-area').style.display='flex';ddShowNormalDD();show('dd');}
+function openDD(){
+  if(S.ddConsent===null){
+    // Pokaż ekran zgody
+    var ov=document.getElementById('dd-consent-ov');
+    if(ov)ov.style.display='flex';
+    return;
+  }
+  ddEnter();
+}
+function ddConsentYes(){
+  S.ddConsent=true;saveS();
+  var ov=document.getElementById('dd-consent-ov');if(ov)ov.style.display='none';
+  ddEnter();
+}
+function ddConsentNo(){
+  S.ddConsent=false;saveS();
+  var ov=document.getElementById('dd-consent-ov');if(ov)ov.style.display='none';
+  ddEnter();
+}
+function ddEnter(){var today=todayStr();if(S.ddDate!==today){S.ddDone=0;S.ddDate=today;saveS();}initTiles();document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';document.getElementById('dd-rev-msg').style.display='none';document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.remove('active');document.getElementById('dd1').classList.add('active');if(checkInactivity()){show('dd');ddShowInactScreen();return;}document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');document.getElementById('dd-puzzle-area').style.display='flex';ddShowNormalDD();show('dd');}
 function ddShowNormalDD(){var h=new Date().getHours(),dow=new Date().getDay(),dom=new Date().getDate(),nick=nickDisplay();var qEl=document.getElementById('dd-question'),titleEl=document.getElementById('dd-title'),inputEl=document.getElementById('dd-input'),doneMsgEl=document.getElementById('dd-done-msg');renderPuzzle();if(h>=6&&h<12){var msg=DD_MORNING[dom%DD_MORNING.length].replace('[dzień]',DD_DAYS_NOM[dow]);if(nick)msg=msg.replace('Dzień się zaczyna','Dzień się zaczyna, '+nick).replace('Dobry ranek','Dobry ranek, '+nick);if(qEl)qEl.textContent=msg;if(titleEl)titleEl.textContent='Dobry Dzień ☀️';if(inputEl)inputEl.style.display='none';if(doneMsgEl)doneMsgEl.style.display='none';}else{if(qEl)qEl.textContent=ddGetQuestion();if(titleEl)titleEl.textContent='Dobry Dzień ☀️'+(nick?' — '+nick:'');updateDDUI();}}
 function initTiles(){var tot=totalTiles();if(!S.ddTiles||S.ddTiles.length!==tot){S.ddTiles=Array(tot).fill(false);S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));saveS();}}
 function shuffle(arr){for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr;}
@@ -542,6 +569,19 @@ function ddSubmit(){
   document.getElementById('dd2').classList.add('active');
   document.getElementById('dd-think').style.display='block';
   document.getElementById('dd-resp').style.display='none';
+  if(S.ddConsent===false){
+    var r=['Piękna chwila. Dobrze że ją zapamiętujesz. ✨','Takie chwile są wyjątkowe. 💛','Ale fajnie! Warto to nosić ze sobą. ⭐','Cieszę się że się tym podzieliłeś! 🌟'];
+    setTimeout(function(){
+      document.getElementById('dd-think').style.display='none';
+      document.getElementById('dd-resp').style.display='block';
+      document.getElementById('dd-bub').innerHTML='<p>'+r[Math.floor(Math.random()*r.length)]+'</p>';
+      revealTile();S.ddDone++;
+      var today=todayStr();if(S.ddLastDate===yest())S.ddSeries++;else if(S.ddLastDate!==today)S.ddSeries=1;
+      S.ddLastDate=today;saveS();
+      document.getElementById('dd-rev-txt').textContent='🧩 Puzzle odkryty!';
+      document.getElementById('dd-rev-msg').style.display='block';
+    },800);return;
+  }
   fetch(SB_URL+'/functions/v1/call-dd-serce',{
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY},
