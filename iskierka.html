@@ -168,15 +168,16 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <body>
 <button class="gear-btn" id="gear-btn">⚙️</button>
 <div class="set-ov" id="set-ov"><div class="set-card"><h3>Ustawienia</h3><p>Dane przechowywane tylko na tym urządzeniu.</p><hr class="set-sep"><button class="set-danger" onclick="switchUser()">🔄 Zmień użytkownika</button><button class="btn btn-ghost" onclick="closeSet()" style="margin-top:8px;">Zamknij</button></div></div>
-<div class="ritual-ov" id="ritual-ov"> style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;justify-content:center;align-items:center;padding:20px;">
-<div style="background:#fff;border-radius:24px;padding:28px 24px;max-width:340px;width:100%;font-family:'Nunito',sans-serif;">
-  <div style="font-size:36px;text-align:center;margin-bottom:12px;">☀️</div>
-  <h3 style="font-size:18px;font-weight:700;color:#2a2640;text-align:center;margin-bottom:12px;">Zanim wpiszesz swoją myśl</h3>
-  <p style="font-size:14px;color:#6a6686;line-height:1.6;margin-bottom:20px;text-align:center;">Serce Magic Jar przeczyta Twoją myśl żeby Ci odpowiedzieć. <strong>Nie znamy Twojego imienia.</strong> Twoja myśl jest bezpieczna i anonimowa.</p>
-  <button onclick="ddConsentYes()" style="width:100%;padding:14px;background:#f6a825;border:none;border-radius:14px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:10px;">Rozumiem, wchodzę ☀️</button>
-  <button onclick="ddConsentNo()" style="width:100%;padding:12px;background:rgba(0,0,0,0.05);border:none;border-radius:14px;font-family:'Nunito',sans-serif;font-size:14px;color:#8a86a6;cursor:pointer;">Wolę bez Serca</button>
+<div class="ritual-ov" id="ritual-ov"><div class="ritual-card"><h2>Słoik jest pełny 🫙</h2><p>Twoje myśli mają swoje miejsce. Co chcesz z nimi zrobić?</p><div class="ritual-opts"><button class="r-btn r-keep" onclick="doRitual('keep')">🫙 Zostaw</button><button class="r-btn r-bury" onclick="doRitual('bury')">🌱 Zakop</button><button class="r-btn r-burn" onclick="doRitual('burn')">🔥 Spal</button></div></div></div>
+
+<div id="dd-consent-ov" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;justify-content:center;align-items:center;padding:20px;">
+<div style="background:#fff;border-radius:24px;padding:28px 24px;max-width:340px;width:100%;font-family:'Nunito',sans-serif;text-align:center;">
+  <div style="font-size:36px;margin-bottom:12px;">☀️</div>
+  <h3 style="font-size:18px;font-weight:700;color:#2a2640;margin-bottom:12px;">Magic Jar jest w fazie testów</h3>
+  <p style="font-size:14px;color:#6a6686;line-height:1.6;margin-bottom:20px;">Dobry Dzień z Sercem dostępny jest dla zaproszonych podróżników. Napisz do nas żeby dołączyć:<br><br><strong>kontakt@mana.pl</strong></p>
+  <button onclick="document.getElementById('dd-consent-ov').style.display='none';" style="width:100%;padding:14px;background:#f6a825;border:none;border-radius:14px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:#fff;cursor:pointer;">Rozumiem</button>
 </div>
-</div><div class="ritual-card"><h2>Słoik jest pełny 🫙</h2><p>Twoje myśli mają swoje miejsce. Co chcesz z nimi zrobić?</p><div class="ritual-opts"><button class="r-btn r-keep" onclick="doRitual('keep')">🫙 Zostaw</button><button class="r-btn r-bury" onclick="doRitual('bury')">🌱 Zakop</button><button class="r-btn r-burn" onclick="doRitual('burn')">🔥 Spal</button></div></div></div>
+</div>
 
 <!-- SLEEP -->
 <div class="screen night" id="sleep">
@@ -341,21 +342,19 @@ function obStep2(){
 }
 
 function obLoginSupabase(nick,year,pin){
-  var url=SB_URL+'/rest/v1/travels?nick=eq.'+encodeURIComponent(nick)+'&birth_year=eq.'+year+'&select=id,nick,birth_year,pin,jar_type';
+  var url=SB_URL+'/rest/v1/travels?nick=eq.'+encodeURIComponent(nick)+'&birth_year=eq.'+year+'&select=id,nick,birth_year,pin,jar_type,consent';
   console.log('MJ fetch:', url);
   console.log('MJ key starts:', SB_KEY.substring(0,20));
   fetch(url,{method:'GET',headers:sbHeaders()})
   .then(function(r){return r.json();})
   .then(function(data){
     if(data&&data.length>0){
-      // Podróżnik istnieje — sprawdź PIN
       var traveler=data[0];
       if(traveler.pin===pin){
-        // PIN OK — wchodzi
         obSetLoading(false);
         S.nick=nick;S.birthYear=year;S.jarType=traveler.jar_type||'classic';S.travelerId=traveler.id;
+        S.ddConsent=traveler.consent===true?true:null;
         calcAge();saveS();
-        // Aktualizuj last_visit
         fetch(SB_URL+'/rest/v1/travels?id=eq.'+traveler.id,{method:'PATCH',headers:sbHeaders(),body:JSON.stringify({last_visit:new Date().toISOString()})});
         showHome();
       } else {
@@ -535,8 +534,7 @@ function ddGetQuestion(){var now=new Date();var dow=now.getDay();var q=DD_QUESTI
 var DD_MORNING=['Dzień się zaczyna. Niech ten [dzień] przyniesie Ci coś dobrego.','Dobry ranek. Niech [dzień] będzie dla Ciebie łagodny.'];
 var DD_DAYS_NOM=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
 function openDD(){
-  if(S.ddConsent===null){
-    // Pokaż ekran zgody
+  if(S.ddConsent!==true){
     var ov=document.getElementById('dd-consent-ov');
     if(ov)ov.style.display='flex';
     return;
