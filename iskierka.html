@@ -77,6 +77,26 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 @keyframes flashOut{to{opacity:0}}
 ::-webkit-scrollbar{width:0;}
 
+/* ══ WYBÓR PUZZLI ══ */
+.grid-pick-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:300;justify-content:center;align-items:center;padding:20px;}
+.grid-pick-ov.open{display:flex;}
+.grid-pick-box{background:#fff;border-radius:24px;padding:28px 22px;max-width:360px;width:100%;font-family:'Nunito',sans-serif;text-align:center;}
+.grid-pick-ico{font-size:36px;margin-bottom:8px;}
+.grid-pick-h{font-size:19px;font-weight:800;color:#2a2640;margin-bottom:6px;}
+.grid-pick-sub{font-size:13px;color:#8a86a6;margin-bottom:20px;line-height:1.5;}
+.grid-opts{display:flex;flex-direction:column;gap:10px;}
+.grid-opt{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:16px;border:2px solid rgba(0,0,0,.08);background:#f9f7ff;cursor:pointer;transition:all .15s;text-align:left;}
+.grid-opt:active{transform:scale(.97);}
+.grid-opt.selected{border-color:var(--da);background:#fffaf0;}
+.grid-opt-left{display:flex;flex-direction:column;gap:3px;}
+.grid-opt-size{font-size:17px;font-weight:800;color:#2a2640;}
+.grid-opt-tiles{font-size:12px;color:#8a86a6;}
+.grid-opt-right{text-align:right;}
+.grid-opt-thoughts{font-size:13px;font-weight:700;color:var(--da);}
+.grid-opt-label{font-size:11px;color:#b0abc8;margin-top:2px;}
+.grid-pick-btn{width:100%;padding:15px;background:var(--da);border:none;border-radius:14px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:#fff;cursor:pointer;margin-top:18px;transition:opacity .15s;}
+.grid-pick-btn:disabled{opacity:.4;cursor:default;}
+
 /* ══ ONBOARDING ══ */
 #onboarding{overflow:hidden;background:#050310 url("https://manamerkaba.github.io/mana-sloik/img/sky/drugi%20ekran.jpg") center/cover no-repeat;align-items:center;justify-content:center;}
 @media(max-width:600px){#onboarding{background-position:70% 15%;}}
@@ -217,6 +237,58 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
       <p class="consent-p">Dobry Dzień jest teraz odblokowany. Każda dobra myśl odkrywa kawałek puzzla.<br><br>Dziękujemy za zaufanie.</p>
       <button class="consent-btn-main" onclick="csFinish()">Zaczynamy ☀️</button>
     </div>
+  </div>
+</div>
+
+<!-- ══ WYBÓR PUZZLI ══ -->
+<div class="grid-pick-ov" id="grid-pick-ov">
+  <div class="grid-pick-box">
+    <div class="grid-pick-ico">🧩</div>
+    <div class="grid-pick-h" id="grid-pick-h">Wybierz swoje puzzle</div>
+    <p class="grid-pick-sub" id="grid-pick-sub">Im więcej puzzli — tym więcej dobrych myśli możesz wpisać każdego dnia.</p>
+    <div class="grid-opts">
+      <div class="grid-opt" onclick="gridSelect(3)">
+        <div class="grid-opt-left">
+          <div class="grid-opt-size">3 × 3</div>
+          <div class="grid-opt-tiles">9 puzzli do ułożenia</div>
+        </div>
+        <div class="grid-opt-right">
+          <div class="grid-opt-thoughts">2 myśli</div>
+          <div class="grid-opt-label">możesz wpisać dziennie</div>
+        </div>
+      </div>
+      <div class="grid-opt" onclick="gridSelect(4)">
+        <div class="grid-opt-left">
+          <div class="grid-opt-size">4 × 4</div>
+          <div class="grid-opt-tiles">16 puzzli do ułożenia</div>
+        </div>
+        <div class="grid-opt-right">
+          <div class="grid-opt-thoughts">3 myśli</div>
+          <div class="grid-opt-label">możesz wpisać dziennie</div>
+        </div>
+      </div>
+      <div class="grid-opt" onclick="gridSelect(5)">
+        <div class="grid-opt-left">
+          <div class="grid-opt-size">5 × 5</div>
+          <div class="grid-opt-tiles">25 puzzli do ułożenia</div>
+        </div>
+        <div class="grid-opt-right">
+          <div class="grid-opt-thoughts">4 myśli</div>
+          <div class="grid-opt-label">możesz wpisać dziennie</div>
+        </div>
+      </div>
+      <div class="grid-opt" onclick="gridSelect(6)">
+        <div class="grid-opt-left">
+          <div class="grid-opt-size">6 × 6</div>
+          <div class="grid-opt-tiles">36 puzzli do ułożenia</div>
+        </div>
+        <div class="grid-opt-right">
+          <div class="grid-opt-thoughts">5 myśli</div>
+          <div class="grid-opt-label">możesz wpisać dziennie</div>
+        </div>
+      </div>
+    </div>
+    <button class="grid-pick-btn" id="grid-pick-btn" onclick="gridConfirm()" disabled>Zaczynam 🧩</button>
   </div>
 </div>
 
@@ -525,10 +597,68 @@ function ddGetQuestion(){var now=new Date();var dow=now.getDay();var q=DD_QUESTI
 var DD_MORNING=['Dzień się zaczyna. Niech ten [dzień] przyniesie Ci coś dobrego.','Dobry ranek. Niech [dzień] będzie dla Ciebie łagodny.'];
 var DD_DAYS_NOM=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
 
+// ══ WYBÓR PUZZLI ══
+var _gridPickCallback=null;
+var _gridSelected=0;
+
+function openGridPick(afterFinish,callback){
+  _gridPickCallback=callback;
+  _gridSelected=S.ddGridSize||0;
+  // Zaznacz aktualny wybór
+  document.querySelectorAll('.grid-opt').forEach(function(el){el.classList.remove('selected');});
+  if(_gridSelected){
+    var cur=document.querySelector('.grid-opt[onclick="gridSelect('+_gridSelected+')"]');
+    if(cur){cur.classList.add('selected');}
+    document.getElementById('grid-pick-btn').disabled=false;
+  } else {
+    document.getElementById('grid-pick-btn').disabled=true;
+  }
+  if(afterFinish){
+    document.getElementById('grid-pick-h').textContent='Nowy obraz, nowe puzzle!';
+    document.getElementById('grid-pick-sub').textContent='Możesz zostać przy tym samym rozmiarze albo wybrać nowy.';
+    document.getElementById('grid-pick-btn').textContent='Zaczynam nowy obraz 🧩';
+  } else {
+    document.getElementById('grid-pick-h').textContent='Wybierz swoje puzzle';
+    document.getElementById('grid-pick-sub').textContent='Im więcej puzzli — tym więcej dobrych myśli możesz wpisać każdego dnia.';
+    document.getElementById('grid-pick-btn').textContent='Zaczynam 🧩';
+  }
+  document.getElementById('grid-pick-ov').classList.add('open');
+}
+
+function gridSelect(n){
+  _gridSelected=n;
+  document.querySelectorAll('.grid-opt').forEach(function(el){el.classList.remove('selected');});
+  var el=document.querySelector('.grid-opt[onclick="gridSelect('+n+')"]');
+  if(el)el.classList.add('selected');
+  document.getElementById('grid-pick-btn').disabled=false;
+}
+
+function gridConfirm(){
+  if(!_gridSelected)return;
+  var changed=S.ddGridSize!==_gridSelected;
+  S.ddGridSize=_gridSelected;
+  // Jeśli rozmiar się zmienił — resetuj kafelki
+  if(changed){
+    var tot=_gridSelected*_gridSelected;
+    S.ddTiles=Array(tot).fill(false);
+    S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));
+  }
+  saveS();
+  document.getElementById('grid-pick-ov').classList.remove('open');
+  if(_gridPickCallback)_gridPickCallback();
+}
+
 function openDD(){
   if(S.ddConsent!==true){openConsent();return;}
+  // Pierwszy raz — pokaż wybór puzzli
+  if(!S.ddGridSize){
+    openGridPick(false,function(){ddEnter();show('dd');});
+    return;
+  }
   ddEnter();
 }
+
+
 function ddEnter(){var today=todayStr();if(S.ddDate!==today){S.ddDone=0;S.ddDate=today;saveS();}initTiles();document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';document.getElementById('dd-rev-msg').style.display='none';document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.remove('active');document.getElementById('dd1').classList.add('active');if(checkInactivity()){show('dd');ddShowInactScreen();return;}document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');document.getElementById('dd-puzzle-area').style.display='flex';ddShowNormalDD();show('dd');}
 function ddShowNormalDD(){var h=new Date().getHours(),dow=new Date().getDay(),dom=new Date().getDate(),nick=nickDisplay();var qEl=document.getElementById('dd-question'),titleEl=document.getElementById('dd-title'),inputEl=document.getElementById('dd-input'),doneMsgEl=document.getElementById('dd-done-msg');renderPuzzle();if(h>=6&&h<12){var msg=DD_MORNING[dom%DD_MORNING.length].replace('[dzień]',DD_DAYS_NOM[dow]);if(nick)msg=msg.replace('Dzień się zaczyna','Dzień się zaczyna, '+nick).replace('Dobry ranek','Dobry ranek, '+nick);if(qEl)qEl.textContent=msg;if(titleEl)titleEl.textContent='Dobry Dzień ☀️';if(inputEl)inputEl.style.display='none';if(doneMsgEl)doneMsgEl.style.display='none';}else{if(qEl)qEl.textContent=ddGetQuestion();if(titleEl)titleEl.textContent='Dobry Dzień ☀️'+(nick?' — '+nick:'');updateDDUI();}}
 function initTiles(){var tot=totalTiles();if(!S.ddTiles||S.ddTiles.length!==tot){S.ddTiles=Array(tot).fill(false);S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));saveS();}}
@@ -590,7 +720,26 @@ function piecePath(x,y,w,h,row,col,gs){var tab=Math.min(w,h)*0.22;function det(a
 function updateDDUI(){var left=maxDaily()-S.ddDone,ia=document.getElementById('dd-input'),dm=document.getElementById('dd-done-msg'),info=document.getElementById('dd-info');if(left<=0){ia.style.display='none';dm.style.display='block';}else{ia.style.display='block';dm.style.display='none';info.textContent=left===maxDaily()?'Możesz dodać '+maxDaily()+' myśli dziś.':'Zostało Ci '+left+(left===1?' myśl':' myśli')+' na dziś.';}}
 function ddSessionId(){var str=(S.nick||'')+(S.birthYear||'');var hash=0;for(var i=0;i<str.length;i++){hash=((hash<<5)-hash)+str.charCodeAt(i);hash|=0;}return Math.abs(hash).toString(16);}
 function ddSubmit(){var txt=document.getElementById('dd-txt').value.trim();if(txt.length<3){document.getElementById('dd-txt').focus();return;}document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.add('active');document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';fetch(SB_URL+'/functions/v1/call-dd-serce',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY},body:JSON.stringify({mysl:txt,session_id:ddSessionId()})}).then(function(r){return r.json();}).then(function(data){var odpowiedz=data.odpowiedz||'Piękna chwila. 💛';var blokada=data.blokada||false;document.getElementById('dd-think').style.display='none';document.getElementById('dd-resp').style.display='block';document.getElementById('dd-bub').innerHTML='<p>'+odpowiedz+'</p>';if(blokada){document.getElementById('dd-rev-msg').style.display='none';return;}revealTile();S.ddDone++;var today=todayStr();if(S.ddLastDate===yest())S.ddSeries++;else if(S.ddLastDate!==today)S.ddSeries=1;S.ddLastDate=today;saveS();var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;document.getElementById('dd-rev-txt').textContent=rev>=tot?'🎉 Puzzle ukończone!':'🧩 Puzzle odkryty!';document.getElementById('dd-rev-msg').style.display='block';}).catch(function(){var r=['Piękna chwila. Dobrze że ją zapamiętujesz. ✨','Takie chwile są wyjątkowe. 💛','Ale fajnie! Warto to nosić ze sobą. ⭐'];document.getElementById('dd-think').style.display='none';document.getElementById('dd-resp').style.display='block';document.getElementById('dd-bub').innerHTML='<p>'+r[Math.floor(Math.random()*r.length)]+'</p>';revealTile();S.ddDone++;var today=todayStr();if(S.ddLastDate===yest())S.ddSeries++;else if(S.ddLastDate!==today)S.ddSeries=1;S.ddLastDate=today;saveS();document.getElementById('dd-rev-txt').textContent='🧩 Puzzle odkryty!';document.getElementById('dd-rev-msg').style.display='block';});}
-function revealTile(){var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;if(rev>=tot){S.ddTiles=Array(tot).fill(false);S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));S.ddSet=(S.ddSet||0)+1;saveS();return;}for(var i=0;i<S.ddOrder.length;i++){var idx=S.ddOrder[i];if(!S.ddTiles[idx]){S.ddTiles[idx]=true;S._lastTile=idx;saveS();return;}}}
+function revealTile(){
+  var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;
+  if(rev>=tot){
+    // Obraz ukończony — pokaż wybór puzzli przed następnym
+    S.ddSet=(S.ddSet||0)+1;saveS();
+    setTimeout(function(){
+      openGridPick(true,function(){
+        var newTot=totalTiles();
+        S.ddTiles=Array(newTot).fill(false);
+        S.ddOrder=shuffle(Array.from({length:newTot},function(_,i){return i;}));
+        saveS();
+      });
+    },800);
+    return;
+  }
+  for(var i=0;i<S.ddOrder.length;i++){
+    var idx=S.ddOrder[i];
+    if(!S.ddTiles[idx]){S.ddTiles[idx]=true;S._lastTile=idx;saveS();return;}
+  }
+}
 function ddBack(){document.getElementById('dd2').classList.remove('active');document.getElementById('dd1').classList.add('active');document.getElementById('dd-txt').value='';document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';renderPuzzle();updateDDUI();if(S._lastTile>=0){var cont=document.getElementById('pz-cont');cont.style.boxShadow='0 0 0 4px #f6a825,0 0 28px rgba(246,168,37,.55)';setTimeout(function(){cont.style.boxShadow='0 8px 32px rgba(0,0,0,.2)';},1600);S._lastTile=-1;}}
 
 // ══ USTAWIENIA ══
