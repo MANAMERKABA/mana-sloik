@@ -674,8 +674,11 @@ function gridConfirm(){
 function openDD(){
   if(S.ddConsent!==true){openConsent();return;}
   if(!S.ddGridSize){
-    openGridPick(false,function(){ddEnter();show('dd');});
-    return;
+    S.ddGridSize=4;
+    var tot=16;
+    S.ddTiles=Array(tot).fill(false);
+    S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));
+    saveS();
   }
   ddEnter();
 }
