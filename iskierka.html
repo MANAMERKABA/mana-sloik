@@ -203,7 +203,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <body>
 <button class="gear-btn" id="gear-btn">⚙️</button>
 <div class="set-ov" id="set-ov"><div class="set-card"><h3>Ustawienia</h3><p>Dane przechowywane tylko na tym urządzeniu.</p><hr class="set-sep"><button class="set-danger" onclick="switchUser()">🔄 Zmień użytkownika</button><button class="btn btn-ghost" onclick="closeSet()" style="margin-top:8px;">Zamknij</button></div></div>
-<div class="ritual-ov" id="ritual-ov"><div class="ritual-card"><h2>Słoik jest pełny 🫙</h2><p>Twoje myśli mają swoje miejsce. Co chcesz z nimi zrobić?</p><div class="ritual-opts"><button class="r-btn r-keep" onclick="doRitual('keep')">🫙 Zostaw</button><button class="r-btn r-bury" onclick="doRitual('bury')">🌱 Zakop</button><button class="r-btn r-burn" onclick="doRitual('burn')">🔥 Spal</button></div></div></div>
+<div class="ritual-ov" id="ritual-ov"><div class="ritual-card"><h2>Słoik jest pełny</h2><p>Twoje myśli trafiły do Słoika. Czas je puścić — zwolnij miejsce na nowe.</p><div class="ritual-opts"><button class="r-btn r-burn" onclick="doRitual('empty')">Opróżnij</button></div></div></div>
 
 <!-- ══ OVERLAY ZGODY ══ -->
 <div class="consent-ov" id="consent-ov">
@@ -767,7 +767,7 @@ document.addEventListener('DOMContentLoaded',function(){
   var ro=document.getElementById('ritual-ov');if(ro)ro.addEventListener('click',function(e){if(e.target===this)ro.classList.remove('open');});
   var co=document.getElementById('consent-ov');if(co)co.addEventListener('click',function(e){if(e.target===this)closeConsent();});
 });
-function doRitual(type){document.getElementById('ritual-ov').classList.remove('open');if(type==='keep'){document.getElementById('sn-jar-screen').classList.add('on');}else{snJarItems=[];S.snItems=[];saveS();snRenderJar();flash();document.getElementById('sn-jar-screen').classList.add('on');}}
+function doRitual(type){document.getElementById('ritual-ov').classList.remove('open');snJarItems=[];S.snItems=[];saveS();snRenderJar();flash();document.getElementById('sn-jar-screen').classList.add('on');}
 function todayStr(){return new Date().toISOString().slice(0,10);}
 function yest(){var d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);}
 function flash(){var f=document.createElement('div');f.className='flash';document.body.appendChild(f);setTimeout(function(){f.remove();},700);}
