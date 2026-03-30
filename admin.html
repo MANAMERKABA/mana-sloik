@@ -15,8 +15,6 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
-
-/* ═══ LOGIN ═══ */
 #screen-login{flex:1;display:flex;align-items:center;justify-content:center;}
 .login-card{background:var(--white);border:1px solid var(--border);border-radius:24px;padding:52px 44px;width:340px;text-align:center;box-shadow:0 4px 32px rgba(44,36,24,0.08);}
 .mana-logo{font-family:'Crimson Pro',serif;font-size:52px;font-weight:300;color:var(--brown);letter-spacing:0.1em;margin-bottom:4px;}
@@ -28,8 +26,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 .login-btn:hover{background:var(--brown-deep);}
 .login-note{font-size:11px;color:var(--text-light);margin-top:14px;font-style:italic;}
 .login-checking{font-size:12px;color:var(--text-light);margin-top:10px;display:none;}
-
-/* ═══ ADMIN PANEL ═══ */
 #screen-admin{flex:1;display:none;flex-direction:column;}
 .top-bar{padding:14px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--white);flex-shrink:0;}
 .top-logo{font-family:'Crimson Pro',serif;font-size:24px;font-weight:300;color:var(--brown);letter-spacing:0.06em;}
@@ -38,22 +34,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 .top-nick{font-size:12px;color:var(--text-light);}
 .top-logout{font-size:11px;color:var(--text-light);cursor:pointer;padding:4px 10px;border:1px solid var(--border);border-radius:6px;}
 .top-logout:hover{color:var(--text);border-color:var(--border-strong);}
-
 .admin-body{flex:1;overflow-y:auto;padding:28px 32px;}
-
-/* Sekcje */
 .section{margin-bottom:32px;}
 .section-title{font-family:'Crimson Pro',serif;font-size:22px;font-weight:300;color:var(--text);margin-bottom:4px;}
 .section-sub{font-size:12px;color:var(--text-light);margin-bottom:16px;}
-
-/* Kafelki statystyk */
 .stats-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
 .stat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 22px;flex:1;min-width:130px;}
 .stat-num{font-family:'Crimson Pro',serif;font-size:36px;font-weight:300;color:var(--brown);line-height:1;}
 .stat-label{font-size:11px;color:var(--text-light);margin-top:4px;}
 .stat-sub{font-size:10px;color:var(--text-light);margin-top:2px;font-style:italic;}
-
-/* Kafelki narzędzi */
 .tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
 .tool-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block;}
 .tool-card:hover{border-color:var(--border-strong);box-shadow:0 4px 16px rgba(44,36,24,0.08);}
@@ -64,8 +53,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 .status-live{background:rgba(107,143,113,0.15);color:var(--green);}
 .status-beta{background:rgba(139,115,85,0.12);color:var(--brown);}
 .status-todo{background:rgba(192,57,43,0.08);color:var(--red);}
-
-/* Tabela */
 .data-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--border);}
 .data-table th{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);font-weight:500;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);background:var(--sand);}
 .data-table td{font-size:12px;color:var(--text);padding:10px 14px;border-bottom:1px solid var(--border);}
@@ -76,32 +63,45 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 .badge-brown{background:rgba(139,115,85,0.12);color:var(--brown);}
 .badge-purple{background:rgba(155,126,189,0.15);color:var(--purple);}
 .badge-red{background:rgba(192,57,43,0.08);color:var(--red);}
-
-/* Konstytucja */
 .konst-box{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 24px;font-size:12px;color:var(--text-mid);line-height:1.8;max-height:300px;overflow-y:auto;white-space:pre-wrap;}
 .konst-actions{display:flex;gap:8px;margin-top:10px;}
 .konst-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--border-strong);background:var(--white);color:var(--brown);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
 .konst-btn:hover{background:var(--brown);color:var(--white);border-color:var(--brown);}
-
-/* Trainer notes */
 .note-item{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px;}
 .note-meta{font-size:10px;color:var(--text-light);margin-bottom:4px;}
 .note-text{font-size:12px;color:var(--text);line-height:1.6;}
 .note-trener{font-size:11px;color:var(--purple);font-weight:500;margin-top:4px;}
-
 .loading{font-size:12px;color:var(--text-light);font-style:italic;padding:12px 0;}
 .empty{font-size:12px;color:var(--text-light);font-style:italic;text-align:center;padding:20px 0;}
-
 .refresh-btn{font-size:11px;color:var(--text-light);cursor:pointer;padding:4px 10px;border:1px solid var(--border);border-radius:6px;margin-left:8px;}
 .refresh-btn:hover{border-color:var(--brown);color:var(--brown);}
-
+/* ═══ SERCE DD ═══ */
+.dd-filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.dd-fb{padding:6px 14px;border-radius:8px;border:1px solid var(--border-strong);background:var(--white);color:var(--brown);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;cursor:pointer;}
+.dd-fb.act{background:var(--brown);color:var(--white);}
+.dd-entries{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow-y:auto;padding-right:4px;}
+.dd-entry{background:var(--white);border:1px solid var(--border);border-left:4px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .15s;}
+.dd-entry.pozytywna{border-left-color:var(--green);}
+.dd-entry.negatywna{border-left-color:var(--red);}
+.dd-entry.sel{outline:2px solid var(--brown);background:var(--sand-dark);}
+.dd-mysl{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.dd-odp{font-size:11px;color:var(--text-mid);line-height:1.6;margin-bottom:6px;}
+.dd-meta{display:flex;justify-content:space-between;align-items:center;}
+.dd-dt{font-size:10px;color:var(--text-light);}
+.dd-stats{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.dd-stat{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 16px;}
+.dd-stat b{font-size:20px;font-weight:300;font-family:'Crimson Pro',serif;color:var(--brown);display:block;}
+.dd-stat span{font-size:10px;color:var(--text-light);}
+.dd-copy-area{margin-top:12px;background:var(--sand);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--text-mid);white-space:pre-wrap;line-height:1.7;border:1px solid var(--border);max-height:160px;overflow-y:auto;}
+.dd-selinfo{font-size:11px;color:var(--text-light);margin-bottom:6px;}
+.dd-copy-btn{margin-top:8px;padding:8px 18px;background:var(--brown);color:var(--white);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
+.dd-ok{font-size:11px;color:var(--green);margin-left:10px;display:none;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeIn 0.3s ease both;}
 </style>
 </head>
 <body>
 
-<!-- ═══ LOGIN ═══ -->
 <div id="screen-login">
   <div class="login-card">
     <div class="mana-logo">MANA</div>
@@ -114,7 +114,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
   </div>
 </div>
 
-<!-- ═══ ADMIN PANEL ═══ -->
 <div id="screen-admin">
   <div class="top-bar">
     <div style="display:flex;align-items:center;">
@@ -129,121 +128,65 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 
   <div class="admin-body">
 
-    <!-- STATYSTYKI -->
     <div class="section">
       <div class="section-title">Stan ekosystemu <span class="refresh-btn" onclick="refreshAll()">↻ odśwież</span></div>
       <div class="section-sub">Dane na żywo z Supabase</div>
       <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-num" id="s-travelers">—</div>
-          <div class="stat-label">Podróżnicy</div>
-          <div class="stat-sub" id="s-travelers-sub">ładuję…</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" id="s-conversations">—</div>
-          <div class="stat-label">Rozmowy z Sercem</div>
-          <div class="stat-sub" id="s-conv-sub">ładuję…</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" id="s-stones">—</div>
-          <div class="stat-label">Kamienie w Słoiku</div>
-          <div class="stat-sub" id="s-stones-sub">ładuję…</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" id="s-rag">—</div>
-          <div class="stat-label">Wpisy RAG</div>
-          <div class="stat-sub">baza wiedzy</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" id="s-notes">—</div>
-          <div class="stat-label">Uwagi trenerów</div>
-          <div class="stat-sub" id="s-notes-sub">ładuję…</div>
-        </div>
+        <div class="stat-card"><div class="stat-num" id="s-travelers">—</div><div class="stat-label">Podróżnicy</div><div class="stat-sub" id="s-travelers-sub">ładuję…</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-conversations">—</div><div class="stat-label">Rozmowy z Sercem</div><div class="stat-sub" id="s-conv-sub">ładuję…</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-stones">—</div><div class="stat-label">Kamienie w Słoiku</div><div class="stat-sub" id="s-stones-sub">ładuję…</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-rag">—</div><div class="stat-label">Wpisy RAG</div><div class="stat-sub">baza wiedzy</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-dd">—</div><div class="stat-label">Wpisy Dobry Dzień</div><div class="stat-sub" id="s-dd-sub">ładuję…</div></div>
       </div>
     </div>
 
-    <!-- NARZĘDZIA EKOSYSTEMU -->
     <div class="section">
       <div class="section-title">Narzędzia MANA</div>
       <div class="section-sub">Kliknij żeby otworzyć</div>
       <div class="tools-grid">
-        <a class="tool-card" href="https://typebot.co/serce-mana-2-cc5udq3" target="_blank">
-          <div class="tool-icon">🤍</div>
-          <div class="tool-name">Serce MANA (Gawęda)</div>
-          <div class="tool-desc">Typebot · Rozmowa z podróżnikiem</div>
-          <span class="tool-status status-live">✓ działa</span>
-        </a>
-        <a class="tool-card" href="iskierka.html" target="_blank">
-          <div class="tool-icon">✨</div>
-          <div class="tool-name">Iskierka</div>
-          <div class="tool-desc">Spokojna Noc + Dobry Dzień</div>
-          <span class="tool-status status-live">✓ działa</span>
-        </a>
-        <a class="tool-card" href="index.html" target="_blank">
-          <div class="tool-icon">🫙</div>
-          <div class="tool-name">Słoik podróżnika</div>
-          <div class="tool-desc">Horyzont · Cisza · Puls · Trzos · Notatnik</div>
-          <span class="tool-status status-live">✓ działa</span>
-        </a>
-        <a class="tool-card" href="terapeuta.html" target="_blank">
-          <div class="tool-icon">🌿</div>
-          <div class="tool-name">Panel Terapeuty</div>
-          <div class="tool-desc">Kalendarz · Zalecenia · Notatki</div>
-          <span class="tool-status status-beta">beta</span>
-        </a>
-        <a class="tool-card" href="https://kkxhqtfxvgxdqpnzaufu.supabase.co" target="_blank">
-          <div class="tool-icon">🗄️</div>
-          <div class="tool-name">Supabase</div>
-          <div class="tool-desc">Baza danych · Edge Functions</div>
-          <span class="tool-status status-live">✓ działa</span>
-        </a>
-        <div class="tool-card" style="cursor:default;opacity:0.6;">
-          <div class="tool-icon">📅</div>
-          <div class="tool-name">Cal.com</div>
-          <div class="tool-desc">Rezerwacje wizyt · Webhook → Horyzont</div>
-          <span class="tool-status status-todo">do integracji</span>
-        </div>
-        <div class="tool-card" style="cursor:default;opacity:0.6;">
-          <div class="tool-icon">📱</div>
-          <div class="tool-name">PWA</div>
-          <div class="tool-desc">Iskierka jako aplikacja na telefon</div>
-          <span class="tool-status status-todo">do zrobienia</span>
-        </div>
-        <div class="tool-card" style="cursor:default;opacity:0.6;">
-          <div class="tool-icon">🔐</div>
-          <div class="tool-name">Logowanie email</div>
-          <div class="tool-desc">Supabase Auth · Nick → email</div>
-          <span class="tool-status status-todo">do zrobienia</span>
-        </div>
-        <div class="tool-card" style="cursor:default;opacity:0.6;">
-          <div class="tool-icon">🌐</div>
-          <div class="tool-name">mana.pl</div>
-          <div class="tool-desc">Strona główna · Logo</div>
-          <span class="tool-status status-todo">do zrobienia</span>
-        </div>
+        <a class="tool-card" href="https://typebot.co/serce-mana-2-cc5udq3" target="_blank"><div class="tool-icon">🤍</div><div class="tool-name">Serce MANA (Gawęda)</div><div class="tool-desc">Typebot · Rozmowa z podróżnikiem</div><span class="tool-status status-live">✓ działa</span></a>
+        <a class="tool-card" href="iskierka.html" target="_blank"><div class="tool-icon">✨</div><div class="tool-name">Magic Jar</div><div class="tool-desc">Spokojna Noc + Dobry Dzień</div><span class="tool-status status-live">✓ działa</span></a>
+        <a class="tool-card" href="index.html" target="_blank"><div class="tool-icon">🫙</div><div class="tool-name">Słoik podróżnika</div><div class="tool-desc">Horyzont · Cisza · Puls · Trzos · Notatnik</div><span class="tool-status status-live">✓ działa</span></a>
+        <a class="tool-card" href="terapeuta.html" target="_blank"><div class="tool-icon">🌿</div><div class="tool-name">Panel Terapeuty</div><div class="tool-desc">Kalendarz · Zalecenia · Notatki</div><span class="tool-status status-beta">beta</span></a>
+        <a class="tool-card" href="https://kkxhqtfxvgxdqpnzaufu.supabase.co" target="_blank"><div class="tool-icon">🗄️</div><div class="tool-name">Supabase</div><div class="tool-desc">Baza danych · Edge Functions</div><span class="tool-status status-live">✓ działa</span></a>
+        <div class="tool-card" style="cursor:default;opacity:0.6;"><div class="tool-icon">🌐</div><div class="tool-name">mana.pl</div><div class="tool-desc">Strona główna · Logo</div><span class="tool-status status-todo">do zrobienia</span></div>
       </div>
     </div>
 
-    <!-- PODRÓŻNICY -->
+    <!-- ═══ SERCE DD — PANEL TRENERA ═══ -->
+    <div class="section">
+      <div class="section-title">Serce — Dobry Dzień <span class="refresh-btn" onclick="loadDD()">↻ odśwież</span></div>
+      <div class="section-sub">Kliknij wpis żeby zaznaczyć → skopiuj → wklej do rozmowy z Claude aby uczyć Serce</div>
+      <div class="dd-stats">
+        <div class="dd-stat"><b id="dd-total">—</b><span>wszystkich</span></div>
+        <div class="dd-stat"><b id="dd-pos" style="color:var(--green)">—</b><span>pozytywnych</span></div>
+        <div class="dd-stat"><b id="dd-neg" style="color:var(--red)">—</b><span>negatywnych</span></div>
+      </div>
+      <div class="dd-filters">
+        <button class="dd-fb act" onclick="ddSetF('all',this)">Wszystkie</button>
+        <button class="dd-fb" onclick="ddSetF('pozytywna',this)">✅ Pozytywne</button>
+        <button class="dd-fb" onclick="ddSetF('negatywna',this)">❌ Negatywne</button>
+      </div>
+      <div class="dd-entries" id="dd-entries"><div class="loading">Ładuję…</div></div>
+      <div id="dd-copy-area" style="display:none">
+        <div class="dd-selinfo" id="dd-selinfo"></div>
+        <div class="dd-copy-area" id="dd-copybox"></div>
+        <button class="dd-copy-btn" onclick="ddCopy()">📋 Kopiuj do schowka</button>
+        <span class="dd-ok" id="dd-ok">✓ Skopiowano!</span>
+      </div>
+    </div>
+
     <div class="section">
       <div class="section-title">Podróżnicy</div>
       <div id="travelers-table"><div class="loading">Ładuję…</div></div>
     </div>
 
-    <!-- UWAGI TRENERÓW -->
-    <div class="section">
-      <div class="section-title">Uwagi trenerów</div>
-      <div class="section-sub">Niezasosowane · do analizy</div>
-      <div id="notes-list"><div class="loading">Ładuję…</div></div>
-    </div>
-
-    <!-- KONSTYTUCJA SERCA -->
     <div class="section">
       <div class="section-title">Konstytucja Serca</div>
       <div class="section-sub">Aktywna wersja w Supabase → tabela prompts</div>
       <div class="konst-box" id="konst-box">Ładuję…</div>
       <div class="konst-actions">
-        <a class="konst-btn" href="https://kkxhqtfxvgxdqpnzaufu.supabase.co/dashboard/project/kkxhqtfxvgxdqpnzaufu/editor" target="_blank">Edytuj w Supabase →</a>
+        <a class="konst-btn" href="https://supabase.com/dashboard/project/kkxhqtfxvgxdqpnzaufu/editor" target="_blank">Edytuj w Supabase →</a>
       </div>
     </div>
 
@@ -251,190 +194,141 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 </div>
 
 <script>
-const SB = 'https://kkxhqtfxvgxdqpnzaufu.supabase.co';
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtreGhxdGZ4dmd4ZHFwbnphdWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1NzI5ODMsImV4cCI6MjA1NjE0ODk4M30.IHoVFJBEjDHIqO7S5UkXjlFBuHbXr4RLwCfEJ7-GLSY';
+const SB='https://kkxhqtfxvgxdqpnzaufu.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtreGhxdGZ4dmd4ZHFwbnphdWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MjE0NTYsImV4cCI6MjA4ODM5NzQ1Nn0.s8Ju-ww3G4_yyH6RedK2gwLveVJKD3hY2IHh62-qjfo';
+const ADMINS=['MANA_ADMIN_55'];
+let currentNick='';
+let ddAll=[],ddSel=new Set(),ddFilt='all';
 
-// Administratorzy — sprawdzani lokalnie (szybkie, bezpieczne)
-const ADMINS = ['MANA_ADMIN_55'];
-
-let currentNick = '';
-
-async function sb(table, query) {
-  try {
-    var r = await fetch(SB + '/rest/v1/' + table + '?' + (query||''), {
-      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
-    });
-    return await r.json();
-  } catch(e) { return []; }
+async function sb(table,query){
+  try{var r=await fetch(SB+'/rest/v1/'+table+'?'+(query||''),{headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}});return await r.json();}catch(e){return [];}
+}
+async function sbCount(table,query){
+  try{var r=await fetch(SB+'/rest/v1/'+table+'?select=id'+(query?'&'+query:''),{headers:{'apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'count=exact','Range':'0-0'}});var h=r.headers.get('content-range');return h?h.split('/')[1]:'?';}catch(e){return '?';}
 }
 
-async function doLogin() {
-  var nick = document.getElementById('login-nick').value.trim();
-  if (!nick) return;
-
-  document.getElementById('login-checking').style.display = 'block';
-  document.getElementById('login-checking').textContent = 'Sprawdzam…';
-
-  // Czy administrator?
-  if (ADMINS.includes(nick)) {
-    currentNick = nick;
-    localStorage.setItem('mana_nick', nick);
-    localStorage.setItem('mana_rola', 'admin');
-    showAdmin();
-    return;
-  }
-
-  // Czy terapeuta?
-  var trainers = await sb('trainers', 'nick=ilike.' + encodeURIComponent(nick));
-  if (Array.isArray(trainers) && trainers.length) {
-    localStorage.setItem('mana_nick', nick);
-    localStorage.setItem('mana_rola', 'terapeuta');
-    window.location.href = 'terapeuta.html?nick=' + encodeURIComponent(nick);
-    return;
-  }
-
-  // Podróżnik
-  localStorage.setItem('mana_nick', nick);
-  localStorage.setItem('mana_rola', 'podroznik');
-  window.location.href = 'index_sloik.html?nick=' + encodeURIComponent(nick);
+async function doLogin(){
+  var nick=document.getElementById('login-nick').value.trim();
+  if(!nick)return;
+  document.getElementById('login-checking').style.display='block';
+  if(ADMINS.includes(nick)){currentNick=nick;localStorage.setItem('mana_nick',nick);localStorage.setItem('mana_rola','admin');showAdmin();return;}
+  var trainers=await sb('trainers','nick=ilike.'+encodeURIComponent(nick));
+  if(Array.isArray(trainers)&&trainers.length){localStorage.setItem('mana_nick',nick);localStorage.setItem('mana_rola','terapeuta');window.location.href='terapeuta.html?nick='+encodeURIComponent(nick);return;}
+  localStorage.setItem('mana_nick',nick);localStorage.setItem('mana_rola','podroznik');window.location.href='index.html?nick='+encodeURIComponent(nick);
 }
 
-function doLogout() {
-  localStorage.removeItem('mana_nick');
-  localStorage.removeItem('mana_rola');
-  currentNick = '';
-  document.getElementById('screen-admin').style.display = 'none';
-  document.getElementById('screen-login').style.display = 'flex';
-  document.getElementById('login-nick').value = '';
-  document.getElementById('login-checking').style.display = 'none';
+function doLogout(){
+  localStorage.removeItem('mana_nick');localStorage.removeItem('mana_rola');currentNick='';
+  document.getElementById('screen-admin').style.display='none';
+  document.getElementById('screen-login').style.display='flex';
+  document.getElementById('login-nick').value='';
 }
 
-function showAdmin() {
-  document.getElementById('screen-login').style.display = 'none';
-  document.getElementById('screen-admin').style.display = 'flex';
-  document.getElementById('admin-nick').textContent = currentNick;
+function showAdmin(){
+  document.getElementById('screen-login').style.display='none';
+  document.getElementById('screen-admin').style.display='flex';
+  document.getElementById('admin-nick').textContent=currentNick;
   loadAll();
 }
 
-async function loadAll() {
-  loadStats();
-  loadTravelers();
-  loadNotes();
-  loadKonstytucja();
+async function loadAll(){loadStats();loadDD();loadTravelers();loadKonstytucja();}
+async function refreshAll(){await loadAll();}
+
+async function loadStats(){
+  var travelers=await sb('travels','select=nick,last_visit&order=last_visit.desc');
+  var tArr=Array.isArray(travelers)?travelers:[];
+  document.getElementById('s-travelers').textContent=tArr.length;
+  var lv=tArr[0]&&tArr[0].last_visit?new Date(tArr[0].last_visit).toLocaleDateString('pl'):'—';
+  document.getElementById('s-travelers-sub').textContent='ostatnia: '+lv;
+  document.getElementById('s-conversations').textContent=await sbCount('conversations','');
+  document.getElementById('s-conv-sub').textContent='wszystkie sesje';
+  document.getElementById('s-stones').textContent=await sbCount('stones','');
+  document.getElementById('s-stones-sub').textContent='kamienie podróżników';
+  document.getElementById('s-rag').textContent=await sbCount('knowledge','');
+  var ddC=await sbCount('dd_entries','');
+  document.getElementById('s-dd').textContent=ddC;
+  document.getElementById('s-dd-sub').textContent='zapisanych myśli';
 }
 
-async function refreshAll() { await loadAll(); }
-
-async function loadStats() {
-  // Podróżnicy
-  var travelers = await sb('travels', 'select=id,nick,last_visit,visit_count&order=last_visit.desc');
-  var tArr = Array.isArray(travelers) ? travelers : [];
-  document.getElementById('s-travelers').textContent = tArr.length;
-  var lastVisit = tArr[0] && tArr[0].last_visit ? new Date(tArr[0].last_visit).toLocaleDateString('pl') : '—';
-  document.getElementById('s-travelers-sub').textContent = 'ostatnia: ' + lastVisit;
-
-  // Rozmowy
-  var convs = await sb('conversations', 'select=id&limit=1&order=created_at.desc');
-  // Supabase nie zwraca count tak łatwo — robimy HEAD request
-  try {
-    var cr = await fetch(SB + '/rest/v1/conversations?select=id', {
-      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Prefer': 'count=exact', 'Range': '0-0' }
-    });
-    var range = cr.headers.get('content-range');
-    var count = range ? range.split('/')[1] : '?';
-    document.getElementById('s-conversations').textContent = count;
-  } catch(e) { document.getElementById('s-conversations').textContent = '?'; }
-  document.getElementById('s-conv-sub').textContent = 'wszystkie sesje';
-
-  // Stones
-  try {
-    var sr = await fetch(SB + '/rest/v1/stones?select=id', {
-      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Prefer': 'count=exact', 'Range': '0-0' }
-    });
-    var srange = sr.headers.get('content-range');
-    var scount = srange ? srange.split('/')[1] : '?';
-    document.getElementById('s-stones').textContent = scount;
-    document.getElementById('s-stones-sub').textContent = 'kamienie podróżników';
-  } catch(e) {}
-
-  // RAG
-  try {
-    var rr = await fetch(SB + '/rest/v1/knowledge?select=id', {
-      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Prefer': 'count=exact', 'Range': '0-0' }
-    });
-    var rrange = rr.headers.get('content-range');
-    document.getElementById('s-rag').textContent = rrange ? rrange.split('/')[1] : '?';
-  } catch(e) {}
-
-  // Trainer notes
-  try {
-    var nr = await fetch(SB + '/rest/v1/trainer_notes?select=id&zastosowana=eq.false', {
-      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Prefer': 'count=exact', 'Range': '0-0' }
-    });
-    var nrange = nr.headers.get('content-range');
-    var ncount = nrange ? nrange.split('/')[1] : '?';
-    document.getElementById('s-notes').textContent = ncount;
-    document.getElementById('s-notes-sub').textContent = 'niezasosowane';
-  } catch(e) {}
+async function loadDD(){
+  var data=await sb('dd_entries','select=id,mysl,odpowiedz,ocena,created_at&order=created_at.desc&limit=200');
+  ddAll=Array.isArray(data)?data:[];
+  document.getElementById('dd-total').textContent=ddAll.length;
+  document.getElementById('dd-pos').textContent=ddAll.filter(e=>e.ocena==='pozytywna').length;
+  document.getElementById('dd-neg').textContent=ddAll.filter(e=>e.ocena==='negatywna').length;
+  ddRender();
 }
 
-async function loadTravelers() {
-  var data = await sb('travels', 'select=nick,traveler_id,last_visit,visit_count&order=last_visit.desc&limit=20');
-  var arr = Array.isArray(data) ? data : [];
-  var el = document.getElementById('travelers-table');
-  if (!arr.length) { el.innerHTML = '<div class="empty">Brak podróżników</div>'; return; }
-  el.innerHTML = '<table class="data-table fade-in">' +
-    '<thead><tr><th>Nick</th><th>ID</th><th>Wizyty</th><th>Ostatnia aktywność</th></tr></thead>' +
-    '<tbody>' + arr.map(function(t) {
-      var lastVisit = t.last_visit ? new Date(t.last_visit).toLocaleDateString('pl') : '—';
-      return '<tr><td><strong>' + esc(t.nick) + '</strong></td>' +
-        '<td style="color:var(--text-light);font-size:11px;">' + esc(t.traveler_id||'') + '</td>' +
-        '<td>' + (t.visit_count||0) + '</td>' +
-        '<td>' + lastVisit + '</td></tr>';
-    }).join('') + '</tbody></table>';
+function ddSetF(f,btn){
+  ddFilt=f;
+  document.querySelectorAll('.dd-fb').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  ddRender();
 }
 
-async function loadNotes() {
-  var data = await sb('trainer_notes', 'select=id,tresc,trener_id,created_at,zastosowana&order=created_at.desc&limit=20');
-  var arr = Array.isArray(data) ? data : [];
-  var el = document.getElementById('notes-list');
-  if (!arr.length) { el.innerHTML = '<div class="empty">Brak uwag trenerów</div>'; return; }
-  el.innerHTML = arr.map(function(n) {
-    var date = new Date(n.created_at).toLocaleDateString('pl');
-    var badge = n.zastosowana ? '<span class="badge badge-green">zastosowana</span>' : '<span class="badge badge-brown">oczekuje</span>';
-    return '<div class="note-item fade-in">' +
-      '<div class="note-meta">' + date + ' &nbsp;' + badge + '</div>' +
-      '<div class="note-text">' + esc(n.tresc||'') + '</div>' +
-      '<div class="note-trener">trener: ' + esc(n.trener_id||'') + '</div>' +
+function ddRender(){
+  var data=ddFilt==='all'?ddAll:ddAll.filter(e=>e.ocena===ddFilt);
+  var el=document.getElementById('dd-entries');
+  if(!data.length){el.innerHTML='<div class="empty">Brak wpisów</div>';return;}
+  el.innerHTML=data.map(e=>{
+    var dt=e.created_at?new Date(e.created_at).toLocaleString('pl-PL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+    var s=ddSel.has(e.id)?'sel':'';
+    var bc=e.ocena==='pozytywna'?'badge-green':'badge-red';
+    return '<div class="dd-entry '+(e.ocena||'')+' '+s+'" onclick="ddToggle('+e.id+')">'+
+      '<div class="dd-mysl">'+esc(e.mysl||'')+'</div>'+
+      '<div class="dd-odp">'+esc(e.odpowiedz||'')+'</div>'+
+      '<div class="dd-meta"><span class="badge '+bc+'">'+(e.ocena||'?')+'</span><span class="dd-dt">'+dt+'</span></div>'+
       '</div>';
   }).join('');
 }
 
-async function loadKonstytucja() {
-  var data = await sb('prompts', 'select=tresc&limit=1');
-  var el = document.getElementById('konst-box');
-  if (Array.isArray(data) && data[0] && data[0].tresc) {
-    el.textContent = data[0].tresc.slice(0, 2000) + (data[0].tresc.length > 2000 ? '\n\n[…ciąg dalszy w Supabase]' : '');
-  } else {
-    el.textContent = 'Nie znaleziono Konstytucji w tabeli prompts';
-  }
+function ddToggle(id){
+  ddSel.has(id)?ddSel.delete(id):ddSel.add(id);
+  ddRender();ddUpdateCopy();
 }
 
-function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function ddUpdateCopy(){
+  var area=document.getElementById('dd-copy-area');
+  if(!ddSel.size){area.style.display='none';return;}
+  area.style.display='block';
+  var items=ddAll.filter(e=>ddSel.has(e.id));
+  document.getElementById('dd-selinfo').textContent='Zaznaczonych: '+items.length+' — skopiuj i wklej do rozmowy z Claude';
+  document.getElementById('dd-copybox').textContent=items.map(e=>'MYŚL: '+e.mysl+'\nOCENA: '+e.ocena+'\nODPOWIEDŹ: '+e.odpowiedz).join('\n\n---\n\n');
+}
 
-// Enter w polu logowania
-document.getElementById('login-nick').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') doLogin();
-});
+function ddCopy(){
+  navigator.clipboard.writeText(document.getElementById('dd-copybox').textContent).then(()=>{
+    var ok=document.getElementById('dd-ok');ok.style.display='inline';
+    setTimeout(()=>ok.style.display='none',2000);
+  });
+}
 
-// Boot — sprawdź czy już zalogowany
-window.addEventListener('load', function() {
-  var nick = localStorage.getItem('mana_nick');
-  var rola = localStorage.getItem('mana_rola');
-  if (nick && rola === 'admin' && ADMINS.includes(nick)) {
-    currentNick = nick;
-    showAdmin();
-  }
+async function loadTravelers(){
+  var data=await sb('travels','select=nick,last_visit,visit_count&order=last_visit.desc&limit=20');
+  var arr=Array.isArray(data)?data:[];
+  var el=document.getElementById('travelers-table');
+  if(!arr.length){el.innerHTML='<div class="empty">Brak podróżników</div>';return;}
+  el.innerHTML='<table class="data-table fade-in"><thead><tr><th>Nick</th><th>Wizyty</th><th>Ostatnia aktywność</th></tr></thead><tbody>'+
+    arr.map(t=>'<tr><td><strong>'+esc(t.nick)+'</strong></td><td>'+(t.visit_count||0)+'</td><td>'+(t.last_visit?new Date(t.last_visit).toLocaleDateString('pl'):'—')+'</td></tr>').join('')+
+    '</tbody></table>';
+}
+
+async function loadKonstytucja(){
+  var data=await sb('prompts','select=tresc&limit=1');
+  var el=document.getElementById('konst-box');
+  if(Array.isArray(data)&&data[0]&&data[0].tresc){
+    el.textContent=data[0].tresc.slice(0,2000)+(data[0].tresc.length>2000?'\n\n[…ciąg dalszy w Supabase]':'');
+  }else{el.textContent='Nie znaleziono Konstytucji';}
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+document.getElementById('login-nick').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+
+window.addEventListener('load',function(){
+  var nick=localStorage.getItem('mana_nick');
+  var rola=localStorage.getItem('mana_rola');
+  if(nick&&rola==='admin'&&ADMINS.includes(nick)){currentNick=nick;showAdmin();}
 });
 </script>
 </body>
