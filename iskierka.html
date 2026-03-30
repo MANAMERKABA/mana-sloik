@@ -468,8 +468,12 @@ function obStep2(){
       var t=data[0];
       if(t.pin===p){
         obSetLoading(false);
+        // ══ RESET stanu DD przy logowaniu istniejącego użytkownika na nowym urządzeniu ══
         S.nick=nick;S.birthYear=y;S.jarType=t.jar_type||'classic';S.travelerId=t.id;
         S.ddConsent=t.consent===true;
+        S.ddGridSize=0;S.ddTiles=[];S.ddOrder=[];
+        S.ddDone=0;S.ddDate='';S.ddSet=0;S.ddSeries=0;S.ddLastDate='';
+        S.snItems=[];snJarItems=[];
         calcAge();saveS();
         fetch(SB_URL+'/rest/v1/travels?id=eq.'+t.id,{method:'PATCH',headers:sbHeaders(),body:JSON.stringify({last_visit:new Date().toISOString()})});
         showHome();
@@ -478,12 +482,30 @@ function obStep2(){
       fetch(SB_URL+'/rest/v1/travels',{method:'POST',headers:Object.assign({},sbHeaders(),{'Prefer':'return=representation'}),body:JSON.stringify({nick:nick,birth_year:y,pin:p,jar_type:'classic',source:'magic_jar'})})
       .then(function(r){return r.json();})
       .then(function(created){
-        obSetLoading(false);S.nick=nick;S.birthYear=y;S.jarType='classic';
+        obSetLoading(false);
+        // ══ RESET stanu DD przy tworzeniu nowego użytkownika ══
+        S.nick=nick;S.birthYear=y;S.jarType='classic';
         if(created&&created[0])S.travelerId=created[0].id;
+        S.ddConsent=null;S.ddGridSize=0;S.ddTiles=[];S.ddOrder=[];
+        S.ddDone=0;S.ddDate='';S.ddSet=0;S.ddSeries=0;S.ddLastDate='';
+        S.snItems=[];snJarItems=[];
         calcAge();saveS();obMsg('Witaj, '+nick+'!',true);setTimeout(showHome,900);
-      }).catch(function(){obSetLoading(false);S.nick=nick;S.birthYear=y;calcAge();saveS();setTimeout(showHome,600);});
+      }).catch(function(){
+        obSetLoading(false);
+        S.nick=nick;S.birthYear=y;
+        S.ddConsent=null;S.ddGridSize=0;S.ddTiles=[];S.ddOrder=[];
+        S.ddDone=0;S.ddDate='';S.ddSet=0;S.ddSeries=0;S.ddLastDate='';
+        S.snItems=[];snJarItems=[];
+        calcAge();saveS();setTimeout(showHome,600);
+      });
     }
-  }).catch(function(){obSetLoading(false);S.nick=nick;S.birthYear=y;calcAge();saveS();setTimeout(showHome,600);});
+  }).catch(function(){
+    obSetLoading(false);
+    S.nick=nick;S.birthYear=y;
+    S.ddGridSize=0;S.ddTiles=[];S.ddOrder=[];
+    S.ddDone=0;S.ddDate='';S.ddSet=0;
+    calcAge();saveS();setTimeout(showHome,600);
+  });
 }
 document.addEventListener('DOMContentLoaded',function(){
   var nm=document.getElementById('ob-name');var yr=document.getElementById('ob-year');var pn=document.getElementById('ob-pin');
@@ -604,7 +626,6 @@ var _gridSelected=0;
 function openGridPick(afterFinish,callback){
   _gridPickCallback=callback;
   _gridSelected=S.ddGridSize||0;
-  // Zaznacz aktualny wybór
   document.querySelectorAll('.grid-opt').forEach(function(el){el.classList.remove('selected');});
   if(_gridSelected){
     var cur=document.querySelector('.grid-opt[onclick="gridSelect('+_gridSelected+')"]');
@@ -637,7 +658,6 @@ function gridConfirm(){
   if(!_gridSelected)return;
   var changed=S.ddGridSize!==_gridSelected;
   S.ddGridSize=_gridSelected;
-  // Jeśli rozmiar się zmienił — resetuj kafelki
   if(changed){
     var tot=_gridSelected*_gridSelected;
     S.ddTiles=Array(tot).fill(false);
@@ -650,14 +670,12 @@ function gridConfirm(){
 
 function openDD(){
   if(S.ddConsent!==true){openConsent();return;}
-  // Pierwszy raz — pokaż wybór puzzli
   if(!S.ddGridSize){
     openGridPick(false,function(){ddEnter();show('dd');});
     return;
   }
   ddEnter();
 }
-
 
 function ddEnter(){var today=todayStr();if(S.ddDate!==today){S.ddDone=0;S.ddDate=today;saveS();}initTiles();document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';document.getElementById('dd-rev-msg').style.display='none';document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.remove('active');document.getElementById('dd1').classList.add('active');if(checkInactivity()){show('dd');ddShowInactScreen();return;}document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');document.getElementById('dd-puzzle-area').style.display='flex';ddShowNormalDD();show('dd');}
 function ddShowNormalDD(){var h=new Date().getHours(),dow=new Date().getDay(),dom=new Date().getDate(),nick=nickDisplay();var qEl=document.getElementById('dd-question'),titleEl=document.getElementById('dd-title'),inputEl=document.getElementById('dd-input'),doneMsgEl=document.getElementById('dd-done-msg');renderPuzzle();if(h>=6&&h<12){var msg=DD_MORNING[dom%DD_MORNING.length].replace('[dzień]',DD_DAYS_NOM[dow]);if(nick)msg=msg.replace('Dzień się zaczyna','Dzień się zaczyna, '+nick).replace('Dobry ranek','Dobry ranek, '+nick);if(qEl)qEl.textContent=msg;if(titleEl)titleEl.textContent='Dobry Dzień ☀️';if(inputEl)inputEl.style.display='none';if(doneMsgEl)doneMsgEl.style.display='none';}else{if(qEl)qEl.textContent=ddGetQuestion();if(titleEl)titleEl.textContent='Dobry Dzień ☀️'+(nick?' — '+nick:'');updateDDUI();}}
@@ -676,23 +694,18 @@ function renderPuzzle(){
   size=Math.floor(size/gs)*gs;
   var cont=document.getElementById('pz-cont');
   cont.style.width=size+'px';cont.style.height=size+'px';
-
   var art=document.getElementById('pz-art');
   art.setAttribute('width',size);art.setAttribute('height',size);
   art.setAttribute('viewBox','0 0 '+size+' '+size);
-
   var src=getArtworkSrc();
   art.innerHTML='<image href="'+src+'" x="0" y="0" width="'+size+'" height="'+size+'" preserveAspectRatio="xMidYMid slice"/>';
-
   var ov=document.getElementById('pz-ov');
   ov.setAttribute('width',size);ov.setAttribute('height',size);
   ov.setAttribute('viewBox','0 0 '+size+' '+size);
   ov.innerHTML='';
-
   var defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
   ov.appendChild(defs);
   var tw=size/gs,th=size/gs,revealed=0;
-
   for(var i=0;i<gs*gs;i++){
     if(S.ddTiles[i]){revealed++;continue;}
     var row=Math.floor(i/gs),col=i%gs,x=col*tw,y=row*th;
@@ -723,7 +736,6 @@ function ddSubmit(){var txt=document.getElementById('dd-txt').value.trim();if(tx
 function revealTile(){
   var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;
   if(rev>=tot){
-    // Obraz ukończony — pokaż wybór puzzli przed następnym
     S.ddSet=(S.ddSet||0)+1;saveS();
     setTimeout(function(){
       openGridPick(true,function(){
