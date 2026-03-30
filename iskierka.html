@@ -549,7 +549,7 @@ function obStep2(){
         obSetLoading(false);
         S.nick=nick;S.birthYear=y;S.jarType=t.jar_type||'classic';S.travelerId=t.id;
         S.ddConsent=t.consent===true;
-        if(S.snItems&&S.snItems.length)snJarItems=S.snItems;
+        snJarItems=S.snItems&&S.snItems.length?S.snItems.slice():[];
         calcAge();saveS();
         fetch(SB_URL+'/rest/v1/travels?id=eq.'+t.id,{method:'PATCH',headers:sbHeaders(),body:JSON.stringify({last_visit:new Date().toISOString()})});
         showHome();
@@ -663,13 +663,16 @@ var snJarItems=[];var snChosenColor=SN_COLORS[0];
 // ══ WYBÓR SŁOIKA — BOKI PASKA ══
 function snSideJar(type){S.jarType=type;saveS();snUpdateSideJarUI();snRenderJar();}
 function snUpdateSideJarUI(){var isMagic=(S.jarType||'classic')==='magic';var sc=document.getElementById('sn-side-classic');var sm=document.getElementById('sn-side-magic');if(sc)sc.classList.toggle('active-jar',!isMagic);if(sm)sm.classList.toggle('active-jar',isMagic);}
-function openSN(){snBackToStrips();snRenderJar();show('sn');snSetBg();snUpdateSideJarUI();}
+function openSN(){
+  snJarItems=S.snItems&&S.snItems.length?S.snItems.slice():[];
+  snBackToStrips();snRenderJar();show('sn');snSetBg();snUpdateSideJarUI();
+}
 var SN_SUBS=['Zostaw tu co Ci ciąży — niech noc będzie lżejsza.','Co chcesz zostawić — zostaw. Niech noc będzie spokojna.','Co nosisz w głowie przed snem? Zostaw — noc będzie lżejsza.','Wyrzuć to do Słoika. On to uniesie. Idź spokojnie spać.','Śpij spokojnie i kolorowo. Co niepotrzebne — puść i zostaw w Słoiku.','Zostaw tu swój dzień. Jutro zaczynasz nowy — bez bagażu.','Sen jest dla Ciebie — nie dla tego co Cię dziś zmęczyło.','Jeden oddech. Jeden Słoik. Dobranoc.'];
-function snGetDailyPhoto(){var base='https://manamerkaba.github.io/mana-sloik/img/sky/';var now=new Date();var dayOfYear=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);var cats=[{n:'aurora',c:4},{n:'moon',c:6},{n:'m-w',c:8},{n:'night',c:2}];var cat=cats[dayOfYear%4];var num=(dayOfYear%cat.c)+1;return base+cat.n+'_'+num+'.jpg';}
+function snGetDailyPhoto(){var now=new Date();var dayOfYear=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);var cats=[{n:'aurora',c:4},{n:'moon',c:6},{n:'m-w',c:8},{n:'night',c:2}];var cat=cats[dayOfYear%4];var num=(dayOfYear%cat.c)+1;return'img/sky/'+cat.n+'_'+num+'.jpg';}
 function snSetCardSub(){var el=document.getElementById('sn-card-sub');if(!el)return;var d=new Date();el.textContent=SN_SUBS[(d.getDay()*3+d.getDate())%SN_SUBS.length];}
 function drawSnStars(){var canvas=document.getElementById('sn-star-canvas');if(!canvas)return;var W=window.innerWidth,H=window.innerHeight;canvas.width=W*window.devicePixelRatio;canvas.height=H*window.devicePixelRatio;canvas.style.width=W+'px';canvas.style.height=H+'px';var ctx=canvas.getContext('2d');ctx.scale(window.devicePixelRatio,window.devicePixelRatio);var count=Math.floor((W*H)/2800);for(var i=0;i<count;i++){var x=Math.random()*W,y=Math.random()*H*0.80;var r=Math.random()*1.2+0.2;var a=(Math.random()*0.6+0.15).toFixed(2);var colors=['rgba(200,215,255,'+a+')','rgba(255,255,240,'+a+')','rgba(255,235,200,'+a+')','rgba(255,200,150,'+(a*0.7).toFixed(2)+')'];ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=colors[Math.floor(Math.random()*colors.length)];ctx.fill();}}
 window.addEventListener('resize',function(){if(document.getElementById('sn').classList.contains('active'))drawSnStars();});
-function snInit(){document.getElementById('sn-moon-em')||null;drawSnStars();if(S.snItems&&S.snItems.length)snJarItems=S.snItems;snBuildStrips();snRenderJar();}
+function snInit(){drawSnStars();snJarItems=S.snItems&&S.snItems.length?S.snItems.slice():[];snBuildStrips();snRenderJar();}
 function snBuildJarSVG(){var type=S.jarType||'classic';if(type==='magic')return;var sh=JAR_SHAPES[type]||JAR_SHAPES.classic;var svg=document.getElementById('sn-jar-svg');if(!svg)return;svg.innerHTML='<defs><clipPath id="sjclip"><path d="'+sh.body+'"/></clipPath><radialGradient id="sjglow" cx="35%" cy="30%" r="65%"><stop offset="0%" stop-color="#ffe8a0" stop-opacity=".3"/><stop offset="100%" stop-color="#c87820" stop-opacity=".04"/></radialGradient></defs><ellipse cx="65" cy="98" rx="55" ry="66" fill="rgba(255,180,60,.07)"/><path d="'+sh.body+'" fill="'+sh.body_c+'" stroke="'+sh.stroke+'" stroke-width="2"/><rect id="sn-jfill" x="10" y="152" width="110" height="0" clip-path="url(#sjclip)" fill="'+sh.fill+'"/><path d="'+sh.body+'" fill="url(#sjglow)"/><g id="sn-jnotes" clip-path="url(#sjclip)"></g><path d="M24,55 Q21,90 21,122" stroke="'+sh.shine+'" stroke-width="4" stroke-linecap="round" fill="none"/><path d="'+sh.cap+'" fill="'+sh.body_c+'" stroke="'+sh.stroke+'" stroke-width="1.5"/><path d="'+sh.lid+'" fill="rgba(255,220,120,.4)" stroke="rgba(255,235,150,.65)" stroke-width="1.4"/>';}
 function snRenderJar(){
   var wrap=document.getElementById('sn-jar-wrap');
