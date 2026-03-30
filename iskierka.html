@@ -515,14 +515,14 @@ function obStep2(){
       if(t.pin===p){
         obSetLoading(false);
         S.nick=nick;S.birthYear=y;S.jarType=t.jar_type||'classic';S.travelerId=t.id;
-        S.ddConsent=t.consent===true;
         // Lokalny cache
         var savedSn=loadSnItems(nick,y);
         if(savedSn){S.snItems=savedSn;}
         snJarItems=S.snItems&&S.snItems.length?S.snItems.slice():[];
         var savedDd=loadDdState(nick,y);
-        if(savedDd){S.ddTiles=savedDd.ddTiles||[];S.ddOrder=savedDd.ddOrder||[];S.ddDone=savedDd.ddDone||0;S.ddDate=savedDd.ddDate||'';S.ddSet=savedDd.ddSet||0;S.ddSeries=savedDd.ddSeries||0;S.ddLastDate=savedDd.ddLastDate||'';S.ddGridSize=savedDd.ddGridSize||0;S.ddConsent=savedDd.ddConsent!==undefined?savedDd.ddConsent:S.ddConsent;}
-        // Chmura nadpisuje / merge
+        if(savedDd){S.ddTiles=savedDd.ddTiles||[];S.ddOrder=savedDd.ddOrder||[];S.ddDone=savedDd.ddDone||0;S.ddDate=savedDd.ddDate||'';S.ddSet=savedDd.ddSet||0;S.ddSeries=savedDd.ddSeries||0;S.ddLastDate=savedDd.ddLastDate||'';S.ddGridSize=savedDd.ddGridSize||0;}
+        // Chmura zawsze wygrywa dla consent i merge danych
+        S.ddConsent=t.consent===true;
         if(t.sn_items_cloud&&t.sn_items_cloud.length){S.snItems=t.sn_items_cloud;snJarItems=t.sn_items_cloud.slice();}
         if(t.dd_state){applyCloudDd(t.dd_state);}
         calcAge();saveS();saveDdState();saveSnItems();
