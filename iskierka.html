@@ -599,7 +599,7 @@ function csVerifyCode(){
   })
   .catch(function(){btn.disabled=false;btn.textContent='Potwierdź zgodę ☀️';csMsg(2,'Błąd połączenia. Spróbuj ponownie.');});
 }
-function csFinish(){closeConsent();updateDDCard();ddEnter();show('dd');}
+function csFinish(){closeConsent();updateDDCard();if(!S.ddGridSize){openGridPick(false,function(){ddEnter();show('dd');});}else{ddEnter();show('dd');}}
 function initCodeCells(){
   var cells=document.querySelectorAll('.code-cell');
   cells.forEach(function(cell,i){
