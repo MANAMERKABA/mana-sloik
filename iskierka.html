@@ -208,23 +208,6 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 .inact-yes{background:var(--da);color:#fff;}
 .inact-no{background:rgba(0,0,0,.07);color:var(--du);}
 
-/* ══ WYBÓR SŁOIKA (ekran po rejestracji) ══ */
-#jar-pick{background:#0d0820;align-items:center;justify-content:center;padding:32px 20px;}
-.jar-pick-card{background:rgba(255,255,255,.06);border-radius:24px;padding:32px 24px;max-width:360px;width:100%;text-align:center;}
-.jar-pick-title{font-family:'Cinzel',serif;font-size:18px;font-weight:600;color:#f0eafa;letter-spacing:3px;margin-bottom:8px;}
-.jar-pick-sub{font-size:13px;color:rgba(200,185,240,.55);font-family:'Lora',serif;font-style:italic;margin-bottom:28px;line-height:1.6;}
-.jar-opts{display:flex;gap:16px;justify-content:center;margin-bottom:24px;}
-.jar-opt{flex:1;max-width:140px;background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:18px;padding:18px 12px;cursor:pointer;transition:all .2s;text-align:center;}
-.jar-opt:active{transform:scale(.96);}
-.jar-opt.selected{border-color:#f0c060;background:rgba(240,192,96,.1);}
-.jar-opt-img{width:80px;height:80px;border-radius:12px;object-fit:cover;margin:0 auto 10px;display:block;}
-.jar-opt-svg{width:80px;height:80px;margin:0 auto 10px;display:block;}
-.jar-opt-name{font-size:13px;font-weight:700;color:#f0eafa;margin-bottom:4px;}
-.jar-opt-desc{font-size:11px;color:rgba(200,185,240,.5);line-height:1.4;}
-.jar-pick-btn{width:100%;padding:15px;background:rgba(140,90,255,.22);border:1px solid rgba(170,120,255,.35);border-radius:14px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:3px;color:#d4a8ff;cursor:pointer;transition:transform .15s;}
-.jar-pick-btn:active{transform:scale(.97);}
-.jar-pick-btn:disabled{opacity:.4;cursor:default;}
-
 </style>
 </head>
 <body>
@@ -324,36 +307,6 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 </div>
 
 <!-- WYBÓR SŁOIKA (ekran po rejestracji) -->
-<div class="screen" id="jar-pick">
-<div class="jar-pick-card">
-  <div class="jar-pick-title">TWÓJ SŁOIK</div>
-  <p class="jar-pick-sub">Wybierz jak wygląda Twój Słoik<br>na Spokojną Noc</p>
-  <div class="jar-opts">
-    <div class="jar-opt" id="jp-magic" onclick="jarSelect('magic')">
-      <img src="icon-192.png" class="jar-opt-img" alt="Magic Jar">
-      <div class="jar-opt-name">Magiczny</div>
-      <div class="jar-opt-desc">Piękny i tajemniczy. Myśl znika w środku.</div>
-    </div>
-    <div class="jar-opt" id="jp-classic" onclick="jarSelect('classic')">
-      <svg class="jar-opt-svg" viewBox="0 0 130 165" xmlns="http://www.w3.org/2000/svg">
-        <defs><clipPath id="jpc"><path d="M20,40 Q12,52 10,80 L10,138 Q10,152 24,152 L106,152 Q120,152 120,138 L120,80 Q118,52 110,40 Z"/></clipPath></defs>
-        <path d="M20,40 Q12,52 10,80 L10,138 Q10,152 24,152 L106,152 Q120,152 120,138 L120,80 Q118,52 110,40 Z" fill="rgba(180,220,255,.25)" stroke="rgba(180,225,255,.6)" stroke-width="2"/>
-        <rect x="10" y="110" width="110" height="42" clip-path="url(#jpc)" fill="rgba(100,170,255,.2)"/>
-        <rect x="30" y="120" width="26" height="14" rx="4" fill="#c9a0dc" opacity=".85"/>
-        <rect x="62" y="125" width="26" height="14" rx="4" fill="#a8c5e0" opacity=".85"/>
-        <rect x="46" y="107" width="26" height="14" rx="4" fill="#8ecfb8" opacity=".85"/>
-        <path d="M16,30 Q13,38 20,40 L110,40 Q117,38 114,30 Z" fill="rgba(180,220,255,.3)" stroke="rgba(180,225,255,.5)" stroke-width="1.5"/>
-        <path d="M44,18 Q40,28 44,30 L86,30 Q90,28 86,18 Z" fill="rgba(200,230,255,.35)" stroke="rgba(180,225,255,.55)" stroke-width="1.4"/>
-        <path d="M24,55 Q21,90 21,122" stroke="rgba(255,255,255,.3)" stroke-width="3" stroke-linecap="round" fill="none"/>
-      </svg>
-      <div class="jar-opt-name">Klasyczny</div>
-      <div class="jar-opt-desc">Przezroczysty. Widzisz co w środku.</div>
-    </div>
-  </div>
-  <button class="jar-pick-btn" id="jar-pick-btn" onclick="jarConfirm()" disabled>Wybieram ✦</button>
-</div>
-</div>
-
 <!-- SLEEP -->
 <div class="screen night" id="sleep">
 <div class="stars-bg" id="sleep-stars"></div>
@@ -509,10 +462,13 @@ var JAR_SHAPES={classic:{body:'M20,40 Q12,52 10,80 L10,138 Q10,152 24,152 L106,1
 
 var S={nick:'',birthYear:0,ageGroup:0,jarType:'classic',snItems:[],ddTiles:[],ddOrder:[],ddDone:0,ddDate:'',ddSeries:0,ddLastDate:'',ddSet:0,_lastTile:-1,lastValid:true,ddConsent:null};
 function loadS(){try{var d=localStorage.getItem('iskierka_v3');if(d){var p=JSON.parse(d);if(p.jarType&&!['classic','round','leaf','crystal','heart','magic'].includes(p.jarType))p.jarType='classic';Object.assign(S,p);}}catch(e){localStorage.removeItem('iskierka_v3');}}
-function saveS(){try{localStorage.setItem('iskierka_v3',JSON.stringify(S));}catch(e){}}
+function saveS(){try{localStorage.setItem('iskierka_v3',JSON.stringify(S));if(S.nick&&S.birthYear)saveDdState();}catch(e){}}
 function snItemsKey(){return'mj_sn_'+(S.nick||'')+'_'+(S.birthYear||'');}
 function saveSnItems(){try{localStorage.setItem(snItemsKey(),JSON.stringify(snJarItems));}catch(e){}}
 function loadSnItems(nick,year){try{var k='mj_sn_'+nick+'_'+year;var d=localStorage.getItem(k);if(d){var items=JSON.parse(d);if(Array.isArray(items))return items;}}catch(e){}return null;}
+function ddStateKey(){return'mj_dd_'+(S.nick||'')+'_'+(S.birthYear||'');}
+function saveDdState(){try{var st={ddTiles:S.ddTiles,ddOrder:S.ddOrder,ddDone:S.ddDone,ddDate:S.ddDate,ddSet:S.ddSet,ddSeries:S.ddSeries,ddLastDate:S.ddLastDate,ddGridSize:S.ddGridSize,ddConsent:S.ddConsent};localStorage.setItem(ddStateKey(),JSON.stringify(st));}catch(e){}}
+function loadDdState(nick,year){try{var k='mj_dd_'+nick+'_'+year;var d=localStorage.getItem(k);if(d){var st=JSON.parse(d);if(st)return st;}}catch(e){}return null;}
 function nickDisplay(){return(S.nick||'').replace(/\d+$/,'').trim();}
 
 // ══ INIT ══
@@ -555,6 +511,8 @@ function obStep2(){
         var savedSn=loadSnItems(nick,y);
         if(savedSn){S.snItems=savedSn;}
         snJarItems=S.snItems&&S.snItems.length?S.snItems.slice():[];
+        var savedDd=loadDdState(nick,y);
+        if(savedDd){S.ddTiles=savedDd.ddTiles||[];S.ddOrder=savedDd.ddOrder||[];S.ddDone=savedDd.ddDone||0;S.ddDate=savedDd.ddDate||'';S.ddSet=savedDd.ddSet||0;S.ddSeries=savedDd.ddSeries||0;S.ddLastDate=savedDd.ddLastDate||'';S.ddGridSize=savedDd.ddGridSize||0;S.ddConsent=savedDd.ddConsent!==undefined?savedDd.ddConsent:S.ddConsent;}
         calcAge();saveS();
         fetch(SB_URL+'/rest/v1/travels?id=eq.'+t.id,{method:'PATCH',headers:sbHeaders(),body:JSON.stringify({last_visit:new Date().toISOString()})});
         showHome();
@@ -569,7 +527,7 @@ function obStep2(){
         S.ddConsent=null;S.ddGridSize=0;S.ddTiles=[];S.ddOrder=[];
         S.ddDone=0;S.ddDate='';S.ddSet=0;S.ddSeries=0;S.ddLastDate='';
         S.snItems=[];snJarItems=[];
-        calcAge();saveS();obMsg('Witaj, '+nick+'!',true);setTimeout(function(){show('jar-pick');},900);
+        calcAge();saveS();obMsg('Witaj, '+nick+'!',true);setTimeout(showHome,900);
       }).catch(function(){
         obSetLoading(false);
         S.nick=nick;S.birthYear=y;
@@ -880,23 +838,6 @@ if('serviceWorker' in navigator){
   });
 }
 
-// ══ WYBÓR SŁOIKA (ekran po rejestracji) ══
-var _jarSelected = '';
-function jarSelect(type){
-  _jarSelected = type;
-  document.getElementById('jp-magic').classList.toggle('selected', type==='magic');
-  document.getElementById('jp-classic').classList.toggle('selected', type==='classic');
-  document.getElementById('jar-pick-btn').disabled = false;
-}
-function jarConfirm(){
-  if(!_jarSelected) return;
-  S.jarType = _jarSelected;
-  saveS();
-  if(S.travelerId){
-    fetch(SB_URL+'/rest/v1/travels?id=eq.'+S.travelerId,{method:'PATCH',headers:sbHeaders(),body:JSON.stringify({jar_type:_jarSelected})});
-  }
-  showHome();
-}
 </script>
 </body>
 </html>
