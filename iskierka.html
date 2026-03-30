@@ -510,6 +510,9 @@ var JAR_SHAPES={classic:{body:'M20,40 Q12,52 10,80 L10,138 Q10,152 24,152 L106,1
 var S={nick:'',birthYear:0,ageGroup:0,jarType:'classic',snItems:[],ddTiles:[],ddOrder:[],ddDone:0,ddDate:'',ddSeries:0,ddLastDate:'',ddSet:0,_lastTile:-1,lastValid:true,ddConsent:null};
 function loadS(){try{var d=localStorage.getItem('iskierka_v3');if(d){var p=JSON.parse(d);if(p.jarType&&!['classic','round','leaf','crystal','heart','magic'].includes(p.jarType))p.jarType='classic';Object.assign(S,p);}}catch(e){localStorage.removeItem('iskierka_v3');}}
 function saveS(){try{localStorage.setItem('iskierka_v3',JSON.stringify(S));}catch(e){}}
+function snItemsKey(){return'mj_sn_'+(S.nick||'')+'_'+(S.birthYear||'');}
+function saveSnItems(){try{localStorage.setItem(snItemsKey(),JSON.stringify(snJarItems));}catch(e){}}
+function loadSnItems(nick,year){try{var k='mj_sn_'+nick+'_'+year;var d=localStorage.getItem(k);if(d){var items=JSON.parse(d);if(Array.isArray(items))return items;}}catch(e){}return null;}
 function nickDisplay(){return(S.nick||'').replace(/\d+$/,'').trim();}
 
 // ══ INIT ══
@@ -549,6 +552,8 @@ function obStep2(){
         obSetLoading(false);
         S.nick=nick;S.birthYear=y;S.jarType=t.jar_type||'classic';S.travelerId=t.id;
         S.ddConsent=t.consent===true;
+        var savedSn=loadSnItems(nick,y);
+        if(savedSn){S.snItems=savedSn;}
         snJarItems=S.snItems&&S.snItems.length?S.snItems.slice():[];
         calcAge();saveS();
         fetch(SB_URL+'/rest/v1/travels?id=eq.'+t.id,{method:'PATCH',headers:sbHeaders(),body:JSON.stringify({last_visit:new Date().toISOString()})});
@@ -694,7 +699,7 @@ function snBuildStrips(){var wrap=document.getElementById('sn-strips');if(!wrap)
 function snOpenWriter(hex){snChosenColor=hex;var dot=document.getElementById('sn-dot');if(dot)dot.style.background=hex;var btn=document.getElementById('sn-sendbtn');if(btn)btn.style.background=hex;var bar=document.getElementById('sn-send-bar');if(bar)bar.style.background=hex;document.getElementById('sn-txt2').style.borderColor=hex+'44';document.getElementById('sn-strips').style.display='none';document.getElementById('sn-writer').classList.add('on');setTimeout(function(){document.getElementById('sn-txt2').focus();},160);}
 function snBackToStrips(){document.getElementById('sn-txt2').value='';document.getElementById('sn-writer').classList.remove('on');document.getElementById('sn-jar-screen').classList.remove('on');var strips=document.getElementById('sn-strips');if(strips){strips.style.display='';strips.style.visibility='visible';}var bar=document.getElementById('sn-send-bar');if(bar)bar.style.background='';var btn=document.getElementById('sn-sendbtn');if(btn)btn.style.background='';}
 var SN_MSGS=['Twoja myśl jest już bezpieczna. 🌙','Głowa wolna. Można spać.','Słoik przyjął. Możesz odpuścić.','Odłożone. Nie musisz tego nosić.','Dobrze, że to powiedziałeś. 🌙'];
-function snSubmitNew(){var txt=document.getElementById('sn-txt2').value.trim();if(!txt){document.getElementById('sn-txt2').focus();return;}snJarItems.push({text:txt,color:snChosenColor});S.snItems=snJarItems;saveS();var fly=document.createElement('div');fly.className='sn-fly';fly.style.cssText='background:'+snChosenColor+';left:50%;bottom:150px;transform:translateX(-50%);opacity:0.9;position:fixed;';fly.textContent=txt.length>22?txt.slice(0,22)+'…':txt;document.body.appendChild(fly);setTimeout(function(){fly.style.transition='all 1.1s cubic-bezier(.3,0,.2,1)';fly.style.bottom='62%';fly.style.opacity='0';fly.style.transform='translateX(-50%) scale(.12)';},40);setTimeout(function(){fly.remove();},1250);snRenderJar();document.getElementById('sn-btn-more').style.background=snChosenColor;document.getElementById('sn-conf-msg').textContent=SN_MSGS[Math.floor(Math.random()*SN_MSGS.length)];setTimeout(function(){document.getElementById('sn-writer').classList.remove('on');if(snJarItems.length>=7){document.getElementById('ritual-ov').classList.add('open');}else{document.getElementById('sn-jar-screen').classList.add('on');}},850);}
+function snSubmitNew(){var txt=document.getElementById('sn-txt2').value.trim();if(!txt){document.getElementById('sn-txt2').focus();return;}snJarItems.push({text:txt,color:snChosenColor});S.snItems=snJarItems;saveS();saveSnItems();var fly=document.createElement('div');fly.className='sn-fly';fly.style.cssText='background:'+snChosenColor+';left:50%;bottom:150px;transform:translateX(-50%);opacity:0.9;position:fixed;';fly.textContent=txt.length>22?txt.slice(0,22)+'…':txt;document.body.appendChild(fly);setTimeout(function(){fly.style.transition='all 1.1s cubic-bezier(.3,0,.2,1)';fly.style.bottom='62%';fly.style.opacity='0';fly.style.transform='translateX(-50%) scale(.12)';},40);setTimeout(function(){fly.remove();},1250);snRenderJar();document.getElementById('sn-btn-more').style.background=snChosenColor;document.getElementById('sn-conf-msg').textContent=SN_MSGS[Math.floor(Math.random()*SN_MSGS.length)];setTimeout(function(){document.getElementById('sn-writer').classList.remove('on');if(snJarItems.length>=7){document.getElementById('ritual-ov').classList.add('open');}else{document.getElementById('sn-jar-screen').classList.add('on');}},850);}
 function snAddMore(){document.getElementById('sn-jar-screen').classList.remove('on');document.getElementById('sn-txt2').value='';document.getElementById('sn-strips').style.display='flex';}
 
 // ══ DOBRY DZIEŃ ══
@@ -860,7 +865,7 @@ document.addEventListener('DOMContentLoaded',function(){
   var ro=document.getElementById('ritual-ov');if(ro)ro.addEventListener('click',function(e){if(e.target===this)ro.classList.remove('open');});
   var co=document.getElementById('consent-ov');if(co)co.addEventListener('click',function(e){if(e.target===this)closeConsent();});
 });
-function doRitual(type){document.getElementById('ritual-ov').classList.remove('open');snJarItems=[];S.snItems=[];saveS();snRenderJar();flash();document.getElementById('sn-jar-screen').classList.add('on');}
+function doRitual(type){document.getElementById('ritual-ov').classList.remove('open');snJarItems=[];S.snItems=[];saveS();saveSnItems();snRenderJar();flash();document.getElementById('sn-jar-screen').classList.add('on');}
 function todayStr(){return new Date().toISOString().slice(0,10);}
 function yest(){var d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);}
 function flash(){var f=document.createElement('div');f.className='flash';document.body.appendChild(f);setTimeout(function(){f.remove();},700);}
