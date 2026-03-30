@@ -594,7 +594,11 @@ function csVerifyCode(){
   .then(function(r){return r.json();})
   .then(function(data){
     btn.disabled=false;btn.textContent='Potwierdź zgodę ☀️';
-    if(data.ok){S.ddConsent=true;saveS();csShowStep(3);}
+    if(data.ok){
+      S.ddConsent=true;saveS();
+      if(S.travelerId){fetch(SB_URL+'/rest/v1/travels?id=eq.'+S.travelerId,{method:'PATCH',headers:sbHeaders(),body:JSON.stringify({consent:true})}).catch(function(){});}
+      csShowStep(3);
+    }
     else{csMsg(2,data.error||'Nieprawidłowy kod. Spróbuj ponownie.');document.querySelectorAll('.code-cell').forEach(function(c){c.value='';});document.querySelector('.code-cell').focus();}
   })
   .catch(function(){btn.disabled=false;btn.textContent='Potwierdź zgodę ☀️';csMsg(2,'Błąd połączenia. Spróbuj ponownie.');});
