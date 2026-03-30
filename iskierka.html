@@ -475,8 +475,7 @@ function obStep2(){
         // ══ RESET stanu DD przy logowaniu istniejącego użytkownika na nowym urządzeniu ══
         S.nick=nick;S.birthYear=y;S.jarType=t.jar_type||'classic';S.travelerId=t.id;
         S.ddConsent=t.consent===true;
-        S.ddDone=0;S.ddDate='';S.ddSet=0;S.ddSeries=0;S.ddLastDate='';
-        S.snItems=[];snJarItems=[];
+        if(S.snItems&&S.snItems.length)snJarItems=S.snItems;
         calcAge();saveS();
         fetch(SB_URL+'/rest/v1/travels?id=eq.'+t.id,{method:'PATCH',headers:sbHeaders(),body:JSON.stringify({last_visit:new Date().toISOString()})});
         showHome();
