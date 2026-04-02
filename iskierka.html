@@ -207,7 +207,6 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 .inact-btn{padding:14px 28px;border-radius:16px;border:none;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;cursor:pointer;}
 .inact-yes{background:var(--da);color:#fff;}
 .inact-no{background:rgba(0,0,0,.07);color:var(--du);}
-@keyframes heartOnly{0%{transform:scale(1);}15%{transform:scale(1.28);}30%{transform:scale(1);}45%{transform:scale(1.14);}65%{transform:scale(1);}100%{transform:scale(1);}}
 </style>
 </head>
 <body>
@@ -414,13 +413,7 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <div id="dd-input"><p style="font-size:13px;color:var(--du);text-align:center;margin-bottom:8px;" id="dd-info"></p><textarea class="inp-d" id="dd-txt" rows="3" placeholder="np. Zjadłam lody z mamą..."></textarea><button class="btn btn-sun" style="margin-top:12px;" onclick="ddSubmit()">Wrzuć dobrą myśl ☀️</button></div>
 <div id="dd-done-msg" style="display:none;text-align:center;padding:20px;background:rgba(246,168,37,.1);border-radius:var(--rs);margin-top:8px;"><div style="font-size:30px;margin-bottom:8px;">🌟</div><p style="font-weight:700;color:var(--dt);">Na dziś koniec!</p><p style="font-size:13px;color:var(--du);margin-top:4px;">Wróć jutro po kolejny puzzle.</p></div>
 </div>
-<div class="step" id="dd2"><div style="flex:1;display:flex;flex-direction:column;justify-content:center;"><div id="dd-think" style="position:absolute;inset:0;background:#6dbfb0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-<div style="position:relative;width:280px;height:280px;">
-<img src="https://kkxhqtfxvgxdqpnzaufu.supabase.co/storage/v1/object/public/mana-assets/mana_logo_biale.svg" style="width:280px;height:280px;" alt="MANA">
-<img src="https://kkxhqtfxvgxdqpnzaufu.supabase.co/storage/v1/object/public/mana-assets/mana_logo_biale.svg" style="position:absolute;top:0;left:0;width:280px;height:280px;clip-path:inset(18% 12% 44% 12%);transform-origin:50% 40%;animation:heartOnly 1.4s ease-in-out infinite;" alt="">
-</div>
-<p style="color:rgba(255,255,255,0.9);margin-top:24px;font-size:17px;letter-spacing:2px;font-family:'Nunito',sans-serif;font-weight:600;">Serce słucha...</p>
-</div><div id="dd-resp" style="display:none;"><div class="serce-bub" id="dd-bub"></div><div id="dd-rev-msg" style="display:none;text-align:center;margin-top:14px;"><div style="font-size:38px;">🧩</div><p style="font-weight:700;color:var(--dt);margin-top:6px;" id="dd-rev-txt">Puzzle odkryty!</p></div><button class="btn btn-sun" style="margin-top:20px;" onclick="ddBack()">Dobra ☀️</button></div></div></div>
+<div class="step" id="dd2"><div style="flex:1;display:flex;flex-direction:column;justify-content:center;"><div id="dd-think" style="text-align:center;padding:32px 0;"><div style="font-size:44px;animation:float 2s ease-in-out infinite;">💛</div><p style="color:var(--du);margin-top:12px;font-size:15px;">Serce słucha...</p></div><div id="dd-resp" style="display:none;"><div class="serce-bub" id="dd-bub"></div><div id="dd-rev-msg" style="display:none;text-align:center;margin-top:14px;"><div style="font-size:38px;">🧩</div><p style="font-weight:700;color:var(--dt);margin-top:6px;" id="dd-rev-txt">Puzzle odkryty!</p></div><button class="btn btn-sun" style="margin-top:20px;" onclick="ddBack()">Dobra ☀️</button></div></div></div>
 </div>
 
 <script>
