@@ -55,6 +55,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 /* DETAIL */
 #view-detail{display:none;}
 .detail-bar{padding:16px 28px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:10;}
+.copy-bar{display:none;padding:10px 28px;background:rgba(139,115,85,0.08);border-bottom:1px solid var(--border);align-items:center;gap:12px;position:sticky;top:65px;z-index:9;}
+.copy-bar.on{display:flex;}
+.copy-bar-info{font-size:13px;color:var(--brown);font-weight:500;flex:1;}
+.copy-bar-btn{padding:8px 18px;background:var(--brown);color:var(--white);border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;}
+.copy-bar-clear{padding:8px 14px;background:none;border:1px solid var(--border-strong);border-radius:8px;font-size:12px;color:var(--text-light);cursor:pointer;}
 .back-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--brown);cursor:pointer;padding:7px 16px;border:1px solid var(--border-strong);border-radius:8px;background:var(--sand);}
 .back-btn:hover{background:var(--brown);color:var(--white);border-color:var(--brown);}
 .detail-title{font-family:'Crimson Pro',serif;font-size:22px;font-weight:300;}
@@ -195,6 +200,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
         <div class="detail-title" id="d-title"></div>
         <div class="detail-meta" id="d-meta"></div>
       </div>
+      <div class="copy-bar" id="copy-bar">
+        <div class="copy-bar-info" id="copy-bar-info">Zaznaczono 0 wpisów</div>
+        <button class="copy-bar-clear" onclick="ddClearSel()">Odznacz</button>
+        <button class="copy-bar-btn" onclick="doCopy()">📋 Kopiuj do schowka</button>
+        <span style="font-size:11px;color:var(--green);display:none;" id="cpok">✓ Skopiowano!</span>
+      </div>
       <div class="detail-body" id="d-body"><div class="loading">Ładuję…</div></div>
     </div>
 
@@ -312,23 +323,35 @@ function renderDD(){
   var data=ddF==='all'?ddAll:ddAll.filter(e=>e.ocena===ddF);
   var pos=ddAll.filter(e=>e.ocena==='pozytywna').length;
   var neg=ddAll.filter(e=>e.ocena==='negatywna').length;
-  var copyBlock=ddSel.size?'<div><div class="copy-wrap" id="cpbox"></div><button class="copy-btn" onclick="doCopy()">📋 Kopiuj zaznaczone ('+ddSel.size+')</button><span class="copy-ok" id="cpok">✓ Skopiowano!</span></div>':'';
+  // Aktualizuj sticky copy-bar
+  var cb=document.getElementById('copy-bar');
+  var ci=document.getElementById('copy-bar-info');
+  if(cb){cb.classList.toggle('on',ddSel.size>0);}
+  if(ci&&ddSel.size>0)ci.textContent='Zaznaczono '+ddSel.size+(ddSel.size===1?' wpis':ddSel.size<5?' wpisy':' wpisów')+' — gotowe do kopiowania';
   document.getElementById('d-body').innerHTML=
     '<div class="dd-filters">'+
       '<button class="dd-fb '+(ddF==='all'?'act':'')+'" onclick="ddSF(\'all\',this)">Wszystkie ('+ddAll.length+')</button>'+
       '<button class="dd-fb '+(ddF==='pozytywna'?'act':'')+'" onclick="ddSF(\'pozytywna\',this)">✅ Pozytywne ('+pos+')</button>'+
       '<button class="dd-fb '+(ddF==='negatywna'?'act':'')+'" onclick="ddSF(\'negatywna\',this)">❌ Negatywne ('+neg+')</button>'+
+      '<span style="font-size:12px;color:var(--text-light);margin-left:8px;">kliknij wpis aby zaznaczyć</span>'+
     '</div>'+
     data.map(e=>'<div class="dd-e '+(e.ocena==='pozytywna'?'pos':e.ocena==='negatywna'?'neg':'')+' '+(ddSel.has(e.id)?'sel':'')+'" onclick="ddTog('+e.id+')">'+
       (e.session_id?'<div class="dd-ntag">'+esc(e.session_id.slice(0,8))+'</div>':'')+
       '<div class="dd-mysl">'+esc(e.mysl||'')+'</div>'+
       '<div class="dd-odp">'+esc(e.odpowiedz||'')+'</div>'+
       '<div class="dd-meta"><span class="dd-oc '+(e.ocena==='pozytywna'?'badge bg':'badge bb')+'">'+(e.ocena||'?')+'</span><span class="dd-dt">'+fdt(e.created_at)+'</span></div>'+
-    '</div>').join('')+copyBlock;
-  if(ddSel.size){var items=ddAll.filter(e=>ddSel.has(e.id));var b=document.getElementById('cpbox');if(b)b.textContent=items.map(e=>'MYŚL: '+e.mysl+'\nOCENA: '+e.ocena+'\nODPOWIEDŹ: '+e.odpowiedz).join('\n\n---\n\n');}
-}
+    '</div>').join('');}
 function ddTog(id){ddSel.has(id)?ddSel.delete(id):ddSel.add(id);renderDD();}
-function doCopy(){var b=document.getElementById('cpbox');if(!b)return;navigator.clipboard.writeText(b.textContent).then(()=>{var ok=document.getElementById('cpok');ok.style.display='inline';setTimeout(()=>ok.style.display='none',2000);});}
+function doCopy(){
+  var items=ddAll.filter(e=>ddSel.has(e.id));
+  if(!items.length)return;
+  var txt=items.map(e=>'MYŚL: '+e.mysl+'\nOCENA: '+e.ocena+'\nODPOWIEDŹ: '+e.odpowiedz).join('\n\n---\n\n');
+  navigator.clipboard.writeText(txt).then(()=>{
+    var ok=document.getElementById('cpok');
+    if(ok){ok.style.display='inline';setTimeout(()=>ok.style.display='none',2500);}
+  });
+}
+function ddClearSel(){ddSel=new Set();renderDD();}
 
 document.getElementById('login-nick').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 window.addEventListener('load',()=>{var n=localStorage.getItem('mana_nick');var r=localStorage.getItem('mana_rola');if(n&&r==='admin'&&ADMINS.includes(n)){nick=n;showAdmin();}});
