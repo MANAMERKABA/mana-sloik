@@ -67,7 +67,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 .detail-body{padding:24px 32px;}
 
 /* TRAVELER CARDS */
+.search-bar{display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap;}
+.search-inp{flex:1;min-width:160px;padding:10px 14px;border:1px solid var(--border-strong);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--white);color:var(--text);outline:none;}
+.search-inp:focus{border-color:var(--brown);}
+.sort-sel{padding:10px 12px;border:1px solid var(--border-strong);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--white);color:var(--text);outline:none;cursor:pointer;}
+.search-clear{padding:9px 14px;border:1px solid var(--border-strong);border-radius:10px;font-size:13px;background:none;color:var(--text-light);cursor:pointer;}
+.search-count{font-size:12px;color:var(--text-light);margin-left:4px;}
 .t-card{background:var(--white);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+.t-clickable:hover{border-color:var(--border-strong);box-shadow:0 2px 10px rgba(44,36,24,.07);}
 .t-row{display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;}
 .t-row:hover{background:rgba(139,115,85,0.03);}
 .t-av{width:36px;height:36px;border-radius:50%;background:rgba(139,115,85,0.12);display:flex;align-items:center;justify-content:center;font-family:'Crimson Pro',serif;font-size:17px;color:var(--brown);flex-shrink:0;}
@@ -274,26 +281,105 @@ function openView(type){
 }
 function closeView(){document.getElementById('view-detail').style.display='none';document.getElementById('view-dash').style.display='block';}
 
+var _travelers=[];
+var _tSort='last_visit';
 async function loadTravelers(){
   var travelers=await sb('travels','select=nick,birth_year,created_at,consent,last_visit,visit_count&order=last_visit.desc.nullslast,created_at.desc');
-  var tA=Array.isArray(travelers)?travelers:[];
-  document.getElementById('d-meta').textContent=tA.length+' osób';
-  if(!tA.length){document.getElementById('d-body').innerHTML='<div class="empty">Brak podróżników</div>';return;}
-  var html='<div class="fi">';
-  tA.forEach((t,i)=>{
+  _travelers=Array.isArray(travelers)?travelers:[];
+  document.getElementById('d-meta').textContent=_travelers.length+' osób';
+  renderTravelers('',_tSort);
+}
+function renderTravelers(q,sort){
+  q=(q||'').toLowerCase().trim();_tSort=sort||'last_visit';
+  var data=_travelers.filter(function(t){return !q||t.nick.toLowerCase().indexOf(q)>=0;});
+  if(sort==='name')data=data.slice().sort(function(a,b){return a.nick.localeCompare(b.nick);});
+  else if(sort==='joined')data=data.slice().sort(function(a,b){return (b.created_at||'').localeCompare(a.created_at||'');});
+  var el=document.getElementById('d-body');
+  var html='<div class="search-bar">'+
+    '<input class="search-inp" id="t-search" placeholder="szukaj po nicku..." value="'+esc(q)+'">'+
+    '<select class="sort-sel" id="t-sort">'+
+      '<option value="last_visit"'+(sort==='last_visit'?' selected':'')+'>ostatnia wizyta</option>'+
+      '<option value="name"'+(sort==='name'?' selected':'')+'>A–Z</option>'+
+      '<option value="joined"'+(sort==='joined'?' selected':'')+'>data dołączenia</option>'+
+    '</select>'+
+    (q?'<button class="search-clear" id="t-clear">✕ wyczyść</button>':'')+
+    '<span class="search-count">'+data.length+' / '+_travelers.length+'</span>'+
+  '</div><div class="fi">';
+  data.forEach(function(t){
     var reg=t.created_at?new Date(t.created_at).toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric'}):'—';
     var age=t.birth_year?new Date().getFullYear()-t.birth_year+' lat':'';
     var con=t.consent?'<span class="badge bg">zgoda ✓</span>':'';
-    var visits=t.visit_count?t.visit_count+' wizyt':'';
-    html+='<div class="t-card"><div class="t-row">'+
+    html+='<div class="t-card t-clickable" data-nick="'+esc(t.nick)+'">'+
+      '<div class="t-row">'+
       '<div class="t-av">'+ini(t.nick)+'</div>'+
-      '<div class="t-info"><div class="t-nick">'+esc(t.nick)+con+'</div><div class="t-meta">'+age+(age?' · ':'')+'dołączył '+reg+(visits?' · '+visits:'')+'</div></div>'+
-      '<div class="t-right"><div class="t-cnt">'+(t.last_visit?rel(t.last_visit):'brak aktywności')+'</div><div class="t-last">ostatnia wizyta</div></div>'+
-    '</div></div>';
+      '<div class="t-info"><div class="t-nick">'+esc(t.nick)+con+'</div>'+
+      '<div class="t-meta">'+age+(age?' · ':'')+'dołączył '+reg+'</div></div>'+
+      '<div class="t-right"><div class="t-cnt">'+(t.last_visit?rel(t.last_visit):'brak aktywności')+'</div>'+
+      '<div class="t-last">ostatnia wizyta</div></div>'+
+      '<div style="font-size:11px;color:var(--text-light);margin-left:8px;">▶</div>'+
+      '</div></div>';
   });
   html+='</div>';
-  document.getElementById('d-body').innerHTML=html;
+  el.innerHTML=html;
+  var si=document.getElementById('t-search');
+  var ss=document.getElementById('t-sort');
+  var sc=document.getElementById('t-clear');
+  if(si)si.addEventListener('input',function(){renderTravelers(si.value,_tSort);});
+  if(ss)ss.addEventListener('change',function(){renderTravelers(si?si.value:'',ss.value);});
+  if(sc)sc.addEventListener('click',function(){if(si)si.value='';renderTravelers('',_tSort);});
+  document.querySelectorAll('.t-clickable').forEach(function(card){
+    card.style.cursor='pointer';
+    card.addEventListener('click',function(){openTraveler(card.getAttribute('data-nick'));});
+  });
 }
+async function openTraveler(nick){
+  document.getElementById('d-title').textContent=nick;
+  document.getElementById('d-meta').textContent='';
+  document.getElementById('d-body').innerHTML='<div class="loading">Ładuję aktywność...</div>';
+  var t=_travelers.find(function(x){return x.nick===nick;})||{};
+  var ddData=await sb('dd_entries','select=mysl,odpowiedz,ocena,created_at&order=created_at.desc&limit=100');
+  var ddArr=Array.isArray(ddData)?ddData:[];
+  var age=t.birth_year?new Date().getFullYear()-t.birth_year:'';
+  var sessionHash=simpleHash(nick+(t.birth_year||''));
+  var myDD=ddArr.filter(function(e){return e.session_id===sessionHash||(ddArr.length<20);});
+  var reg=t.created_at?new Date(t.created_at).toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit',year:'2-digit'}):'—';
+  var html='<div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:16px;">'+
+    '<div style="display:flex;gap:16px;align-items:center;">'+
+    '<div class="t-av" style="width:52px;height:52px;font-size:22px;">'+ini(nick)+'</div>'+
+    '<div>'+
+      '<div style="font-size:18px;font-weight:500;">'+esc(nick)+'</div>'+
+      '<div style="font-size:12px;color:var(--text-light);margin-top:4px;">'+
+        (age?age+' lat · ':'')+'dołączył '+reg+
+        (t.consent?' · <span class="badge bg">zgoda ✓</span>':' · <span class="badge bb">bez zgody</span>')+
+      '</div>'+
+    '</div></div>'+
+    '<div style="display:flex;gap:16px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">'+
+      '<div><div style="font-size:20px;font-weight:300;font-family:Crimson Pro,serif;color:var(--brown);">'+(t.last_visit?rel(t.last_visit):'—')+'</div><div style="font-size:11px;color:var(--text-light);">ostatnia wizyta</div></div>'+
+      '<div><div style="font-size:20px;font-weight:300;font-family:Crimson Pro,serif;color:var(--brown);">'+(t.last_visit?fdt(t.last_visit):'—')+'</div><div style="font-size:11px;color:var(--text-light);">data i godzina</div></div>'+
+    '</div>'+
+  '</div>';
+  var ddAll2=await sb('dd_entries','select=mysl,odpowiedz,ocena,created_at&order=created_at.desc&limit=50');
+  if(Array.isArray(ddAll2)&&ddAll2.length){
+    html+='<div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;">Dobry Dzień — ostatnie wpisy</div>';
+    ddAll2.slice(0,10).forEach(function(e){
+      html+='<div class="dd-e '+(e.ocena==='pozytywna'?'pos':e.ocena==='negatywna'?'neg':'')+'" style="cursor:default;">'+
+        '<div class="dd-mysl">'+esc(e.mysl||'')+'</div>'+
+        '<div class="dd-odp">'+esc(e.odpowiedz||'')+'</div>'+
+        '<div class="dd-meta"><span class="dd-oc '+(e.ocena==='pozytywna'?'badge bg':'badge bb')+'">'+(e.ocena||'?')+'</span><span class="dd-dt">'+fdt(e.created_at)+'</span></div>'+
+      '</div>';
+    });
+  } else {
+    html+='<div class="empty">Brak wpisów w Dobrym Dniu</div>';
+  }
+  document.getElementById('d-body').innerHTML=html;
+  document.getElementById('d-meta').textContent='';
+  var backBtn=document.querySelector('.back-btn');
+  if(backBtn){
+    backBtn._origOnclick=backBtn._origOnclick||backBtn.getAttribute('onclick');
+    backBtn.onclick=function(){openView('travelers');};
+  }
+}
+function simpleHash(str){var h=0;for(var i=0;i<str.length;i++){h=((h<<5)-h)+str.charCodeAt(i);h|=0;}return Math.abs(h).toString(16);}
 function tog(i){var b=document.getElementById('tb'+i);var a=document.getElementById('arr'+i);b.classList.toggle('open');a.classList.toggle('open');}
 
 async function loadConv(){
