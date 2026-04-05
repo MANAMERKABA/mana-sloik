@@ -239,12 +239,15 @@ async function loadStats(){
   document.getElementById('s-t-h').textContent=tA.length?'ostatni: '+esc(tA[0].nick):'brak';
   document.getElementById('s-c').textContent=await sbN('conversations');
   document.getElementById('s-s').textContent=await sbN('stones');
-  var d=await sb('dd_entries','select=nick,created_at&order=created_at.desc');
+  var d=await sb('dd_entries','select=session_id,created_at&order=created_at.desc');
   var dA=Array.isArray(d)?d:[];
   document.getElementById('s-d').textContent=dA.length;
-  document.getElementById('s-d-h').textContent=dA.length?'ostatni: '+esc(dA[0].nick||'?'):'brak';
+  document.getElementById('s-d-h').textContent=dA.length?fdt(dA[0].created_at):'brak';
+  // Aktywni dziś — z travels.last_visit (pewne źródło)
   var today=new Date().toISOString().split('T')[0];
-  var who=[...new Set(dA.filter(e=>e.created_at&&e.created_at.startsWith(today)).map(e=>e.nick).filter(Boolean))];
+  var trav=await sb('travels','select=nick,last_visit&order=last_visit.desc');
+  var travA=Array.isArray(trav)?trav:[];
+  var who=travA.filter(t=>t.last_visit&&t.last_visit.startsWith(today)).map(t=>t.nick).filter(Boolean);
   document.getElementById('s-today').textContent=who.length||0;
   document.getElementById('s-today-w').textContent=who.length?who.join(', '):'nikt dziś';
 }
@@ -261,27 +264,21 @@ function openView(type){
 function closeView(){document.getElementById('view-detail').style.display='none';document.getElementById('view-dash').style.display='block';}
 
 async function loadTravelers(){
-  var travelers=await sb('travels','select=nick,birth_year,created_at,consent&order=created_at.desc');
+  var travelers=await sb('travels','select=nick,birth_year,created_at,consent,last_visit,visit_count&order=last_visit.desc.nullslast,created_at.desc');
   var tA=Array.isArray(travelers)?travelers:[];
-  var dde=await sb('dd_entries','select=nick,mysl,ocena,created_at&order=created_at.desc&limit=500');
-  var dA=Array.isArray(dde)?dde:[];
-  var byN={};dA.forEach(e=>{if(!e.nick)return;if(!byN[e.nick])byN[e.nick]={e:[],last:null};byN[e.nick].e.push(e);if(!byN[e.nick].last||e.created_at>byN[e.nick].last)byN[e.nick].last=e.created_at;});
-  tA.sort((a,b)=>{var la=byN[a.nick]?.last||a.created_at||'';var lb=byN[b.nick]?.last||b.created_at||'';return lb.localeCompare(la);});
   document.getElementById('d-meta').textContent=tA.length+' osób';
   if(!tA.length){document.getElementById('d-body').innerHTML='<div class="empty">Brak podróżników</div>';return;}
   var html='<div class="fi">';
   tA.forEach((t,i)=>{
-    var dd=byN[t.nick];var cnt=dd?dd.e.length:0;var last=dd?dd.last:null;
     var reg=t.created_at?new Date(t.created_at).toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric'}):'—';
     var age=t.birth_year?new Date().getFullYear()-t.birth_year+' lat':'';
     var con=t.consent?'<span class="badge bg">zgoda ✓</span>':'';
-    var items=dd?dd.e.slice(0,8).map(e=>'<div class="t-dd-item '+(e.ocena==='pozytywna'?'p':e.ocena==='negatywna'?'n':'')+'"><div class="t-dd-mysl">'+esc(e.mysl||'').slice(0,90)+'</div><div class="t-dd-dt">'+fdt(e.created_at)+'</div></div>').join(''):'';
-    html+='<div class="t-card"><div class="t-row" onclick="tog('+i+')">'+
+    var visits=t.visit_count?t.visit_count+' wizyt':'';
+    html+='<div class="t-card"><div class="t-row">'+
       '<div class="t-av">'+ini(t.nick)+'</div>'+
-      '<div class="t-info"><div class="t-nick">'+esc(t.nick)+con+'</div><div class="t-meta">'+age+(age?' · ':'')+'dołączył '+reg+'</div></div>'+
-      '<div class="t-right"><div class="t-cnt">'+cnt+' myśli</div><div class="t-last">'+(last?rel(last):'brak aktywności')+'</div></div>'+
-      '<div class="t-arrow" id="arr'+i+'">▾</div></div>'+
-      '<div class="t-body" id="tb'+i+'">'+(items?'<div>'+items+'</div>':'<div class="loading" style="padding:8px 0;">Brak aktywności w Dobrym Dniu</div>')+'</div></div>';
+      '<div class="t-info"><div class="t-nick">'+esc(t.nick)+con+'</div><div class="t-meta">'+age+(age?' · ':'')+'dołączył '+reg+(visits?' · '+visits:'')+'</div></div>'+
+      '<div class="t-right"><div class="t-cnt">'+(t.last_visit?rel(t.last_visit):'brak aktywności')+'</div><div class="t-last">ostatnia wizyta</div></div>'+
+    '</div></div>';
   });
   html+='</div>';
   document.getElementById('d-body').innerHTML=html;
@@ -305,7 +302,7 @@ async function loadConv(){
 }
 
 async function loadDD(){
-  var data=await sb('dd_entries','select=id,nick,mysl,odpowiedz,ocena,created_at&order=created_at.desc&limit=200');
+  var data=await sb('dd_entries','select=id,session_id,mysl,odpowiedz,ocena,created_at&order=created_at.desc&limit=200');
   ddAll=Array.isArray(data)?data:[];ddSel=new Set();ddF='all';
   document.getElementById('d-meta').textContent=ddAll.length+' wpisów';
   renderDD();
@@ -323,7 +320,7 @@ function renderDD(){
       '<button class="dd-fb '+(ddF==='negatywna'?'act':'')+'" onclick="ddSF(\'negatywna\',this)">❌ Negatywne ('+neg+')</button>'+
     '</div>'+
     data.map(e=>'<div class="dd-e '+(e.ocena==='pozytywna'?'pos':e.ocena==='negatywna'?'neg':'')+' '+(ddSel.has(e.id)?'sel':'')+'" onclick="ddTog('+e.id+')">'+
-      (e.nick?'<div class="dd-ntag">'+esc(e.nick)+'</div>':'')+
+      (e.session_id?'<div class="dd-ntag">'+esc(e.session_id.slice(0,8))+'</div>':'')+
       '<div class="dd-mysl">'+esc(e.mysl||'')+'</div>'+
       '<div class="dd-odp">'+esc(e.odpowiedz||'')+'</div>'+
       '<div class="dd-meta"><span class="dd-oc '+(e.ocena==='pozytywna'?'badge bg':'badge bb')+'">'+(e.ocena||'?')+'</span><span class="dd-dt">'+fdt(e.created_at)+'</span></div>'+
