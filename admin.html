@@ -35,7 +35,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 .top-logout{font-size:11px;color:var(--text-light);cursor:pointer;padding:4px 10px;border:1px solid var(--border);border-radius:6px;}
 .top-logout:hover{color:var(--text);border-color:var(--border-strong);}
 .admin-body{flex:1;overflow-y:auto;padding:28px 32px;}
-.section{margin-bottom:32px;}
+.section{margin-bottom:36px;}
 .section-title{font-family:'Crimson Pro',serif;font-size:22px;font-weight:300;color:var(--text);margin-bottom:4px;}
 .section-sub{font-size:12px;color:var(--text-light);margin-bottom:16px;}
 .stats-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
@@ -67,10 +67,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 .konst-actions{display:flex;gap:8px;margin-top:10px;}
 .konst-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--border-strong);background:var(--white);color:var(--brown);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
 .konst-btn:hover{background:var(--brown);color:var(--white);border-color:var(--brown);}
-.note-item{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px;}
-.note-meta{font-size:10px;color:var(--text-light);margin-bottom:4px;}
-.note-text{font-size:12px;color:var(--text);line-height:1.6;}
-.note-trener{font-size:11px;color:var(--purple);font-weight:500;margin-top:4px;}
 .loading{font-size:12px;color:var(--text-light);font-style:italic;padding:12px 0;}
 .empty{font-size:12px;color:var(--text-light);font-style:italic;text-align:center;padding:20px 0;}
 .refresh-btn{font-size:11px;color:var(--text-light);cursor:pointer;padding:4px 10px;border:1px solid var(--border);border-radius:6px;margin-left:8px;}
@@ -96,6 +92,44 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 .dd-selinfo{font-size:11px;color:var(--text-light);margin-bottom:6px;}
 .dd-copy-btn{margin-top:8px;padding:8px 18px;background:var(--brown);color:var(--white);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
 .dd-ok{font-size:11px;color:var(--green);margin-left:10px;display:none;}
+
+/* ═══ AKTYWNOŚĆ KTO ═══ */
+.user-cards{display:flex;flex-direction:column;gap:10px;}
+.user-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:0;overflow:hidden;}
+.user-card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;gap:12px;}
+.user-card-header:hover{background:rgba(139,115,85,0.03);}
+.user-avatar{width:38px;height:38px;border-radius:50%;background:rgba(139,115,85,0.12);display:flex;align-items:center;justify-content:center;font-family:'Crimson Pro',serif;font-size:18px;font-weight:300;color:var(--brown);flex-shrink:0;}
+.user-info{flex:1;}
+.user-nick{font-size:14px;font-weight:500;color:var(--text);}
+.user-meta{font-size:11px;color:var(--text-light);margin-top:2px;}
+.user-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.user-last{font-size:11px;color:var(--text-light);}
+.user-dd-count{font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(107,143,113,0.12);color:var(--green);font-weight:500;}
+.user-dd-count.zero{background:rgba(139,115,85,0.08);color:var(--text-light);}
+.user-expand{font-size:12px;color:var(--text-light);}
+.user-body{display:none;border-top:1px solid var(--border);padding:14px 18px;}
+.user-body.open{display:block;}
+.user-dd-list{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;}
+.user-dd-item{padding:8px 12px;background:var(--sand);border-radius:8px;border-left:3px solid var(--border);}
+.user-dd-item.poz{border-left-color:var(--green);}
+.user-dd-item.neg{border-left-color:var(--red);}
+.user-dd-item-mysl{font-size:12px;font-weight:500;color:var(--text);}
+.user-dd-item-dt{font-size:10px;color:var(--text-light);margin-top:2px;}
+.user-no-dd{font-size:12px;color:var(--text-light);font-style:italic;padding:8px 0;}
+
+/* ═══ FEED ═══ */
+.feed{display:flex;flex-direction:column;gap:0;}
+.feed-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.feed-item:last-child{border-bottom:none;}
+.feed-dot{width:8px;height:8px;border-radius:50%;background:var(--brown);margin-top:5px;flex-shrink:0;}
+.feed-dot.green{background:var(--green);}
+.feed-dot.red{background:var(--red);}
+.feed-content{flex:1;}
+.feed-nick{font-size:13px;font-weight:500;color:var(--text);}
+.feed-action{font-size:12px;color:var(--text-mid);margin-top:1px;}
+.feed-time{font-size:10px;color:var(--text-light);margin-top:2px;}
+.feed-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:4px 18px;max-height:340px;overflow-y:auto;}
+
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeIn 0.3s ease both;}
 </style>
@@ -128,18 +162,34 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 
   <div class="admin-body">
 
+    <!-- STATYSTYKI -->
     <div class="section">
       <div class="section-title">Stan ekosystemu <span class="refresh-btn" onclick="refreshAll()">↻ odśwież</span></div>
       <div class="section-sub">Dane na żywo z Supabase</div>
       <div class="stats-row">
         <div class="stat-card"><div class="stat-num" id="s-travelers">—</div><div class="stat-label">Podróżnicy</div><div class="stat-sub" id="s-travelers-sub">ładuję…</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-conversations">—</div><div class="stat-label">Rozmowy z Sercem</div><div class="stat-sub" id="s-conv-sub">ładuję…</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-stones">—</div><div class="stat-label">Kamienie w Słoiku</div><div class="stat-sub" id="s-stones-sub">ładuję…</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-rag">—</div><div class="stat-label">Wpisy RAG</div><div class="stat-sub">baza wiedzy</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-conversations">—</div><div class="stat-label">Rozmowy z Sercem</div><div class="stat-sub">wszystkie sesje</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-stones">—</div><div class="stat-label">Kamienie w Słoiku</div><div class="stat-sub">kamienie podróżników</div></div>
         <div class="stat-card"><div class="stat-num" id="s-dd">—</div><div class="stat-label">Wpisy Dobry Dzień</div><div class="stat-sub" id="s-dd-sub">ładuję…</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-today">—</div><div class="stat-label">Aktywni dziś</div><div class="stat-sub" id="s-today-who"></div></div>
       </div>
     </div>
 
+    <!-- FEED AKTYWNOŚCI -->
+    <div class="section">
+      <div class="section-title">Co się dzieje <span class="refresh-btn" onclick="loadFeed()">↻ odśwież</span></div>
+      <div class="section-sub">Ostatnie akcje wszystkich użytkowników — kto co kiedy napisał</div>
+      <div class="feed-wrap" id="feed-wrap"><div class="loading">Ładuję…</div></div>
+    </div>
+
+    <!-- PODRÓŻNICY — KTO -->
+    <div class="section">
+      <div class="section-title">Podróżnicy <span class="refresh-btn" onclick="loadTravelers()">↻ odśwież</span></div>
+      <div class="section-sub">Kliknij użytkownika żeby zobaczyć jego aktywność w Dobrym Dniu</div>
+      <div class="user-cards" id="user-cards"><div class="loading">Ładuję…</div></div>
+    </div>
+
+    <!-- NARZĘDZIA -->
     <div class="section">
       <div class="section-title">Narzędzia MANA</div>
       <div class="section-sub">Kliknij żeby otworzyć</div>
@@ -153,7 +203,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
       </div>
     </div>
 
-    <!-- ═══ SERCE DD — PANEL TRENERA ═══ -->
+    <!-- SERCE DD -->
     <div class="section">
       <div class="section-title">Serce — Dobry Dzień <span class="refresh-btn" onclick="loadDD()">↻ odśwież</span></div>
       <div class="section-sub">Kliknij wpis żeby zaznaczyć → skopiuj → wklej do rozmowy z Claude aby uczyć Serce</div>
@@ -176,11 +226,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
       </div>
     </div>
 
-    <div class="section">
-      <div class="section-title">Podróżnicy</div>
-      <div id="travelers-table"><div class="loading">Ładuję…</div></div>
-    </div>
-
+    <!-- KONSTYTUCJA -->
     <div class="section">
       <div class="section-title">Konstytucja Serca</div>
       <div class="section-sub">Aktywna wersja w Supabase → tabela prompts</div>
@@ -200,12 +246,30 @@ const ADMINS=['MANA_ADMIN_55'];
 let currentNick='';
 let ddAll=[],ddSel=new Set(),ddFilt='all';
 
+const H={'apikey':KEY,'Authorization':'Bearer '+KEY};
+
 async function sb(table,query){
-  try{var r=await fetch(SB+'/rest/v1/'+table+'?'+(query||''),{headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}});return await r.json();}catch(e){return [];}
+  try{var r=await fetch(SB+'/rest/v1/'+table+'?'+(query||''),{headers:H});return await r.json();}catch(e){return [];}
 }
 async function sbCount(table,query){
-  try{var r=await fetch(SB+'/rest/v1/'+table+'?select=id'+(query?'&'+query:''),{headers:{'apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'count=exact','Range':'0-0'}});var h=r.headers.get('content-range');return h?h.split('/')[1]:'?';}catch(e){return '?';}
+  try{var r=await fetch(SB+'/rest/v1/'+table+'?select=id'+(query?'&'+query:''),{headers:{...H,'Prefer':'count=exact','Range':'0-0'}});var h=r.headers.get('content-range');return h?h.split('/')[1]:'?';}catch(e){return '?';}
 }
+
+function relTime(iso){
+  if(!iso)return '—';
+  var d=new Date(iso),now=new Date(),diff=Math.floor((now-d)/1000);
+  if(diff<60)return 'przed chwilą';
+  if(diff<3600)return Math.floor(diff/60)+' min temu';
+  if(diff<86400)return Math.floor(diff/3600)+' godz. temu';
+  if(diff<604800)return Math.floor(diff/86400)+' dni temu';
+  return d.toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric'});
+}
+function fmtDt(iso){
+  if(!iso)return '—';
+  return new Date(iso).toLocaleString('pl-PL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+function initial(nick){return(nick||'?')[0].toUpperCase();}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 async function doLogin(){
   var nick=document.getElementById('login-nick').value.trim();
@@ -231,27 +295,117 @@ function showAdmin(){
   loadAll();
 }
 
-async function loadAll(){loadStats();loadDD();loadTravelers();loadKonstytucja();}
+async function loadAll(){loadStats();loadFeed();loadTravelers();loadDD();loadKonstytucja();}
 async function refreshAll(){await loadAll();}
 
 async function loadStats(){
-  var travelers=await sb('travels','select=nick,last_visit&order=last_visit.desc');
+  var travelers=await sb('travels','select=nick,created_at&order=created_at.desc');
   var tArr=Array.isArray(travelers)?travelers:[];
   document.getElementById('s-travelers').textContent=tArr.length;
-  var lv=tArr[0]&&tArr[0].last_visit?new Date(tArr[0].last_visit).toLocaleDateString('pl'):'—';
-  document.getElementById('s-travelers-sub').textContent='ostatnia: '+lv;
+  document.getElementById('s-travelers-sub').textContent=tArr.length?'ostatni: '+esc(tArr[0].nick):'brak';
+
   document.getElementById('s-conversations').textContent=await sbCount('conversations','');
-  document.getElementById('s-conv-sub').textContent='wszystkie sesje';
   document.getElementById('s-stones').textContent=await sbCount('stones','');
-  document.getElementById('s-stones-sub').textContent='kamienie podróżników';
-  document.getElementById('s-rag').textContent=await sbCount('knowledge','');
-  var ddC=await sbCount('dd_entries','');
-  document.getElementById('s-dd').textContent=ddC;
-  document.getElementById('s-dd-sub').textContent='zapisanych myśli';
+
+  var ddAll=await sb('dd_entries','select=nick,created_at&order=created_at.desc');
+  var ddArr=Array.isArray(ddAll)?ddAll:[];
+  document.getElementById('s-dd').textContent=ddArr.length;
+  document.getElementById('s-dd-sub').textContent=ddArr.length?'ostatni: '+esc(ddArr[0].nick||'?'):'brak';
+
+  // Aktywni dziś
+  var today=new Date().toISOString().split('T')[0];
+  var todayDD=ddArr.filter(e=>e.created_at&&e.created_at.startsWith(today));
+  var todayNicks=[...new Set(todayDD.map(e=>e.nick).filter(Boolean))];
+  document.getElementById('s-today').textContent=todayNicks.length||0;
+  document.getElementById('s-today-who').textContent=todayNicks.length?todayNicks.join(', '):'nikt dziś';
+}
+
+async function loadFeed(){
+  var data=await sb('dd_entries','select=nick,mysl,ocena,created_at&order=created_at.desc&limit=40');
+  var arr=Array.isArray(data)?data:[];
+  var wrap=document.getElementById('feed-wrap');
+  if(!arr.length){wrap.innerHTML='<div class="empty">Brak aktywności</div>';return;}
+  wrap.innerHTML='<div class="feed fade-in">'+arr.map(e=>{
+    var dotCls=e.ocena==='pozytywna'?'green':e.ocena==='negatywna'?'red':'';
+    var mysl=esc(e.mysl||'').slice(0,80)+(e.mysl&&e.mysl.length>80?'…':'');
+    return '<div class="feed-item">'+
+      '<div class="feed-dot '+dotCls+'"></div>'+
+      '<div class="feed-content">'+
+        '<div class="feed-nick">'+esc(e.nick||'anonim')+'</div>'+
+        '<div class="feed-action">'+mysl+'</div>'+
+        '<div class="feed-time">'+relTime(e.created_at)+'</div>'+
+      '</div>'+
+    '</div>';
+  }).join('')+'</div>';
+}
+
+async function loadTravelers(){
+  var travelers=await sb('travels','select=nick,birth_year,created_at,consent&order=created_at.desc');
+  var tArr=Array.isArray(travelers)?travelers:[];
+  var ddData=await sb('dd_entries','select=nick,mysl,ocena,created_at&order=created_at.desc&limit=500');
+  var ddArr=Array.isArray(ddData)?ddData:[];
+
+  // Grupuj dd_entries po nicku
+  var ddByNick={};
+  ddArr.forEach(e=>{
+    if(!e.nick)return;
+    if(!ddByNick[e.nick])ddByNick[e.nick]={entries:[],last:null};
+    ddByNick[e.nick].entries.push(e);
+    if(!ddByNick[e.nick].last||e.created_at>ddByNick[e.nick].last)ddByNick[e.nick].last=e.created_at;
+  });
+
+  var el=document.getElementById('user-cards');
+  if(!tArr.length){el.innerHTML='<div class="empty">Brak podróżników</div>';return;}
+
+  // Sortuj — najpierw ci z ostatnią aktywnością DD
+  tArr.sort((a,b)=>{
+    var la=ddByNick[a.nick]?.last||a.created_at||'';
+    var lb=ddByNick[b.nick]?.last||b.created_at||'';
+    return lb.localeCompare(la);
+  });
+
+  el.innerHTML=tArr.map((t,i)=>{
+    var dd=ddByNick[t.nick];
+    var ddCount=dd?dd.entries.length:0;
+    var ddLast=dd?dd.last:null;
+    var registered=t.created_at?new Date(t.created_at).toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric'}):'—';
+    var consent=t.consent?'<span class="badge badge-green">zgoda ✓</span>':'<span class="badge badge-brown">bez zgody</span>';
+    var age=t.birth_year?new Date().getFullYear()-t.birth_year+' lat':'';
+
+    var ddItems=dd?dd.entries.slice(0,10).map(e=>
+      '<div class="user-dd-item '+(e.ocena==='pozytywna'?'poz':e.ocena==='negatywna'?'neg':'')+'">'+
+        '<div class="user-dd-item-mysl">'+esc(e.mysl||'').slice(0,100)+'</div>'+
+        '<div class="user-dd-item-dt">'+fmtDt(e.created_at)+'</div>'+
+      '</div>'
+    ).join(''):'';
+
+    return '<div class="user-card fade-in">'+
+      '<div class="user-card-header" onclick="toggleUser(\'u'+i+'\')">'+
+        '<div class="user-avatar">'+initial(t.nick)+'</div>'+
+        '<div class="user-info">'+
+          '<div class="user-nick">'+esc(t.nick)+'</div>'+
+          '<div class="user-meta">'+age+(age?' · ':'')+'dołączył '+registered+' · '+consent+'</div>'+
+        '</div>'+
+        '<div class="user-right">'+
+          '<div class="user-last">'+(ddLast?relTime(ddLast):'brak aktywności DD')+'</div>'+
+          '<div class="user-dd-count'+(ddCount===0?' zero':'')+'">'+ddCount+' myśli DD</div>'+
+        '</div>'+
+        '<div class="user-expand">▾</div>'+
+      '</div>'+
+      '<div class="user-body" id="u'+i+'">'+
+        (ddItems?'<div class="user-dd-list">'+ddItems+'</div>':'<div class="user-no-dd">Brak aktywności w Dobrym Dniu</div>')+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function toggleUser(id){
+  var el=document.getElementById(id);
+  if(el)el.classList.toggle('open');
 }
 
 async function loadDD(){
-  var data=await sb('dd_entries','select=id,mysl,odpowiedz,ocena,created_at&order=created_at.desc&limit=200');
+  var data=await sb('dd_entries','select=id,nick,mysl,odpowiedz,ocena,created_at&order=created_at.desc&limit=200');
   ddAll=Array.isArray(data)?data:[];
   document.getElementById('dd-total').textContent=ddAll.length;
   document.getElementById('dd-pos').textContent=ddAll.filter(e=>e.ocena==='pozytywna').length;
@@ -262,8 +416,7 @@ async function loadDD(){
 function ddSetF(f,btn){
   ddFilt=f;
   document.querySelectorAll('.dd-fb').forEach(b=>b.classList.remove('act'));
-  btn.classList.add('act');
-  ddRender();
+  btn.classList.add('act');ddRender();
 }
 
 function ddRender(){
@@ -271,14 +424,15 @@ function ddRender(){
   var el=document.getElementById('dd-entries');
   if(!data.length){el.innerHTML='<div class="empty">Brak wpisów</div>';return;}
   el.innerHTML=data.map(e=>{
-    var dt=e.created_at?new Date(e.created_at).toLocaleString('pl-PL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+    var dt=fmtDt(e.created_at);
     var s=ddSel.has(e.id)?'sel':'';
     var bc=e.ocena==='pozytywna'?'badge-green':'badge-red';
+    var nick=e.nick?'<span class="badge badge-brown" style="margin-right:4px;">'+esc(e.nick)+'</span>':'';
     return '<div class="dd-entry '+(e.ocena||'')+' '+s+'" onclick="ddToggle('+e.id+')">'+
-      '<div class="dd-mysl">'+esc(e.mysl||'')+'</div>'+
+      '<div class="dd-mysl">'+nick+esc(e.mysl||'')+'</div>'+
       '<div class="dd-odp">'+esc(e.odpowiedz||'')+'</div>'+
       '<div class="dd-meta"><span class="badge '+bc+'">'+(e.ocena||'?')+'</span><span class="dd-dt">'+dt+'</span></div>'+
-      '</div>';
+    '</div>';
   }).join('');
 }
 
@@ -303,16 +457,6 @@ function ddCopy(){
   });
 }
 
-async function loadTravelers(){
-  var data=await sb('travels','select=nick,last_visit,visit_count&order=last_visit.desc&limit=20');
-  var arr=Array.isArray(data)?data:[];
-  var el=document.getElementById('travelers-table');
-  if(!arr.length){el.innerHTML='<div class="empty">Brak podróżników</div>';return;}
-  el.innerHTML='<table class="data-table fade-in"><thead><tr><th>Nick</th><th>Wizyty</th><th>Ostatnia aktywność</th></tr></thead><tbody>'+
-    arr.map(t=>'<tr><td><strong>'+esc(t.nick)+'</strong></td><td>'+(t.visit_count||0)+'</td><td>'+(t.last_visit?new Date(t.last_visit).toLocaleDateString('pl'):'—')+'</td></tr>').join('')+
-    '</tbody></table>';
-}
-
 async function loadKonstytucja(){
   var data=await sb('prompts','select=tresc&limit=1');
   var el=document.getElementById('konst-box');
@@ -320,8 +464,6 @@ async function loadKonstytucja(){
     el.textContent=data[0].tresc.slice(0,2000)+(data[0].tresc.length>2000?'\n\n[…ciąg dalszy w Supabase]':'');
   }else{el.textContent='Nie znaleziono Konstytucji';}
 }
-
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 document.getElementById('login-nick').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 
