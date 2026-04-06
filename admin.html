@@ -275,11 +275,13 @@ function openView(type){
   document.getElementById('view-detail').style.display='block';
   document.getElementById('d-body').innerHTML='<div class="loading">Ładuję…</div>';
   document.getElementById('d-meta').textContent='';
+  var backBtn=document.querySelector('.back-btn');
+  if(backBtn)backBtn.onclick=closeView;
   if(type==='travelers'){document.getElementById('d-title').textContent='Podróżnicy';loadTravelers();}
   else if(type==='conv'){document.getElementById('d-title').textContent='Rozmowy z Sercem';loadConv();}
   else if(type==='dd'){document.getElementById('d-title').textContent='Dobry Dzień';loadDD();}
 }
-function closeView(){document.getElementById('view-detail').style.display='none';document.getElementById('view-dash').style.display='block';}
+function closeView(){document.getElementById('view-detail').style.display='none';document.getElementById('view-dash').style.display='block';var backBtn=document.querySelector('.back-btn');if(backBtn)backBtn.onclick=closeView;}
 
 var _travelers=[];
 var _tSort='last_visit';
