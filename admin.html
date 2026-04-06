@@ -284,6 +284,17 @@ function openView(type){
 function closeView(){document.getElementById('view-detail').style.display='none';document.getElementById('view-dash').style.display='block';var backBtn=document.querySelector('.back-btn');if(backBtn)backBtn.onclick=closeView;}
 
 var _travelers=[];
+var _hashMap={};
+function buildHashMap(){
+  _hashMap={};
+  _travelers.forEach(function(t){
+    if(t.nick&&t.birth_year){
+      var sid=simpleHash(t.nick+t.birth_year);
+      _hashMap[sid]=t.nick;
+    }
+  });
+}
+function hashToNick(sid){return _hashMap[sid]||sid.slice(0,8);}
 var _tSort='last_visit';
 async function loadTravelers(){
   var travelers=await sb('travels','select=nick,birth_year,created_at,consent,last_visit,visit_count&order=last_visit.desc.nullslast,created_at.desc');
@@ -479,7 +490,7 @@ function renderDD(){
       '<span style="font-size:12px;color:var(--text-light);margin-left:8px;">kliknij wpis aby zaznaczyć</span>'+
     '</div>'+
     data.map(e=>'<div class="dd-e '+(e.ocena==='pozytywna'?'pos':e.ocena==='negatywna'?'neg':'')+' '+(ddSel.has(e.id)?'sel':'')+'" onclick="ddTog('+e.id+')">'+
-      (e.session_id?'<div class="dd-ntag">'+esc(e.session_id.slice(0,8))+'</div>':'')+
+      (e.session_id?'<div class="dd-ntag">'+esc(hashToNick(e.session_id))+'</div>':'')+
       '<div class="dd-mysl">'+esc(e.mysl||'')+'</div>'+
       '<div class="dd-odp">'+esc(e.odpowiedz||'')+'</div>'+
       '<div class="dd-meta"><span class="dd-oc '+(e.ocena==='pozytywna'?'badge bg':'badge bb')+'">'+(e.ocena||'?')+'</span><span class="dd-dt">'+fdt(e.created_at)+'</span></div>'+
