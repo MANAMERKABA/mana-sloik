@@ -175,11 +175,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 .col-doing .plan-col-title{color:#b8620f;}
 .col-done .plan-col-title{color:var(--green);}
 .col-future .plan-col-title{color:var(--text-light);}
-.plan-drop-zone{min-height:32px;}
-.plan-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:7px;cursor:grab;user-select:none;transition:opacity 0.15s,box-shadow 0.15s;}
+.plan-drop-zone{min-height:80px;border-radius:6px;}
+.plan-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:7px;cursor:grab;-webkit-user-select:none;user-select:none;box-shadow:none;transition:box-shadow 0.15s,border-color 0.15s;}
 .plan-card:hover{border-color:var(--border-strong);box-shadow:0 2px 8px rgba(44,36,24,0.08);}
-.plan-card.dragging{opacity:0.35;cursor:grabbing;}
+.plan-card.dragging{opacity:0.4;cursor:grabbing;}
 .plan-card-name{font-size:12px;font-weight:500;color:var(--text);line-height:1.4;}
+.plan-card.done-card{border-color:rgba(139,115,85,0.15);}
 .plan-card.done-card .plan-card-name{text-decoration:line-through;color:var(--text-light);}
 .plan-card-sub{font-size:10px;color:var(--text-light);margin-top:2px;line-height:1.4;}
 .plan-card-note{font-size:10px;color:var(--brown);margin-top:3px;line-height:1.4;font-style:italic;}
@@ -489,10 +490,12 @@ function renderPlanView(){
 
   // Drag & drop
   document.querySelectorAll('.plan-card').forEach(function(card){
+    card.setAttribute('draggable','true');
     card.addEventListener('dragstart',function(e){
       planDragId=card.getAttribute('data-id');
       planDragType=card.getAttribute('data-type');
-      card.classList.add('dragging');
+      setTimeout(function(){card.classList.add('dragging');},0);
+      e.dataTransfer.setData('text/plain',planDragId);
       e.dataTransfer.effectAllowed='move';
     });
     card.addEventListener('dragend',function(){card.classList.remove('dragging');});
