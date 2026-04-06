@@ -821,7 +821,7 @@ async function radarFetch(){
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-4-6',
         max_tokens:1000,
         tools:[{type:'web_search_20250305',name:'web_search'}],
         system:'Jesteś ekspertem technologicznym dla platformy MANA — holistycznego ekosystemu rozwoju człowieka (ciało, umysł, duch) z AI jako Sercem (towarzyszem, nie narzędziem). Szukasz NAJNOWSZYCH nowinek z ostatnich tygodni. Zwróć TYLKO czysty JSON bez żadnych backticks ani markdown: {"items":[{"title":"konkretna nazwa/wydarzenie","summary":"2 zdania po polsku co się stało","category":"ai|agent|memory|voice|infra|ogolne","categoryLabel":"Serce AI|Agenci|Pamięć AI|Voice AI|Infrastruktura|Ogólne","relevance":"jedno zdanie dlaczego ważne dla MANA"}]}. Znajdź 5-7 pozycji.',
