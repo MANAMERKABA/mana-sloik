@@ -404,10 +404,14 @@ async function openTravelerDD(nick){
   _tddSel=new Set();_tddAll=[];
   document.getElementById('d-title').textContent=nick+' — Dobry Dzień';
   document.getElementById('d-body').innerHTML='<div class="loading">Ładuję wpisy...</div>';
-  var t=_travelers.find(function(x){return x.nick===nick;})||{};
-  var sid=simpleHash(nick+(t.birth_year||''));
+  // Załaduj dane podróżnika świeżo z Supabase
+  var tData=await sb('travels','select=nick,birth_year&nick=eq.'+encodeURIComponent(nick)+'&limit=1');
+  var t=(Array.isArray(tData)&&tData.length)?tData[0]:{};
+  var sid=simpleHash(nick+String(t.birth_year||''));
+  console.log('nick:',nick,'birth_year:',t.birth_year,'sid:',sid);
   var ddData=await sb('dd_entries','select=id,session_id,mysl,odpowiedz,ocena,created_at&order=created_at.desc&limit=500');
   var all=Array.isArray(ddData)?ddData:[];
+  console.log('dd_entries total:',all.length,'filtered:',all.filter(function(e){return e.session_id===sid;}).length);
   _tddAll=all.filter(function(e){return e.session_id===sid;});
   renderTravelerDD(nick);
   var backBtn=document.querySelector('.back-btn');
