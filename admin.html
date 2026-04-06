@@ -472,6 +472,7 @@ async function loadConv(){
 }
 
 async function loadDD(){
+  if(!_travelers.length){var tv=await sb('travels','select=nick,birth_year&order=nick.asc');_travelers=Array.isArray(tv)?tv:[];buildHashMap();}
   var data=await sb('dd_entries','select=id,session_id,mysl,odpowiedz,ocena,created_at&order=created_at.desc&limit=200');
   ddAll=Array.isArray(data)?data:[];ddSel=new Set();ddF='all';
   document.getElementById('d-meta').textContent=ddAll.length+' wpisów';
