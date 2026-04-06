@@ -294,7 +294,13 @@ function buildHashMap(){
     }
   });
 }
-function hashToNick(sid){return _hashMap[sid]||sid.slice(0,8);}
+function hashToNick(sid){
+  var nick=_hashMap[sid];
+  if(!nick)return sid.slice(0,8);
+  var t=_travelers.find(function(x){return x.nick===nick;});
+  var age=t&&t.birth_year?new Date().getFullYear()-t.birth_year:null;
+  return nick+(age?' · '+age+' lat':'');
+}
 var _tSort='last_visit';
 async function loadTravelers(){
   var travelers=await sb('travels','select=nick,birth_year,created_at,consent,last_visit,visit_count&order=last_visit.desc.nullslast,created_at.desc');
