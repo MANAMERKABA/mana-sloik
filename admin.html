@@ -186,6 +186,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 .plan-card-note{font-size:10px;color:var(--brown);margin-top:3px;line-height:1.4;font-style:italic;}
 .plan-add-btn{width:100%;padding:7px;background:none;border:1px dashed var(--border-strong);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--text-light);cursor:pointer;margin-top:4px;}
 .plan-add-btn:hover{background:var(--white);color:var(--brown);}
+.pc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;}
+.pc-copy{background:none;border:none;cursor:pointer;font-size:13px;padding:0;flex-shrink:0;opacity:0.4;transition:opacity 0.15s;}
+.pc-copy:hover{opacity:1;}
+.pc-move{display:flex;flex-wrap:wrap;gap:3px;margin-top:7px;}
+.pc-mv-btn{font-size:10px;padding:3px 7px;border-radius:4px;border:1px solid var(--border-strong);background:var(--sand);color:var(--brown);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.12s;white-space:nowrap;}
+.pc-mv-btn:hover{background:var(--brown);color:var(--white);border-color:var(--brown);}
 
 .loading{font-size:12px;color:var(--text-light);font-style:italic;padding:16px 0;}
 .empty{font-size:13px;color:var(--text-light);font-style:italic;text-align:center;padding:32px 0;}
@@ -447,83 +453,126 @@ function renderPlanView(){
   var COLS={
     projects:[{key:'idea',label:'POMYSŁ',cls:'col-future'},{key:'waiting',label:'CZEKA',cls:'col-todo'},{key:'todo',label:'DO ZROBIENIA',cls:'col-now'},{key:'doing',label:'W TRAKCIE',cls:'col-doing'},{key:'done',label:'GOTOWE',cls:'col-done'}],
     tasks:[{key:'todo',label:'DO ZROBIENIA',cls:'col-todo'},{key:'doing',label:'W TRAKCIE',cls:'col-doing'},{key:'done',label:'ZROBIONE',cls:'col-done'}],
-    tools:[{key:'have',label:'✓ MANA MA',cls:'col-have'},{key:'now',label:'🔴 TERAZ',cls:'col-now'},{key:'soon',label:'🟡 WKRÓTCE',cls:'col-soon'},{key:'future',label:'○ PRZYSZŁOŚĆ',cls:'col-future'}]
+    tools:[{key:'have',label:'MANA MA',cls:'col-have'},{key:'now',label:'TERAZ',cls:'col-now'},{key:'soon',label:'WKROTCE',cls:'col-soon'},{key:'future',label:'PRZYSZLOSC',cls:'col-future'}]
   };
+  var COLKEYS={
+    projects:['idea','waiting','todo','doing','done'],
+    tasks:['todo','doing','done'],
+    tools:['have','now','soon','future']
+  };
+  var COLLABELS={idea:'POMYSL',waiting:'CZEKA',todo:'DO ZROBIENIA',doing:'W TRAKCIE',done:'GOTOWE',have:'MANA MA',now:'TERAZ',soon:'WKROTCE',future:'PRZYSZLOSC'};
   var ITEMS={projects:planData.projects,tasks:planData.tasks,tools:planData.tools};
-  var GRID={projects:'grid-template-columns:repeat(5,minmax(170px,1fr));',tasks:'grid-template-columns:repeat(3,minmax(210px,1fr));',tools:'grid-template-columns:repeat(4,minmax(185px,1fr));'};
+  var GRID={
+    projects:'grid-template-columns:repeat(5,minmax(170px,1fr));',
+    tasks:'grid-template-columns:repeat(3,minmax(210px,1fr));',
+    tools:'grid-template-columns:repeat(4,minmax(185px,1fr));'
+  };
 
   function buildBoard(type){
-    var cols=COLS[type];var items=ITEMS[type];
+    var cols=COLS[type];
+    var items=ITEMS[type];
     var html='<div class="plan-board" style="'+GRID[type]+'">';
     cols.forEach(function(col){
       var cards=items.filter(function(i){return i.status===col.key;});
-      html+='<div class="plan-col '+col.cls+'" data-col="'+col.key+'" data-type="'+type+'">'+
-        '<div class="plan-col-head"><span class="plan-col-title">'+col.label+'</span><span class="plan-col-count">'+cards.length+'</span></div>'+
-        '<div class="plan-drop-zone" data-col="'+col.key+'" data-type="'+type+'">';
+      html+='<div class="plan-col '+col.cls+'">';
+      html+='<div class="plan-col-head"><span class="plan-col-title">'+col.label+'</span><span class="plan-col-count">'+cards.length+'</span></div>';
       cards.forEach(function(item){
-        html+='<div class="plan-card'+(col.key==='done'?' done-card':'')+'" draggable="true" data-id="'+item.id+'" data-type="'+type+'">'+
-          '<div class="plan-card-name">'+esc(item.name)+'</div>'+
-          (item.sub?'<div class="plan-card-sub">'+esc(item.sub)+'</div>':'')+
-          (item.note?'<div class="plan-card-note">'+esc(item.note)+'</div>':'')+
-        '</div>';
+        html+='<div class="plan-card'+(col.key==='done'?' done-card':'')+'" data-id="'+item.id+'" data-type="'+type+'" data-status="'+col.key+'">';
+        html+='<div class="pc-top">';
+        html+='<div class="plan-card-name">'+esc(item.name)+'</div>';
+        html+='<button class="pc-copy" data-copy="'+esc(item.name+(item.sub?' - '+item.sub:'')+(item.note?' ('+item.note+')':''))+'">📋</button>';
+        html+='</div>';
+        if(item.sub) html+='<div class="plan-card-sub">'+esc(item.sub)+'</div>';
+        if(item.note) html+='<div class="plan-card-note">'+esc(item.note)+'</div>';
+        html+='<div class="pc-move">';
+        COLKEYS[type].forEach(function(k){
+          if(k!==col.key){
+            html+='<button class="pc-mv-btn" data-id="'+item.id+'" data-type="'+type+'" data-target="'+k+'">'+COLLABELS[k]+'</button>';
+          }
+        });
+        html+='</div>';
+        html+='</div>';
       });
-      html+='</div><button class="plan-add-btn" onclick="planAdd(\''+type+'\',\''+col.key+'\')">+ dodaj</button></div>';
+      html+='<button class="plan-add-btn" data-addtype="'+type+'" data-addcol="'+col.key+'">+ dodaj</button>';
+      html+='</div>';
     });
-    return html+'</div>';
+    html+='</div>';
+    return html;
   }
 
   document.getElementById('d-body').innerHTML=
-    '<div class="plan-tabs">'+
-      '<button class="plan-tab'+(planTab==='projects'?' act':'')+'" onclick="planTab=\'projects\';renderPlanView()">🗂️ Projekty</button>'+
-      '<button class="plan-tab'+(planTab==='tasks'?' act':'')+'" onclick="planTab=\'tasks\';renderPlanView()">📋 Zadania</button>'+
-      '<button class="plan-tab'+(planTab==='tools'?' act':'')+'" onclick="planTab=\'tools\';renderPlanView()">🛠️ Narzędzia</button>'+
-    '</div>'+
-    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;">'+
-      '<span style="font-size:11px;color:var(--text-light);font-style:italic;">Przeciągnij kartę do innej kolumny</span>'+
-      '<div style="margin-left:auto;display:flex;align-items:center;gap:8px;">'+
-        '<span style="font-size:10px;color:var(--text-light);">'+esc(planData.updated||'')+'</span>'+
-        '<button id="plan-save-btn" class="plan-save-btn" onclick="planSaveClick()">Zapisz do bazy</button>'+
-        '<span id="plan-save-ok" style="font-size:11px;color:var(--green);display:none;">✓ Zapisano</span>'+
-      '</div>'+
-    '</div>'+
-    buildBoard(planTab);
+    '<div class="plan-tabs">'
+    +'<button class="plan-tab'+(planTab==='projects'?' act':'')+'" data-tab="projects">Projekty</button>'
+    +'<button class="plan-tab'+(planTab==='tasks'?' act':'')+'" data-tab="tasks">Zadania</button>'
+    +'<button class="plan-tab'+(planTab==='tools'?' act':'')+'" data-tab="tools">Narzedzia</button>'
+    +'</div>'
+    +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;">'
+    +'<span style="font-size:11px;color:var(--text-light);font-style:italic;">Kliknij kartę — wybierz kolumnę &nbsp;·&nbsp; 📋 kopiuje do schowka</span>'
+    +'<div style="margin-left:auto;display:flex;align-items:center;gap:8px;">'
+    +'<span style="font-size:10px;color:var(--text-light);">'+esc(planData.updated||'')+'</span>'
+    +'<button id="plan-save-btn" class="plan-save-btn">Zapisz do bazy</button>'
+    +'<span id="plan-save-ok" style="font-size:11px;color:var(--green);display:none;">✓ Zapisano</span>'
+    +'</div></div>'
+    +buildBoard(planTab);
 
-  // Drag & drop
-  document.querySelectorAll('.plan-card').forEach(function(card){
-    card.setAttribute('draggable','true');
-    card.addEventListener('dragstart',function(e){
-      planDragId=card.getAttribute('data-id');
-      planDragType=card.getAttribute('data-type');
-      setTimeout(function(){card.classList.add('dragging');},0);
-      e.dataTransfer.setData('text/plain',planDragId);
-      e.dataTransfer.effectAllowed='move';
-    });
-    card.addEventListener('dragend',function(){card.classList.remove('dragging');});
-  });
-
-  document.querySelectorAll('.plan-drop-zone').forEach(function(zone){
-    zone.addEventListener('dragover',function(e){
-      e.preventDefault();
-      e.dataTransfer.dropEffect='move';
-      zone.parentElement.classList.add('drag-over');
-    });
-    zone.addEventListener('dragleave',function(){
-      zone.parentElement.classList.remove('drag-over');
-    });
-    zone.addEventListener('drop',function(e){
-      e.preventDefault();
-      zone.parentElement.classList.remove('drag-over');
-      var targetCol=zone.getAttribute('data-col');
-      var targetType=zone.getAttribute('data-type');
-      if(!planDragId||targetType!==planDragType)return;
-      var arr=planDragType==='project'?planData.projects:planDragType==='task'?planData.tasks:planData.tools;
-      var item=arr.find(function(i){return i.id===planDragId;});
-      if(item&&item.status!==targetCol){item.status=targetCol;localStorage.setItem('mana_plan',JSON.stringify(planData));}
-      planDragId=null;planDragType=null;
+  // Tabs
+  document.querySelectorAll('.plan-tab').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      planTab=btn.getAttribute('data-tab');
       renderPlanView();
     });
   });
+  // Save
+  var saveBtn=document.getElementById('plan-save-btn');
+  if(saveBtn) saveBtn.addEventListener('click',planSaveClick);
+  // Move buttons
+  document.querySelectorAll('.pc-mv-btn').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      planMoveTo(btn.getAttribute('data-id'),btn.getAttribute('data-type'),btn.getAttribute('data-target'));
+    });
+  });
+  // Copy buttons
+  document.querySelectorAll('.pc-copy').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      navigator.clipboard.writeText(btn.getAttribute('data-copy')).then(function(){
+        var ok=document.createElement('div');
+        ok.textContent='Skopiowano';
+        ok.style.cssText='position:fixed;bottom:24px;right:24px;background:#8B7355;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:9999;font-family:DM Sans,sans-serif;';
+        document.body.appendChild(ok);
+        setTimeout(function(){ok.remove();},2000);
+      });
+    });
+  });
+  // Add buttons
+  document.querySelectorAll('.plan-add-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      planAdd(btn.getAttribute('data-addtype'),btn.getAttribute('data-addcol'));
+    });
+  });
 }
+
+
+function planMoveTo(id,type,target){
+  var arr=type==='project'?planData.projects:type==='task'?planData.tasks:planData.tools;
+  var item=arr.find(function(i){return i.id===id;});
+  if(!item)return;
+  item.status=target;
+  localStorage.setItem('mana_plan',JSON.stringify(planData));
+  renderPlanView();
+}
+
+function planCopyCard(txt){
+  navigator.clipboard.writeText(txt).then(function(){
+    var ok=document.createElement('div');
+    ok.textContent='✓ Skopiowano';
+    ok.style.cssText='position:fixed;bottom:24px;right:24px;background:var(--brown);color:var(--white);padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;';
+    document.body.appendChild(ok);
+    setTimeout(function(){ok.remove();},2000);
+  });
+}
+
 
 async function planSaveClick(){
   var btn=document.getElementById('plan-save-btn');
