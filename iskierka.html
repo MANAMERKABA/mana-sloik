@@ -583,7 +583,8 @@ function initCodeCells(){
 // ══ HOME ══
 function timeGreeting(h){if(h>=5&&h<9)return'Dzień się zaczyna';if(h>=9&&h<12)return'Dobry ranek';if(h>=12&&h<14)return'Dobrego dnia';if(h>=14&&h<17)return'Piękne popołudnie';if(h>=17&&h<20)return'Dobry wieczór';return'Dobranoc';}
 function showHome(){calcAge();var h=new Date().getHours();
-  if(S.travelerId){var lvKey='mj_lv_'+S.travelerId;var today=todayStr();if(localStorage.getItem(lvKey)!==today){localStorage.setItem(lvKey,today);fetch(SB_URL+'/rest/v1/travels?id=eq.'+S.travelerId,{method:'PATCH',headers:sbHeaders(),body:JSON.stringify({last_visit:new Date().toISOString()})}).catch(function(){});}}
+  if(S.travelerId){var lvKey='mj_lv_'+S.travelerId;var today=todayStr();if(localStorage.getItem(lvKey)!==today){localStorage.setItem(lvKey,today);fetch(SB_URL+'/rest/v1/travels?id=eq.'+S.travelerId,{method:'PATCH',headers:sbHeaders(),body:JSON.stringify({last_visit:new Date().toISOString()})}).catch(function(){});
+fetch(SB_URL+'/rest/v1/login_history',{method:'POST',headers:sbHeaders(),body:JSON.stringify({nick:S.nick,traveler_id:S.travelerId,birth_year:S.birthYear})}).catch(function(){});}}
   document.getElementById('h-greet').textContent=timeGreeting(h);document.getElementById('h-name').textContent=(nickDisplay()||'Cześć')+' 👋';document.getElementById('home').className='screen '+(h>=18||h<6?'night':'day');var today=todayStr();if(S.ddLastDate&&S.ddLastDate!==today&&S.ddLastDate!==yest()){S.ddSeries=0;saveS();}var badge=document.getElementById('ser-badge');if(S.ddSeries>0){badge.style.display='block';document.getElementById('ser-n').textContent=S.ddSeries;}else badge.style.display='none';renderCosmicBar();renderCardExtras();renderMoonSVG();renderTimeCard();snSetCardSub();updateDDCard();show('home');}
 function renderCosmicBar(){var bar=document.getElementById('cosmic-bar');if(bar)bar.innerHTML='';}
 function renderCardExtras(){}
