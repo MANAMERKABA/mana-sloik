@@ -390,7 +390,9 @@ async function openTraveler(nick){
 async function openTravelerDD(nick){
   document.getElementById('d-title').textContent=nick+' — Dobry Dzień';
   document.getElementById('d-body').innerHTML='<div class="loading">Ładuję wpisy...</div>';
-  var ddData=await sb('dd_entries','select=mysl,odpowiedz,ocena,created_at&order=created_at.desc&limit=50');
+  var t=_travelers.find(function(x){return x.nick===nick;})||{};
+  var sid=simpleHash(nick+(t.birth_year||''));
+  var ddData=await sb('dd_entries','select=mysl,odpowiedz,ocena,created_at&session_id=eq.'+encodeURIComponent(sid)+'&order=created_at.desc&limit=50');
   var arr=Array.isArray(ddData)?ddData:[];
   var pos=arr.filter(function(e){return e.ocena==='pozytywna';}).length;
   var html='<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">'+
