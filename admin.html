@@ -452,6 +452,7 @@ function renderTravelerDD(nick){
   }
 }
 function sim(str){var h=0;for(var i=0;i<str.length;i++){h=((h<<5)-h)+str.charCodeAt(i);h|=0;}return Math.abs(h).toString(16);}
+function simpleHash(str){var h=0;for(var i=0;i<str.length;i++){h=((h<<5)-h)+str.charCodeAt(i);h|=0;}return Math.abs(h).toString(16);}
 function tog(i){var b=document.getElementById('tb'+i);var a=document.getElementById('arr'+i);b.classList.toggle('open');a.classList.toggle('open');}
 
 async function loadConv(){
