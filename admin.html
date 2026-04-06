@@ -155,34 +155,36 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 .radar-empty{text-align:center;padding:40px 20px;color:var(--text-light);font-size:13px;font-style:italic;}
 
 /* PLAN */
-.plan-tabs{display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border-strong);border-radius:10px;overflow:hidden;background:var(--white);}
+.plan-tabs{display:flex;gap:0;margin-bottom:16px;border:1px solid var(--border-strong);border-radius:10px;overflow:hidden;background:var(--white);}
 .plan-tab{flex:1;padding:10px;text-align:center;font-size:12px;font-weight:500;color:var(--text-light);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
 .plan-tab.act{background:var(--brown);color:var(--white);}
 .plan-tab:not(:last-child){border-right:1px solid var(--border);}
-.plan-board{display:grid;gap:12px;overflow-x:auto;padding-bottom:8px;}
-.plan-board.tools-board{grid-template-columns:repeat(4,minmax(180px,1fr));}
-.plan-board.tasks-board{grid-template-columns:repeat(3,minmax(200px,1fr));}
-.plan-col{background:var(--sand-dark);border-radius:12px;padding:12px;min-height:200px;}
+.plan-save-btn{padding:8px 18px;background:var(--brown);color:var(--white);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
+.plan-save-btn:hover{background:var(--brown-deep);}
+.plan-save-btn:disabled{opacity:0.5;}
+.plan-board{display:grid;gap:10px;overflow-x:auto;padding-bottom:8px;}
+.plan-col{background:var(--sand-dark);border-radius:12px;padding:12px;min-height:200px;transition:background 0.15s;}
+.plan-col.drag-over{background:rgba(139,115,85,0.22);outline:2px dashed var(--brown);}
 .plan-col-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .plan-col-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);}
 .plan-col-count{font-size:10px;background:var(--white);color:var(--text-light);border-radius:10px;padding:1px 7px;border:1px solid var(--border);}
-.plan-col.col-have .plan-col-title{color:var(--green);}
-.plan-col.col-now .plan-col-title{color:var(--red);}
-.plan-col.col-soon .plan-col-title{color:#b8620f;}
-.plan-col.col-todo .plan-col-title{color:var(--red);}
-.plan-col.col-doing .plan-col-title{color:#b8620f;}
-.plan-col.col-done .plan-col-title{color:var(--green);}
-.plan-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:9px 11px;margin-bottom:7px;cursor:pointer;transition:all 0.15s;position:relative;}
+.col-have .plan-col-title{color:var(--green);}
+.col-now .plan-col-title{color:var(--red);}
+.col-soon .plan-col-title{color:#b8620f;}
+.col-todo .plan-col-title{color:var(--red);}
+.col-doing .plan-col-title{color:#b8620f;}
+.col-done .plan-col-title{color:var(--green);}
+.col-future .plan-col-title{color:var(--text-light);}
+.plan-drop-zone{min-height:32px;}
+.plan-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:7px;cursor:grab;user-select:none;transition:opacity 0.15s,box-shadow 0.15s;}
 .plan-card:hover{border-color:var(--border-strong);box-shadow:0 2px 8px rgba(44,36,24,0.08);}
-.plan-card:hover .plan-card-arrow{opacity:1;}
-.plan-card-name{font-size:12px;font-weight:500;color:var(--text);line-height:1.3;}
-.plan-card-sub{font-size:10px;color:var(--text-light);margin-top:2px;}
-.plan-card-arrow{position:absolute;top:9px;right:9px;font-size:10px;color:var(--brown);opacity:0;transition:opacity 0.15s;}
-.plan-card.done-card{opacity:0.6;}
-.plan-card.done-card .plan-card-name{text-decoration:line-through;}
+.plan-card.dragging{opacity:0.35;cursor:grabbing;}
+.plan-card-name{font-size:12px;font-weight:500;color:var(--text);line-height:1.4;}
+.plan-card.done-card .plan-card-name{text-decoration:line-through;color:var(--text-light);}
+.plan-card-sub{font-size:10px;color:var(--text-light);margin-top:2px;line-height:1.4;}
+.plan-card-note{font-size:10px;color:var(--brown);margin-top:3px;line-height:1.4;font-style:italic;}
 .plan-add-btn{width:100%;padding:7px;background:none;border:1px dashed var(--border-strong);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--text-light);cursor:pointer;margin-top:4px;}
 .plan-add-btn:hover{background:var(--white);color:var(--brown);}
-.plan-updated{font-size:10px;color:var(--text-light);font-style:italic;margin-bottom:12px;}
 
 .loading{font-size:12px;color:var(--text-light);font-style:italic;padding:16px 0;}
 .empty{font-size:13px;color:var(--text-light);font-style:italic;text-align:center;padding:32px 0;}
@@ -353,15 +355,30 @@ function openView(type){
 function closeView(){document.getElementById('view-detail').style.display='none';document.getElementById('view-dash').style.display='block';var backBtn=document.querySelector('.back-btn');if(backBtn)backBtn.onclick=closeView;}
 
 /* ══════════════════════════════════════
-   PLAN MANA
+   PLAN MANA — drag & drop + Supabase
 ══════════════════════════════════════ */
-var PLAN_DEFAULT = {
-  tools: [
+var PLAN_DEFAULT={
+  projects:[
+    {id:'p1',name:'PATI PLAN',sub:'Aplikacja beauty · pielęgnacja skóry twarzy',status:'waiting',note:'Czeka na rozmowę z Patrycją — kosmetolog, bioenergoterapeutka, współtwórczyni MANA'},
+    {id:'p2',name:'mana.pl',sub:'Strona główna — pierwsze drzwi do MANA',status:'todo',note:'Pierwsze spotkanie z MANA przed rejestracją'},
+    {id:'p3',name:'Magic Jar v2',sub:'Rozwinięcie Iskierki — nowe funkcje',status:'idea',note:''}
+  ],
+  tasks:[
+    {id:'z1',name:'Serce które pamięta',sub:'RAG / memory długoterminowej',status:'todo'},
+    {id:'z2',name:'Klucz API w Radarze',sub:'wpisać i przetestować Radar MANA',status:'todo'},
+    {id:'z3',name:'Vercel — deployment',sub:'profesjonalny hosting platformy',status:'todo'},
+    {id:'z4',name:'Obsidian — setup',sub:'Zettelkasten dla zespołu',status:'todo'},
+    {id:'z5',name:'Stripe — płatności',sub:'model subskrypcyjny MANA',status:'todo'},
+    {id:'z6',name:'Voice AI — prototyp',sub:'Serce mówiące głosem',status:'todo'},
+    {id:'z7',name:'Panel Terapeuty',sub:'z beta do produkcji',status:'todo'},
+    {id:'z8',name:'WhatsApp API',sub:'Serce bez barier technicznych',status:'todo'}
+  ],
+  tools:[
     {id:'t1',name:'Claude API',sub:'via Typebot / Serce',status:'have'},
     {id:'t2',name:'Supabase',sub:'baza danych',status:'have'},
     {id:'t3',name:'Bolt.new',sub:'budowanie frontendu',status:'have'},
     {id:'t4',name:'GitHub',sub:'kod, wersjonowanie, SSoT',status:'have'},
-    {id:'t5',name:'Baza wiedzy MANA',sub:'384+ wpisy',status:'have'},
+    {id:'t5',name:'Baza wiedzy MANA',sub:'384+ wpisów',status:'have'},
     {id:'t6',name:'Radar MANA',sub:'w panelu admina',status:'have'},
     {id:'t7',name:'Serce MANA',sub:'Typebot · web',status:'have'},
     {id:'t8',name:'Słoik',sub:'Horyzont · Cisza · Puls · Trzos',status:'have'},
@@ -372,153 +389,152 @@ var PLAN_DEFAULT = {
     {id:'t13',name:'mana.pl',sub:'strona główna',status:'now'},
     {id:'t14',name:'Vercel',sub:'profesjonalny hosting',status:'now'},
     {id:'t15',name:'Obsidian + Zettelkasten',sub:'baza wiedzy zespołu',status:'now'},
-    {id:'t16',name:'Markdown SSoT',sub:'format treści platformy',status:'now'},
-    {id:'t17',name:'MCP Protocol',sub:'integracje zewnętrzne',status:'now'},
-    {id:'t18',name:'Stripe',sub:'płatności, subskrypcje',status:'soon'},
-    {id:'t19',name:'Voice AI',sub:'ElevenLabs, Hume',status:'soon'},
-    {id:'t20',name:'Claude Code + Agenci',sub:'automatyzacja platformy',status:'soon'},
-    {id:'t21',name:'WhatsApp / Telegram API',sub:'Serce w kieszeni',status:'soon'},
-    {id:'t22',name:'Circle / Discord',sub:'społeczność MANA',status:'soon'},
-    {id:'t23',name:'Cursor / Windsurf',sub:'edytor treści z AI',status:'soon'},
-    {id:'t24',name:'Multimodal AI',sub:'obraz, dźwięk, wideo',status:'future'},
-    {id:'t25',name:'Ekspansja EU / World',sub:'Polska → Europa → Świat',status:'future'}
+    {id:'t16',name:'MCP Protocol',sub:'integracje zewnętrzne',status:'now'},
+    {id:'t17',name:'Stripe',sub:'płatności, subskrypcje',status:'soon'},
+    {id:'t18',name:'Voice AI',sub:'ElevenLabs, Hume',status:'soon'},
+    {id:'t19',name:'Claude Code + Agenci',sub:'automatyzacja platformy',status:'soon'},
+    {id:'t20',name:'WhatsApp / Telegram API',sub:'Serce w kieszeni',status:'soon'},
+    {id:'t21',name:'Circle / Discord',sub:'społeczność MANA',status:'soon'},
+    {id:'t22',name:'Multimodal AI',sub:'obraz, dźwięk, wideo',status:'future'},
+    {id:'t23',name:'Ekspansja EU / World',sub:'Polska → Europa → Świat',status:'future'}
   ],
-  tasks: [
-    {id:'z1',name:'Serce które pamięta',sub:'wdrożenie RAG / memory długoterminowej',status:'todo'},
-    {id:'z2',name:'mana.pl — strona główna',sub:'pierwsze spotkanie z MANA',status:'todo'},
-    {id:'z3',name:'Vercel — deployment',sub:'profesjonalny hosting platformy',status:'todo'},
-    {id:'z4',name:'Obsidian — setup bazy wiedzy',sub:'Zettelkasten dla zespołu',status:'todo'},
-    {id:'z5',name:'Klucz Anthropic API w Radarze',sub:'wpisać i przetestować Radar',status:'todo'},
-    {id:'z6',name:'Stripe — integracja płatności',sub:'model subskrypcyjny MANA',status:'todo'},
-    {id:'z7',name:'Voice AI — prototyp',sub:'Serce mówiące głosem',status:'todo'},
-    {id:'z8',name:'WhatsApp API — połączenie',sub:'Serce bez barier technicznych',status:'todo'},
-    {id:'z9',name:'Panel Terapeuty — dokończenie',sub:'z beta do produkcji',status:'todo'}
-  ],
-  projects: [
-    {id:'p1',name:'PATI PLAN',sub:'Aplikacja beauty · plan pielęgnacji skóry twarzy',status:'waiting',note:'Czeka na rozmowę z Patrycją — bez niej nic nie rusza. Patrycja: kosmetolog, bioenergoterapeutka, współtwórczyni MANA.'},
-    {id:'p2',name:'Magic Jar v2',sub:'Rozwinięcie Iskierki — nowe funkcje',status:'idea',note:''},
-    {id:'p3',name:'mana.pl',sub:'Strona główna — pierwsze drzwi do MANA',status:'todo',note:'Pierwsze spotkanie z MANA jeszcze przed rejestracją'}
-  ],
-  updated: 'kwiecień 2026'
+  updated:'kwiecień 2026'
 };
 
-var planData = null;
-var planTab = 'projects';
+var planData=null;
+var planTab='projects';
+var planDragId=null;
+var planDragType=null;
 
-function planLoad(){
-  var saved = localStorage.getItem('mana_plan');
-  if(saved){try{planData=JSON.parse(saved);}catch(e){planData=null;}}
-  if(!planData){planData=JSON.parse(JSON.stringify(PLAN_DEFAULT));}
-  else if(!planData.projects){planData.projects=JSON.parse(JSON.stringify(PLAN_DEFAULT.projects));planSave();}
+async function planLoadFromDB(){
+  try{
+    var r=await fetch(SB+'/rest/v1/mana_settings?key=eq.plan&select=value',{headers:H});
+    var d=await r.json();
+    if(Array.isArray(d)&&d.length&&d[0].value){return d[0].value;}
+  }catch(e){}
+  return null;
 }
 
-function planSave(){
-  planData.updated=new Date().toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-  localStorage.setItem('mana_plan',JSON.stringify(planData));
+async function planSaveToDB(data){
+  try{
+    await fetch(SB+'/rest/v1/mana_settings',{
+      method:'POST',
+      headers:{...H,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({key:'plan',value:data})
+    });
+    return true;
+  }catch(e){return false;}
 }
 
-function loadPlanView(){
-  planLoad();
-  document.getElementById('d-meta').textContent='projekty · narzędzia · zadania';
+async function loadPlanView(){
+  document.getElementById('d-meta').textContent='projekty · zadania · narzędzia';
+  document.getElementById('d-body').innerHTML='<div class="loading">Ładuję plan…</div>';
+  var fromDB=await planLoadFromDB();
+  if(fromDB){
+    planData=fromDB;
+    if(!planData.projects)planData.projects=JSON.parse(JSON.stringify(PLAN_DEFAULT.projects));
+  } else {
+    var local=localStorage.getItem('mana_plan');
+    if(local){try{planData=JSON.parse(local);}catch(e){planData=null;}}
+    if(!planData)planData=JSON.parse(JSON.stringify(PLAN_DEFAULT));
+    if(!planData.projects)planData.projects=JSON.parse(JSON.stringify(PLAN_DEFAULT.projects));
+  }
   renderPlanView();
 }
 
 function renderPlanView(){
-  var toolCols=[
-    {key:'have',label:'✓ MANA MA',cls:'col-have'},
-    {key:'now',label:'🔴 TERAZ',cls:'col-now'},
-    {key:'soon',label:'🟡 WKRÓTCE',cls:'col-soon'},
-    {key:'future',label:'○ PRZYSZŁOŚĆ',cls:'col-future'}
-  ];
-  var taskCols=[
-    {key:'todo',label:'DO ZROBIENIA',cls:'col-todo'},
-    {key:'doing',label:'W TRAKCIE',cls:'col-doing'},
-    {key:'done',label:'ZROBIONE',cls:'col-done'}
-  ];
-  var projCols=[
-    {key:'idea',label:'POMYSŁ',cls:'col-future'},
-    {key:'waiting',label:'CZEKA',cls:'col-todo'},
-    {key:'doing',label:'W TRAKCIE',cls:'col-doing'},
-    {key:'done',label:'GOTOWE',cls:'col-done'}
-  ];
+  var COLS={
+    projects:[{key:'idea',label:'POMYSŁ',cls:'col-future'},{key:'waiting',label:'CZEKA',cls:'col-todo'},{key:'todo',label:'DO ZROBIENIA',cls:'col-now'},{key:'doing',label:'W TRAKCIE',cls:'col-doing'},{key:'done',label:'GOTOWE',cls:'col-done'}],
+    tasks:[{key:'todo',label:'DO ZROBIENIA',cls:'col-todo'},{key:'doing',label:'W TRAKCIE',cls:'col-doing'},{key:'done',label:'ZROBIONE',cls:'col-done'}],
+    tools:[{key:'have',label:'✓ MANA MA',cls:'col-have'},{key:'now',label:'🔴 TERAZ',cls:'col-now'},{key:'soon',label:'🟡 WKRÓTCE',cls:'col-soon'},{key:'future',label:'○ PRZYSZŁOŚĆ',cls:'col-future'}]
+  };
+  var ITEMS={projects:planData.projects,tasks:planData.tasks,tools:planData.tools};
+  var GRID={projects:'grid-template-columns:repeat(5,minmax(170px,1fr));',tasks:'grid-template-columns:repeat(3,minmax(210px,1fr));',tools:'grid-template-columns:repeat(4,minmax(185px,1fr));'};
 
-  function buildCol(col,items,type){
-    var cards=items.filter(function(i){return i.status===col.key;});
-    var html='<div class="plan-col '+col.cls+'">'+
-      '<div class="plan-col-head">'+
-        '<span class="plan-col-title">'+col.label+'</span>'+
-        '<span class="plan-col-count">'+cards.length+'</span>'+
-      '</div>';
-    cards.forEach(function(item){
-      var isDone=(col.key==='done');
-      html+='<div class="plan-card'+(isDone?' done-card':'')+'" data-id="'+item.id+'" data-type="'+type+'">'+
-        '<span class="plan-card-arrow">→</span>'+
-        '<div class="plan-card-name">'+esc(item.name)+'</div>'+
-        (item.sub?'<div class="plan-card-sub">'+esc(item.sub)+'</div>':'')+
-        (item.note?'<div class="plan-card-sub" style="color:var(--brown);margin-top:3px;">'+esc(item.note)+'</div>':'')+
-      '</div>';
+  function buildBoard(type){
+    var cols=COLS[type];var items=ITEMS[type];
+    var html='<div class="plan-board" style="'+GRID[type]+'">';
+    cols.forEach(function(col){
+      var cards=items.filter(function(i){return i.status===col.key;});
+      html+='<div class="plan-col '+col.cls+'" data-col="'+col.key+'" data-type="'+type+'">'+
+        '<div class="plan-col-head"><span class="plan-col-title">'+col.label+'</span><span class="plan-col-count">'+cards.length+'</span></div>'+
+        '<div class="plan-drop-zone" data-col="'+col.key+'" data-type="'+type+'">';
+      cards.forEach(function(item){
+        html+='<div class="plan-card'+(col.key==='done'?' done-card':'')+'" draggable="true" data-id="'+item.id+'" data-type="'+type+'">'+
+          '<div class="plan-card-name">'+esc(item.name)+'</div>'+
+          (item.sub?'<div class="plan-card-sub">'+esc(item.sub)+'</div>':'')+
+          (item.note?'<div class="plan-card-note">'+esc(item.note)+'</div>':'')+
+        '</div>';
+      });
+      html+='</div><button class="plan-add-btn" onclick="planAdd(\''+type+'\',\''+col.key+'\')">+ dodaj</button></div>';
     });
-    html+='<button class="plan-add-btn" onclick="planAddItem(\''+type+'\',\''+col.key+'\')">+ dodaj</button>';
-    html+='</div>';
-    return html;
+    return html+'</div>';
   }
-
-  var projHtml='<div class="plan-board" style="grid-template-columns:repeat(4,minmax(200px,1fr));">';
-  projCols.forEach(function(col){projHtml+=buildCol(col,planData.projects,'project');});
-  projHtml+='</div>';
-
-  var toolsHtml='<div class="plan-board tools-board">';
-  toolCols.forEach(function(col){toolsHtml+=buildCol(col,planData.tools,'tool');});
-  toolsHtml+='</div>';
-
-  var tasksHtml='<div class="plan-board tasks-board">';
-  taskCols.forEach(function(col){tasksHtml+=buildCol(col,planData.tasks,'task');});
-  tasksHtml+='</div>';
 
   document.getElementById('d-body').innerHTML=
     '<div class="plan-tabs">'+
-      '<button class="plan-tab'+(planTab==='projects'?' act':'')+'" onclick="planSwitchTab(\'projects\')">🗂️ Projekty</button>'+
-      '<button class="plan-tab'+(planTab==='tasks'?' act':'')+'" onclick="planSwitchTab(\'tasks\')">📋 Zadania</button>'+
-      '<button class="plan-tab'+(planTab==='tools'?' act':'')+'" onclick="planSwitchTab(\'tools\')">🛠️ Narzędzia</button>'+
+      '<button class="plan-tab'+(planTab==='projects'?' act':'')+'" onclick="planTab=\'projects\';renderPlanView()">🗂️ Projekty</button>'+
+      '<button class="plan-tab'+(planTab==='tasks'?' act':'')+'" onclick="planTab=\'tasks\';renderPlanView()">📋 Zadania</button>'+
+      '<button class="plan-tab'+(planTab==='tools'?' act':'')+'" onclick="planTab=\'tools\';renderPlanView()">🛠️ Narzędzia</button>'+
     '</div>'+
-    '<div class="plan-updated">Ostatnia aktualizacja: '+esc(planData.updated||'—')+'</div>'+
-    '<div id="plan-board-projects" style="display:'+(planTab==='projects'?'block':'none')+'">'+projHtml+'</div>'+
-    '<div id="plan-board-tasks" style="display:'+(planTab==='tasks'?'block':'none')+'">'+tasksHtml+'</div>'+
-    '<div id="plan-board-tools" style="display:'+(planTab==='tools'?'block':'none')+'">'+toolsHtml+'</div>';
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;">'+
+      '<span style="font-size:11px;color:var(--text-light);font-style:italic;">Przeciągnij kartę do innej kolumny</span>'+
+      '<div style="margin-left:auto;display:flex;align-items:center;gap:8px;">'+
+        '<span style="font-size:10px;color:var(--text-light);">'+esc(planData.updated||'')+'</span>'+
+        '<button id="plan-save-btn" class="plan-save-btn" onclick="planSaveClick()">Zapisz do bazy</button>'+
+        '<span id="plan-save-ok" style="font-size:11px;color:var(--green);display:none;">✓ Zapisano</span>'+
+      '</div>'+
+    '</div>'+
+    buildBoard(planTab);
 
+  // Drag & drop
   document.querySelectorAll('.plan-card').forEach(function(card){
-    card.addEventListener('click',function(){
-      planAdvance(card.getAttribute('data-id'),card.getAttribute('data-type'));
+    card.addEventListener('dragstart',function(e){
+      planDragId=card.getAttribute('data-id');
+      planDragType=card.getAttribute('data-type');
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+    });
+    card.addEventListener('dragend',function(){card.classList.remove('dragging');});
+  });
+
+  document.querySelectorAll('.plan-drop-zone').forEach(function(zone){
+    zone.addEventListener('dragover',function(e){
+      e.preventDefault();
+      e.dataTransfer.dropEffect='move';
+      zone.parentElement.classList.add('drag-over');
+    });
+    zone.addEventListener('dragleave',function(){
+      zone.parentElement.classList.remove('drag-over');
+    });
+    zone.addEventListener('drop',function(e){
+      e.preventDefault();
+      zone.parentElement.classList.remove('drag-over');
+      var targetCol=zone.getAttribute('data-col');
+      var targetType=zone.getAttribute('data-type');
+      if(!planDragId||targetType!==planDragType)return;
+      var arr=planDragType==='project'?planData.projects:planDragType==='task'?planData.tasks:planData.tools;
+      var item=arr.find(function(i){return i.id===planDragId;});
+      if(item&&item.status!==targetCol){item.status=targetCol;localStorage.setItem('mana_plan',JSON.stringify(planData));}
+      planDragId=null;planDragType=null;
+      renderPlanView();
     });
   });
 }
 
-function planSwitchTab(tab){
-  planTab=tab;
-  ['projects','tasks','tools'].forEach(function(t){
-    var el=document.getElementById('plan-board-'+t);
-    if(el)el.style.display=(t===tab?'block':'none');
-  });
-  document.querySelectorAll('.plan-tab').forEach(function(b,i){
-    b.classList.toggle('act',['projects','tasks','tools'][i]===tab);
-  });
-}
-
-function planAdvance(id,type){
-  var nextMap={
-    tool:{have:'now',now:'soon',soon:'future',future:'have'},
-    task:{todo:'doing',doing:'done',done:'todo'},
-    project:{idea:'waiting',waiting:'doing',doing:'done',done:'idea'}
-  };
-  var arr=type==='tool'?planData.tools:type==='task'?planData.tasks:planData.projects;
-  var item=arr.find(function(i){return i.id===id;});
-  if(!item)return;
-  item.status=nextMap[type][item.status]||item.status;
-  planSave();
+async function planSaveClick(){
+  var btn=document.getElementById('plan-save-btn');
+  var ok=document.getElementById('plan-save-ok');
+  if(btn)btn.disabled=true;
+  planData.updated=new Date().toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  localStorage.setItem('mana_plan',JSON.stringify(planData));
+  var saved=await planSaveToDB(planData);
+  if(btn)btn.disabled=false;
+  if(ok){ok.style.display='inline';ok.textContent=saved?'✓ Zapisano do bazy':'✓ Zapisano lokalnie';setTimeout(function(){ok.style.display='none';},3000);}
   renderPlanView();
 }
 
-function planAddItem(type,status){
+function planAdd(type,status){
   var labels={tool:'Nazwa narzędzia:',task:'Nazwa zadania:',project:'Nazwa projektu:'};
   var name=prompt(labels[type]||'Nazwa:');
   if(!name||!name.trim())return;
@@ -530,7 +546,7 @@ function planAddItem(type,status){
   if(type==='tool')planData.tools.push(obj);
   else if(type==='task')planData.tasks.push(obj);
   else planData.projects.push(obj);
-  planSave();
+  localStorage.setItem('mana_plan',JSON.stringify(planData));
   renderPlanView();
 }
 
