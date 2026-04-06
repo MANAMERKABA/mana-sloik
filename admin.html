@@ -334,15 +334,41 @@ function loadRadarView(){
   renderRadarView();
 }
 
+function radarSaveKey(){
+  var k=document.getElementById('r-api-key');
+  if(!k||!k.value.trim())return;
+  localStorage.setItem('mana_anthropic_key',k.value.trim());
+  k.value='';
+  renderRadarView();
+}
+
 function renderRadarView(){
   var tagMap={
     all:'Wszystkie',ai:'Serce AI',agent:'Agenci',memory:'Pamięć AI',voice:'Voice AI',infra:'Infrastruktura',ogolne:'Ogólne'
   };
+  var hasKey=!!localStorage.getItem('mana_anthropic_key');
   var lastInfo=radarLastFetch?('Ostatnie pobranie: '+radarLastFetch):'Nie pobrano jeszcze';
+  var keySection='';
+  if(!hasKey){
+    keySection='<div style="background:rgba(192,57,43,0.06);border:1px solid rgba(192,57,43,0.2);border-radius:10px;padding:14px 16px;margin-bottom:16px;">'+
+      '<div style="font-size:12px;font-weight:500;color:var(--red);margin-bottom:6px;">Wymagany klucz Anthropic API</div>'+
+      '<div style="font-size:11px;color:var(--text-mid);margin-bottom:10px;">Wejdź na <b>console.anthropic.com</b> → API Keys → utwórz klucz i wklej poniżej. Zapisuje się tylko w tej przeglądarce.</div>'+
+      '<div style="display:flex;gap:8px;">'+
+        '<input id="r-api-key" type="password" placeholder="sk-ant-..." style="flex:1;padding:9px 12px;border:1px solid var(--border-strong);border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;background:var(--white);color:var(--text);outline:none;">'+
+        '<button onclick="radarSaveKey()" style="padding:9px 16px;background:var(--brown);color:var(--white);border:none;border-radius:8px;font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;cursor:pointer;">Zapisz</button>'+
+      '</div>'+
+    '</div>';
+  } else {
+    keySection='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">'+
+      '<span style="font-size:11px;color:var(--green);">✓ Klucz API zapisany</span>'+
+      '<button onclick="localStorage.removeItem(\'mana_anthropic_key\');renderRadarView();" style="font-size:10px;color:var(--text-light);background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;cursor:pointer;">zmień</button>'+
+    '</div>';
+  }
   var html='<div class="radar-header">'+
     '<p>'+lastInfo+'</p>'+
   '</div>'+
-  '<button class="radar-fetch-btn" id="r-fetch-btn" onclick="radarFetch()">'+
+  keySection+
+  '<button class="radar-fetch-btn" id="r-fetch-btn" onclick="radarFetch()" '+(hasKey?'':'disabled style="opacity:0.4;cursor:not-allowed;"')+'>'+
     '<span class="radar-pulse" id="r-pulse"></span>'+
     '<span id="r-btn-txt">Pobierz aktualne nowinki</span>'+
   '</button>'+
@@ -385,6 +411,8 @@ function radarSetFilter(f){
 }
 
 async function radarFetch(){
+  var apiKey=localStorage.getItem('mana_anthropic_key');
+  if(!apiKey){renderRadarView();return;}
   var btn=document.getElementById('r-fetch-btn');
   var pulse=document.getElementById('r-pulse');
   var txt=document.getElementById('r-btn-txt');
@@ -394,7 +422,7 @@ async function radarFetch(){
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
