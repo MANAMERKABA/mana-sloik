@@ -340,8 +340,11 @@ async function openTraveler(nick){
   var t=_travelers.find(function(x){return x.nick===nick;})||{};
   document.getElementById('d-title').textContent=nick;
   document.getElementById('d-meta').textContent='';
+  document.getElementById('d-body').innerHTML='<div class="loading">Ładuję...</div>';
   var age=t.birth_year?new Date().getFullYear()-t.birth_year+' lat':'';
   var reg=t.created_at?fdt(t.created_at):'—';
+  var history=await sb('login_history','select=created_at&nick=eq.'+encodeURIComponent(nick)+'&order=created_at.desc&limit=50');
+  var hist=Array.isArray(history)?history:[];
   var html='<div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:16px;">'+
     '<div style="display:flex;gap:14px;align-items:center;margin-bottom:14px;">'+
     '<div class="t-av" style="width:52px;height:52px;font-size:22px;flex-shrink:0;">'+ini(nick)+'</div>'+
@@ -350,19 +353,32 @@ async function openTraveler(nick){
       age+(age?' · ':'')+(t.consent?'<span class="badge bg">zgoda ✓</span>':'<span class="badge bb">bez zgody</span>')+
     '</div></div></div>'+
     '<div style="border-top:1px solid var(--border);padding-top:14px;">'+
-    '<div style="font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Historia logowań</div>'+
-    '<div style="display:flex;flex-direction:column;gap:8px;">'+
-      '<div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--sand);border-radius:8px;">'+
-        '<span style="font-size:13px;font-weight:500;">Pierwsze logowanie</span>'+
-        '<span style="font-size:13px;color:var(--text-light);">'+reg+'</span>'+
-      '</div>'+
-      (t.last_visit?
-        '<div style="display:flex;justify-content:space-between;padding:10px 14px;background:rgba(107,143,113,.08);border-radius:8px;border-left:3px solid var(--green);">'+
-        '<span style="font-size:13px;font-weight:500;">Ostatnie logowanie</span>'+
-        '<span style="font-size:13px;color:var(--text-light);">'+fdt(t.last_visit)+' · '+rel(t.last_visit)+'</span>'+
-        '</div>':
-        '<div style="font-size:12px;color:var(--text-light);font-style:italic;padding:8px 0;">Brak zarejestrowanego logowania</div>')+
-    '</div></div></div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">'+
+      '<div style="font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:.08em;">Historia logowań</div>'+
+      '<div style="font-size:12px;color:var(--brown);font-weight:500;">'+hist.length+' wejść</div>'+
+    '</div>';
+  if(!hist.length){
+    html+='<div style="font-size:12px;color:var(--text-light);font-style:italic;padding:8px 0;">Brak historii — pojawi się przy kolejnym logowaniu</div>';
+    html+='<div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--sand);border-radius:8px;margin-top:6px;">'+
+      '<span style="font-size:13px;font-weight:500;">Zarejestrowany</span>'+
+      '<span style="font-size:13px;color:var(--text-light);">'+reg+'</span>'+
+    '</div>';
+  } else {
+    html+='<div style="display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;">';
+    hist.forEach(function(h,i){
+      var isFirst=(i===hist.length-1);
+      var isLast=(i===0);
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 14px;background:'+(isLast?'rgba(107,143,113,.08)':'var(--sand)')+';border-radius:8px;'+(isLast?'border-left:3px solid var(--green);':'')+'" >'+
+        '<span style="font-size:13px;font-weight:'+(isLast?'500':'400')+';">'+
+          (isLast?'Ostatnie':'')+(isFirst&&hist.length>1?' Pierwsze':'')+
+          (!isLast&&!isFirst?fdt(h.created_at):'&nbsp;')+
+        '</span>'+
+        '<span style="font-size:13px;color:var(--text-light);">'+fdt(h.created_at)+' · '+rel(h.created_at)+'</span>'+
+      '</div>';
+    });
+    html+='</div>';
+  }
+  html+='</div></div>'+
     '<button id="btn-dd-open" style="width:100%;padding:13px;background:var(--white);border:1px solid var(--border-strong);border-radius:10px;font-family:DM Sans,sans-serif;font-size:14px;color:var(--brown);cursor:pointer;font-weight:500;">Dobry Dzień — wpisy ☀️</button>';
   document.getElementById('d-body').innerHTML=html;
   document.getElementById('btn-dd-open').addEventListener('click',function(){openTravelerDD(nick);});
