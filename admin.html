@@ -273,6 +273,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
             <span class="tool-status status-live">✓ działa</span>
           </div>
           <div class="tool-card" onclick="openView('plan')" style="border-color:rgba(139,115,85,0.35);"><div class="tool-icon">🗺️</div><div class="tool-name">Plan MANA</div><div class="tool-desc">Narzędzia · Zadania · Kierunki</div><span class="tool-status status-live">✓ działa</span></div>
+          <div class="tool-card" onclick="openView('stan')" style="border-color:rgba(139,115,85,0.35);"><div class="tool-icon">🔬</div><div class="tool-name">Stan MANA</div><div class="tool-desc">Co mamy · Tabele · Funkcje</div><span class="tool-status status-live">✓ działa</span></div>
           <div class="tool-card" style="opacity:0.5;cursor:default;"><div class="tool-icon">🌐</div><div class="tool-name">mana.pl</div><div class="tool-desc">Strona główna</div><span class="tool-status status-todo">do zrobienia</span></div>
         </div>
       </div>
@@ -358,6 +359,7 @@ function openView(type){
   else if(type==='dd'){document.getElementById('d-title').textContent='Dobry Dzień';loadDD();}
   else if(type==='radar'){document.getElementById('d-title').textContent='Radar MANA';loadRadarView();}
   else if(type==='plan'){document.getElementById('d-title').textContent='Plan MANA';loadPlanView();}
+  else if(type==='stan'){document.getElementById('d-title').textContent='Stan MANA';loadStanView();}
 }
 function closeView(){document.getElementById('view-detail').style.display='none';document.getElementById('view-dash').style.display='block';var backBtn=document.querySelector('.back-btn');if(backBtn)backBtn.onclick=closeView;}
 
@@ -600,6 +602,119 @@ function planAdd(type,status){
   else planData.projects.push(obj);
   localStorage.setItem('mana_plan',JSON.stringify(planData));
   renderPlanView();
+}
+
+/* ══════════════════════════════════════
+   STAN MANA — inwentarz techniczny
+══════════════════════════════════════ */
+var STAN_TABELE = [
+  {name:'knowledge', opis:'Baza wiedzy RAG — 34 wpisy z embeddingami', status:'live', typ:'RAG'},
+  {name:'conversations', opis:'Historia rozmów Podróżników z Sercem', status:'live', typ:'Serce'},
+  {name:'travels', opis:'Rejestr Podróżników — profil, last_visit, consent', status:'live', typ:'Core'},
+  {name:'dd_entries', opis:'Wpisy Dobrego Dnia — myśli i oceny', status:'live', typ:'Magic Jar'},
+  {name:'stones', opis:'Kamienie w Słoiku — osiągnięcia Podróżnika', status:'live', typ:'Słoik'},
+  {name:'prompts', opis:'Dynamiczne prompty Serca — pobierane przez get-prompt', status:'live', typ:'Serce'},
+  {name:'constellations', opis:'Konstelacje — powiązania między Podróżnikami', status:'live', typ:'Core'},
+  {name:'login_history', opis:'Historia logowań Podróżników', status:'live', typ:'Core'},
+  {name:'mana_settings', opis:'Ustawienia platformy — Plan MANA, konfiguracja', status:'live', typ:'Admin'},
+  {name:'therapist_clients', opis:'Klienci terapeutów — relacje terapeuta-Podróżnik', status:'live', typ:'Terapeuta'},
+  {name:'therapist_notes', opis:'Notatki terapeutów o Podróżnikach', status:'live', typ:'Terapeuta'},
+  {name:'trainer_notes', opis:'Notatki trenerów', status:'live', typ:'Terapeuta'},
+  {name:'trainers', opis:'Rejestr terapeutów i trenerów MANA', status:'live', typ:'Terapeuta'},
+  {name:'notatnik_trening', opis:'Notatnik treningowy', status:'live', typ:'Słoik'},
+  {name:'koszty', opis:'Koszty — model finansowy MANA', status:'live', typ:'Biznes'},
+  {name:'consent_codes', opis:'Kody zgody RODO — weryfikacja Podróżników', status:'live', typ:'Core'}
+];
+
+var STAN_FUNKCJE = [
+  {name:'call-serce', opis:'Główna funkcja Serca — rozmowa z Podróżnikiem', status:'live', updated:'17 dni temu'},
+  {name:'call-dd-serce', opis:'Serce dla Dobrego Dnia (Iskierka)', status:'live', updated:'7 dni temu'},
+  {name:'mana-rag-search', opis:'Wyszukiwanie semantyczne w bazie knowledge', status:'live', updated:'19 dni temu'},
+  {name:'get-pamiec', opis:'Pobieranie pamięci Podróżnika między sesjami', status:'live', updated:'21 dni temu'},
+  {name:'update-pamiec', opis:'Aktualizacja pamięci Podróżnika po sesji', status:'live', updated:'15 dni temu'},
+  {name:'get-prompt', opis:'Pobieranie dynamicznego promptu Serca', status:'live', updated:'21 dni temu'},
+  {name:'get-stones', opis:'Pobieranie kamieni Podróżnika ze Słoika', status:'live', updated:'21 dni temu'},
+  {name:'iskierka-eval', opis:'Ewaluacja i ocena wpisów Iskierki', status:'live', updated:'11 dni temu'},
+  {name:'sort-notatka', opis:'Sortowanie i klasyfikacja notatek', status:'live', updated:'15 dni temu'},
+  {name:'check-trainer', opis:'Weryfikacja czy nick jest terapeutą', status:'live', updated:'20 dni temu'},
+  {name:'send-consent-code', opis:'Wysyłanie kodu zgody RODO', status:'live', updated:'8 dni temu'},
+  {name:'verify-consent-code', opis:'Weryfikacja kodu zgody RODO', status:'live', updated:'7 dni temu'}
+];
+
+function loadStanView(){
+  document.getElementById('d-meta').textContent='inwentarz techniczny · '+new Date().toLocaleDateString('pl-PL');
+  renderStanView();
+}
+
+function renderStanView(){
+  var typColors={
+    'RAG':'background:rgba(107,143,113,0.15);color:#4a7a51;',
+    'Serce':'background:rgba(155,126,189,0.15);color:#6b4a9b;',
+    'Core':'background:rgba(139,115,85,0.12);color:#5C4A35;',
+    'Magic Jar':'background:rgba(230,126,22,0.12);color:#b8620f;',
+    'Słoik':'background:rgba(44,36,24,0.08);color:#6B5C45;',
+    'Terapeuta':'background:rgba(107,143,113,0.1);color:#3a6a41;',
+    'Admin':'background:rgba(139,115,85,0.12);color:#8B7355;',
+    'Biznes':'background:rgba(192,57,43,0.08);color:#8a2318;'
+  };
+
+  var tabeleHtml = STAN_TABELE.map(function(t){
+    var tc = typColors[t.typ]||'background:rgba(139,115,85,0.08);color:#6B5C45;';
+    return '<tr>'
+      +'<td style="font-weight:500;font-size:13px;color:var(--text);font-family:monospace;">'+t.name+'</td>'
+      +'<td><span style="font-size:10px;padding:2px 7px;border-radius:4px;'+tc+'">'+t.typ+'</span></td>'
+      +'<td style="font-size:12px;color:var(--text-mid);">'+t.opis+'</td>'
+      +'<td><span style="font-size:10px;color:var(--green);">✓ live</span></td>'
+    +'</tr>';
+  }).join('');
+
+  var funkcjeHtml = STAN_FUNKCJE.map(function(f){
+    return '<tr>'
+      +'<td style="font-weight:500;font-size:13px;color:var(--text);font-family:monospace;">'+f.name+'</td>'
+      +'<td style="font-size:12px;color:var(--text-mid);">'+f.opis+'</td>'
+      +'<td style="font-size:11px;color:var(--text-light);">'+f.updated+'</td>'
+      +'<td><span style="font-size:10px;color:var(--green);">✓ live</span></td>'
+    +'</tr>';
+  }).join('');
+
+  var tableStyle = 'width:100%;border-collapse:collapse;';
+  var thStyle = 'font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);font-weight:500;';
+  var tdStyle = 'padding:9px 10px;border-bottom:1px solid rgba(139,115,85,0.08);vertical-align:top;';
+
+  document.getElementById('d-body').innerHTML =
+    '<div style="background:rgba(107,143,113,0.08);border:1px solid rgba(107,143,113,0.2);border-radius:10px;padding:12px 16px;margin-bottom:20px;">'
+    +'<div style="font-size:13px;font-weight:500;color:var(--green);margin-bottom:4px;">MANA jest bardziej zaawansowana niż wygląda z zewnątrz</div>'
+    +'<div style="font-size:12px;color:var(--text-mid);">RAG działa · Pamięć Podróżnika działa · 12 Edge Functions w produkcji · 16 tabel · pgvector 0.8.0</div>'
+    +'</div>'
+    +'<div style="font-size:18px;font-weight:300;color:var(--brown-deep);margin-bottom:12px;">Tabele Supabase (16)</div>'
+    +'<div style="overflow-x:auto;margin-bottom:28px;">'
+    +'<table style="'+tableStyle+'">'
+    +'<thead><tr>'
+    +'<th style="'+thStyle+'width:22%;">Nazwa</th>'
+    +'<th style="'+thStyle+'width:12%;">Typ</th>'
+    +'<th style="'+thStyle+'">Co przechowuje</th>'
+    +'<th style="'+thStyle+'width:8%;">Status</th>'
+    +'</tr></thead>'
+    +'<tbody>'+tabeleHtml+'</tbody>'
+    +'</table></div>'
+    +'<div style="font-size:18px;font-weight:300;color:var(--brown-deep);margin-bottom:12px;">Edge Functions (12)</div>'
+    +'<div style="overflow-x:auto;">'
+    +'<table style="'+tableStyle+'">'
+    +'<thead><tr>'
+    +'<th style="'+thStyle+'width:22%;">Nazwa</th>'
+    +'<th style="'+thStyle+'">Co robi</th>'
+    +'<th style="'+thStyle+'width:15%;">Aktualizacja</th>'
+    +'<th style="'+thStyle+'width:8%;">Status</th>'
+    +'</tr></thead>'
+    +'<tbody>'+funkcjeHtml+'</tbody>'
+    +'</table></div>';
+
+  // Fix td padding
+  document.querySelectorAll('#d-body td').forEach(function(td){
+    td.style.padding='9px 10px';
+    td.style.borderBottom='1px solid rgba(139,115,85,0.08)';
+    td.style.verticalAlign='top';
+  });
 }
 
 /* ══════════════════════════════════════
