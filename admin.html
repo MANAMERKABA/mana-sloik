@@ -517,24 +517,17 @@ function renderPlanView(){
     +'</div></div>'
     +buildBoard(planTab);
 
-  // Tabs
   document.querySelectorAll('.plan-tab').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      planTab=btn.getAttribute('data-tab');
-      renderPlanView();
-    });
+    btn.addEventListener('click',function(){planTab=btn.getAttribute('data-tab');renderPlanView();});
   });
-  // Save
   var saveBtn=document.getElementById('plan-save-btn');
   if(saveBtn) saveBtn.addEventListener('click',planSaveClick);
-  // Move buttons
   document.querySelectorAll('.pc-mv-btn').forEach(function(btn){
     btn.addEventListener('click',function(e){
       e.stopPropagation();
       planMoveTo(btn.getAttribute('data-id'),btn.getAttribute('data-type'),btn.getAttribute('data-target'));
     });
   });
-  // Copy buttons
   document.querySelectorAll('.pc-copy').forEach(function(btn){
     btn.addEventListener('click',function(e){
       e.stopPropagation();
@@ -547,14 +540,10 @@ function renderPlanView(){
       });
     });
   });
-  // Add buttons
   document.querySelectorAll('.plan-add-btn').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      planAdd(btn.getAttribute('data-addtype'),btn.getAttribute('data-addcol'));
-    });
+    btn.addEventListener('click',function(){planAdd(btn.getAttribute('data-addtype'),btn.getAttribute('data-addcol'));});
   });
 }
-
 
 function planMoveTo(id,type,target){
   var arr=type==='project'?planData.projects:type==='task'?planData.tasks:planData.tools;
@@ -574,7 +563,6 @@ function planCopyCard(txt){
     setTimeout(function(){ok.remove();},2000);
   });
 }
-
 
 async function planSaveClick(){
   var btn=document.getElementById('plan-save-btn');
@@ -657,7 +645,6 @@ function renderStanView(){
     'Admin':'background:rgba(139,115,85,0.12);color:#8B7355;',
     'Biznes':'background:rgba(192,57,43,0.08);color:#8a2318;'
   };
-
   var tabeleHtml = STAN_TABELE.map(function(t){
     var tc = typColors[t.typ]||'background:rgba(139,115,85,0.08);color:#6B5C45;';
     return '<tr>'
@@ -667,7 +654,6 @@ function renderStanView(){
       +'<td><span style="font-size:10px;color:var(--green);">✓ live</span></td>'
     +'</tr>';
   }).join('');
-
   var funkcjeHtml = STAN_FUNKCJE.map(function(f){
     return '<tr>'
       +'<td style="font-weight:500;font-size:13px;color:var(--text);font-family:monospace;">'+f.name+'</td>'
@@ -676,11 +662,8 @@ function renderStanView(){
       +'<td><span style="font-size:10px;color:var(--green);">✓ live</span></td>'
     +'</tr>';
   }).join('');
-
   var tableStyle = 'width:100%;border-collapse:collapse;';
   var thStyle = 'font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);font-weight:500;';
-  var tdStyle = 'padding:9px 10px;border-bottom:1px solid rgba(139,115,85,0.08);vertical-align:top;';
-
   document.getElementById('d-body').innerHTML =
     '<div style="background:rgba(107,143,113,0.08);border:1px solid rgba(107,143,113,0.2);border-radius:10px;padding:12px 16px;margin-bottom:20px;">'
     +'<div style="font-size:13px;font-weight:500;color:var(--green);margin-bottom:4px;">MANA jest bardziej zaawansowana niż wygląda z zewnątrz</div>'
@@ -708,8 +691,6 @@ function renderStanView(){
     +'</tr></thead>'
     +'<tbody>'+funkcjeHtml+'</tbody>'
     +'</table></div>';
-
-  // Fix td padding
   document.querySelectorAll('#d-body td').forEach(function(td){
     td.style.padding='9px 10px';
     td.style.borderBottom='1px solid rgba(139,115,85,0.08)';
@@ -718,7 +699,7 @@ function renderStanView(){
 }
 
 /* ══════════════════════════════════════
-   RADAR MANA
+   RADAR MANA — NAPRAWIONY 07.04.2026
 ══════════════════════════════════════ */
 var radarItems=[];
 var radarFilter='all';
@@ -740,9 +721,7 @@ function radarSaveKey(){
 }
 
 function renderRadarView(){
-  var tagMap={
-    all:'Wszystkie',ai:'Serce AI',agent:'Agenci',memory:'Pamięć AI',voice:'Voice AI',infra:'Infrastruktura',ogolne:'Ogólne'
-  };
+  var tagMap={all:'Wszystkie',ai:'Serce AI',agent:'Agenci',memory:'Pamięć AI',voice:'Voice AI',infra:'Infrastruktura',ogolne:'Ogólne'};
   var hasKey=!!localStorage.getItem('mana_anthropic_key');
   var lastInfo=radarLastFetch?('Ostatnie pobranie: '+radarLastFetch):'Nie pobrano jeszcze';
   var keySection='';
@@ -761,9 +740,7 @@ function renderRadarView(){
       '<button onclick="localStorage.removeItem(\'mana_anthropic_key\');renderRadarView();" style="font-size:10px;color:var(--text-light);background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;cursor:pointer;">zmień</button>'+
     '</div>';
   }
-  var html='<div class="radar-header">'+
-    '<p>'+lastInfo+'</p>'+
-  '</div>'+
+  var html='<div class="radar-header"><p>'+lastInfo+'</p></div>'+
   keySection+
   '<button class="radar-fetch-btn" id="r-fetch-btn" onclick="radarFetch()" '+(hasKey?'':'disabled style="opacity:0.4;cursor:not-allowed;"')+'>'+
     '<span class="radar-pulse" id="r-pulse"></span>'+
@@ -802,13 +779,10 @@ function renderRadarView(){
   });
 }
 
-function radarSetFilter(f){
-  radarFilter=f;
-  renderRadarView();
-}
+function radarSetFilter(f){radarFilter=f;renderRadarView();}
 
 async function radarFetch(){
-  var apiKey=localStorage.getItem('mana_anthropic_key');
+  var apiKey=(localStorage.getItem('mana_anthropic_key')||'').trim();
   if(!apiKey){renderRadarView();return;}
   var btn=document.getElementById('r-fetch-btn');
   var pulse=document.getElementById('r-pulse');
@@ -819,29 +793,55 @@ async function radarFetch(){
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
       body:JSON.stringify({
         model:'claude-sonnet-4-6',
-        max_tokens:1000,
+        max_tokens:2000,
         tools:[{type:'web_search_20250305',name:'web_search'}],
         system:'Jesteś ekspertem technologicznym dla platformy MANA — holistycznego ekosystemu rozwoju człowieka (ciało, umysł, duch) z AI jako Sercem (towarzyszem, nie narzędziem). Szukasz NAJNOWSZYCH nowinek z ostatnich tygodni. Zwróć TYLKO czysty JSON bez żadnych backticks ani markdown: {"items":[{"title":"konkretna nazwa/wydarzenie","summary":"2 zdania po polsku co się stało","category":"ai|agent|memory|voice|infra|ogolne","categoryLabel":"Serce AI|Agenci|Pamięć AI|Voice AI|Infrastruktura|Ogólne","relevance":"jedno zdanie dlaczego ważne dla MANA"}]}. Znajdź 5-7 pozycji.',
         messages:[{role:'user',content:'Znajdź najnowsze nowinki AI i tech dla platformy MANA. Szukaj: AI memory personalization, AI agents news, voice AI emotional intelligence, MCP protocol updates, Claude API updates, mental health AI, holistic wellness tech, LLM news kwiecień 2026.'}]
       })
     });
+    // Sprawdź HTTP status (401=zły klucz, 400=błąd zapytania, 529=przeciążenie)
+    if(!res.ok){
+      var errText=await res.text();
+      console.error('Radar HTTP',res.status,errText);
+      throw new Error('HTTP '+res.status+' — '+errText.slice(0,120));
+    }
     var data=await res.json();
+    // Sprawdź błąd na poziomie API
+    if(data.error){
+      console.error('Radar API error',data.error);
+      throw new Error(data.error.message||JSON.stringify(data.error));
+    }
+    // Zbierz wszystkie bloki tekstowe (web_search generuje też tool_use/tool_result bloki)
     var jsonText='';
-    for(var i=0;i<data.content.length;i++){if(data.content[i].type==='text')jsonText+=data.content[i].text;}
-    jsonText=jsonText.replace(/```json|```/g,'').trim();
-    var parsed=JSON.parse(jsonText);
+    for(var i=0;i<(data.content||[]).length;i++){
+      if(data.content[i].type==='text') jsonText+=data.content[i].text;
+    }
+    // Wytnij JSON nawet jeśli Claude dodał cokolwiek dookoła
+    var jsonMatch=jsonText.match(/\{[\s\S]*\}/);
+    if(!jsonMatch) throw new Error('Brak JSON w odpowiedzi: '+jsonText.slice(0,200));
+    var parsed=JSON.parse(jsonMatch[0]);
     radarItems=parsed.items||[];
     radarLastFetch=new Date().toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     localStorage.setItem('mana_radar',JSON.stringify({items:radarItems,date:radarLastFetch}));
     radarFilter='all';
     renderRadarView();
   }catch(e){
-    console.error(e);
+    console.error('radarFetch błąd:',e);
     var b=document.getElementById('d-body');
-    if(b){var err=document.createElement('p');err.style.cssText='color:var(--red);font-size:12px;margin-bottom:12px;font-style:italic;';err.textContent='Błąd pobierania. Spróbuj ponownie.';b.prepend(err);}
+    if(b){
+      var err=document.createElement('p');
+      err.style.cssText='color:var(--red);font-size:12px;margin-bottom:16px;background:rgba(192,57,43,0.06);border:1px solid rgba(192,57,43,0.2);border-radius:8px;padding:10px 14px;line-height:1.6;';
+      err.textContent='Błąd Radaru: '+e.message+' — otwórz DevTools (F12) → Console po szczegóły.';
+      b.prepend(err);
+    }
   }finally{
     var b2=document.getElementById('r-fetch-btn');
     var p2=document.getElementById('r-pulse');
