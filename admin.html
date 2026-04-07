@@ -367,50 +367,7 @@ function closeView(){document.getElementById('view-detail').style.display='none'
    PLAN MANA — drag & drop + Supabase
    NAPRAWIONY 07.04.2026
 ══════════════════════════════════════ */
-var PLAN_DEFAULT={
-  projects:[
-    {id:'p1',name:'PATI PLAN',sub:'Aplikacja beauty · pielęgnacja skóry twarzy',status:'waiting',note:'Czeka na rozmowę z Patrycją — kosmetolog, bioenergoterapeutka, współtwórczyni MANA'},
-    {id:'p2',name:'mana.pl',sub:'Strona główna — pierwsze drzwi do MANA',status:'todo',note:'Pierwsze spotkanie z MANA przed rejestracją'},
-    {id:'p3',name:'Magic Jar v2',sub:'Rozwinięcie Iskierki — nowe funkcje',status:'idea',note:''}
-  ],
-  tasks:[
-    {id:'z1',name:'Serce które pamięta',sub:'RAG / memory długoterminowej',status:'todo'},
-    {id:'z2',name:'Klucz API w Radarze',sub:'wpisać i przetestować Radar MANA',status:'todo'},
-    {id:'z3',name:'Vercel — deployment',sub:'profesjonalny hosting platformy',status:'todo'},
-    {id:'z4',name:'Obsidian — setup',sub:'Zettelkasten dla zespołu',status:'todo'},
-    {id:'z5',name:'Stripe — płatności',sub:'model subskrypcyjny MANA',status:'todo'},
-    {id:'z6',name:'Voice AI — prototyp',sub:'Serce mówiące głosem',status:'todo'},
-    {id:'z7',name:'Panel Terapeuty',sub:'z beta do produkcji',status:'todo'},
-    {id:'z8',name:'WhatsApp API',sub:'Serce bez barier technicznych',status:'todo'}
-  ],
-  tools:[
-    {id:'t1',name:'Claude API',sub:'via Typebot / Serce',status:'have'},
-    {id:'t2',name:'Supabase',sub:'baza danych',status:'have'},
-    {id:'t3',name:'Bolt.new',sub:'budowanie frontendu',status:'have'},
-    {id:'t4',name:'GitHub',sub:'kod, wersjonowanie, SSoT',status:'have'},
-    {id:'t5',name:'Baza wiedzy MANA',sub:'384+ wpisów',status:'have'},
-    {id:'t6',name:'Radar MANA',sub:'w panelu admina',status:'have'},
-    {id:'t7',name:'Serce MANA',sub:'Typebot · web',status:'have'},
-    {id:'t8',name:'Słoik',sub:'Horyzont · Cisza · Puls · Trzos',status:'have'},
-    {id:'t9',name:'Magic Jar',sub:'Spokojna Noc + Dobry Dzień',status:'have'},
-    {id:'t10',name:'Panel Terapeuty',sub:'beta',status:'have'},
-    {id:'t11',name:'Panel Admina',sub:'ten widok',status:'have'},
-    {id:'t12',name:'Memory / RAG',sub:'Serce które pamięta',status:'now'},
-    {id:'t13',name:'mana.pl',sub:'strona główna',status:'now'},
-    {id:'t14',name:'Vercel',sub:'profesjonalny hosting',status:'now'},
-    {id:'t15',name:'Obsidian + Zettelkasten',sub:'baza wiedzy zespołu',status:'now'},
-    {id:'t16',name:'MCP Protocol',sub:'integracje zewnętrzne',status:'now'},
-    {id:'t17',name:'Stripe',sub:'płatności, subskrypcje',status:'soon'},
-    {id:'t18',name:'Voice AI',sub:'ElevenLabs, Hume',status:'soon'},
-    {id:'t19',name:'Claude Code + Agenci',sub:'automatyzacja platformy',status:'soon'},
-    {id:'t20',name:'WhatsApp / Telegram API',sub:'Serce w kieszeni',status:'soon'},
-    {id:'t21',name:'Circle / Discord',sub:'społeczność MANA',status:'soon'},
-    {id:'t22',name:'Multimodal AI',sub:'obraz, dźwięk, wideo',status:'future'},
-    {id:'t23',name:'Ekspansja EU / World',sub:'Polska → Europa → Świat',status:'future'}
-  ],
-  updated:'kwiecień 2026'
-};
-
+var PLAN_DEFAULT={projects:[],tasks:[],tools:[],updated:""};
 var planData=null;
 var planTab='projects';
 var planDragId=null;
