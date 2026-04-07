@@ -365,6 +365,7 @@ function closeView(){document.getElementById('view-detail').style.display='none'
 
 /* ══════════════════════════════════════
    PLAN MANA — drag & drop + Supabase
+   NAPRAWIONY 07.04.2026
 ══════════════════════════════════════ */
 var PLAN_DEFAULT={
   projects:[
@@ -426,12 +427,12 @@ async function planLoadFromDB(){
 
 async function planSaveToDB(data){
   try{
-    await fetch(SB+'/rest/v1/mana_settings',{
+    var r=await fetch(SB+'/rest/v1/mana_settings',{
       method:'POST',
       headers:{...H,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
       body:JSON.stringify({key:'plan',value:data})
     });
-    return true;
+    return r.ok;
   }catch(e){return false;}
 }
 
@@ -511,17 +512,20 @@ function renderPlanView(){
     +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;">'
     +'<span style="font-size:11px;color:var(--text-light);font-style:italic;">Kliknij kartę — wybierz kolumnę &nbsp;·&nbsp; 📋 kopiuje do schowka</span>'
     +'<div style="margin-left:auto;display:flex;align-items:center;gap:8px;">'
-    +'<span style="font-size:10px;color:var(--text-light);">'+esc(planData.updated||'')+'</span>'
+    +'<span style="font-size:10px;color:var(--text-light);" id="plan-updated">'+esc(planData.updated||'')+'</span>'
     +'<button id="plan-save-btn" class="plan-save-btn">Zapisz do bazy</button>'
     +'<span id="plan-save-ok" style="font-size:11px;color:var(--green);display:none;">✓ Zapisano</span>'
     +'</div></div>'
     +buildBoard(planTab);
 
+  /* ── FIX 07.04.2026: addEventListener podpięty po renderze ── */
   document.querySelectorAll('.plan-tab').forEach(function(btn){
     btn.addEventListener('click',function(){planTab=btn.getAttribute('data-tab');renderPlanView();});
   });
   var saveBtn=document.getElementById('plan-save-btn');
   if(saveBtn) saveBtn.addEventListener('click',planSaveClick);
+  /* ─────────────────────────────────────────────────────────── */
+
   document.querySelectorAll('.pc-mv-btn').forEach(function(btn){
     btn.addEventListener('click',function(e){
       e.stopPropagation();
@@ -545,8 +549,9 @@ function renderPlanView(){
   });
 }
 
+/* FIX: poprawione porównanie typów (projects/tasks/tools zamiast project/task/tool) */
 function planMoveTo(id,type,target){
-  var arr=type==='project'?planData.projects:type==='task'?planData.tasks:planData.tools;
+  var arr=type==='projects'?planData.projects:type==='tasks'?planData.tasks:planData.tools;
   var item=arr.find(function(i){return i.id===id;});
   if(!item)return;
   item.status=target;
@@ -577,16 +582,16 @@ async function planSaveClick(){
 }
 
 function planAdd(type,status){
-  var labels={tool:'Nazwa narzędzia:',task:'Nazwa zadania:',project:'Nazwa projektu:'};
+  var labels={tools:'Nazwa narzędzia:',tasks:'Nazwa zadania:',projects:'Nazwa projektu:'};
   var name=prompt(labels[type]||'Nazwa:');
   if(!name||!name.trim())return;
   var sub=prompt('Opis (opcjonalnie):')||'';
-  var note=type==='project'?(prompt('Notatka / następny krok (opcjonalnie):')||''):'';
+  var note=type==='projects'?(prompt('Notatka / następny krok (opcjonalnie):')||''):'';
   var id=type+'_'+Date.now();
   var obj={id:id,name:name.trim(),sub:sub.trim(),status:status};
   if(note)obj.note=note.trim();
-  if(type==='tool')planData.tools.push(obj);
-  else if(type==='task')planData.tasks.push(obj);
+  if(type==='tools')planData.tools.push(obj);
+  else if(type==='tasks')planData.tasks.push(obj);
   else planData.projects.push(obj);
   localStorage.setItem('mana_plan',JSON.stringify(planData));
   renderPlanView();
@@ -807,24 +812,20 @@ async function radarFetch(){
         messages:[{role:'user',content:'Znajdź najnowsze nowinki AI i tech dla platformy MANA. Szukaj: AI memory personalization, AI agents news, voice AI emotional intelligence, MCP protocol updates, Claude API updates, mental health AI, holistic wellness tech, LLM news kwiecień 2026.'}]
       })
     });
-    // Sprawdź HTTP status (401=zły klucz, 400=błąd zapytania, 529=przeciążenie)
     if(!res.ok){
       var errText=await res.text();
       console.error('Radar HTTP',res.status,errText);
       throw new Error('HTTP '+res.status+' — '+errText.slice(0,120));
     }
     var data=await res.json();
-    // Sprawdź błąd na poziomie API
     if(data.error){
       console.error('Radar API error',data.error);
       throw new Error(data.error.message||JSON.stringify(data.error));
     }
-    // Zbierz wszystkie bloki tekstowe (web_search generuje też tool_use/tool_result bloki)
     var jsonText='';
     for(var i=0;i<(data.content||[]).length;i++){
       if(data.content[i].type==='text') jsonText+=data.content[i].text;
     }
-    // Wytnij JSON nawet jeśli Claude dodał cokolwiek dookoła
     var jsonMatch=jsonText.match(/\{[\s\S]*\}/);
     if(!jsonMatch) throw new Error('Brak JSON w odpowiedzi: '+jsonText.slice(0,200));
     var parsed=JSON.parse(jsonMatch[0]);
