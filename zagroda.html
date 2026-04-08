@@ -3,356 +3,239 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zagroda — MANA Admin</title>
+<title>Zagroda — MANA</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, sans-serif; background: #f5f4f0; color: #1a1a1a; font-size: 14px; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; background: #f5f4f0; color: #1a1a1a; font-size: 14px; }
 
-  header { background: #1a1a1a; color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
-  header h1 { font-size: 18px; font-weight: 500; }
-  header span { font-size: 12px; color: #888; margin-left: auto; }
+header { background: #1a1a1a; color: #fff; padding: 14px 24px; display: flex; align-items: center; gap: 12px; }
+header h1 { font-size: 17px; font-weight: 500; }
+header span { font-size: 12px; color: #888; margin-left: auto; }
 
-  nav { display: flex; gap: 4px; padding: 16px 24px 0; border-bottom: 1px solid #ddd; background: #fff; }
-  nav button { padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 13px; color: #666; border-bottom: 2px solid transparent; margin-bottom: -1px; }
-  nav button.active { color: #1a1a1a; border-bottom-color: #1a1a1a; font-weight: 500; }
+nav { display: flex; gap: 0; background: #fff; border-bottom: 1px solid #e0e0e0; padding: 0 24px; }
+nav button { padding: 12px 20px; border: none; background: none; cursor: pointer; font-size: 13px; color: #666; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s; }
+nav button.active { color: #1a1a1a; border-bottom-color: #1a1a1a; font-weight: 500; }
+nav button:hover { color: #1a1a1a; }
 
-  .content { padding: 24px; }
+.content { padding: 24px; }
 
-  .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
-  .card-header { padding: 14px 18px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
-  .card-header h2 { font-size: 14px; font-weight: 500; }
+.card { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; overflow: hidden; }
+.card-header { padding: 14px 20px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
+.card-header h2 { font-size: 14px; font-weight: 500; }
+.card-sub { font-size: 11px; color: #aaa; }
 
-  table { width: 100%; border-collapse: collapse; }
-  th { text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #f0f0f0; background: #fafafa; }
-  td { padding: 10px 14px; border-bottom: 1px solid #f5f5f5; vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #fafafa; }
+.matrix-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
 
-  .badge { display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
-  .badge-aktywny { background: #d4f7e7; color: #0a6640; }
-  .badge-czesciowy { background: #fff3cd; color: #856404; }
-  .badge-duch { background: #dbeafe; color: #1e40af; }
-  .badge-planowany { background: #f0f0f0; color: #666; }
-  .badge-nie_dotyczy { background: #f5f5f5; color: #aaa; }
+th { text-align: left; padding: 9px 14px; font-size: 11px; font-weight: 500; color: #999; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid #f0f0f0; background: #fafafa; white-space: nowrap; }
+th.row-header { min-width: 160px; }
+th.col-header { text-align: center; min-width: 80px; }
 
-  select { font-size: 12px; padding: 4px 8px; border: 1px solid #ddd; border-radius: 6px; background: #fff; cursor: pointer; }
-  textarea { font-size: 12px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 6px; width: 100%; resize: vertical; min-height: 36px; font-family: inherit; }
-  button.save { padding: 4px 10px; background: #1a1a1a; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 11px; }
-  button.save:hover { background: #333; }
+td { padding: 9px 14px; border-bottom: 1px solid #f7f7f7; vertical-align: middle; }
+td.row-name { font-weight: 500; white-space: nowrap; border-right: 1px solid #f0f0f0; background: #fafafa; }
+td.cell { text-align: center; cursor: pointer; font-size: 15px; }
+td.cell:hover { background: #f5f5f5; }
+tr:last-child td { border-bottom: none; }
 
-  .tag { display: inline-block; background: #f0f0f0; color: #555; border-radius: 4px; padding: 2px 6px; font-size: 11px; margin: 2px; }
-  .tag-serce { background: #fee2e2; color: #991b1b; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+.dot-yes { background: #1D9E75; }
+.dot-no { background: #e5e5e5; }
 
-  .app-label { font-size: 11px; color: #aaa; display: block; }
-  .app-name { font-weight: 500; }
+.sub-label { display: block; font-size: 10px; color: #bbb; font-weight: 400; }
 
-  .empty { text-align: center; padding: 40px; color: #aaa; font-size: 13px; }
-  .loading { text-align: center; padding: 40px; color: #aaa; }
+.legend { display: flex; gap: 20px; padding: 12px 20px; border-top: 1px solid #f0f0f0; font-size: 12px; color: #888; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
 
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-
-  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-  .dot-green { background: #1D9E75; }
-  .dot-gray { background: #ddd; }
-
-  .matrix-wrap { overflow-x: auto; }
-  .matrix-table th { white-space: nowrap; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
-  .matrix-cell { text-align: center; cursor: pointer; }
-  .matrix-cell:hover { background: #f0f0f0; }
-
-  @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } }
+.toast { position: fixed; bottom: 24px; right: 24px; background: #1a1a1a; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 13px; z-index: 999; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+.toast.show { opacity: 1; }
 </style>
 </head>
 <body>
 
 <header>
-  <div>🏡</div>
+  <span style="font-size:20px">🏡</span>
   <h1>Zagroda — MANA</h1>
   <span id="status">Łączenie...</span>
 </header>
 
 <nav>
-  <button class="active" onclick="showTab('aplikacje')">Aplikacje</button>
-  <button onclick="showTab('kafle')">Kafle</button>
-  <button onclick="showTab('pokoje')">Pokoje</button>
-  <button onclick="showTab('relacje')">Pokoje × Kafle</button>
-  <button onclick="showTab('matrix')">Matryca</button>
+  <button class="active" onclick="showTab('kafle')">Kafle × Ziarenka</button>
+  <button onclick="showTab('pokoje')">Pokoje × Kafle</button>
+  <button onclick="showTab('aplikacje')">Aplikacje × Pokoje</button>
 </nav>
 
 <div class="content">
-  <div id="tab-aplikacje"></div>
-  <div id="tab-kafle" style="display:none"></div>
+  <div id="tab-kafle"></div>
   <div id="tab-pokoje" style="display:none"></div>
-  <div id="tab-relacje" style="display:none"></div>
-  <div id="tab-matrix" style="display:none"></div>
+  <div id="tab-aplikacje" style="display:none"></div>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
-const URL = 'https://kkxhqtfxvgxdqpnzaufu.supabase.co';
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtreGhxdGZ4dmd4ZHFwbnphdWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MjE0NTYsImV4cCI6MjA4ODM5NzQ1Nn0.s8Ju-ww3G4_yyH6RedK2gwLveVJKD3hY2IHh62-qjfo';
+const SUPA_URL = 'https://kkxhqtfxvgxdqpnzaufu.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtreGhxdGZ4dmd4ZHFwbnphdWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MjE0NTYsImV4cCI6MjA4ODM5NzQ1Nn0.s8Ju-ww3G4_yyH6RedK2gwLveVJKD3hY2IHh62-qjfo';
+const H = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
 
-const headers = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
-
-async function get(table, params='') {
-  const r = await fetch(`${URL}/rest/v1/${table}?${params}`, { headers });
+async function api(table, params='') {
+  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?${params}`, { headers: H });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+async function apiPatch(table, id, data) {
+  return fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`, { method:'PATCH', headers: H, body: JSON.stringify(data) });
+}
+async function apiPost(table, data) {
+  const r = await fetch(`${SUPA_URL}/rest/v1/${table}`, { method:'POST', headers: H, body: JSON.stringify(data) });
   return r.json();
 }
 
-async function patch(table, id, data) {
-  const r = await fetch(`${URL}/rest/v1/${table}?id=eq.${id}`, {
-    method: 'PATCH', headers, body: JSON.stringify(data)
-  });
-  return r.ok;
-}
+let D = { aplikacje:[], pokoje:[], kafle:[], relacje:[] };
+let activeTab = 'kafle';
 
-async function post(table, data) {
-  const r = await fetch(`${URL}/rest/v1/${table}`, {
-    method: 'POST', headers, body: JSON.stringify(data)
-  });
-  return r.json();
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
 }
-
-let activeTab = 'aplikacje';
-let DATA = { aplikacje: [], pokoje: [], kafle: [], relacje: [] };
 
 function showTab(tab) {
   document.querySelectorAll('nav button').forEach((b,i) => {
-    b.classList.toggle('active', ['aplikacje','kafle','pokoje','relacje','matrix'][i] === tab);
+    b.classList.toggle('active', ['kafle','pokoje','aplikacje'][i] === tab);
   });
-  ['aplikacje','kafle','pokoje','relacje','matrix'].forEach(t => {
+  ['kafle','pokoje','aplikacje'].forEach(t => {
     document.getElementById('tab-'+t).style.display = t === tab ? '' : 'none';
   });
   activeTab = tab;
   renderTab(tab);
 }
 
-function statusBadge(s) {
-  const map = { aktywny:'✅ aktywny', czesciowy:'🟡 częściowy', duch:'🔵 duch', planowany:'⏳ planowany', nie_dotyczy:'— nie dotyczy' };
-  return `<span class="badge badge-${s}">${map[s]||s}</span>`;
-}
-
 function renderTab(tab) {
-  if (tab === 'aplikacje') renderAplikacje();
   if (tab === 'kafle') renderKafle();
   if (tab === 'pokoje') renderPokoje();
-  if (tab === 'relacje') renderRelacje();
-  if (tab === 'matrix') renderMatrix();
-}
-
-function renderAplikacje() {
-  const el = document.getElementById('tab-aplikacje');
-  const apps = DATA.aplikacje;
-  const pokoje = DATA.pokoje;
-  if (!apps.length) { el.innerHTML = '<div class="empty">Brak danych</div>'; return; }
-
-  let html = `<div class="card">
-    <div class="card-header"><h2>Aplikacje MANA (${apps.length})</h2></div>
-    <table>
-      <thead><tr><th>Nazwa</th><th>Opis</th><th>Pokoje</th><th>Status</th></tr></thead>
-      <tbody>`;
-
-  apps.forEach(a => {
-    const p = pokoje.filter(r => r.aplikacja_id === a.id);
-    html += `<tr>
-      <td><strong>${a.nazwa}</strong></td>
-      <td style="color:#666">${a.opis||''}</td>
-      <td>${p.map(r=>`<span class="tag">${r.nazwa}</span>`).join('')||'<span style="color:#aaa">—</span>'}</td>
-      <td><span class="badge badge-aktywny">✅ aktywna</span></td>
-    </tr>`;
-  });
-
-  html += `</tbody></table></div>`;
-  el.innerHTML = html;
+  if (tab === 'aplikacje') renderAplikacje();
 }
 
 function renderKafle() {
   const el = document.getElementById('tab-kafle');
-  const kafle = DATA.kafle;
-  if (!kafle.length) { el.innerHTML = '<div class="empty">Brak kafli</div>'; return; }
+  const kafle = D.kafle;
+  if (!kafle.length) { el.innerHTML = '<p style="padding:40px;text-align:center;color:#bbb">Brak danych</p>'; return; }
 
-  let html = `<div class="card">
-    <div class="card-header"><h2>Kafle (${kafle.length})</h2></div>
-    <table>
-      <thead><tr><th>Kafel</th><th>Opis</th><th>Ziarenka</th></tr></thead>
-      <tbody>`;
+  const wszystkieZ = [...new Set(kafle.flatMap(k => {
+    try { return Array.isArray(k.ziarenka) ? k.ziarenka : JSON.parse(k.ziarenka||'[]'); }
+    catch(e) { return []; }
+  }))];
+
+  let html = `<div class="card"><div class="card-header">
+    <h2>Kafle × Ziarenka</h2>
+    <span class="card-sub">${kafle.length} kafli · ${wszystkieZ.length} ziarenek</span>
+  </div><div class="matrix-wrap"><table>
+  <thead><tr><th class="row-header">Kafel</th>${wszystkieZ.map(z=>`<th class="col-header" title="${z}">${z.length>11?z.substring(0,10)+'…':z}</th>`).join('')}</tr></thead>
+  <tbody>`;
 
   kafle.forEach(k => {
-    const z = Array.isArray(k.ziarenka) ? k.ziarenka : (k.ziarenka ? JSON.parse(k.ziarenka) : []);
-    const isSerce = k.nazwa === 'Serce';
-    html += `<tr>
-      <td><strong>${k.nazwa}</strong>${isSerce ? ' <span style="font-size:10px;color:#991b1b">◆ silnik</span>' : ''}</td>
-      <td style="color:#666;font-size:12px">${k.opis||''}</td>
-      <td>${z.map(zi=>`<span class="tag ${isSerce?'tag-serce':''}">${zi}</span>`).join('')}</td>
-    </tr>`;
+    let z = [];
+    try { z = Array.isArray(k.ziarenka) ? k.ziarenka : JSON.parse(k.ziarenka||'[]'); } catch(e){}
+    html += `<tr><td class="row-name">${k.nazwa}${k.nazwa==='Serce'?'<span class="sub-label">silnik</span>':''}</td>
+    ${wszystkieZ.map(zi=>`<td class="cell"><span class="dot ${z.includes(zi)?'dot-yes':'dot-no'}"></span></td>`).join('')}</tr>`;
   });
 
-  html += `</tbody></table></div>`;
+  html += `</tbody></table></div>
+  <div class="legend">
+    <div class="legend-item"><span class="dot dot-yes"></span>ziarenko należy do kafla</div>
+    <div class="legend-item"><span class="dot dot-no"></span>nie dotyczy</div>
+  </div></div>`;
   el.innerHTML = html;
+}
+
+const STANY = ['aktywny','czesciowy','duch','planowany','nie_dotyczy'];
+const IKONY = { aktywny:'✅', czesciowy:'🟡', duch:'🔵', planowany:'⏳', nie_dotyczy:'—' };
+const LABELS = { aktywny:'aktywny', czesciowy:'częściowy', duch:'duch', planowany:'planowany', nie_dotyczy:'nie dotyczy' };
+
+function getRel(pid, kid) {
+  return D.relacje.find(r => r.pokoj_id===pid && r.kafel_id===kid);
+}
+
+async function cycleStatus(pojId, kafId) {
+  const ex = getRel(pojId, kafId);
+  if (ex) {
+    const next = STANY[(STANY.indexOf(ex.status)+1) % STANY.length];
+    await apiPatch('pokoje_kafle', ex.id, { status: next });
+    ex.status = next;
+    toast(IKONY[next] + ' ' + LABELS[next]);
+  } else {
+    const res = await apiPost('pokoje_kafle', { pokoj_id: pojId, kafel_id: kafId, status: 'planowany' });
+    if (res && res[0]) D.relacje.push(res[0]);
+    toast('⏳ planowany — dodano');
+  }
+  renderPokoje();
 }
 
 function renderPokoje() {
   const el = document.getElementById('tab-pokoje');
-  const pokoje = DATA.pokoje;
-  const apps = DATA.aplikacje;
-  if (!pokoje.length) { el.innerHTML = '<div class="empty">Brak pokoi</div>'; return; }
+  const { pokoje, kafle } = D;
+  if (!pokoje.length) { el.innerHTML = '<p style="padding:40px;text-align:center;color:#bbb">Brak danych</p>'; return; }
 
-  let html = `<div class="card">
-    <div class="card-header"><h2>Pokoje (${pokoje.length})</h2></div>
-    <table>
-      <thead><tr><th>Pokój</th><th>Aplikacja</th><th>Opis</th></tr></thead>
-      <tbody>`;
-
-  pokoje.forEach(p => {
-    const app = apps.find(a => a.id === p.aplikacja_id);
-    html += `<tr>
-      <td><strong>${p.nazwa}</strong></td>
-      <td>${app ? `<span class="badge badge-planowany">${app.nazwa}</span>` : '<span style="color:#aaa">—</span>'}</td>
-      <td style="color:#666;font-size:12px">${p.opis||''}</td>
-    </tr>`;
-  });
-
-  html += `</tbody></table></div>`;
-  el.innerHTML = html;
-}
-
-function renderRelacje() {
-  const el = document.getElementById('tab-relacje');
-  const rel = DATA.relacje;
-  const pokoje = DATA.pokoje;
-  const kafle = DATA.kafle;
-
-  let html = `<div class="card">
-    <div class="card-header"><h2>Pokoje × Kafle (${rel.length})</h2>
-      <button class="save" onclick="dodajRelacje()">+ Dodaj</button>
-    </div>
-    <table>
-      <thead><tr><th>Pokój</th><th>Kafel</th><th>Status</th><th>Notatka</th><th></th></tr></thead>
-      <tbody>`;
-
-  if (!rel.length) {
-    html += `<tr><td colspan="5" class="empty">Brak relacji — dodaj pierwszą</td></tr>`;
-  }
-
-  rel.forEach(r => {
-    const p = pokoje.find(x => x.id === r.pokoj_id);
-    const k = kafle.find(x => x.id === r.kafel_id);
-    html += `<tr id="rel-${r.id}">
-      <td>${p ? p.nazwa : '?'}</td>
-      <td>${k ? k.nazwa : '?'}</td>
-      <td>
-        <select onchange="updateRelacja('${r.id}','status',this.value)">
-          ${['aktywny','czesciowy','duch','planowany','nie_dotyczy'].map(s =>
-            `<option value="${s}" ${r.status===s?'selected':''}>${{aktywny:'✅ aktywny',czesciowy:'🟡 częściowy',duch:'🔵 duch',planowany:'⏳ planowany',nie_dotyczy:'— nie dotyczy'}[s]}</option>`
-          ).join('')}
-        </select>
-      </td>
-      <td><textarea onblur="updateRelacja('${r.id}','notatka',this.value)">${r.notatka||''}</textarea></td>
-      <td><button class="save" onclick="updateRelacjaBtn('${r.id}')">Zapisz</button></td>
-    </tr>`;
-  });
-
-  html += `</tbody></table></div>`;
-  el.innerHTML = html;
-}
-
-function renderMatrix() {
-  const el = document.getElementById('tab-matrix');
-  const pokoje = DATA.pokoje;
-  const kafle = DATA.kafle;
-  const rel = DATA.relacje;
-
-  if (!pokoje.length || !kafle.length) { el.innerHTML = '<div class="empty">Brak danych</div>'; return; }
-
-  const getStatus = (pid, kid) => {
-    const r = rel.find(x => x.pokoj_id === pid && x.kafel_id === kid);
-    return r ? r.status : null;
-  };
-
-  const ikony = { aktywny:'✅', czesciowy:'🟡', duch:'🔵', planowany:'⏳', nie_dotyczy:'—', null:'·' };
-
-  let html = `<div class="card">
-    <div class="card-header"><h2>Matryca Zagrody — Pokoje × Kafle</h2></div>
-    <div class="matrix-wrap">
-    <table class="matrix-table">
-      <thead><tr><th>Pokój</th>${kafle.map(k=>`<th title="${k.nazwa}">${k.nazwa.length>10?k.nazwa.substring(0,10)+'…':k.nazwa}</th>`).join('')}</tr></thead>
-      <tbody>`;
+  let html = `<div class="card"><div class="card-header">
+    <h2>Pokoje × Kafle</h2>
+    <span class="card-sub">${pokoje.length} pokoi · ${kafle.length} kafli · kliknij aby zmienić status</span>
+  </div><div class="matrix-wrap"><table>
+  <thead><tr><th class="row-header">Pokój</th>${kafle.map(k=>`<th class="col-header" title="${k.nazwa}">${k.nazwa.length>10?k.nazwa.substring(0,9)+'…':k.nazwa}</th>`).join('')}</tr></thead>
+  <tbody>`;
 
   pokoje.forEach(p => {
-    html += `<tr><td><strong>${p.nazwa}</strong></td>`;
-    kafle.forEach(k => {
-      const s = getStatus(p.id, k.id);
-      html += `<td class="matrix-cell" title="${p.nazwa} × ${k.nazwa}: ${s||'brak'}" onclick="toggleRelacja('${p.id}','${k.id}','${s||''}')">${ikony[s]||'·'}</td>`;
-    });
-    html += `</tr>`;
+    const app = D.aplikacje.find(a=>a.id===p.aplikacja_id);
+    html += `<tr><td class="row-name">${p.nazwa}${app?`<span class="sub-label">${app.nazwa}</span>`:''}</td>
+    ${kafle.map(k => {
+      const rel = getRel(p.id, k.id);
+      return `<td class="cell" title="${p.nazwa} × ${k.nazwa}${rel&&rel.notatka?' — '+rel.notatka:''}" onclick="cycleStatus('${p.id}','${k.id}')">${rel?IKONY[rel.status]:'·'}</td>`;
+    }).join('')}</tr>`;
   });
 
   html += `</tbody></table></div>
-    <div style="padding:12px 18px;border-top:1px solid #f0f0f0;font-size:12px;color:#888;display:flex;gap:16px">
-      <span>✅ aktywny</span><span>🟡 częściowy</span><span>🔵 duch</span><span>⏳ planowany</span><span>— nie dotyczy</span><span>· brak</span>
-    </div>
-  </div>`;
-
+  <div class="legend">
+    ${STANY.map(s=>`<div class="legend-item">${IKONY[s]} ${LABELS[s]}</div>`).join('')}
+    <div class="legend-item">· brak — kliknij aby dodać</div>
+  </div></div>`;
   el.innerHTML = html;
 }
 
-let editRelId = null;
-async function updateRelacja(id, field, value) {
-  editRelId = id;
-  const r = DATA.relacje.find(x => x.id === id);
-  if (r) r[field] = value;
-}
+function renderAplikacje() {
+  const el = document.getElementById('tab-aplikacje');
+  const { aplikacje, pokoje } = D;
+  if (!aplikacje.length) { el.innerHTML = '<p style="padding:40px;text-align:center;color:#bbb">Brak danych</p>'; return; }
 
-async function updateRelacjaBtn(id) {
-  const r = DATA.relacje.find(x => x.id === id);
-  if (!r) return;
-  const ok = await patch('pokoje_kafle', id, { status: r.status, notatka: r.notatka });
-  if (ok) showToast('Zapisano!');
-}
+  let html = `<div class="card"><div class="card-header">
+    <h2>Aplikacje × Pokoje</h2>
+    <span class="card-sub">${aplikacje.length} aplikacji · ${pokoje.length} pokoi</span>
+  </div><div class="matrix-wrap"><table>
+  <thead><tr><th class="row-header">Aplikacja</th>${pokoje.map(p=>`<th class="col-header" title="${p.nazwa}">${p.nazwa.length>10?p.nazwa.substring(0,9)+'…':p.nazwa}</th>`).join('')}</tr></thead>
+  <tbody>`;
 
-async function toggleRelacja(pojId, kafId, current) {
-  const stany = ['aktywny','czesciowy','duch','planowany','nie_dotyczy'];
-  const existing = DATA.relacje.find(x => x.pokoj_id === pojId && x.kafel_id === kafId);
-  if (existing) {
-    const next = stany[(stany.indexOf(current)+1) % stany.length];
-    await patch('pokoje_kafle', existing.id, { status: next });
-    existing.status = next;
-  } else {
-    const res = await post('pokoje_kafle', { pokoj_id: pojId, kafel_id: kafId, status: 'planowany' });
-    if (res && res[0]) DATA.relacje.push(res[0]);
-  }
-  renderMatrix();
-}
+  aplikacje.forEach(a => {
+    html += `<tr><td class="row-name">${a.nazwa}</td>
+    ${pokoje.map(p=>`<td class="cell"><span class="dot ${p.aplikacja_id===a.id?'dot-yes':'dot-no'}"></span></td>`).join('')}</tr>`;
+  });
 
-async function dodajRelacje() {
-  const pokoje = DATA.pokoje;
-  const kafle = DATA.kafle;
-  const pNazwa = prompt('Nazwa pokoju:\n' + pokoje.map(p=>p.nazwa).join(', '));
-  const kNazwa = prompt('Nazwa kafla:\n' + kafle.map(k=>k.nazwa).join(', '));
-  const p = pokoje.find(x => x.nazwa === pNazwa);
-  const k = kafle.find(x => x.nazwa === kNazwa);
-  if (!p || !k) { alert('Nie znaleziono pokoju lub kafla'); return; }
-  const res = await post('pokoje_kafle', { pokoj_id: p.id, kafel_id: k.id, status: 'planowany' });
-  if (res && res[0]) { DATA.relacje.push(res[0]); renderRelacje(); showToast('Dodano relację!'); }
-}
-
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.textContent = msg;
-  t.style = 'position:fixed;bottom:24px;right:24px;background:#1a1a1a;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;z-index:999';
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2000);
+  html += `</tbody></table></div>
+  <div class="legend">
+    <div class="legend-item"><span class="dot dot-yes"></span>pokój należy do aplikacji</div>
+    <div class="legend-item"><span class="dot dot-no"></span>nie dotyczy</div>
+  </div></div>`;
+  el.innerHTML = html;
 }
 
 async function loadAll() {
   document.getElementById('status').textContent = 'Ładowanie...';
   try {
     const [aplikacje, pokoje, kafle, relacje] = await Promise.all([
-      get('aplikacje', 'order=nazwa'),
-      get('pokoje', 'order=nazwa'),
-      get('kafle', 'order=nazwa'),
-      get('pokoje_kafle', 'order=zaktualizowano.desc')
+      api('aplikacje','order=nazwa'),
+      api('pokoje','order=nazwa'),
+      api('kafle','order=nazwa'),
+      api('pokoje_kafle','select=*')
     ]);
-    DATA = { aplikacje, pokoje, kafle, relacje };
+    D = { aplikacje, pokoje, kafle, relacje };
     document.getElementById('status').textContent = `${aplikacje.length} aplikacji · ${pokoje.length} pokoi · ${kafle.length} kafli`;
     renderTab(activeTab);
   } catch(e) {
