@@ -691,8 +691,7 @@ async function saveZalecenie() {
       status: 'aktywny',
       due_date: dateVal ? dateVal + 'T09:00:00' : null,
       sekcja: 'terapia',
-      therapist_id: currentNick,
-      sugestia_status: 'oczekuje'
+      therapist_id: currentNick
     });
     showToast('Zalecenie wysłane do Słoika ' + clientNick + ' ✓');
     document.getElementById('zal-tresc').value = '';
@@ -708,7 +707,7 @@ function renderZalecenia() {
   list.innerHTML = '';
   zalecenia.forEach(function(z) {
     var div = document.createElement('div'); div.className = 'zal-item fade-in';
-    var statusLabel = z.sugestia_status === 'zaakceptowana' ? '<span class="zal-status zaakceptowane">zaakceptowane</span>' : '<span class="zal-status oczekuje">oczekuje</span>';
+    var statusLabel = z.status === 'wykonany' ? '<span class="zal-status zaakceptowane">wykonane</span>' : '<span class="zal-status oczekuje">aktywne</span>';
     div.innerHTML = '<div class="zal-bar" style="background:var(--terapia)"></div><div class="zal-body"><div class="zal-tresc">' + escHtml(z.tresc) + '</div><div class="zal-meta">→ ' + escHtml(z.traveler_id) + ' · ' + formatDate(new Date(z.created_at)) + (z.due_date ? ' · termin: ' + formatDate(new Date(z.due_date)) : '') + ' &nbsp;' + statusLabel + '</div></div>';
     list.appendChild(div);
   });
@@ -824,7 +823,7 @@ function renderClientDetail() {
   wrap.innerHTML = '<div class="detail-header fade-in"><div class="detail-nick">' + escHtml(selectedClient) + '</div><span class="' + (client.consent_level === 'pelny' ? 'consent-badge' : 'no-consent-badge') + '">' + consentLabel(client.consent_level) + '</span></div>' +
     '<div class="detail-sections">' +
     '<div class="detail-card"><div class="detail-card-title">Wizyty łącznie</div><div class="detail-card-num">' + clientWizyty.length + '</div><div class="detail-card-sub">' + przyszle.length + ' nadchodzących</div></div>' +
-    '<div class="detail-card"><div class="detail-card-title">Zalecenia</div><div class="detail-card-num">' + clientZal.length + '</div><div class="detail-card-sub">' + clientZal.filter(function(z) { return z.sugestia_status === 'zaakceptowana'; }).length + ' zaakceptowanych</div></div>' +
+    '<div class="detail-card"><div class="detail-card-title">Zalecenia</div><div class="detail-card-num">' + clientZal.length + '</div><div class="detail-card-sub">' + clientZal.filter(function(z) { return z.status === 'wykonany'; }).length + ' wykonanych</div></div>' +
     '</div>' +
     '<div class="visits-list"><div class="visits-title">Historia wizyt</div>' +
     (clientWizyty.length ? clientWizyty.sort(function(a,b) { return new Date(b.due_date) - new Date(a.due_date); }).map(function(w) {
