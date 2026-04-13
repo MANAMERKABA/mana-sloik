@@ -1045,13 +1045,14 @@ var KAFLE_ARCH = {
   dom: [
     {name:'Baza wiedzy', meta:'ściana', tabela:'knowledge', opis:'Wpisy RAG z embeddingami'},
     {name:'Profil podróżnika', meta:'cegły', tabela:'travels', opis:'Rejestr podróżników'},
-    {name:'Serce', meta:'prąd', tabela:null, opis:'Edge Functions + prompts'}
+    {name:'Serce', meta:'prąd', tabela:null, opis:'Edge Functions'},
+    {name:'Konstytucja Serca', meta:'fundament', tabela:'prompts', opis:'Dynamiczne prompty Serca — pobierane przez get-prompt'}
   ],
   kafle: [
     {
       name:'Serce', icon:'🤍',
       ziarenka:['Claude API','Konstytucja','Pamięć','RAG','Rozmowa'],
-      tabele:['conversations','knowledge','prompts'],
+      tabele:['conversations','knowledge'],
       opis:'Silnik AI — rozmowa, pamięć, wiedza'
     },
     {
@@ -1094,7 +1095,7 @@ async function loadKafleView(){
   document.getElementById('d-meta').textContent='architektura v3 · ładuję…';
   document.getElementById('d-body').innerHTML='<div class="loading">Pobieram dane z tabel…</div>';
   kafleData = {};
-  var tablesToCheck = ['knowledge','travels','conversations','stones','nagrania','przypomnienia','zdjecia','events','prompts'];
+  var tablesToCheck = ['knowledge','travels','conversations','stones','nagrania','przypomnienia','zdjecia','events'];
   var promises = tablesToCheck.map(function(t){
     return fetch(SB+'/rest/v1/'+t+'?select=id',{headers:{...H,'Prefer':'count=exact','Range':'0-0'}})
       .then(function(r){
