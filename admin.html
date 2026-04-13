@@ -1051,7 +1051,7 @@ var KAFLE_ARCH = {
     {
       name:'Serce', icon:'🤍',
       ziarenka:['Claude API','Konstytucja','Pamięć','RAG','Rozmowa'],
-      tabele:['conversations','memory','knowledge','prompts'],
+      tabele:['conversations','knowledge','prompts'],
       opis:'Silnik AI — rozmowa, pamięć, wiedza'
     },
     {
@@ -1094,7 +1094,7 @@ async function loadKafleView(){
   document.getElementById('d-meta').textContent='architektura v3 · ładuję…';
   document.getElementById('d-body').innerHTML='<div class="loading">Pobieram dane z tabel…</div>';
   kafleData = {};
-  var tablesToCheck = ['knowledge','travels','conversations','memory','stones','nagrania','przypomnienia','zdjecia','events','prompts'];
+  var tablesToCheck = ['knowledge','travels','conversations','stones','nagrania','przypomnienia','zdjecia','events','prompts'];
   var promises = tablesToCheck.map(function(t){
     return fetch(SB+'/rest/v1/'+t+'?select=id',{headers:{...H,'Prefer':'count=exact','Range':'0-0'}})
       .then(function(r){
