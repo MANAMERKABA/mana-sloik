@@ -193,6 +193,28 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
 .pc-mv-btn{font-size:10px;padding:3px 7px;border-radius:4px;border:1px solid var(--border-strong);background:var(--sand);color:var(--brown);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.12s;white-space:nowrap;}
 .pc-mv-btn:hover{background:var(--brown);color:var(--white);border-color:var(--brown);}
 
+/* KAFLE */
+.kafle-grid{display:grid;gap:0;overflow-x:auto;font-size:12px;}
+.kafle-grid table{width:100%;border-collapse:collapse;min-width:700px;}
+.kafle-grid th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);padding:10px 10px;text-align:left;border-bottom:2px solid var(--border-strong);font-weight:500;position:sticky;top:0;background:var(--sand);}
+.kafle-grid td{padding:8px 10px;border-bottom:1px solid rgba(139,115,85,0.08);vertical-align:top;}
+.kafle-grid tr:hover td{background:rgba(139,115,85,0.04);}
+.kafle-grid .kf-name{font-weight:500;color:var(--text);white-space:nowrap;}
+.kafle-grid .kf-ztag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:3px;margin:1px 2px;white-space:nowrap;}
+.kf-ok{background:rgba(107,143,113,0.15);color:var(--green);}
+.kf-miss{background:rgba(192,57,43,0.08);color:var(--red);}
+.kf-empty{background:rgba(139,115,85,0.08);color:var(--text-light);}
+.kf-count{font-family:'Crimson Pro',serif;font-size:22px;font-weight:300;}
+.kf-dom-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:10px;}
+.kf-dom-title{font-size:14px;font-weight:500;color:var(--brown-deep);margin-bottom:6px;}
+.kf-dom-sub{font-size:11px;color:var(--text-light);}
+.kf-stat-row{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.kf-stat{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 18px;min-width:120px;text-align:center;}
+.kf-stat .kf-count{color:var(--brown);}
+.kf-stat.good .kf-count{color:var(--green);}
+.kf-stat.bad .kf-count{color:var(--red);}
+.kf-stat-label{font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+
 .loading{font-size:12px;color:var(--text-light);font-style:italic;padding:16px 0;}
 .empty{font-size:13px;color:var(--text-light);font-style:italic;text-align:center;padding:32px 0;}
 @keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
@@ -274,6 +296,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);m
           </div>
           <div class="tool-card" onclick="openView('plan')" style="border-color:rgba(139,115,85,0.35);"><div class="tool-icon">🗺️</div><div class="tool-name">Plan MANA</div><div class="tool-desc">Narzędzia · Zadania · Kierunki</div><span class="tool-status status-live">✓ działa</span></div>
           <div class="tool-card" onclick="openView('stan')" style="border-color:rgba(139,115,85,0.35);"><div class="tool-icon">🔬</div><div class="tool-name">Stan MANA</div><div class="tool-desc">Co mamy · Tabele · Funkcje</div><span class="tool-status status-live">✓ działa</span></div>
+          <div class="tool-card" onclick="openView('kafle')" style="border-color:rgba(139,115,85,0.35);"><div class="tool-icon">🧩</div><div class="tool-name">Kafle MANA</div><div class="tool-desc">Architektura v3 · Pokoje × Kafle</div><span class="tool-status status-live">✓ działa</span></div>
           <div class="tool-card" style="opacity:0.5;cursor:default;"><div class="tool-icon">🌐</div><div class="tool-name">mana.pl</div><div class="tool-desc">Strona główna</div><span class="tool-status status-todo">do zrobienia</span></div>
         </div>
       </div>
@@ -360,6 +383,7 @@ function openView(type){
   else if(type==='radar'){document.getElementById('d-title').textContent='Radar MANA';loadRadarView();}
   else if(type==='plan'){document.getElementById('d-title').textContent='Plan MANA';loadPlanView();}
   else if(type==='stan'){document.getElementById('d-title').textContent='Stan MANA';loadStanView();}
+  else if(type==='kafle'){document.getElementById('d-title').textContent='Kafle MANA';loadKafleView();}
 }
 function closeView(){document.getElementById('view-detail').style.display='none';document.getElementById('view-dash').style.display='block';var backBtn=document.querySelector('.back-btn');if(backBtn)backBtn.onclick=closeView;}
 
@@ -1012,6 +1036,166 @@ function doCopy(){
   navigator.clipboard.writeText(txt).then(function(){var ok=document.getElementById('cpok');if(ok){ok.style.display='inline';setTimeout(function(){ok.style.display='none';},2500);}});
 }
 function ddClearSel(){ddSel=new Set();renderDD();}
+
+/* ══════════════════════════════════════
+   KAFLE MANA — architektura v3
+   Dodano 13.04.2026
+══════════════════════════════════════ */
+var KAFLE_ARCH = {
+  dom: [
+    {name:'Baza wiedzy', meta:'ściana', tabela:'knowledge', opis:'Wpisy RAG z embeddingami'},
+    {name:'Profil podróżnika', meta:'cegły', tabela:'travels', opis:'Rejestr podróżników'},
+    {name:'Serce', meta:'prąd', tabela:null, opis:'Edge Functions + prompts'}
+  ],
+  kafle: [
+    {
+      name:'Serce', icon:'🤍',
+      ziarenka:['Claude API','Konstytucja','Pamięć','RAG','Rozmowa'],
+      tabele:['conversations','memory','knowledge','prompts'],
+      opis:'Silnik AI — rozmowa, pamięć, wiedza'
+    },
+    {
+      name:'Notatnik', icon:'📓',
+      ziarenka:['treść','typ wejścia','timestamp'],
+      tabele:['stones'],
+      query:'stones?typ=eq.notatka&select=id',
+      opis:'Notatki głosowe i tekstowe'
+    },
+    {
+      name:'Interfejs', icon:'💬',
+      ziarenka:['wejście tekst','wejście głos','wyjście tekst','wyjście głos','duch','historia','przypomnienie'],
+      tabele:['conversations','nagrania','przypomnienia'],
+      opis:'Wejścia/wyjścia użytkownika'
+    },
+    {
+      name:'Słoik', icon:'🫙',
+      ziarenka:['treść','typ','sekcja','status','serce_dostep','due_date','traveler_id'],
+      tabele:['stones'],
+      opis:'Kamienie — zadania, sny, myśli'
+    },
+    {
+      name:'Zdjęcie', icon:'📸',
+      ziarenka:['url','typ właściciela','kategoria','mime_type','rozmiar','traveler_id'],
+      tabele:['zdjecia'],
+      opis:'Pliki i obrazy podróżników'
+    },
+    {
+      name:'Organizator', icon:'📅',
+      ziarenka:['data/czas','typ','właściciel','przypomnienie','lokalizacja','stone_id'],
+      tabele:['events'],
+      opis:'Kalendarz, wizyty, przypomnienia'
+    }
+  ]
+};
+
+var kafleData = null;
+
+async function loadKafleView(){
+  document.getElementById('d-meta').textContent='architektura v3 · ładuję…';
+  document.getElementById('d-body').innerHTML='<div class="loading">Pobieram dane z tabel…</div>';
+  kafleData = {};
+  var tablesToCheck = ['knowledge','travels','conversations','memory','stones','nagrania','przypomnienia','zdjecia','events','prompts'];
+  var promises = tablesToCheck.map(function(t){
+    return fetch(SB+'/rest/v1/'+t+'?select=id',{headers:{...H,'Prefer':'count=exact','Range':'0-0'}})
+      .then(function(r){
+        if(!r.ok) return {table:t, exists:false, count:0};
+        var cr=r.headers.get('content-range');
+        var cnt=cr?parseInt(cr.split('/')[1]):0;
+        return {table:t, exists:true, count:isNaN(cnt)?0:cnt};
+      })
+      .catch(function(){return {table:t, exists:false, count:0};});
+  });
+  var results = await Promise.all(promises);
+  results.forEach(function(r){ kafleData[r.table] = r; });
+  document.getElementById('d-meta').textContent='architektura v3 · '+new Date().toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  renderKafleView();
+}
+
+function renderKafleView(){
+  var totalTables=0, existTables=0, totalRecords=0;
+  var allTables=new Set();
+  KAFLE_ARCH.kafle.forEach(function(k){ k.tabele.forEach(function(t){ allTables.add(t); }); });
+  KAFLE_ARCH.dom.forEach(function(d){ if(d.tabela) allTables.add(d.tabela); });
+  allTables.forEach(function(t){
+    totalTables++;
+    if(kafleData[t] && kafleData[t].exists){ existTables++; totalRecords += kafleData[t].count; }
+  });
+  var missTables = totalTables - existTables;
+
+  // --- Stats ---
+  var html = '<div class="kf-stat-row">'
+    +'<div class="kf-stat good"><div class="kf-count">'+existTables+'</div><div class="kf-stat-label">tabel aktywnych</div></div>'
+    +(missTables?'<div class="kf-stat bad"><div class="kf-count">'+missTables+'</div><div class="kf-stat-label">brakujących</div></div>':'')
+    +'<div class="kf-stat"><div class="kf-count">'+totalRecords.toLocaleString('pl-PL')+'</div><div class="kf-stat-label">rekordów łącznie</div></div>'
+    +'<div class="kf-stat"><div class="kf-count">'+KAFLE_ARCH.kafle.length+'</div><div class="kf-stat-label">kafli</div></div>'
+    +'<div class="kf-stat"><div class="kf-count">'+KAFLE_ARCH.kafle.reduce(function(s,k){return s+k.ziarenka.length;},0)+'</div><div class="kf-stat-label">ziarenek</div></div>'
+    +'</div>';
+
+  // --- DOM ---
+  html += '<div style="font-size:16px;font-weight:300;color:var(--brown-deep);margin-bottom:10px;font-family:Crimson Pro,serif;">DOM — fundamenty</div>';
+  KAFLE_ARCH.dom.forEach(function(d){
+    var tInfo = '';
+    if(d.tabela){
+      var td = kafleData[d.tabela];
+      if(td && td.exists) tInfo = '<span class="kf-ztag kf-ok">'+d.tabela+' · '+td.count+' wpisów</span>';
+      else tInfo = '<span class="kf-ztag kf-miss">'+d.tabela+' · brak tabeli</span>';
+    } else {
+      tInfo = '<span class="kf-ztag kf-empty">Edge Functions</span>';
+    }
+    html += '<div class="kf-dom-card"><div class="kf-dom-title">'+d.name+' <span style="font-weight:300;color:var(--text-light);font-size:12px;">'+d.meta+'</span></div><div class="kf-dom-sub">'+d.opis+' '+tInfo+'</div></div>';
+  });
+
+  // --- Kafle matrix ---
+  html += '<div style="font-size:16px;font-weight:300;color:var(--brown-deep);margin:20px 0 10px;font-family:Crimson Pro,serif;">Kafle × Ziarenka</div>';
+  html += '<div class="kafle-grid"><table><thead><tr>'
+    +'<th style="width:14%;">Kafel</th>'
+    +'<th style="width:28%;">Ziarenka</th>'
+    +'<th style="width:28%;">Tabele</th>'
+    +'<th style="width:10%;">Rekordy</th>'
+    +'<th style="width:20%;">Status</th>'
+    +'</tr></thead><tbody>';
+
+  KAFLE_ARCH.kafle.forEach(function(k){
+    var zHtml = k.ziarenka.map(function(z){ return '<span class="kf-ztag" style="background:rgba(139,115,85,0.08);color:var(--text-mid);">'+z+'</span>'; }).join(' ');
+    var tHtml = '';
+    var totalK = 0;
+    var allExist = true;
+    k.tabele.forEach(function(t){
+      var td = kafleData[t];
+      if(td && td.exists){
+        tHtml += '<span class="kf-ztag kf-ok">'+t+' ('+td.count+')</span> ';
+        totalK += td.count;
+      } else {
+        tHtml += '<span class="kf-ztag kf-miss">'+t+' ✗</span> ';
+        allExist = false;
+      }
+    });
+    var statusHtml = allExist
+      ? (totalK > 0
+        ? '<span style="color:var(--green);font-weight:500;">✓ aktywny</span>'
+        : '<span style="color:var(--brown);">○ pusty</span>')
+      : '<span style="color:var(--red);font-weight:500;">✗ niekompletny</span>';
+    html += '<tr>'
+      +'<td class="kf-name">'+k.icon+' '+k.name+'</td>'
+      +'<td>'+zHtml+'</td>'
+      +'<td>'+tHtml+'</td>'
+      +'<td style="text-align:center;font-weight:500;color:var(--brown);">'+totalK+'</td>'
+      +'<td>'+statusHtml+'</td>'
+      +'</tr>';
+  });
+
+  html += '</tbody></table></div>';
+
+  // --- Legend ---
+  html += '<div style="margin-top:20px;padding:12px 16px;background:var(--white);border:1px solid var(--border);border-radius:10px;font-size:11px;color:var(--text-light);display:flex;gap:16px;flex-wrap:wrap;">'
+    +'<span><span class="kf-ztag kf-ok">tabela</span> istnieje w Supabase</span>'
+    +'<span><span class="kf-ztag kf-miss">tabela ✗</span> brakuje w Supabase</span>'
+    +'<span><span class="kf-ztag kf-empty">—</span> nie wymaga tabeli</span>'
+    +'<span style="margin-left:auto;font-style:italic;">Dane pobrane z API przy wejściu na stronę</span>'
+    +'</div>';
+
+  document.getElementById('d-body').innerHTML = html;
+}
 
 document.getElementById('login-nick').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 window.addEventListener('load',function(){var n=localStorage.getItem('mana_nick');var r=localStorage.getItem('mana_rola');if(n&&r==='admin'&&ADMINS.includes(n)){nick=n;showAdmin();}});
