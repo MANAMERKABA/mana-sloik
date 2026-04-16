@@ -39,6 +39,22 @@ function toPolandISO(date: Date, hour: number, minute: number): string {
   return `${y}-${m}-${d}T${h}:${min}:00+${offH}:00`;
 }
 
+function getTodayPolish(): string {
+  const now = new Date();
+  const offset = getPolandOffset(now);
+  const local = new Date(now.getTime() + offset * 3600 * 1000);
+  const days = ["niedziela","poniedziałek","wtorek","środa","czwartek","piątek","sobota"];
+  const months = ["stycznia","lutego","marca","kwietnia","maja","czerwca",
+                  "lipca","sierpnia","września","października","listopada","grudnia"];
+  const dayName = days[local.getUTCDay()];
+  const day = local.getUTCDate();
+  const month = months[local.getUTCMonth()];
+  const year = local.getUTCFullYear();
+  const h = String(local.getUTCHours()).padStart(2,"0");
+  const m = String(local.getUTCMinutes()).padStart(2,"0");
+  return `${dayName}, ${day} ${month} ${year}, godzina ${h}:${m}`;
+}
+
 function parseDueDate(text: string | null): string | null {
   if (!text) return null;
   const t = text.trim().toLowerCase();
@@ -167,7 +183,9 @@ Deno.serve(async (req) => {
     const ragContext = ragData.context ? ragData.context : "";
 
     // 5. Złóż system prompt
+    const today = getTodayPolish();
     const systemPrompt =
+      `DZISIAJ JEST: ${today}. Data < dziś = przeszłość. Data > dziś = przyszłość.\n\n` +
       SLOIK_INSTRUCTION + "\n\n" +
       "Kluczowe informacje o tym podróżniku (zawsze aktualne):\n" + pamiec + "\n\n" +
       "Aktywne kamienie podróżnika w Słoiku:\n" + sloik + "\n\n" +
