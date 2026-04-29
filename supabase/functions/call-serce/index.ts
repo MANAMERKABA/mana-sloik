@@ -134,6 +134,7 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const traveler_id = body.traveler_id;
     const message = body.message;
+    const aktywny_duch = body.aktywny_duch || "duch_asystent_prywatny";
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -141,13 +142,32 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // 1. Pobierz prompt
-    const promptResp = await supabase
-      .from("prompts")
-      .select("tresc")
-      .eq("nazwa", "serce_konstytucja")
-      .single();
-    const prompt = promptResp.data ? promptResp.data.tresc : "";
+    // 1. Pobierz fundament + aktywny Duch (architektura fundament + Duchy wg [611], 28.04.2026 refaktor)
+    const [fundamentResp, duchResp] = await Promise.all([
+      supabase.from("prompts").select("tresc").eq("nazwa", "serce_konstytucja_fundament").single(),
+      supabase.from("prompts").select("tresc").eq("nazwa", aktywny_duch).single(),
+    ]);
+
+    const fundament = fundamentResp.data ? fundamentResp.data.tresc : "";
+    const duch = duchResp.data ? duchResp.data.tresc : "";
+
+    // Defense-in-depth: gdyby któregoś z rekordów brakło — fallback na stary monolit
+    let prompt;
+    if (fundament && duch) {
+      prompt = fundament + "\n\n---\n\n" + duch;
+    } else {
+      console.warn("call-serce: brak fundamentu lub Ducha — fallback na monolit serce_konstytucja", {
+        fundament_ok: !!fundament,
+        duch_ok: !!duch,
+        aktywny_duch,
+      });
+      const fallbackResp = await supabase
+        .from("prompts")
+        .select("tresc")
+        .eq("nazwa", "serce_konstytucja")
+        .single();
+      prompt = fallbackResp.data ? fallbackResp.data.tresc : "";
+    }
 
     // 2. Pobierz pamiec z tabeli memory
     const memoryResp = await supabase
@@ -252,7 +272,7 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 300,
+        max_tokens: 600,
         messages: [{
           role: "user",
           content: `Zaktualizuj pamięć o podróżniku łącząc poprzednią pamięć z nowymi informacjami. Zachowaj wszystkie fakty — imiona, relacje, korekty. Odpowiedz tylko zaktualizowanym podsumowaniem, bez żadnego wstępu.\n\nPoprzednia pamięć: ${pamiec}\n\nNowa wiadomość podróżnika: ${message}${noweInformacje}`
