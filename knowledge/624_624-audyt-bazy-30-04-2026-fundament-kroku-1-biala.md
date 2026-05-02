@@ -3,10 +3,10 @@ id: 624
 temat: "[624] AUDYT BAZY 30.04.2026 — fundament Kroku 1 BIAŁA KARTA + protokół anty-błędów C/D + REWIZJA ARCHITEKTURY LOGICZNEJ"
 ---
 
-# [624] AUDYT BAZY MANA — 30.04.2026 wieczór
+# [624] AUDYT BAZY MANA — 30.04.2026 wieczór + aktualizacje 1-2.05
 
 **Status:** EVERGREEN · OBOWIĄZUJE od 30.04.2026 · do przeczytania PRZED każdym briefem dotyczącym bazy danych lub architektury logicznej
-**Sesja:** Adam + D, 30.04.2026 ~14:00–23:30 (~9.5h)
+**Sesja:** Adam + D, 30.04.2026 ~14:00–23:30 (~9.5h) + aktualizacje 1.05 + 2.05
 **Pochodzenie:** [623] zwrot strategiczny BIAŁA KARTA — Adam: *"trąbię o tym dwa miesiące, baza rośnie a my pracujemy na sprzecznych danych"*
 **Cel:** udokumentować empiryczny stan bazy + decyzje architektoniczne Adama z 30.04 wieczór, żeby kolejne sesje C/D nie pisały briefów z głowy.
 
@@ -54,27 +54,27 @@ Słownik [491] wymienia 9 pokoi: *Asystent, Horyzont, Słoik, Gawęda, Cisza, Pu
 
 ### DUCHY SERCA (rewizja [491] sekcja Duchy)
 
-[491] miał 6 znanych Duchów. Po 30.04:
+[491] miał 6 znanych Duchów. Po 30.04 + 2.05:
 
 | # | Duch | Pokój / kontekst | Status |
 |---|---|---|---|
-| 1 | **Duch Asystenta Osobistego** (robocza nazwa: Krystyna) | pokój Asystent w MANA | LIVE od 28.04 [620] |
+| 1 | **Duch Asystenta Osobistego** (robocza nazwa: Krystyna) | pokój Asystent w MANA | LIVE od 28.04 [620] · prompt: `prompts.duch_asystent_prywatny` (10793 znaków) |
 | 2 | **Duch Asystenta Biznesowego** (robocza: Jan) | pokój Asystent w gospodarz.app | KONCEPT — Adam: *"silnik ten sam, duch podobny mentalnie, zastanawiam się czy nie ten sam, ale chyba dwa"*. **Decyzja D-rekomendacja zaakceptowana: dwa Duchy** (osobisty może o emocjach, biznesowy nie powinien; specjalizacja ≠) |
 | 3 | **Duch Mędrzec** [528] | pokój Gawęda | KONCEPT |
 | 4 | **Duch Serca kryzysowy** | pokój MANA Help w mana.app | KONCEPT |
 | 5 | **Duch biznesowej Gawędy** | gospodarz.app | KONCEPT |
 | 6 | **Duch Trenera** | Panel Trenera | LIVE w `trainer_notes` |
-| 7 | **Duch MJ** (nowa nazwa, dziś rozjechany) | MJ Dobry Dzień | LIVE produkcja od 29.03, ale **NIE wyodrębniony** jako oddzielny `prompts.duch_mj` — żyje rozproszony w `magic_jar_kontekst` (1 251 znaków). **Do uporządkowania.** |
+| 7 | **Duch DD** (zmiana z "Duch MJ" 2.05 — Duch jest tylko w Dobrym Dniu, nie w całym Magic Jarze) | MJ Dobry Dzień | LIVE od 2.05.2026 jako `prompts.duch_dd` (2626 znaków). Wcześniej żył rozproszony w `magic_jar_kontekst` (1251 znaków, sama mechanika produktu). 2.05 wyodrębniony zgodnie z zasadami: misja, granice, ton, mechanika BLOKADA:TAK/NIE, typy myśli. Edge Function `call-dd-serce` czyta `duch_dd`. Backup starego promptu zachowany jako `magic_jar_kontekst_backup_2_05`. |
 
 **Wszystkie Duchy = jeden silnik Asystenta + jedna Konstytucja [620]** ([607]). Różnią się tylko misją, granicami, tonem, specjalizacją kontekstu.
 
-### NAZEWNICTWO USTABILIZOWANE 30.04
+### NAZEWNICTWO USTABILIZOWANE 30.04 + 2.05
 
 - **"Spokojna Noc"** (NIE "Dobra Noc") — w bazie pokoje wpis poprawić
 - **"Dobry Dzień"** (z diakrytykami)
 - **Magic Jar** (NIE Słoik/Sloik JAR — ta nazwa była synonimem do 24.04)
 - **gospodarz.app** (zastępuje "Panel Terapeuty" jako koncept; "Panel Terapeuty" jako tabela w bazie zostaje technicznie do z5.B.1)
-- **Duch MJ** (nowa nazwa dla Ducha Magic Jar Dobry Dzień)
+- **Duch DD** (zmiana z "Duch MJ" 2.05.2026 — Duch jest tylko w Dobrym Dniu, nie w Spokojnej Nocy ani Księżycowym Czasie)
 - **"Info od Trenera"** (NIE "Notatnik Trenera" — to NIE kafel, to tabela danych `trainer_notes`)
 - **Konstelacje, Datownik, Zagroda, Sloik JAR** — błędne wpisy w tabeli `kafle`/`aplikacje` — usunąć przy naprawie infrastruktury (Datownik=prawdopodobnie Księżycowy Czas, Zagroda=90% pokój gospodarz.app dla plemienia/biznesu)
 
@@ -88,7 +88,7 @@ Słownik [491] wymienia 9 pokoi: *Asystent, Horyzont, Słoik, Gawęda, Cisza, Pu
 
 ---
 
-## STAN BAZY EMPIRYCZNY (30.04.2026) — STATUSY UŻYCIA TABEL
+## STAN BAZY EMPIRYCZNY (30.04.2026 + aktualizacje 2.05) — STATUSY UŻYCIA TABEL
 
 **27 tabel w schemacie public.** Każda tabela dostaje **status użycia**:
 - 🟢 **AKTYWNA** — kod czyta i pisze, używana produkcyjnie
@@ -110,7 +110,13 @@ Słownik [491] wymienia 9 pokoi: *Asystent, Horyzont, Słoik, Gawęda, Cisza, Pu
 - 🟢 `mana_archiwum` (838) — AKTYWNA pasywnie: auto-trigger historia knowledge, brak embedding → poza RAG · NIE RUSZAĆ
 - 🟢 `mana_archiwum_tematyczne` (8) — AKTYWNA: ręczne archiwum, dziś +7 wpisów Krok 0 (archive_id 19-25) · NIE RUSZAĆ
 - 🟢 `mana_archiwum_tematyczne_audit` (3) — AKTYWNA: log usunięć RODO · NIE RUSZAĆ
-- 🟢 `prompts` (4) — AKTYWNA: Konstytucja + Duchy · NIE RUSZAĆ ✅ (4 wpisy zweryfikowane: `serce_konstytucja_fundament`, `duch_asystent_prywatny`, `serce_konstytucja` jako fallback do 5.05, `magic_jar_kontekst`). **Plus brakuje wyodrębnionego `duch_mj`** — Duch MJ żyje rozproszony w `magic_jar_kontekst`.
+- 🟢 `prompts` (6) — AKTYWNA: Konstytucja + Duchy · NIE RUSZAĆ ✅ (6 wpisów po aktualizacji 2.05):
+   - `serce_konstytucja_fundament` (4458 znaków) — fundament wszystkich Duchów
+   - `serce_konstytucja` (5763 znaków) — fallback do 5.05
+   - `duch_asystent_prywatny` (10793 znaków) — Krystyna w MANA Asystent
+   - `duch_dd` (2626 znaków) — **NOWY 2.05** — Duch DD w MJ Dobry Dzień (przez `call-dd-serce`)
+   - `magic_jar_kontekst` (1251 znaków) — STARA mechanika produktu (zostawiona, nie używana w kodzie po 2.05)
+   - `magic_jar_kontekst_backup_2_05` (1251 znaków) — backup pre-rotacja Ducha
 
 ### C. Podróżnicy
 - 🟢 `travels` (57) — AKTYWNA: HUB centralny, 4 FK · FILTRUJ po whitelist 13 ID
@@ -153,8 +159,8 @@ Trzy warstwy są **niezsynchronizowane**:
 2. **Warstwa techniczna bazy** (`aplikacje`/`pokoje`/`kafle`/`pokoje_kafle` + typy traveler_id) — ma podążać za logiką
 3. **Warstwa kodu** (foldery w `mana-app`, kod HTML w `mana-sloik`) — ma podążać za bazą
 
-**Postęp 30.04:**
-- ✅ Warstwa logiczna — **zaktualizowana** dziś wieczór (5 aplikacji + pokoje + Duchy + nazewnictwo)
+**Postęp 30.04 + 1.05 + 2.05:**
+- ✅ Warstwa logiczna — **zaktualizowana** 30.04 wieczór + 2.05 (5 aplikacji + pokoje + Duchy + nazewnictwo + Duch DD wyodrębniony)
 - ⏳ Warstwa techniczna — w trakcie (audyt 27 tabel DONE, naprawa rejestrów aplikacje/kafle/pokoje/pokoje_kafle TODO)
 - ⏳ Warstwa kodu — TODO (po warstwie technicznej)
 
@@ -222,18 +228,20 @@ Trzy warianty: (a) MJ osobna baza, MANA osobna, (b) jedna baza z flag prywatna/b
 
 ---
 
-## CO DALEJ — sekwencja propozycji (zaktualizowana 30.04 wieczór)
+## CO DALEJ — sekwencja propozycji (zaktualizowana 2.05 wieczór)
 
 ### Małe naprawy (do tygodnia)
 - 🔴 **DROP TABLE `constellations`** — Adam zaakceptował 30.04 (pozostałość po MJ z 27.03, rysunki nigdy nie działały)
-- **Aktualizacja słownika [491]** — propagacja decyzji 30.04 (5 aplikacji, pokoje Sen/EGZAMIN/MANA Help jako pokoje, Duch MJ na liście, kasacja MANA Help/EGZAMIN jako aplikacji)
+- **Aktualizacja słownika [491]** — propagacja decyzji 30.04 + 2.05 (5 aplikacji, pokoje Sen/EGZAMIN/MANA Help jako pokoje, Duch DD na liście, kasacja MANA Help/EGZAMIN jako aplikacji)
 - **Aktualizacja [406] briefing** — usunąć `memory` z listy "WAŻNE BAZY", zaktualizować APLIKACJE
 - **Tabela `koszty`** — uzupełnić o realne narzędzia, oznaczyć cykliczność, usunąć duplikat Vectorizer.ai
 - **Tabela `aplikacje`** — usunąć Gawędę/Horyzont/Sloik JAR, dodać MANA + Panel Admina (Mapa MANA) + gospodarz.app
 - **Tabela `pokoje`** — poprawić "Dobra Noc" → "Spokojna Noc", dodać Księżycowy Czas, dopisać 12+ pokoi MANA, naprawić Zagroda FK
 - **Tabela `kafle`** — wyczyścić śmieci (Konstelacje/Datownik/Koszty API/Baza Wiedzy/Horyzont/Dziennik DD), zmienić "Notatnik Trenera" → "Notatnik" uniwersalny, dodać Interfejs/Zdjęcie/EVENT
 - **Tabela `pokoje_kafle`** — wypełnić właściwymi powiązaniami po naprawie
-- **Wyodrębnienie `prompts.duch_mj`** — Duch MJ z `magic_jar_kontekst` jako oddzielny prompt
+- ✅ **Wyodrębnienie `prompts.duch_dd`** — DONE 2.05.2026 (`duch_dd` 2626 znaków, call-dd-serce zaktualizowane)
+- **Skasowanie `prompts.magic_jar_kontekst`** — po stabilizacji Ducha DD przez kilka dni produkcji (zostawić backup)
+- **Dopracowanie treści `prompts.duch_dd`** — pierwsza wersja z 2.05 wymaga refinementu (puste frazy "to bardzo ładne wspomnienie" przeszły mimo zakazu)
 
 ### Średnie (do dwóch tygodni)
 - **Krok 1 BIAŁA KARTA** — czyszczenie knowledge + filtrowanie tabel danych po whitelist 13 ID. **Brief musi być oparty o ten audyt, nie pisany z głowy.**
@@ -270,7 +278,7 @@ Adam 30.04 ~22:50: *"jak to się wszystko łączy to ja też aż się zastanawia
 
 - **[623]** Zwrot strategiczny BIAŁA KARTA
 - **[488]** PROTOKÓŁ — 4 błędy z 30.04 do dopisania
-- **[491]** SŁOWNIK — **wymaga aktualizacji wg decyzji 30.04** (5 aplikacji, pokoje Sen/EGZAMIN/MANA Help, Duch MJ, "Info od Trenera", DROP constellations)
+- **[491]** SŁOWNIK — **wymaga aktualizacji wg decyzji 30.04 + 2.05** (5 aplikacji, pokoje Sen/EGZAMIN/MANA Help, Duch DD, "Info od Trenera", DROP constellations)
 - **[406]** BRIEFING — wymaga aktualizacji (usunąć memory, zaktualizować APLIKACJE)
 - **[326]** Magic Jar 27.03 — decyzja "rezygnacja z gwiazdozbiorów na stałe"
 - **[296]** Sesja MJ 24/25.03 — faza księżyca + zodiak matematycznie lokalnie
@@ -287,14 +295,20 @@ Adam 30.04 ~22:50: *"jak to się wszystko łączy to ja też aż się zastanawia
 - **[607]** Asystent jeden silnik wiele Duchów — zatwierdzone i potwierdzone 30.04
 - **[608]** Trzy fazy biznesowe — INTEGRUJEMY/ZARABIAMY/BUDUJEMY WŁASNY
 - **[622]** META-LEKCJA #5 — niespójność typów traveler_id
+- **[625]** BRIEF rotacji kluczy (1.05) — częściowo nieaktualny
+- **[626]** Checkpoint sesji 1+2 rotacji
+- **[627]** Brief sesji 3 (ID 632 w bazie)
+- **[628]** Brief sesji 3.5 (ID 633 w bazie)
+- **[629]** Brief sesji 4 (ID 634 w bazie) — wyodrębnienie Ducha DD + Revoke
 
 ---
 
 ## META
 
-- Autor: D (Claude Desktop) na podstawie 9.5h sesji z Adamem 30.04.2026
+- Autor: D (Claude Desktop) na podstawie 9.5h sesji z Adamem 30.04.2026 + aktualizacje 1.05 + 2.05
 - Walidacja empiryczna: 27 tabel sprawdzone przez SQL Editor (Adam wklejał wyniki)
-- Pierwszy zapis: ~22:00 jako [624] AUDYT BAZY
-- Aktualizacja: ~23:30 — REWIZJA ARCHITEKTURY LOGICZNEJ (decyzje Adama 22:00–23:30: 5 aplikacji, MANA Help/EGZAMIN jako pokoje, gospodarz.app, dwa Duchy, Duch MJ, Info od Trenera, DROP constellations)
+- Pierwszy zapis: 30.04 ~22:00 jako [624] AUDYT BAZY
+- Aktualizacja 30.04 ~23:30 — REWIZJA ARCHITEKTURY LOGICZNEJ (5 aplikacji, MANA Help/EGZAMIN jako pokoje, gospodarz.app, dwa Duchy, Duch MJ, Info od Trenera, DROP constellations)
+- Aktualizacja 2.05 wieczór — DUCH DD wyodrębniony (zmiana nazwy z "Duch MJ" na "Duch DD" — Duch jest TYLKO w Dobrym Dniu, nie w całym Magic Jarze; prompt `duch_dd` 2626 znaków w bazie; call-dd-serce zaktualizowane; backup magic_jar_kontekst zachowany jako magic_jar_kontekst_backup_2_05)
 - Status: ZAPISANE W BAZIE jako fundament — każda nowa sesja C/D startuje od tego
-- Następna sesja: warstwa techniczna Supabase (Adam decyzja 30.04 ~23:30: *"przechodzimy do architektury technicznej w supabase i lecimy"*)
+- Następna sesja: dokończenie rotacji kluczy [629] (Spokojna Noc INSERT diagnoza + Revoke PREVIOUS KEY) + finalny audyt techniczny (Edge Functions list + schema niespójności + PDF)
