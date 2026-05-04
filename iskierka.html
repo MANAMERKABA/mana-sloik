@@ -198,15 +198,6 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 .sn-btn-more{padding:14px;border-radius:16px;border:none;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:#fff;cursor:pointer;border:1px solid rgba(255,255,255,.15);}
 .sn-btn-done{padding:13px;border-radius:16px;border:none;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55);font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
 .sn-fly{position:fixed;z-index:1000;pointer-events:none;border-radius:10px;padding:6px 14px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:#fff;max-width:180px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-#dd-inact{display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;text-align:center;}
-#dd-inact.on{display:flex;}
-.inact-img{width:200px;height:200px;border-radius:20px;overflow:hidden;margin-bottom:24px;}
-.inact-q{font-size:17px;font-weight:700;color:var(--dt);margin-bottom:6px;}
-.inact-sub{font-size:13px;color:var(--du);margin-bottom:24px;line-height:1.5;}
-.inact-btns{display:flex;gap:12px;}
-.inact-btn{padding:14px 28px;border-radius:16px;border:none;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;cursor:pointer;}
-.inact-yes{background:var(--da);color:#fff;}
-.inact-no{background:rgba(0,0,0,.07);color:var(--du);}
 </style>
 </head>
 <body>
@@ -408,7 +399,6 @@ h2{font-family:'Baloo 2',cursive;font-weight:600;}
 <button class="back back-d" onclick="goHome()">← Wróć</button>
 <h1 style="font-size:24px;color:var(--dt);margin-bottom:3px;" id="dd-title">Dobry Dzień ☀️</h1>
 <p style="color:var(--du);font-size:15px;margin-bottom:14px;line-height:1.5;" id="dd-question"></p>
-<div id="dd-inact"><div class="inact-img"><svg id="inact-img-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="200" height="200"></svg></div><div class="inact-q">Jak Ci się podoba ten obraz?</div><div class="inact-sub">Minęło trochę czasu. Wróćmy razem do Dobrego Dnia.</div><div class="inact-btns"><button class="inact-btn inact-yes" onclick="ddInactYes()">TAK ☀️</button><button class="inact-btn inact-no" onclick="ddInactNo()">NIE</button></div></div>
 <div class="pz-wrap" id="dd-puzzle-area"><div class="pz-container" id="pz-cont"><svg id="pz-art" xmlns="http://www.w3.org/2000/svg" style="display:block;"></svg><svg id="pz-ov" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0;"></svg></div><p style="font-size:13px;color:var(--du);font-weight:600;" id="pz-prog"></p></div>
 <div id="dd-input"><p style="font-size:13px;color:var(--du);text-align:center;margin-bottom:8px;" id="dd-info"></p><textarea class="inp-d" id="dd-txt" rows="3" placeholder="np. Zjadłam lody z mamą..."></textarea><button class="btn btn-sun" style="margin-top:12px;" onclick="ddSubmit()">Wrzuć dobrą myśl ☀️</button></div>
 <div id="dd-done-msg" style="display:none;text-align:center;padding:20px;background:rgba(246,168,37,.1);border-radius:var(--rs);margin-top:8px;"><div style="font-size:30px;margin-bottom:8px;">🌟</div><p style="font-weight:700;color:var(--dt);">Na dziś koniec!</p><p style="font-size:13px;color:var(--du);margin-top:4px;">Wróć jutro po kolejny puzzle.</p></div>
@@ -632,11 +622,6 @@ function snAddMore(){document.getElementById('sn-jar-screen').classList.remove('
 function gridN(){return S.ddGridSize||4;}
 function maxDaily(){var g=gridN();return g===3?2:g===4?3:g===5?4:5;}
 function totalTiles(){return gridN()*gridN();}
-var INACT_ARTWORKS=['<rect width="200" height="200" fill="#87ceeb"/><path d="M0,100 Q100,20 200,100" fill="none" stroke="#ff6b9d" stroke-width="18" stroke-linecap="round" opacity=".75"/><rect y="155" width="200" height="45" fill="#66bb6a"/>','<rect width="200" height="200" fill="#ffe082"/><rect y="140" width="200" height="60" fill="#66bb6a"/><circle cx="60" cy="70" r="30" fill="#ffb300" opacity=".9"/>','<rect width="200" height="200" fill="#0a1628"/><path d="M0,60 Q50,20 100,50 Q150,80 200,40" fill="none" stroke="#00e5ff" stroke-width="28" stroke-linecap="round" opacity=".45"/>'];
-function checkInactivity(){if(!S.ddLastDate)return false;var today=new Date(todayStr()),last=new Date(S.ddLastDate);return Math.floor((today-last)/(1000*60*60*24))>=20;}
-function ddShowInactScreen(){document.getElementById('inact-img-svg').innerHTML=INACT_ARTWORKS[(new Date().getDate())%INACT_ARTWORKS.length];document.getElementById('dd-inact').style.display='flex';document.getElementById('dd-inact').classList.add('on');document.getElementById('dd-puzzle-area').style.display='none';document.getElementById('dd-input').style.display='none';document.getElementById('dd-done-msg').style.display='none';document.getElementById('dd-question').textContent='Hej — minęło trochę czasu.';}
-function ddInactYes(){document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');document.getElementById('dd-puzzle-area').style.display='flex';ddShowNormalDD();}
-function ddInactNo(){document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');goHome();}
 var DD_QUESTIONS=['Czy dziś w [dzień] masz dobrą myśl którą chciałbyś się podzielić?','Czy [dzień] przyniósł Ci coś dobrego czym chciałbyś się podzielić?','Czy coś dobrego przydarzyło Ci się dziś w [dzień]?','Czy masz dobry powód by się uśmiechnąć tej [soboty]?','Czy ten [dzień] dał Ci coś czym warto się podzielić?'];
 var DD_DAYS_ACC=['niedzielę','poniedziałek','wtorek','środę','czwartek','piątek','sobotę'];
 var DD_DAYS_TEJ=['tej niedzieli','tego poniedziałku','tego wtorku','tej środy','tego czwartku','tego piątku','tej soboty'];
@@ -651,8 +636,36 @@ function openGridPick(afterFinish,callback){_gridPickCallback=callback;_gridSele
 function gridSelect(n){_gridSelected=n;document.querySelectorAll('.grid-opt').forEach(function(el){el.classList.remove('selected');});var el=document.querySelector('.grid-opt[onclick="gridSelect('+n+')"]');if(el)el.classList.add('selected');document.getElementById('grid-pick-btn').disabled=false;}
 function gridConfirm(){if(!_gridSelected)return;var changed=S.ddGridSize!==_gridSelected;S.ddGridSize=_gridSelected;if(changed){var tot=_gridSelected*_gridSelected;S.ddTiles=Array(tot).fill(false);S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));}saveS();document.getElementById('grid-pick-ov').classList.remove('open');if(_gridPickCallback)_gridPickCallback();}
 function openDD(){if(S.ddConsent!==true){openConsent();return;}if(!S.ddGridSize){openGridPick(false,function(){ddEnter();});return;}ddEnter();}
-function ddEnter(){var today=todayStr();if(S.ddDate!==today){S.ddDone=0;S.ddDate=today;saveS();}initTiles();document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';document.getElementById('dd-rev-msg').style.display='none';document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.remove('active');document.getElementById('dd1').classList.add('active');if(checkInactivity()){show('dd');ddShowInactScreen();return;}document.getElementById('dd-inact').style.display='none';document.getElementById('dd-inact').classList.remove('on');document.getElementById('dd-puzzle-area').style.display='flex';ddShowNormalDD();show('dd');}
-function ddShowNormalDD(){var h=new Date().getHours(),dow=new Date().getDay(),dom=new Date().getDate(),nick=nickDisplay();var qEl=document.getElementById('dd-question'),titleEl=document.getElementById('dd-title');renderPuzzle();if(h>=6&&h<12){var msg=DD_MORNING[dom%DD_MORNING.length].replace('[dzień]',DD_DAYS_NOM[dow]);if(nick)msg=msg.replace('Dzień się zaczyna','Dzień się zaczyna, '+nick).replace('Dobry ranek','Dobry ranek, '+nick);if(qEl)qEl.textContent=msg;if(titleEl)titleEl.textContent='Dobry Dzień ☀️';}else{if(qEl)qEl.textContent=ddGetQuestion();if(titleEl)titleEl.textContent='Dobry Dzień ☀️'+(nick?' — '+nick:'');}}
+function ddEnter(){
+  var today=todayStr();
+  if(S.ddDate!==today){S.ddDone=0;S.ddDate=today;saveS();}
+  initTiles();
+  document.getElementById('dd-think').style.display='block';
+  document.getElementById('dd-resp').style.display='none';
+  document.getElementById('dd-rev-msg').style.display='none';
+  document.getElementById('dd1').classList.remove('active');
+  document.getElementById('dd2').classList.remove('active');
+  document.getElementById('dd1').classList.add('active');
+  document.getElementById('dd-puzzle-area').style.display='flex';
+  ddShowNormalDD();
+  updateDDUI();
+  show('dd');
+}
+function ddShowNormalDD(){
+  var h=new Date().getHours(),dow=new Date().getDay(),dom=new Date().getDate(),nick=nickDisplay();
+  var qEl=document.getElementById('dd-question'),titleEl=document.getElementById('dd-title');
+  renderPuzzle();
+  if(h>=6&&h<12){
+    var msg=DD_MORNING[dom%DD_MORNING.length].replace('[dzień]',DD_DAYS_NOM[dow]);
+    if(nick)msg=msg.replace('Dzień się zaczyna','Dzień się zaczyna, '+nick).replace('Dobry ranek','Dobry ranek, '+nick);
+    if(qEl)qEl.textContent=msg;
+    if(titleEl)titleEl.textContent='Dobry Dzień ☀️';
+  } else {
+    if(qEl)qEl.textContent=ddGetQuestion();
+    if(titleEl)titleEl.textContent='Dobry Dzień ☀️'+(nick?' — '+nick:'');
+  }
+  updateDDUI();
+}
 function initTiles(){var tot=totalTiles();if(!S.ddTiles||S.ddTiles.length!==tot){S.ddTiles=Array(tot).fill(false);S.ddOrder=shuffle(Array.from({length:tot},function(_,i){return i;}));saveS();}}
 function shuffle(arr){for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr;}
 
@@ -663,7 +676,6 @@ function piecePath(x,y,w,h,row,col,gs){var tab=Math.min(w,h)*0.22;function det(a
 function updateDDUI(){var left=maxDaily()-S.ddDone,ia=document.getElementById('dd-input'),dm=document.getElementById('dd-done-msg'),info=document.getElementById('dd-info');if(left<=0){ia.style.display='none';dm.style.display='block';}else{ia.style.display='block';dm.style.display='none';info.textContent=left===maxDaily()?'Możesz dodać '+maxDaily()+' myśli dziś.':'Zostało Ci '+left+(left===1?' myśl':' myśli')+' na dziś.';}}
 function ddSessionId(){var str=(S.nick||'')+(S.birthYear||'');var hash=0;for(var i=0;i<str.length;i++){hash=((hash<<5)-hash)+str.charCodeAt(i);hash|=0;}return Math.abs(hash).toString(16);}
 
-// ══ POPRAWKA: czyszczenie tagów wewnętrznych z odpowiedzi Serca ══
 function cleanSerceOdpowiedz(txt){
   return txt
     .replace(/BLOKADA:TAK/gi,'')
@@ -675,8 +687,7 @@ function cleanSerceOdpowiedz(txt){
     .trim();
 }
 
-function ddSubmit(){var txt=document.getElementById('dd-txt').value.trim();if(txt.length<3){document.getElementById('dd-txt').focus();return;}document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.add('active');document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';fetch(SB_URL+'/functions/v1/call-dd-serce',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY},body:JSON.stringify({mysl:txt,session_id:ddSessionId()})}).then(function(r){return r.json();}).then(function(data){
-  // ══ POPRAWKA: używamy cleanSerceOdpowiedz ══
+function ddSubmit(){var txt=document.getElementById('dd-txt').value.trim();if(txt.length<3){document.getElementById('dd-txt').focus();return;}document.getElementById('dd1').classList.remove('active');document.getElementById('dd2').classList.add('active');document.getElementById('dd-think').style.display='block';document.getElementById('dd-resp').style.display='none';fetch(SB_URL+'/functions/v1/call-dd-serce',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY},body:JSON.stringify({mysl:txt,session_id:ddSessionId(),traveler_uuid:S.travelerId||null})}).then(function(r){return r.json();}).then(function(data){
   var odpowiedz=cleanSerceOdpowiedz(data.odpowiedz||'Piękna chwila. 💛');
   var blokada=data.blokada||false;
   document.getElementById('dd-think').style.display='none';document.getElementById('dd-resp').style.display='block';document.getElementById('dd-bub').innerHTML='<p>'+odpowiedz+'</p>';if(blokada){document.getElementById('dd-rev-msg').style.display='none';return;}revealTile();S.ddDone++;var today=todayStr();if(S.ddLastDate===yest())S.ddSeries++;else if(S.ddLastDate!==today)S.ddSeries=1;S.ddLastDate=today;saveS();var tot=totalTiles(),rev=S.ddTiles.filter(Boolean).length;document.getElementById('dd-rev-txt').textContent=rev>=tot?'🎉 Puzzle ukończone!':'🧩 Puzzle odkryty!';document.getElementById('dd-rev-msg').style.display='block';}).catch(function(){var r=['Piękna chwila. Dobrze że ją zapamiętujesz. ✨','Takie chwile są wyjątkowe. 💛','Ale fajnie! Warto to nosić ze sobą. ⭐'];document.getElementById('dd-think').style.display='none';document.getElementById('dd-resp').style.display='block';document.getElementById('dd-bub').innerHTML='<p>'+r[Math.floor(Math.random()*r.length)]+'</p>';revealTile();S.ddDone++;var today=todayStr();if(S.ddLastDate===yest())S.ddSeries++;else if(S.ddLastDate!==today)S.ddSeries=1;S.ddLastDate=today;saveS();document.getElementById('dd-rev-txt').textContent='🧩 Puzzle odkryty!';document.getElementById('dd-rev-msg').style.display='block';});}
